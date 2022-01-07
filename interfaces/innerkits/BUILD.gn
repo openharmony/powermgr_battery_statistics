@@ -26,10 +26,10 @@ config("batterystats_public_config") {
 
 ohos_shared_library("batterystats_client") {
   sources = [
-    "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
     "${batterystats_frameworks_path}/native/src/battery_stats_client.cpp",
     "${batterystats_frameworks_path}/native/src/battery_stats_info.cpp",
-    "${batterystats_frameworks_path}/native/src/battery_stats_utils.cpp"
+    "${batterystats_frameworks_path}/native/src/battery_stats_utils.cpp",
+    "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
   ]
 
   configs = [

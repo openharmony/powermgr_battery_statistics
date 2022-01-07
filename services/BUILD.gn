@@ -31,23 +31,23 @@ config("batterystats_public_config") {
 ohos_shared_library("batterystats_service") {
   sources = [
     "${batterystats_service_path}/zidl/src/battery_stats_stub.cpp",
-    "native/src/battery_stats_service.cpp",
     "native/src/battery_stats_core.cpp",
-    "native/src/battery_stats_parser.cpp",
     "native/src/battery_stats_detector.cpp",
-    "native/src/battery_stats_subscriber.cpp",
+    "native/src/battery_stats_dumper.cpp",
     "native/src/battery_stats_entity.cpp",
-    "native/src/wifi_entity.cpp",
-    "native/src/uid_entity.cpp",
+    "native/src/battery_stats_parser.cpp",
+    "native/src/battery_stats_service.cpp",
+    "native/src/battery_stats_subscriber.cpp",
     "native/src/bluetooth_entity.cpp",
+    "native/src/cpu_time_reader.cpp",
     "native/src/idle_entity.cpp",
+    "native/src/phone_entity.cpp",
     "native/src/radio_entity.cpp",
     "native/src/screen_entity.cpp",
-    "native/src/user_entity.cpp",
-    "native/src/phone_entity.cpp",
     "native/src/time_helper.cpp",
-    "native/src/cpu_time_reader.cpp",
-    "native/src/battery_stats_dumper.cpp"
+    "native/src/uid_entity.cpp",
+    "native/src/user_entity.cpp",
+    "native/src/wifi_entity.cpp",
   ]
 
   configs = [
@@ -60,8 +60,8 @@ ohos_shared_library("batterystats_service") {
   deps = [
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//third_party/jsoncpp",
     "//utils/native/base:utils",
-    "//third_party/jsoncpp"
   ]
 
   external_deps = [
@@ -76,7 +76,7 @@ ohos_shared_library("batterystats_service") {
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
     "battery_manager_native:batterysrv_client",
-    "os_account_standard:libaccountkits"
+    "os_account_standard:libaccountkits",
   ]
 
   part_name = "${batterystats_part_name}"
