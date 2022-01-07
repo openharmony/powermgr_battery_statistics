@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace PowerMgr {
-
 void BatteryStatsEntity::SetType(BatteryStatsInfo::BatteryStatsType type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
@@ -55,7 +54,8 @@ void BatteryStatsEntity::SetPower(double power)
 
 int32_t BatteryStatsEntity::GetUid()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "No uid related, so return INVALID_UID = %{public}d", BatteryStatsUtils::INVALID_VALUE);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "No uid related, so return INVALID_UID = %{public}d",
+        BatteryStatsUtils::INVALID_VALUE);
     return BatteryStatsUtils::INVALID_VALUE;
 }
 

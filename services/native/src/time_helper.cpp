@@ -14,11 +14,11 @@
  */
 #include "time_helper.h"
 
-#include <time.h>
+#include <ctime>
 
-#include "stats_hilog_wrapper.h"
 #include "battery_stats_info.h"
 #include "battery_stats_utils.h"
+#include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -26,7 +26,8 @@ long TimeHelper::latestUnplugTimeMs_ = BatteryStatsUtils::DEFAULT_VALUE;
 long TimeHelper::onBatteryBootTimeMs_ = BatteryStatsUtils::DEFAULT_VALUE;
 bool TimeHelper::onBattery_ = false;
 bool TimeHelper::screenOff_ = false;
-long TimeHelper::GetBootTimeMs() {
+long TimeHelper::GetBootTimeMs()
+{
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long bootTimeMs = BatteryStatsUtils::DEFAULT_VALUE;
     struct timespec rawBootTime;

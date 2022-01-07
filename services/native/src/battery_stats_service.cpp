@@ -121,7 +121,6 @@ bool BatteryStatsService::SubscribeCommonEvent()
     result = OHOS::EventFwk::CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
     if (!result) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Subscribe CommonEvent failed");
-
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return result;

@@ -43,38 +43,19 @@ int32_t UserEntity::GetUid()
 void UserEntity::Calculate()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    // auto statsMap = battryCore->GetBatteryStatsEntityMap();
-    // for (auto uidIter = statsMap.begin(); uidIter != statsMap.end(); uidIter++) {
-    //     if (uidIter->second->GetType() == BatteryStatsInfo::STATS_TYPE_APP) {
-    //         AggregateUserPower(uidIter->second);
-    //         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate power: %{public}lf for uid: %{public}d",
-    //             uidIter->second->GetTotalPower(), uidIter->second->GetUid());
-    //     }
-    // }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate power: %{public}lf for user id: %{public}d", uidRelatedUserPower_, userId_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate power: %{public}lf for user id: %{public}d",
+        uidRelatedUserPower_, userId_);
     SetPower(uidRelatedUserPower_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
-
-// void UserEntity::AggregateUserPower(std::shared_ptr<BatteryStatsEntity> entity)
-// {
-//     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-//     int32_t uid = entity->GetUid();
-//     int32_t userId = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(uid);
-//     if (userId == userId_) {
-//         STATS_HILOGI(STATS_MODULE_SERVICE, "Update entity for uerId = %{public}d", userId);
-//         SetPower(GetTotalPower() + entity->GetTotalPower());
-//     }
-//     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-// }
 
 void UserEntity::AddUidRelatedUserPower(double power)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (power >= BatteryStatsUtils::DEFAULT_VALUE) {
         double powerMams = power * 3600000;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Add uid related user power: %{public}lf to user id: %{public}d", powerMams,
-            userId_);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Add uid related user power: %{public}lf to user id: %{public}d",
+            powerMams, userId_);
         uidRelatedUserPower_ += powerMams;
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid uid related user power");

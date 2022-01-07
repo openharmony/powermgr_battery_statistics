@@ -15,7 +15,6 @@
 
 #include "battery_stats_parser.h"
 
-#include <fstream>
 #include "json/json.h"
 
 #include "stats_hilog_wrapper.h"
@@ -67,7 +66,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
     Json::Value root;
     std::string errors;
     std::ifstream ifs(POWER_AVERAGE_FILE, std::ios::binary);
-    if( !ifs.is_open()) {
+    if (!ifs.is_open()) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Json file doesn't exist");
         return false;
     }

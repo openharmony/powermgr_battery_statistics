@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class CpuTimeReader{
+class CpuTimeReader {
 public:
     CpuTimeReader() = default;
     ~CpuTimeReader() = default;

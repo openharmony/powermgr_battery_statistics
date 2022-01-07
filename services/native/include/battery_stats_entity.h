@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsEntity{
+class BatteryStatsEntity {
 public:
     BatteryStatsEntity() = default;
     virtual ~BatteryStatsEntity() = default;

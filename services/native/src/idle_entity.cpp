@@ -14,7 +14,7 @@
  */
 
 #include "idle_entity.h"
-#include <time.h>
+#include <ctime>
 #include "battery_stats_parser.h"
 #include "battery_stats_service.h"
 

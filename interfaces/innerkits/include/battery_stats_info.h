@@ -24,8 +24,7 @@
 #include "battery_stats_utils.h"
 
 namespace OHOS {
-namespace PowerMgr{
-
+namespace PowerMgr {
 class BatteryStatsInfo : Parcelable {
 public:
     enum BatteryStatsType {

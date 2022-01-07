@@ -47,7 +47,8 @@ void RadioEntity::Calculate()
             statsService->GetBatteryStatsParser()->GetAveragePower(BatteryStatsUtils::TYPE_RADIO_ON, i);
         auto radioSignalTime = GetSignalLevelTime(i);
         double radioSignalLevelPower = radioSignalAverage * radioSignalTime;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio signal level: %{public}d time: %{public}ld", i, radioSignalTime);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio signal level: %{public}d time: %{public}ld",
+            i, radioSignalTime);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio signal level: %{public}d average: %{public}lf", i,
             radioSignalAverage);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio signal level: %{public}d power: %{public}lf", i,

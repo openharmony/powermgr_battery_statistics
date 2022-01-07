@@ -24,7 +24,6 @@ namespace PowerMgr {
 namespace {
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
-
 ScreenEntity::ScreenEntity()
 {
     SetType(BatteryStatsInfo::STATS_TYPE_SCREEN);
@@ -58,7 +57,6 @@ void ScreenEntity::Calculate()
         screenBrightnessPower += screenBrightnessBinPower;
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio screen brightness power: %{public}lf", screenBrightnessPower);
-
 
     // Sum the total screen power
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate screen on time: %{public}ld", screenOnTime);

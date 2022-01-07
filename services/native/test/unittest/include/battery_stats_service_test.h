@@ -12,3 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+ #ifndef BATTERY_STATS_SERVICE_TEST_H
+ #define BATTERY_STATS_SERVICE_TEST_H
+
+ #endif // BATTERY_STATS_SERVICE_TEST_H

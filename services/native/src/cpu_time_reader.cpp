@@ -15,15 +15,11 @@
 
 #include "cpu_time_reader.h"
 
-#include <fstream>
-#include <string>
-
-#include "string_ex.h"
-
 #include "battery_stats_service.h"
 #include "battery_stats_utils.h"
-#include "time_helper.h"
 #include "stats_hilog_wrapper.h"
+#include "string_ex.h"
+#include "time_helper.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -54,7 +50,8 @@ long CpuTimeReader::GetUidCpuActiveTimeMs(int32_t uid)
     auto iter = activeTimeMap_.find(uid);
     if (iter != activeTimeMap_.end()) {
         cpuActiveTime = iter->second;
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time: %{public}ld for uid: %{public}d", cpuActiveTime, uid);
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time: %{public}ld for uid: %{public}d",
+            cpuActiveTime, uid);
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu active time found for uid: %{public}d, return 0", uid);
     }
@@ -99,8 +96,8 @@ long CpuTimeReader::GetUidCpuClusterTimeMs(int32_t uid, uint32_t cluster)
             cpuClusterTimeVector.size());
         if (cluster < cpuClusterTimeVector.size()) {
             cpuClusterTime = cpuClusterTimeVector[cluster];
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time: %{public}ld of cluster: %{public}d", cpuClusterTime,
-                cluster);
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time: %{public}ld of cluster: %{public}d",
+                cpuClusterTime, cluster);
         } else {
             STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu cluster time of cluster: %{public}d found, return 0", cluster);
         }
@@ -123,8 +120,8 @@ long CpuTimeReader::GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t 
         auto clusterIter = cpuFreqTimeMap.find(cluster);
         if (clusterIter != cpuFreqTimeMap.end()) {
             auto cpuFreqTimeVector = clusterIter->second;
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cluster cpu freq time vector of cluster: %{public}d, size: %{public}d",
-                cluster, cpuFreqTimeVector.size());
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cluster cpu freq time vector of cluster: %{public}d,\
+                size: %{public}d", cluster, cpuFreqTimeVector.size());
             if (speed < cpuFreqTimeVector.size()) {
                 cpuFreqTime = cpuFreqTimeVector[speed];
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu freq time: %{public}ld of speed: %{public}d", cpuFreqTime,
@@ -133,8 +130,8 @@ long CpuTimeReader::GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t 
                 STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu freq time of speed: %{public}d found, return 0", speed);
             }
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No cluster cpu freq time vector of cluster: %{public}d found, return 0",
-                cluster);
+            STATS_HILOGE(STATS_MODULE_SERVICE, "No cluster cpu freq time vector of cluster: %{public}d found,\
+                return 0", cluster);
         }
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No uid cpu freq time map found for uid: %{public}d, return 0", uid);
@@ -225,10 +222,10 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
                     increment = timeMs - iterLast->second;
                     if (increment > 0) {
                         iterLast->second = timeMs;
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time increment: %{public}ld ms for uid: %{public}d",
-                            increment, uid);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu active time to: %{public}ld ms for uid: %{public}d",
-                            timeMs, uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time increment: %{public}ld ms\
+                            for uid: %{public}d", increment, uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu active time to: %{public}ld ms\
+                            for uid: %{public}d", timeMs, uid);
                     } else {
                         STATS_HILOGE(STATS_MODULE_SERVICE, "Negative cpu active time increment got");
                         return false;
@@ -236,8 +233,8 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
                 } else {
                     lastActiveTimeMap_.insert(std::pair<int32_t, long>(uid, timeMs));
                     increment = timeMs;
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add last cpu active time as: %{public}ld ms for uid: %{public}d",
-                        increment, uid);
+                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add last cpu active time as: %{public}ld ms\
+                        for uid: %{public}d", increment, uid);
                 }
             }
 
@@ -245,11 +242,12 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
                 auto iter = activeTimeMap_.find(uid);
                 if (iter != activeTimeMap_.end()) {
                     iter->second += increment;
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu active time to: %{public}ld ms for uid: %{public}d",
-                            iter->second, uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu active time to: %{public}ld ms\
+                            for uid: %{public}d", iter->second, uid);
                 } else {
                     activeTimeMap_.insert(std::pair<int32_t, long>(uid, increment));
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add cpu active time as: %{public}ld ms for uid: %{public}d", increment, uid);
+                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add cpu active time as: %{public}ld ms for uid: %{public}d",
+                        increment, uid);
                 }
             } else {
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Power supply is connected, don't add the increment");
@@ -309,10 +307,10 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
                     if (increment > 0) {
                         iterLast->second[i] = clusterTime[i];
                         increments.push_back(increment);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time increment: %{public}ld ms, uid: %{public}d",
-                            increment, uid);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu cluster time to: %{public}ld ms, uid: %{public}d",
-                            clusterTime[i], uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time increment: %{public}ld ms,\
+                            uid: %{public}d", increment, uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu cluster time to: %{public}ld ms,\
+                            uid: %{public}d", clusterTime[i], uid);
                     } else {
                         STATS_HILOGE(STATS_MODULE_SERVICE, "Negative cpu cluster time increment got");
                         return false;
@@ -329,8 +327,8 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
                 if (iter != clusterTimeMap_.end()) {
                     for (uint16_t i = 0; i < clusters.size(); i++) {
                         iter->second[i] += increments[i];
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu cluster time to: %{public}ld ms for uid: %{public}d",
-                            iter->second[i], uid);
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu cluster time to: %{public}ld ms\
+                            for uid: %{public}d", iter->second[i], uid);
                     }
                 } else {
                     clusterTimeMap_.insert(std::pair<int32_t, std::vector<long>>(uid, increments));
@@ -419,7 +417,7 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
             if (wakelockCounts_ > 0) {
                 for (uint16_t i = 0; i < clustersMap_.size(); i++) {
                     for (int j = 0; j < clustersMap_[i]; j++) {
-                       uidIncrements.at(i)[j] = increments.at(i)[j] / 2;
+                        uidIncrements.at(i)[j] = increments.at(i)[j] / 2;
                     }
                 }
                 // TO-DO, distribute half of cpu freq time to wakelock holders
@@ -431,8 +429,8 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
                     for (uint16_t i = 0; i < clustersMap_.size(); i++) {
                         for (int j = 0; j < clustersMap_[i]; j++) {
                             iter->second.at(i)[j] += uidIncrements.at(i)[j];
-                            STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu freq time to: %{public}ld ms for uid: %{public}d",
-                            iter->second.at(i)[j], uid);
+                            STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu freq time to: %{public}ld ms\
+                                for uid: %{public}d", iter->second.at(i)[j], uid);
                         }
                     }
                 } else {

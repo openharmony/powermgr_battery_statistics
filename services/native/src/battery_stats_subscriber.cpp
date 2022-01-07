@@ -13,17 +13,16 @@
  * limitations under the License.
  */
 
+#include "battery_info.h"
+#include "battery_stats_service.h"
 #include "battery_stats_subscriber.h"
+#include "common_event_data.h"
 #include "common_event_subscriber.h"
 #include "common_event_subscribe_info.h"
-#include "common_event_data.h"
 #include "common_event_support.h"
 #include "common_event_manager.h"
 #include "stats_hilog_wrapper.h"
-#include "battery_stats_service.h"
-#include "battery_info.h"
 #include "time_helper.h"
-#include <string>
 
 namespace OHOS {
 namespace PowerMgr {
@@ -50,7 +49,8 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
             STATS_HILOGE(STATS_MODULE_SERVICE, "No msg data got from common event");
             return;
         } else {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Received msgcode: %{public}d, msgdata: %{public}s", msgCode, msgData.c_str());
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Received msgcode: %{public}d, msgdata: %{public}s",
+                msgCode, msgData.c_str());
         }
         int32_t msgDataInt;
         if (IsNumericStr(msgData)) {

@@ -31,7 +31,7 @@
 namespace OHOS {
 namespace PowerMgr {
 class BatteryStatsService;
-class BatteryStatsCore{
+class BatteryStatsCore {
 public:
     explicit BatteryStatsCore(const wptr<BatteryStatsService>& bss) : bss_(bss)
     {
@@ -84,7 +84,8 @@ public:
             return totalTimeMs_;
         }
 
-        void AddRunningTimeMs(long avtiveTime) {
+        void AddRunningTimeMs(long avtiveTime)
+        {
             STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
             if (avtiveTime > BatteryStatsUtils::DEFAULT_VALUE) {
                 totalTimeMs_ += avtiveTime;

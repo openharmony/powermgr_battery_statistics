@@ -31,7 +31,6 @@ public:
     void Reset() override;
 private:
     int32_t userId_ = BatteryStatsUtils::INVALID_VALUE;
-    // void AggregateUserPower(std::shared_ptr<BatteryStatsEntity> entity);
     double uidRelatedUserPower_ = BatteryStatsUtils::DEFAULT_VALUE;
 };
 } // namespace PowerMgr

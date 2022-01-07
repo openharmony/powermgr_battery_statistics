@@ -22,7 +22,8 @@ namespace OHOS {
 namespace PowerMgr {
 int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d", code, option.GetFlags());
+    STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d",
+        code, option.GetFlags());
     std::u16string descriptor = BatteryStatsStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {

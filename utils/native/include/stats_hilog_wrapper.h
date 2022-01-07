@@ -21,7 +21,7 @@
 #include "hilog/log.h"
 namespace OHOS {
 namespace PowerMgr {
-#define __STATSFILENAME__            (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
+#define __STATSFILENAME__        (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 #define __STATSFORMATED(fmt, ...)    "[%{public}s] %{public}s# " fmt, __STATSFILENAME__, __FUNCTION__, ##__VA_ARGS__
 
 #ifdef STATS_HILOGF

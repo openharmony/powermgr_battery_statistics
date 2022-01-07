@@ -24,8 +24,8 @@ namespace OHOS {
 namespace PowerMgr {
 class BatteryStatsSubscriber : public OHOS::EventFwk::CommonEventSubscriber {
 public:
-    explicit BatteryStatsSubscriber(const OHOS::EventFwk::CommonEventSubscribeInfo& subscribeInfo) :
-        OHOS::EventFwk::CommonEventSubscriber(subscribeInfo) {}
+    explicit BatteryStatsSubscriber(const OHOS::EventFwk::CommonEventSubscribeInfo& subscribeInfo)
+        : OHOS::EventFwk::CommonEventSubscriber(subscribeInfo) {}
     void OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data) override;
 };
 } // namespace PowerMgr

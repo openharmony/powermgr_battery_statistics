@@ -15,7 +15,6 @@
 #include "battery_stats_core.h"
 
 #include <json/json.h>
-#include <fstream>
 
 #include <ohos_account_kits_impl.h>
 
@@ -33,7 +32,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-namespace{
+namespace {
 static const std::string BATTERY_STATS_JSON = "/data/system/battery_stats.json";
 } // namespace
 bool BatteryStatsCore::Init()
@@ -581,7 +580,7 @@ long BatteryStatsCore::GetTotalDataCount(std::string hwId, int32_t uid)
 double BatteryStatsCore::GetAppStatsMah(const int32_t& uid)
 {
     double appStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
-    for(auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++){
+    for (auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++) {
         if ((*iter)->GetType() == BatteryStatsInfo::STATS_TYPE_APP) {
             if ((*iter)->GetUid() == uid) {
                 appStatsMah = (*iter)->GetPower();
@@ -596,7 +595,7 @@ double BatteryStatsCore::GetAppStatsMah(const int32_t& uid)
 double BatteryStatsCore::GetAppStatsPercent(const int32_t& uid)
 {
     double appStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
-    for(auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++){
+    for (auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++) {
         if ((*iter)->GetType() == BatteryStatsInfo::STATS_TYPE_APP) {
             if ((*iter)->GetUid() == uid) {
                 appStatsPercent = (*iter)->GetPower() / totalConsumption;
@@ -611,7 +610,7 @@ double BatteryStatsCore::GetAppStatsPercent(const int32_t& uid)
 double BatteryStatsCore::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type)
 {
     double partStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
-    for(auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++){
+    for (auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++) {
         if ((*iter)->GetType() == type) {
             partStatsMah = (*iter)->GetPower();
             break;
@@ -624,7 +623,7 @@ double BatteryStatsCore::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsTyp
 double BatteryStatsCore::GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type)
 {
     double partStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
-    for(auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++){
+    for (auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++) {
         if ((*iter)->GetType() == type) {
             partStatsPercent = (*iter)->GetPower() / totalConsumption;
             break;
@@ -639,13 +638,12 @@ bool BatteryStatsCore::SaveBatteryStatsData()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     ComputePower();
     Json::Value root;
-    for(auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++){
+    for (auto iter = statsInfoList_.begin(); iter != statsInfoList_.end(); iter++) {
         if ((*iter)->GetUid() == BatteryStatsUtils::INVALID_VALUE) {
             std::string name = std::to_string((*iter)->GetType());
             root[name] = Json::Value((*iter)->GetPower());
             STATS_HILOGD(STATS_MODULE_SERVICE, "Saved power: %{public}lf for type: %{public}s", (*iter)->GetPower(),
                 name.c_str());
-
         } else {
             std::string name = std::to_string((*iter)->GetUid());
             root[name] = Json::Value((*iter)->GetPower());
@@ -673,7 +671,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
     Json::Value root;
     std::string errors;
     std::ifstream ifs(BATTERY_STATS_JSON, std::ios::binary);
-    if( !ifs.is_open()) {
+    if (!ifs.is_open()) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Json file doesn't exist");
         return false;
     }
@@ -689,7 +687,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         auto id = std::stoi(*iter);
         if (id > BatteryStatsUtils::INVALID_VALUE) {
             info->SetUid(id);
-        } else if (id < BatteryStatsUtils::INVALID_VALUE && id > BatteryStatsInfo::STATS_TYPE_INVALID ){
+        } else if (id < BatteryStatsUtils::INVALID_VALUE && id > BatteryStatsInfo::STATS_TYPE_INVALID ) {
             info->SetType(static_cast<BatteryStatsInfo::BatteryStatsType>(id));
         }
         info->SetPower(root[*iter].asDouble());

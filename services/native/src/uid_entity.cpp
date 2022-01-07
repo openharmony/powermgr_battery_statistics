@@ -56,8 +56,10 @@ double UidEntity::CalculateCameraPower()
     auto cameraOnTime = statsService->GetBatteryStatsCore()->GetTotalTimeMs(BatteryStatsUtils::TYPE_CAMERA_ON, uid_);
     auto cameraOnPower = cameraOnAverage * cameraOnTime;
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate camera time: %{public}ld for uid: %{public}d", cameraOnTime, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate camera average: %{public}lf for uid: %{public}d", cameraOnAverage, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate camera power: %{public}lf for uid: %{public}d", cameraOnPower, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate camera average: %{public}lf for uid: %{public}d",
+        cameraOnAverage, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate camera power: %{public}lf for uid: %{public}d",
+        cameraOnPower, uid_);
     return cameraOnPower;
 }
 
@@ -69,10 +71,12 @@ double UidEntity::CalculateFlashlightPower()
     auto flashlightOnTime =
         statsService->GetBatteryStatsCore()->GetTotalTimeMs(BatteryStatsUtils::TYPE_FLASHLIGHT_ON, uid_);
     auto flashlightOnPower = flashlightOnAverage * flashlightOnTime;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate flashlight time: %{public}ld for uid: %{public}d", flashlightOnTime, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate flashlight time: %{public}ld for uid: %{public}d",
+        flashlightOnTime, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate flashlight average: %{public}lf for uid: %{public}d",
         flashlightOnAverage, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate flashlight power: %{public}lf for uid: %{public}d", flashlightOnPower, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate flashlight power: %{public}lf for uid: %{public}d",
+        flashlightOnPower, uid_);
     return flashlightOnPower;
 }
 
@@ -93,10 +97,12 @@ double UidEntity::CalculateRunningLockPower()
     auto runningLockTime =
         statsService->GetBatteryStatsCore()->GetTotalTimeMs(BatteryStatsUtils::TYPE_CPU_AWAKE, uid_);
     auto runningLockPower = runningLockAverage * runningLockTime;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock time: %{public}ld for uid: %{public}d", runningLockTime, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock average: %{public}lf for uid: %{public}d", runningLockAverage,
-        uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock power: %{public}lf for uid: %{public}d", runningLockPower, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock time: %{public}ld for uid: %{public}d",
+        runningLockTime, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock average: %{public}lf for uid: %{public}d",
+        runningLockAverage, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate runninglock power: %{public}lf for uid: %{public}d",
+        runningLockPower, uid_);
     return runningLockPower;
 }
 
@@ -117,13 +123,15 @@ double UidEntity::CalculateMobileRadioPower()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio rx time: %{public}ld for uid: %{public}d", radioRxTime, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio rx average: %{public}lf for uid: %{public}d", radioRxAverage,
         uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio rx power: %{public}lf for uid: %{public}d", radioRxPower, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio rx power: %{public}lf for uid: %{public}d",
+        radioRxPower, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio tx time: %{public}ld for uid: %{public}d", radioTxTime, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio tx average: %{public}lf for uid: %{public}d", radioTxAverage,
         uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio tx power: %{public}lf for uid: %{public}d", radioTxPower, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio total power: %{public}lf for uid: %{public}d", mobileRadioPower,
-        uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio tx power: %{public}lf for uid: %{public}d",
+        radioTxPower, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio total power: %{public}lf for uid: %{public}d",
+        mobileRadioPower, uid_);
     return mobileRadioPower;
 }
 
@@ -146,7 +154,8 @@ double UidEntity::CalculateWifiPower()
 
     // Calculate wifi total power
     auto wifiPower = wifiRxPower + wifiTxPower + wifiScanPower;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi scan time: %{public}ld for uid: %{public}d", wifiScanTime, uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi scan time: %{public}ld for uid: %{public}d",
+        wifiScanTime, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi scan average: %{public}lf for uid: %{public}d", wifiScanAverage,
         uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi scan power: %{public}lf for uid: %{public}d", wifiScanPower,
@@ -200,8 +209,8 @@ double UidEntity::CalculateBluetoothPower()
         bluetoothRxAverage, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth rx power: %{public}lf for uid: %{public}d",
         bluetoothRxPower, uid_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth tx time: %{public}ld for uid: %{public}d", bluetoothTxTime,
-        uid_);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth tx time: %{public}ld for uid: %{public}d",
+        bluetoothTxTime, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth tx average: %{public}lf for uid: %{public}d",
         bluetoothTxAverage, uid_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth tx power: %{public}lf for uid: %{public}d",
