@@ -1,0 +1,83 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//base/powermgr/battery_statistics/batterystats.gni")
+
+config("batterystats_private_config") {
+  include_dirs = [ "//utils/system/safwk/native/include" ]
+}
+
+config("batterystats_public_config") {
+  include_dirs = [
+    "native/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
+    "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
+    "${batterystats_interfaces_path}/include",
+    "${batterystats_service_path}/zidl/include",
+  ]
+}
+
+ohos_shared_library("batterystats_service") {
+  sources = [
+    "${batterystats_service_path}/zidl/src/battery_stats_stub.cpp",
+    "native/src/battery_stats_core.cpp",
+    "native/src/battery_stats_detector.cpp",
+    "native/src/battery_stats_dumper.cpp",
+    "native/src/battery_stats_entity.cpp",
+    "native/src/battery_stats_parser.cpp",
+    "native/src/battery_stats_service.cpp",
+    "native/src/battery_stats_subscriber.cpp",
+    "native/src/bluetooth_entity.cpp",
+    "native/src/cpu_time_reader.cpp",
+    "native/src/idle_entity.cpp",
+    "native/src/phone_entity.cpp",
+    "native/src/radio_entity.cpp",
+    "native/src/screen_entity.cpp",
+    "native/src/time_helper.cpp",
+    "native/src/uid_entity.cpp",
+    "native/src/user_entity.cpp",
+    "native/src/wifi_entity.cpp",
+  ]
+
+  configs = [
+    "${batterystats_utils_path}:batterystats_utils_config",
+    ":batterystats_private_config",
+  ]
+
+  public_configs = [ ":batterystats_public_config" ]
+
+  deps = [
+    "${batterystats_interfaces_path}/innerkits:batterystats_client",
+    "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//third_party/jsoncpp",
+    "//utils/native/base:utils",
+  ]
+
+  external_deps = [
+    "aafwk_standard:base",
+    "aafwk_standard:want",
+    "appexecfwk_standard:appexecfwk_base",
+    "appexecfwk_standard:appexecfwk_core",
+    "appexecfwk_standard:libeventhandler",
+    "battery_manager_native:batterysrv_client",
+    "ces_standard:cesfwk_innerkits",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+    "os_account_standard:libaccountkits",
+    "safwk:system_ability_fwk",
+    "samgr_standard:samgr_proxy",
+  ]
+
+  part_name = "${batterystats_part_name}"
+}
