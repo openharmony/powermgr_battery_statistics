@@ -28,9 +28,7 @@ config("module_private_config") {
 ohos_unittest("battery_stats_service_test") {
   module_out_path = module_output_path
 
-  sources = [
-    "src/battery_stats_service_test.cpp",
-  ]
+  sources = [ "src/battery_stats_service_test.cpp" ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -47,17 +45,17 @@ ohos_unittest("battery_stats_service_test") {
 
   external_deps = [
     "aafwk_standard:base",
-    "aafwk_standard:want",
     "aafwk_standard:intent",
+    "aafwk_standard:want",
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",
     "ces_standard:cesfwk_innerkits",
+    "display_manager_native:displaymgr",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
-    "display_manager_native:displaymgr",
   ]
 }
 
