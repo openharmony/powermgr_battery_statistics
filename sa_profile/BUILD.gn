@@ -15,8 +15,6 @@ import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
 
 ohos_sa_profile("batterystats_sa_profile") {
-  sources = [
-    "3304.xml",
-  ]
+  sources = [ "3304.xml" ]
   part_name = "${batterystats_part_name}"
 }

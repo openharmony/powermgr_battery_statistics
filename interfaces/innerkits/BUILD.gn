@@ -40,9 +40,7 @@ ohos_shared_library("batterystats_client") {
 
   public_configs = [ ":batterystats_public_config" ]
 
-  deps = [
-    "//utils/native/base:utils",
-  ]
+  deps = [ "//utils/native/base:utils" ]
 
   external_deps = [
     "appexecfwk_standard:libeventhandler",
