@@ -15,11 +15,14 @@
 
 #include "cpu_time_reader.h"
 
-#include "battery_stats_service.h"
-#include "battery_stats_utils.h"
-#include "stats_hilog_wrapper.h"
+#include <fstream>
+
 #include "string_ex.h"
-#include "time_helper.h"
+
+#include "battery_stats_service.h"
+#include "stats_utils.h"
+#include "stats_helper.h"
+#include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -34,11 +37,9 @@ bool CpuTimeReader::Init()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
 
     if (!UpdateCpuTime()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Initialization failed: update cpu time failed");
-        return false;
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Update cpu time failed");
     }
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Initialization succeeded");
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return true;
 }
@@ -50,8 +51,7 @@ long CpuTimeReader::GetUidCpuActiveTimeMs(int32_t uid)
     auto iter = activeTimeMap_.find(uid);
     if (iter != activeTimeMap_.end()) {
         cpuActiveTime = iter->second;
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time: %{public}ld for uid: %{public}d",
-            cpuActiveTime, uid);
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time: %{public}ld for uid: %{public}d", cpuActiveTime, uid);
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu active time found for uid: %{public}d, return 0", uid);
     }
@@ -72,8 +72,6 @@ void CpuTimeReader::DumpInfo(std::string& result)
                 }
             }
         }
-        result.append(ToString(uidIter->first))
-            .append(":\n");
         result.append("Total cpu time: userSpaceTime=")
             .append(ToString(uidIter->second[0]))
             .append("ms, systemSpaceTime=")
@@ -120,7 +118,7 @@ long CpuTimeReader::GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t 
         auto clusterIter = cpuFreqTimeMap.find(cluster);
         if (clusterIter != cpuFreqTimeMap.end()) {
             auto cpuFreqTimeVector = clusterIter->second;
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cluster cpu freq time vector of cluster: %{public}d,\
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cluster cpu freq time vector of cluster: %{public}d, \
                 size: %{public}d", cluster, cpuFreqTimeVector.size());
             if (speed < cpuFreqTimeVector.size()) {
                 cpuFreqTime = cpuFreqTimeVector[speed];
@@ -130,8 +128,8 @@ long CpuTimeReader::GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t 
                 STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu freq time of speed: %{public}d found, return 0", speed);
             }
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No cluster cpu freq time vector of cluster: %{public}d found,\
-                return 0", cluster);
+            STATS_HILOGE(STATS_MODULE_SERVICE, "No cluster cpu freq time vector of cluster: %{public}d found, return 0",
+                cluster);
         }
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No uid cpu freq time map found for uid: %{public}d, return 0", uid);
@@ -192,7 +190,8 @@ bool CpuTimeReader::UpdateCpuTime()
     return result;
 }
 
-bool CpuTimeReader::ReadUidCpuActiveTime() {
+bool CpuTimeReader::ReadUidCpuActiveTime()
+{
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::ifstream input(UID_CPU_ACTIVE_TIME_FILE);
     if (input) {
@@ -202,7 +201,7 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
         while (getline(input, line)) {
             timeMs = 0;
             std::vector<std::string> splitedLine;
-            split(line, ':', splitedLine);
+            Split(line, ':', splitedLine);
             if (splitedLine[0] == "cpus") {
                 continue;
             } else {
@@ -210,7 +209,7 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
             }
 
             std::vector<std::string> splitedTime;
-            split(splitedLine[1], ' ', splitedTime);
+            Split(splitedLine[1], ' ', splitedTime);
             for (uint16_t i = 0; i < splitedTime.size(); i++) {
                 timeMs += stol(splitedTime[i]) * 10; // Unit is 10ms
             }
@@ -222,9 +221,9 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
                     increment = timeMs - iterLast->second;
                     if (increment > 0) {
                         iterLast->second = timeMs;
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time increment: %{public}ld ms\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu active time increment: %{public}ld ms \
                             for uid: %{public}d", increment, uid);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu active time to: %{public}ld ms\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu active time to: %{public}ld ms \
                             for uid: %{public}d", timeMs, uid);
                     } else {
                         STATS_HILOGE(STATS_MODULE_SERVICE, "Negative cpu active time increment got");
@@ -233,21 +232,21 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
                 } else {
                     lastActiveTimeMap_.insert(std::pair<int32_t, long>(uid, timeMs));
                     increment = timeMs;
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add last cpu active time as: %{public}ld ms\
+                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add last cpu active time as: %{public}ld ms \
                         for uid: %{public}d", increment, uid);
                 }
             }
 
-            if (TimeHelper::IsOnBattery() || BatteryStatsUtils::DEBUG) { // Just for debug
+            if (StatsHelper::IsOnBattery() || StatsUtils::DEBUG) { // Just for debug
                 auto iter = activeTimeMap_.find(uid);
                 if (iter != activeTimeMap_.end()) {
                     iter->second += increment;
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu active time to: %{public}ld ms\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu active time to: %{public}ld ms \
                             for uid: %{public}d", iter->second, uid);
                 } else {
                     activeTimeMap_.insert(std::pair<int32_t, long>(uid, increment));
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add cpu active time as: %{public}ld ms for uid: %{public}d",
-                        increment, uid);
+                    STATS_HILOGD(STATS_MODULE_SERVICE, "Add cpu active time as: %{public}ld ms \
+                        for uid: %{public}d", increment, uid);
                 }
             } else {
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Power supply is connected, don't add the increment");
@@ -261,7 +260,8 @@ bool CpuTimeReader::ReadUidCpuActiveTime() {
     }
 }
 
-bool CpuTimeReader::ReadUidCpuClusterTime() {
+bool CpuTimeReader::ReadUidCpuClusterTime()
+{
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::ifstream input(UID_CPU_CLUSTER_TIME_FILE);
     if (input) {
@@ -273,8 +273,9 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
             clusterTime.clear();
             if (line.find("policy") != line.npos) {
                 std::vector<std::string> splitedPolicy;
-                split(line, ' ', splitedPolicy);
-                for (uint16_t i = 0; i < splitedPolicy.size(); i += 2) {
+                Split(line, ' ', splitedPolicy);
+                int32_t step = 2;
+                for (uint16_t i = 0; i < splitedPolicy.size(); i += step) {
                     uint16_t coreNum = stoi(splitedPolicy[i+1]);
                     clusters.push_back(coreNum);
                     clustersMap_.insert(std::pair<uint16_t, uint16_t>(i, coreNum));
@@ -284,11 +285,11 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
             }
 
             std::vector<std::string> splitedLine;
-            split(line, ':', splitedLine);
+            Split(line, ':', splitedLine);
             uid = stoi(splitedLine[0]);
 
             std::vector<std::string> splitedTime;
-            split(splitedLine[1], ' ', splitedTime);
+            Split(splitedLine[1], ' ', splitedTime);
             uint16_t count = 0;
             for (uint16_t i = 0; i < clusters.size(); i++) {
                 long tempTimeMs = 0;
@@ -307,9 +308,9 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
                     if (increment > 0) {
                         iterLast->second[i] = clusterTime[i];
                         increments.push_back(increment);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time increment: %{public}ld ms,\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time increment: %{public}ld ms, \
                             uid: %{public}d", increment, uid);
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu cluster time to: %{public}ld ms,\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update last cpu cluster time to: %{public}ld ms, \
                             uid: %{public}d", clusterTime[i], uid);
                     } else {
                         STATS_HILOGE(STATS_MODULE_SERVICE, "Negative cpu cluster time increment got");
@@ -322,12 +323,12 @@ bool CpuTimeReader::ReadUidCpuClusterTime() {
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Add last cpu cluster time for uid: %{public}d", uid);
             }
 
-            if (TimeHelper::IsOnBattery() || BatteryStatsUtils::DEBUG) { // Just for debug
+            if (StatsHelper::IsOnBattery() || StatsUtils::DEBUG) { // Just for debug
                 auto iter = clusterTimeMap_.find(uid);
                 if (iter != clusterTimeMap_.end()) {
                     for (uint16_t i = 0; i < clusters.size(); i++) {
                         iter->second[i] += increments[i];
-                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu cluster time to: %{public}ld ms\
+                        STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu cluster time to: %{public}ld ms \
                             for uid: %{public}d", iter->second[i], uid);
                     }
                 } else {
@@ -357,7 +358,7 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
         while (getline(input, line)) {
             speedTime.clear();
             std::vector<std::string> splitedLine;
-            split(line, ':', splitedLine);
+            Split(line, ':', splitedLine);
             if (splitedLine[0] == "uid") {
                 continue;
             } else {
@@ -365,7 +366,7 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
             }
 
             std::vector<std::string> splitedTime;
-            split(splitedLine[1], ' ', splitedTime);
+            Split(splitedLine[1], ' ', splitedTime);
 
             auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
             auto parser = statsService->GetBatteryStatsParser();
@@ -417,19 +418,20 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
             if (wakelockCounts_ > 0) {
                 for (uint16_t i = 0; i < clustersMap_.size(); i++) {
                     for (int j = 0; j < clustersMap_[i]; j++) {
-                        uidIncrements.at(i)[j] = increments.at(i)[j] / 2;
+                        int32_t step = 2;
+                        uidIncrements.at(i)[j] = increments.at(i)[j] / step;
                     }
                 }
                 // TO-DO, distribute half of cpu freq time to wakelock holders
             }
 
-            if (TimeHelper::IsOnBattery() || BatteryStatsUtils::DEBUG) { // Just for debug
+            if (StatsHelper::IsOnBattery() || StatsUtils::DEBUG) { // Just for debug
                 auto iter = freqTimeMap_.find(uid);
                 if (iter != freqTimeMap_.end()) {
                     for (uint16_t i = 0; i < clustersMap_.size(); i++) {
                         for (int j = 0; j < clustersMap_[i]; j++) {
                             iter->second.at(i)[j] += uidIncrements.at(i)[j];
-                            STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu freq time to: %{public}ld ms\
+                            STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu freq time to: %{public}ld ms \
                                 for uid: %{public}d", iter->second.at(i)[j], uid);
                         }
                     }
@@ -461,11 +463,11 @@ bool CpuTimeReader::ReadUidCpuTime()
         while (getline(input, line)) {
             cpuTime.clear();
             std::vector<std::string> splitedLine;
-            split(line, ':', splitedLine);
+            Split(line, ':', splitedLine);
             uid = stoi(splitedLine[0]);
 
             std::vector<std::string> splitedTime;
-            split(splitedLine[1], ' ', splitedTime);
+            Split(splitedLine[1], ' ', splitedTime);
             for (uint16_t i = 0; i < splitedTime.size(); i++) {
                 long tempTime = 0;
                 tempTime = stol(splitedTime[i]);
@@ -499,12 +501,13 @@ bool CpuTimeReader::ReadUidCpuTime()
 
             std::vector<long> uidIncrements = increments;
             if (wakelockCounts_ > 0) {
-                uidIncrements[0] = increments[0] / 1000 / 2;
-                uidIncrements[1] = increments[1] / 1000 / 2;
+                double weight = 0.5;
+                uidIncrements[0] = increments[0] / StatsUtils::US_IN_MS * weight;
+                uidIncrements[1] = increments[1] / StatsUtils::US_IN_MS * weight;
                 // TO-DO, distribute half of cpu time to wakelock holders
             }
 
-            if (TimeHelper::IsOnBattery() || BatteryStatsUtils::DEBUG) { // Just for debug
+            if (StatsHelper::IsOnBattery() || StatsUtils::DEBUG) { // Just for debug
                 auto iter = uidTimeMap_.find(uid);
                 if (iter != uidTimeMap_.end()) {
                     for (uint16_t i = 0; i < uidIncrements.size(); i++) {
@@ -528,7 +531,7 @@ bool CpuTimeReader::ReadUidCpuTime()
     }
 }
 
-void CpuTimeReader::split(std::string &origin, char delimiter, std::vector<std::string> &splited)
+void CpuTimeReader::Split(std::string &origin, char delimiter, std::vector<std::string> &splited)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     size_t start;

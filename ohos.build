@@ -10,7 +10,9 @@
         "//base/powermgr/battery_statistics/services:batterystats_service",
         "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
         "//base/powermgr/battery_statistics/frameworks/js/napi:batterystats",
-        "//base/powermgr/battery_statistics/services/profile:power_average.json"
+        "//base/powermgr/battery_statistics/services/profile:power_average.json",
+        "//base/powermgr/battery_statistics/etc/init:batterystats.rc",
+        "//base/powermgr/battery_statistics/utils:batterystat_dump"
       ],
       "inner_kits": [
         {
@@ -19,7 +21,6 @@
             "header_files": [
               "battery_stats_info.h",
               "battery_stats_client.h",
-              "battery_stats_utils.h",
               "ibattery_stats.h"
             ],
             "header_base": "//base/powermgr/battery_statistics/interfaces/innerkits/include"
@@ -28,7 +29,7 @@
       ],
       "test_list": [
         "//base/powermgr/battery_statistics/services/native/test/:batterystats_test",
-        "//base/powermgr/battery_statistics/test/:batterystats_systest"
+        "//base/powermgr/battery_statistics/test/:systemtest"
       ]
     }
   }

@@ -20,10 +20,10 @@
 #include "napi/native_node_api.h"
 
 #include "battery_stats_info.h"
-#include "battery_stats_utils.h"
+#include "stats_utils.h"
 
 using BatteryStatsInfo = OHOS::PowerMgr::BatteryStatsInfo;
-using BatteryStatsUtils = OHOS::PowerMgr::BatteryStatsUtils;
+using StatsUtils = OHOS::PowerMgr::StatsUtils;
 
 struct AsyncCallbackInfo {
     napi_env env;
@@ -37,9 +37,9 @@ struct AsyncCallbackInfo {
 
 class JsBatteryStatsInfo {
 public:
-    int32_t uid_ = BatteryStatsUtils::INVALID_VALUE;
-    int32_t type_ = BatteryStatsInfo::STATS_TYPE_INVALID;
-    double power_ = BatteryStatsUtils::DEFAULT_VALUE;
+    int32_t uid_ = StatsUtils::INVALID_VALUE;
+    int32_t type_ = BatteryStatsInfo::CONSUMPTION_TYPE_INVALID;
+    double power_ = StatsUtils::DEFAULT_VALUE;
 };
 
 #endif // BATTERY_STATS_H

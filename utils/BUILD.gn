@@ -17,5 +17,22 @@ config("batterystats_utils_config") {
   include_dirs = [
     "native/include",
     "//utils/native/base/include",
+    "${batterystats_interfaces_path}/innerkits/include",
   ]
+}
+
+ohos_source_set("batterystats_utils") {
+  sources = [
+    "native/src/stats_helper.cpp",
+    "native/src/stats_utils.cpp",
+  ]
+
+  public_configs = [ ":batterystats_utils_config" ]
+  deps = [ "//utils/native/base:utils" ]
+  external_deps = [ "hiviewdfx_hilog_native:libhilog" ]
+  part_name = "${batterystats_part_name}"
+}
+
+group("batterystat_dump") {
+  deps = [ "dump:statistics" ]
 }

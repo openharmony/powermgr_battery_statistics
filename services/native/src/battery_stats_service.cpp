@@ -21,16 +21,18 @@
 #include "common_event_data.h"
 #include "common_event_support.h"
 #include "common_event_manager.h"
+#include "hisysevent.h"
+#include "hisysevent_manager.h"
 #include "system_ability_definition.h"
 
 #include "battery_stats_subscriber.h"
+#include "battery_stats_listener.h"
 #include "battery_stats_dumper.h"
 #include "stats_common.h"
 
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-const std::string BATTERY_SERVICE_NAME = "BatteryStatsService";
 auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(statsService.GetRefPtr());
 }
@@ -59,6 +61,11 @@ void BatteryStatsService::OnStart()
         return;
     }
 
+    if (!AddListener()) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart add listener to hisysevent manager failed.");
+        return;
+    }
+
     ready_ = true;
     STATS_HILOGI(STATS_MODULE_SERVICE, "OnStart and add system ability success");
 }
@@ -70,9 +77,9 @@ void BatteryStatsService::OnStop()
         return;
     }
     ready_ = false;
-    if (!UnsubscribeCommonEvent()) {
+    HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
+    if (!OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart unregister to commonevent manager failed.");
-        return;
     }
 }
 
@@ -80,7 +87,7 @@ bool BatteryStatsService::Init()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (parser_ == nullptr) {
-        parser_ = std::make_shared<BatteryStatsParser>(statsService);
+        parser_ = std::make_shared<BatteryStatsParser>();
         if (!parser_->Init()) {
             STATS_HILOGE(STATS_MODULE_SERVICE, "Battery stats parser initialization failed");
             return false;
@@ -88,7 +95,7 @@ bool BatteryStatsService::Init()
     }
 
     if (core_ == nullptr) {
-        core_ = std::make_shared<BatteryStatsCore>(statsService);
+        core_ = std::make_shared<BatteryStatsCore>();
         if (!core_->Init()) {
             STATS_HILOGE(STATS_MODULE_SERVICE, "Battery stats core initialization failed");
             return false;
@@ -96,11 +103,7 @@ bool BatteryStatsService::Init()
     }
 
     if (detector_ == nullptr) {
-        detector_ = std::make_shared<BatteryStatsDetector>(statsService);
-        if (!detector_->Init()) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Battery stats detector initialization failed");
-            return false;
-        }
+        detector_ = std::make_shared<BatteryStatsDetector>();
     }
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Battery stats service initialization success");
@@ -117,7 +120,9 @@ bool BatteryStatsService::SubscribeCommonEvent()
     matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
     matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     OHOS::EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
-    subscriberPtr_ = std::make_shared<BatteryStatsSubscriber>(subscribeInfo);
+    if (!subscriberPtr_) {
+        subscriberPtr_ = std::make_shared<BatteryStatsSubscriber>(subscribeInfo);
+    }
     result = OHOS::EventFwk::CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
     if (!result) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Subscribe CommonEvent failed");
@@ -126,15 +131,35 @@ bool BatteryStatsService::SubscribeCommonEvent()
     return result;
 }
 
-bool BatteryStatsService::UnsubscribeCommonEvent()
+bool BatteryStatsService::AddListener()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     bool result = false;
-
-    result = OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_);
-    if (!result) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "UnSubscribe CommonEvent failed");
+    if (!listenerPtr_) {
+        OHOS::EventFwk::CommonEventSubscribeInfo info;
+        listenerPtr_ = std::make_shared<BatteryStatsListener>();
     }
+    struct HiviewDFX::ListenerRule statsRule;
+    statsRule.ruleType = HiviewDFX::HiSysEvent::EventType::STATISTIC;
+    statsRule.domain = HiviewDFX::HiSysEvent::Domain::POWERMGR;
+    std::vector<struct HiviewDFX::ListenerRule> sysRules;
+    sysRules.push_back(statsRule);
+    int res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
+
+    switch (res) {
+        case 0:
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Listener has already been added, res code: %{public}d", res);
+            result = true;
+            break;
+        case 1:
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully, res code: %{public}d", res);
+            result = true;
+            break;
+        default:
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Add Hisys event failed, res code: %{public}d", res);
+            break;
+    }
+
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return result;
 }
@@ -187,31 +212,31 @@ double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
     return core_->GetAppStatsPercent(uid);
 }
 
-double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetPartStatsMah(type);
 }
 
-double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetPartStatsPercent(type);
 }
 
-uint64_t BatteryStatsService::GetTotalTimeSecond(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    uint64_t timeSecond = core_->GetTotalTimeMs(hwId, uid) / 1000;
+    uint64_t timeSecond = core_->GetTotalTimeMs(statsType, uid) / 1000;
     return timeSecond;
 }
 
-uint64_t BatteryStatsService::GetTotalDataBytes(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsService::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    return core_->GetTotalDataCount(hwId, uid);
+    return core_->GetTotalDataCount(statsType, uid);
 }
 
 void BatteryStatsService::Reset()

@@ -35,6 +35,7 @@ ohos_shared_library("batterystats") {
   ]
 
   deps = [
+    "${batterystats_utils_path}:batterystats_utils",
     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
     "//foundation/ace/napi:ace_napi",
   ]

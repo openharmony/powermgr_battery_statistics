@@ -19,27 +19,24 @@
 #include <memory>
 #include <string>
 
-#include "battery_stats_utils.h"
-#include "battery_stats_service.h"
+#include "refbase.h"
+
+#include "stats_utils.h"
 #include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsService;
 class BatteryStatsDetector {
 public:
-    explicit BatteryStatsDetector(const wptr<BatteryStatsService>& bss) : bss_(bss)
+    explicit BatteryStatsDetector()
     {
         STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsDetector instance is created.");
     }
     ~BatteryStatsDetector() = default;
-    void HandleStatsChangedEvent(BatteryStatsUtils::StatsData data);
-    bool Init();
+    void HandleStatsChangedEvent(StatsUtils::StatsData data);
 private:
-    const wptr<BatteryStatsService> bss_;
-    bool isTimeRelated(BatteryStatsUtils::StatsDataType type);
-    bool isDurationRelated(BatteryStatsUtils::StatsDataType type);
-    bool isLevelRelated(BatteryStatsUtils::StatsDataType type);
+    bool isDurationRelated(StatsUtils::StatsType type);
+    bool isStateRelated(StatsUtils::StatsType type);
 };
 } // namespace PowerMgr
 } // namespace OHOS

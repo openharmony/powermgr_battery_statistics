@@ -38,10 +38,12 @@ public:
     virtual BatteryStatsInfoList GetBatteryStats() = 0;
     virtual double GetAppStatsMah(const int32_t& uid) = 0;
     virtual double GetAppStatsPercent(const int32_t& uid) = 0;
-    virtual double GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type) = 0;
-    virtual double GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type) = 0;
-    virtual uint64_t GetTotalTimeSecond(const std::string& hwId, const int32_t& uid) = 0;
-    virtual uint64_t GetTotalDataBytes(const std::string& hwId, const int32_t& uid) = 0;
+    virtual double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type) = 0;
+    virtual double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type) = 0;
+    virtual uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType,
+        const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
+    virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType,
+        const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
     virtual void Reset() = 0;
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.powermgr.IBatteryStats");

@@ -13,19 +13,22 @@
  * limitations under the License.
  */
 
-#include "battery_info.h"
-#include "battery_stats_service.h"
 #include "battery_stats_subscriber.h"
-#include "common_event_data.h"
 #include "common_event_subscriber.h"
 #include "common_event_subscribe_info.h"
+#include "common_event_data.h"
 #include "common_event_support.h"
 #include "common_event_manager.h"
 #include "stats_hilog_wrapper.h"
-#include "time_helper.h"
+#include "battery_stats_service.h"
+#include "battery_info.h"
+#include "stats_helper.h"
 
 namespace OHOS {
 namespace PowerMgr {
+namespace {
+    const int32_t BATTERY_LEVEL_FULL = 100;
+}
 void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
@@ -38,9 +41,6 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
     if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN) {
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
         STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_SHUTDOWN event");
-    } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_BOOT_COMPLETED event");
-        statsService->GetBatteryStatsCore()->LoadBatteryStatsData();
     } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED) {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_BATTERY_CHANGED event");
         int msgCode = data.GetCode();
@@ -52,23 +52,22 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
             STATS_HILOGI(STATS_MODULE_SERVICE, "Received msgcode: %{public}d, msgdata: %{public}s",
                 msgCode, msgData.c_str());
         }
-        int32_t msgDataInt;
-        if (IsNumericStr(msgData)) {
-            msgDataInt = stoi(msgData);
-        }
+        int32_t msgDataInt = StatsUtils::INVALID_VALUE;
         switch (msgCode) {
             case BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE:
+                msgDataInt = stoi(msgData);
                 if (msgDataInt == (int32_t)BatteryPluggedType::PLUGGED_TYPE_NONE ||
                     msgDataInt == (int32_t)BatteryPluggedType::PLUGGED_TYPE_BUTT) {
                     STATS_HILOGD(STATS_MODULE_SERVICE, "Device is not charing.");
-                    TimeHelper::SetOnBattery(true);
+                    StatsHelper::SetOnBattery(true);
                 } else {
                     STATS_HILOGD(STATS_MODULE_SERVICE, "Device is charing.");
-                    TimeHelper::SetOnBattery(false);
+                    StatsHelper::SetOnBattery(false);
                 }
                 break;
             case BatteryInfo::COMMON_EVENT_CODE_CAPACITY:
-                if (msgDataInt == 100) {
+                msgDataInt = stoi(msgData);
+                if (msgDataInt == BATTERY_LEVEL_FULL) {
                     STATS_HILOGD(STATS_MODULE_SERVICE, "Battery is full charged, rest the stats");
                     statsService->GetBatteryStatsCore()->Reset();
                 }

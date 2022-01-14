@@ -35,10 +35,10 @@ public:
     virtual BatteryStatsInfoList GetBatteryStats() override;
     virtual double GetAppStatsMah(const int32_t& uid) override;
     virtual double GetAppStatsPercent(const int32_t& uid) override;
-    virtual double GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type) override;
-    virtual double GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type) override;
-    virtual uint64_t GetTotalTimeSecond(const std::string& hwId, const int32_t& uid) override;
-    virtual uint64_t GetTotalDataBytes(const std::string& hwId, const int32_t& uid) override;
+    virtual double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type) override;
+    virtual double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type) override;
+    virtual uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid) override;
+    virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid) override;
     virtual void Reset() override;
 private:
     static inline BrokerDelegator<BatteryStatsProxy> delegator_;

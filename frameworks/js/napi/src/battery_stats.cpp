@@ -72,7 +72,7 @@ static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppSt
         JsBatteryStatsInfo jsStatsInfo;
 
         jsStatsInfo.uid_ = e->GetUid();
-        jsStatsInfo.type_ = e->GetType();
+        jsStatsInfo.type_ = e->GetConsumptionType();
         jsStatsInfo.power_ = e->GetPower();
         vecJsStatsInfo.push_back(jsStatsInfo);
     }
@@ -287,7 +287,7 @@ static napi_value GetPartStatsMah(napi_env env, napi_callback_info info)
     int32_t typeJs;
     napi_get_value_int32(env, argv[0], &typeJs);
 
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeJs);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeJs);
     double partStatsMah = BatteryStatsClient::GetInstance().GetPartStatsMah(type);
 
     napi_value result;
@@ -312,7 +312,7 @@ static napi_value GetPartStatsPercent(napi_env env, napi_callback_info info)
     int32_t typeJs;
     napi_get_value_int32(env, argv[0], &typeJs);
 
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeJs);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeJs);
     double partStatsPercent = BatteryStatsClient::GetInstance().GetPartStatsPercent(type);
 
     napi_value result;

@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class CpuTimeReader {
+class CpuTimeReader{
 public:
     CpuTimeReader() = default;
     ~CpuTimeReader() = default;
@@ -48,7 +48,7 @@ private:
     bool ReadUidCpuClusterTime();
     bool ReadUidCpuFreqTime();
     bool ReadUidCpuTime();
-    void split(std::string &origin, char delimiter, std::vector<std::string> &splited);
+    void Split(std::string &origin, char delimiter, std::vector<std::string> &splited);
 };
 } // namespace PowerMgr
 } // namespace OHOS

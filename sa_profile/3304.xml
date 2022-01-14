@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 <info>
-    <process>foundation</process>
+    <process>battery_stats</process>
     <systemability>
         <name>3304</name>
         <libpath>libbatterystats_service.z.so</libpath>
