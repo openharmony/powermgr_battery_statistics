@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[])
 {
-  OHOS::PowerMgr::StatisticsShellCommand cmd(argc, argv);
-  std::cout << cmd.ExecCommand();
-  return 0;
+    OHOS::PowerMgr::StatisticsShellCommand cmd(argc, argv);
+    std::cout << cmd.ExecCommand();
+    return 0;
 }

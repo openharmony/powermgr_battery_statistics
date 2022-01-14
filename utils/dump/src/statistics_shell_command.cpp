@@ -23,7 +23,6 @@ namespace PowerMgr {
 StatisticsShellCommand::StatisticsShellCommand(int argc, char *argv[])
     : ShellCommand(argc, argv, "Statistics")
 {
-
 }
 
 ErrCode StatisticsShellCommand::CreateCommandMap()
@@ -39,7 +38,7 @@ ErrCode StatisticsShellCommand::CreateCommandMap()
     });
     int32_t fd = 1;
     commandMap_ = {
-      {"dump", std::bind(&BatteryStatsService::Dump, bss, fd, argsInStr)}
+        {"dump", std::bind(&BatteryStatsService::Dump, bss, fd, argsInStr)}
     };
     return OHOS::ERR_OK;
 }  
