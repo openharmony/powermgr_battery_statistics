@@ -16,9 +16,9 @@
 #ifndef BATTERY_STATS_SUBSCRIBER_H
 #define BATTERY_STATS_SUBSCRIBER_H
 
+#include "common_event_data.h"
 #include "common_event_subscriber.h"
 #include "common_event_subscribe_info.h"
-#include "common_event_data.h"
 
 namespace OHOS {
 namespace PowerMgr {

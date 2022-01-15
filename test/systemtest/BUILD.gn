@@ -28,7 +28,9 @@ config("module_private_config") {
 ohos_systemtest("batterystats_sys_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/batterystats_sys_test.cpp" ]
+  sources = [
+    "src/batterystats_sys_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -38,12 +40,14 @@ ohos_systemtest("batterystats_sys_test") {
   deps = [
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
-    "${batterystats_utils_path}:batterystats_utils",
-    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//foundation/appexecfwk/standard/kits:appkit_native",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp",
     "//utils/native/base:utils",
+    "//third_party/jsoncpp",
+    "//third_party/googletest:gtest_main",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
+    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager"
   ]
 
   external_deps = [
@@ -52,18 +56,20 @@ ohos_systemtest("batterystats_sys_test") {
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",
-    "battery_manager_native:batterysrv_client",
     "ces_standard:cesfwk_innerkits",
-    "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
+    "hisysevent_native:libhisysevent",
     "ipc:ipc_core",
-    "os_account_standard:libaccountkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
+    "battery_manager_native:batterysrv_client",
+    "os_account_standard:libaccountkits"
   ]
 }
 
 group("systemtest_batterystats") {
   testonly = true
-  deps = [ ":batterystats_sys_test" ]
+  deps = [
+    ":batterystats_sys_test",
+  ]
 }

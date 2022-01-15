@@ -14,15 +14,17 @@
  */
 
 #include "battery_stats_subscriber.h"
+
+#include "common_event_data.h"
+#include "common_event_manager.h"
 #include "common_event_subscriber.h"
 #include "common_event_subscribe_info.h"
-#include "common_event_data.h"
 #include "common_event_support.h"
-#include "common_event_manager.h"
-#include "stats_hilog_wrapper.h"
-#include "battery_stats_service.h"
+
 #include "battery_info.h"
+#include "battery_stats_service.h"
 #include "stats_helper.h"
+#include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {

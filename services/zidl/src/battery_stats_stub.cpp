@@ -14,9 +14,11 @@
  */
 
 #include "battery_stats_stub.h"
+
 #include <string_ex.h>
-#include "stats_common.h"
+
 #include "battery_stats_info.h"
+#include "stats_common.h"
 
 namespace OHOS {
 namespace PowerMgr {

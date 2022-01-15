@@ -14,13 +14,15 @@
  */
 
 #include "battery_stats_client.h"
-#include "battery_stats_proxy.h"
-#include "string_ex.h"
+
 #include "datetime_ex.h"
+#include "if_system_ability_manager.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
-#include "if_system_ability_manager.h"
+#include "string_ex.h"
 #include "system_ability_definition.h"
+
+#include "battery_stats_proxy.h"
 #include "stats_common.h"
 
 namespace OHOS {

@@ -17,8 +17,8 @@
 
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
-#include "sys_mgr_client.h"
 #include "system_ability_definition.h"
+#include "sys_mgr_client.h"
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
@@ -26,7 +26,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 BluetoothEntity::BluetoothEntity()
@@ -52,7 +52,7 @@ void BluetoothEntity::CalculateBtPower()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Bluetooth on power
     auto bluetoothOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     auto bluetoothOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON);
     auto bluetoothOnPowerMah = bluetoothOnAverageMa * bluetoothOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto bluetoothUidPowerMah = GetBluetoothUidPower();
@@ -65,7 +65,6 @@ void BluetoothEntity::CalculateBtPower()
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     statsInfo->SetPower(bluetoothPowerMah);
-    statsInfo->SetTime(bluetoothOnTimeMs, StatsUtils::STATS_TYPE_BLUETOOTH_ON);
     statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth on time: %{public}ldms", bluetoothOnTimeMs);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate bluetooth on power average: %{public}lfma", bluetoothOnAverageMa);
@@ -83,20 +82,20 @@ void BluetoothEntity::CalculateBtPowerForApp(int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Bluetooth scan power consumption
     auto bluetoothScanAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_SCAN);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_SCAN);
     auto bluetoothScanTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
     auto bluetoothScanPowerMams = bluetoothScanAverageMa * bluetoothScanTimeMs;
 
     // Calculate Bluetooth traffic power consumption
     // Calculate Bluetooth RX power consumption
     auto bluetoothRxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_RX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_RX);
     auto bluetoothRxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
     auto bluetoothRxPowerMams = bluetoothRxAverageMa * bluetoothRxTimeMs;
 
     // Calculate Bluetooth TX power consumption
     auto bluetoothTxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_TX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_TX);
     auto bluetoothTxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
     auto bluetoothTxPowerMams = bluetoothTxAverageMa * bluetoothTxTimeMs;
 
@@ -459,14 +458,13 @@ double BluetoothEntity::GetBluetoothUidPower()
     std::string bundleName = "com.ohos.bluetooth";
     int32_t bluetoothUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
 
-    auto core = statsService->GetBatteryStatsCore();
+    auto core = g_statsService->GetBatteryStatsCore();
     auto uidEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
     if (uidEntity != nullptr) {
         bluetoothUidPower = uidEntity->GetEntityPowerMah(bluetoothUid);
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Get bluetooth uid power consumption: %{public}lfmAh", bluetoothUidPower);
     return bluetoothUidPower;
-
 }
 
 void BluetoothEntity::DumpInfo(std::string& result)

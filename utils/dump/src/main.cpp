@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "statistics_shell_command.h"
-
 #include <iostream>
+
+#include "statistics_shell_command.h"
 
 int main(int argc, char *argv[])
 {

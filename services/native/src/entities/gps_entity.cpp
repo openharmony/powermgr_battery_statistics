@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 GpsEntity::GpsEntity()
@@ -50,7 +50,7 @@ long GpsEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, in
 void GpsEntity::Calculate(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    auto gpsOnAverageMa = statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
+    auto gpsOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
     auto gpsOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON);
     auto gpsOnPowerMah = gpsOnAverageMa * gpsOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = gpsPowerMap_.find(uid);

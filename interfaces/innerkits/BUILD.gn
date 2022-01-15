@@ -40,8 +40,8 @@ ohos_shared_library("batterystats_client") {
   public_configs = [ ":batterystats_public_config" ]
 
   deps = [
-    "${batterystats_utils_path}:batterystats_utils",
     "//utils/native/base:utils",
+    "${batterystats_utils_path}:batterystats_utils"
   ]
 
   external_deps = [

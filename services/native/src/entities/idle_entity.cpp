@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 IdleEntity::IdleEntity()
@@ -54,8 +54,6 @@ void IdleEntity::Calculate(int32_t uid)
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_IDLE);
     statsInfo->SetPower(idleTotalPowerMah_);
-    statsInfo->SetTime(GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE), StatsUtils::STATS_TYPE_PHONE_IDLE);
-    statsInfo->SetTime(GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND), StatsUtils::STATS_TYPE_CPU_SUSPEND);
     statsInfoList_.push_back(statsInfo);
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate idle total power consumption: %{public}lfmAh", idleTotalPowerMah_);
@@ -66,7 +64,7 @@ double IdleEntity::CalculateCpuSuspendPower()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto cpuSuspendAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_SUSPEND);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_SUSPEND);
     auto bootOnBatteryTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND);
     auto cpuSuspendPowerMah = cpuSuspendAverageMa * bootOnBatteryTimeMs / StatsUtils::MS_IN_HOUR;
     cpuSuspendPowerMah_ = cpuSuspendPowerMah;
@@ -81,7 +79,7 @@ double IdleEntity::CalculateCpuIdlePower()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto cpuIdleAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_IDLE);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_IDLE);
     auto upOnBatteryTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE);
     auto cpuIdlePowerMah = cpuIdleAverageMa * upOnBatteryTimeMs / StatsUtils::MS_IN_HOUR;
     cpuIdlePowerMah_ = cpuIdlePowerMah;

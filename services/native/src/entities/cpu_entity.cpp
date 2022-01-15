@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 CpuEntity::CpuEntity()
@@ -95,7 +95,7 @@ double CpuEntity::CalculateCpuActivePower(int32_t uid)
 {
     double cpuActivePower = StatsUtils::DEFAULT_VALUE;
     double cpuActiveAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_ACTIVE);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_ACTIVE);
     long cpuActiveTimeMs = cpuReader_->GetUidCpuActiveTimeMs(uid);
     cpuActivePower = cpuActiveAverageMa * cpuActiveTimeMs / StatsUtils::MS_IN_HOUR;
 
@@ -118,14 +118,14 @@ double CpuEntity::CalculateCpuActivePower(int32_t uid)
 double CpuEntity::CalculateCpuClusterPower(int32_t uid)
 {
     double cpuClusterPower = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
+    for (int i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
         double cpuClusterAverageMa =
-            statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_CLUSTER, i);
+            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_CLUSTER, i);
         long cpuClusterTimeMs = cpuReader_->GetUidCpuClusterTimeMs(uid, i);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu cluster: %{public}d average power: %{public}lfma", i,
             cpuClusterAverageMa);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu cluster: %{public}d time: %{public}ldms for uid: %{public}d",
-        i, cpuClusterTimeMs, uid);
+            i, cpuClusterTimeMs, uid);
         cpuClusterPower += cpuClusterAverageMa * cpuClusterTimeMs / StatsUtils::MS_IN_HOUR;
     }
     auto cpuClusterIter = cpuClusterPowerMap_.find(uid);
@@ -144,10 +144,10 @@ double CpuEntity::CalculateCpuClusterPower(int32_t uid)
 double CpuEntity::CalculateCpuSpeedPower(int32_t uid)
 {
     double cpuSpeedPower = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
-        for (int j = 0; j < statsService->GetBatteryStatsParser()->GetSpeedNum(i); j++) {
+    for (int i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
+        for (int j = 0; j < g_statsService->GetBatteryStatsParser()->GetSpeedNum(i); j++) {
             std::string statType = StatsUtils::CURRENT_CPU_SPEED + std::to_string(i);
-            double cpuSpeedAverageMa = statsService->GetBatteryStatsParser()->GetAveragePowerMa(statType, j);
+            double cpuSpeedAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(statType, j);
             long cpuSpeedTimeMs = cpuReader_->GetUidCpuFreqTimeMs(uid, i, j);
             STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cluster: %{public}d, speed: %{public}d", j, i);
             STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu speed average power: %{public}lfma", cpuSpeedAverageMa);

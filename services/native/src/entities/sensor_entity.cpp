@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 SensorEntity::SensorEntity()
@@ -56,12 +56,12 @@ long SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
     return activeTimeMs;
 }
 
-void SensorEntity::Calculate(int32_t uid)
+double SensorEntity::CalculateGravity(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
 
     auto gravityOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     auto gravityOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
     auto gravityOnPowerMah = gravityOnAverageMa * gravityOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto gravityIter = gravityPowerMap_.find(uid);
@@ -74,9 +74,20 @@ void SensorEntity::Calculate(int32_t uid)
             gravityOnAverageMa, uid);
         gravityPowerMap_.insert(std::pair<int32_t, double>(uid, gravityOnPowerMah));
     }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on average power: %{public}lfma", gravityOnAverageMa);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on time: %{public}ldms for uid: %{public}d", gravityOnTimeMs,
+        uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on power consumption: %{public}lfmAh for uid: %{public}d",
+        gravityOnPowerMah, uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return gravityOnPowerMah;
+}
 
+double SensorEntity::CalculateProximity(int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto proximityOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     auto proximityOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
     auto proximityOnPowerMah = proximityOnAverageMa * proximityOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto proximityIter = proximityPowerMap_.find(uid);
@@ -89,6 +100,21 @@ void SensorEntity::Calculate(int32_t uid)
             proximityOnAverageMa, uid);
         proximityPowerMap_.insert(std::pair<int32_t, double>(uid, proximityOnPowerMah));
     }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on average power: %{public}lfma", proximityOnAverageMa);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on time: %{public}ldms for uid: %{public}d",
+        proximityOnTimeMs, uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on power consumption: %{public}lfmAh for uid: %{public}d",
+        proximityOnPowerMah, uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return proximityOnPowerMah;
+}
+
+void SensorEntity::Calculate(int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+
+    auto gravityOnPowerMah = CalculateGravity(uid);
+    auto proximityOnPowerMah = CalculateProximity(uid);
 
     double sensorTotalPowerMah = gravityOnPowerMah + proximityOnPowerMah;
     auto sensorIter = sensorTotalPowerMap_.find(uid);
@@ -99,19 +125,8 @@ void SensorEntity::Calculate(int32_t uid)
     } else {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Create sensor total power consumption: %{public}lfmAh for uid: %{public}d",
             sensorTotalPowerMah, uid);
-        proximityPowerMap_.insert(std::pair<int32_t, double>(uid, sensorTotalPowerMah));
+        sensorTotalPowerMap_.insert(std::pair<int32_t, double>(uid, sensorTotalPowerMah));
     }
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on average power: %{public}lfma", gravityOnAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on time: %{public}ldms for uid: %{public}d", gravityOnTimeMs,
-        uid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate gravity on power consumption: %{public}lfmAh for uid: %{public}d",
-        gravityOnPowerMah, uid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on average power: %{public}lfma", proximityOnAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on time: %{public}ldms for uid: %{public}d",
-        proximityOnTimeMs, uid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate proximity on power consumption: %{public}lfmAh for uid: %{public}d",
-        proximityOnPowerMah, uid);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate sensor total power consumption: %{public}lfmAh for uid: %{public}d",
         sensorTotalPowerMah, uid);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");

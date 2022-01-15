@@ -16,25 +16,26 @@
 #include "battery_stats_service.h"
 
 #include <file_ex.h>
+#include <cmath>
 
-#include "common_event_subscribe_info.h"
 #include "common_event_data.h"
-#include "common_event_support.h"
 #include "common_event_manager.h"
+#include "common_event_subscribe_info.h"
+#include "common_event_support.h"
 #include "hisysevent.h"
 #include "hisysevent_manager.h"
 #include "system_ability_definition.h"
 
-#include "battery_stats_subscriber.h"
-#include "battery_stats_listener.h"
 #include "battery_stats_dumper.h"
+#include "battery_stats_listener.h"
+#include "battery_stats_subscriber.h"
 #include "stats_common.h"
 
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(statsService.GetRefPtr());
+auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
 }
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
@@ -229,7 +230,13 @@ double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::Consumpt
 uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    uint64_t timeSecond = core_->GetTotalTimeMs(statsType, uid) / 1000;
+    uint64_t timeSecond = StatsUtils::DEFAULT_VALUE;
+    if (uid > StatsUtils::INVALID_VALUE) {
+        timeSecond = round(core_->GetTotalTimeMs(uid, statsType) / StatsUtils::MS_IN_SECOND);
+    } else {
+        timeSecond = round(core_->GetTotalTimeMs(statsType) / StatsUtils::MS_IN_SECOND);
+    }
+
     return timeSecond;
 }
 

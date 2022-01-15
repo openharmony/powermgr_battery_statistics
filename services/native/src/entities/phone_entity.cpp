@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 PhoneEntity::PhoneEntity()
@@ -49,7 +49,7 @@ void PhoneEntity::Calculate(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto phoneOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     auto phoneOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
     auto phoneOnPowerMah = phoneOnAverageMa * phoneOnTimeMs / StatsUtils::MS_IN_HOUR;
     phonePowerMah_ = phoneOnPowerMah;
@@ -57,7 +57,6 @@ void PhoneEntity::Calculate(int32_t uid)
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     statsInfo->SetPower(phonePowerMah_);
-    statsInfo->SetTime(phoneOnTimeMs, StatsUtils::STATS_TYPE_PHONE_ACTIVE);
     statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate phone active average power: %{public}lfma", phoneOnAverageMa);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate phone active time: %{public}ldms", phoneOnTimeMs);

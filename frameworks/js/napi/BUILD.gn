@@ -18,26 +18,28 @@ config("batterystatsnapi_private_config") {
     "include",
     "//foundation/ace/napi/native_engine",
     "//foundation/ace/napi/interfaces/kits",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
-    "//foundation/distributedschedule/samgr/adapter/interfaces/innerkits/include",
     "//utils/system/safwk/native/include",
     "//third_party/node/src",
     "${batterystats_interfaces_path}/innerkits/include",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy/include",
+    "//foundation/distributedschedule/samgr/adapter/interfaces/innerkits/include",
   ]
 }
 
 ohos_shared_library("batterystats") {
-  sources = [ "${batterystats_frameworks_path}/js/napi/src/battery_stats.cpp" ]
+  sources = [
+    "${batterystats_frameworks_path}/js/napi/src/battery_stats.cpp",
+  ]
 
   configs = [
-    ":batterystatsnapi_private_config",
     "${batterystats_utils_path}:batterystats_utils_config",
+    ":batterystatsnapi_private_config",
   ]
 
   deps = [
-    "${batterystats_utils_path}:batterystats_utils",
     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
     "//foundation/ace/napi:ace_napi",
+    "${batterystats_utils_path}:batterystats_utils"
   ]
 
   external_deps = [
@@ -46,6 +48,7 @@ ohos_shared_library("batterystats") {
   ]
 
   relative_install_dir = "module"
+
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
 }

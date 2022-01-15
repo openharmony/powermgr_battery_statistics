@@ -17,6 +17,9 @@
 #define BATTERY_STATS_LISTENER_H
 
 #include "hisysevent_subscribe_callback_native.h"
+#include "json/json.h"
+
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -27,6 +30,13 @@ public:
     void OnHandle(const std::string& domain, const std::string& eventName, const int eventType,
             const std::string& eventDetail) override;
     void OnServiceDied() override;
+private:
+    void processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS

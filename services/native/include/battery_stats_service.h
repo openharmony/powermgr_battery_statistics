@@ -22,10 +22,10 @@
 
 #include "battery_stats_core.h"
 #include "battery_stats_detector.h"
+#include "battery_stats_info.h"
 #include "battery_stats_parser.h"
 #include "battery_stats_stub.h"
-#include "battery_stats_info.h"
-#include "stats_sp_singleton.h"
+#include "delayed_stats_sp_singleton.h"
 
 namespace OHOS {
 namespace PowerMgr {

@@ -21,7 +21,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class CpuTimeReader{
+class CpuTimeReader {
 public:
     CpuTimeReader() = default;
     ~CpuTimeReader() = default;
@@ -45,6 +45,7 @@ private:
     std::map<int32_t, std::vector<long>> lastUidTimeMap_;
     std::map<uint16_t, uint16_t> clustersMap_;
     bool ReadUidCpuActiveTime();
+    bool ReadUidCpuActiveTimeImpl(std::string& line);
     bool ReadUidCpuClusterTime();
     bool ReadUidCpuFreqTime();
     bool ReadUidCpuTime();

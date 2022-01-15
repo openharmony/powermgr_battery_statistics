@@ -16,8 +16,6 @@
 #ifndef PHONE_ENTITY_H
 #define PHONE_ENTITY_H
 
-#include <map>
-
 #include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
 

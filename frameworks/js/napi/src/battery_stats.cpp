@@ -14,39 +14,41 @@
  */
 
 #include "battery_stats.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include "battery_stats_info.h"
-#include "battery_stats_client.h"
-#include "stats_hilog_wrapper.h"
+
 #include "napi/native_api.h"
-#include "napi/native_node_api.h"
+
+#include "battery_stats_client.h"
+#include "battery_stats_info.h"
+#include "stats_hilog_wrapper.h"
 
 using namespace OHOS::PowerMgr;
 
-static void SetValueInt32(const napi_env& env, const char* fieldStr, const int intValue, napi_value& result)
+static void SetValueInt32(const napi_env& env, std::string fieldStr, const int intValue, napi_value& result)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set int32_t value: %{public}d", intValue);
     napi_value value;
     napi_create_int32(env, intValue, &value);
-    napi_set_named_property(env, result, fieldStr, value);
+    napi_set_named_property(env, result, fieldStr.c_str(), value);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
-static void SetValueDouble(const napi_env& env, const char* fieldStr, const double doubleValue, napi_value& result)
+static void SetValueDouble(const napi_env& env, std::string fieldStr, const double doubleValue, napi_value& result)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set double value: %{public}lf", doubleValue);
     napi_value value;
     napi_create_double(env, doubleValue, &value);
-    napi_set_named_property(env, result, fieldStr, value);
+    napi_set_named_property(env, result, fieldStr.c_str(), value);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
-static void StatsInfoToJsArray(const napi_env& env, const std::vector<JsBatteryStatsInfo>& vecJsStatsInfo,
+static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatteryStats>& vecJsStatsInfo,
     const int idx, napi_value& arrayResult)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
@@ -65,11 +67,11 @@ static void StatsInfoToJsArray(const napi_env& env, const std::vector<JsBatteryS
 }
 
 static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppStatsInfos,
-    std::vector<JsBatteryStatsInfo>& vecJsStatsInfo)
+    std::vector<BatteryStats>& vecJsStatsInfo)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     for (auto& e : vecCppStatsInfos) {
-        JsBatteryStatsInfo jsStatsInfo;
+        BatteryStats jsStatsInfo;
 
         jsStatsInfo.uid_ = e->GetUid();
         jsStatsInfo.type_ = e->GetConsumptionType();
@@ -89,7 +91,7 @@ static bool GetBatteryStatsInfoList(const napi_env env, napi_value& result)
     }
 
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", vecCppStatsInfos.size());
-    std::vector<JsBatteryStatsInfo> vecJsStatsInfo;
+    std::vector<BatteryStats> vecJsStatsInfo;
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecJsStatsInfo);
     if (vecJsStatsInfo.size() > 0) {
         napi_status status = napi_create_array_with_length(env, vecJsStatsInfo.size(), &result);
@@ -209,7 +211,7 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
 
     AsyncCallbackInfo *asCallbackInfo =
-        new AsyncCallbackInfo{.env = env, .asyncWork = nullptr, .deferred = nullptr};
+        new AsyncCallbackInfo {.env = env, .asyncWork = nullptr, .deferred = nullptr};
 
     if (argc >= 1) {
         StatsInfoToCallBack(env, asCallbackInfo, argc, argv);

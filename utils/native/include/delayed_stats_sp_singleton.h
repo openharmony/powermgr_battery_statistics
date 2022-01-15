@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef STATS_STATS_SP_SINGLETON_H
-#define STATS_STATS_SP_SINGLETON_H
+#ifndef STATS_DELAYED_STATS_SP_SINGLETON_H
+#define STATS_DELAYED_STATS_SP_SINGLETON_H
 
-#include <mutex>
 #include <memory>
-#include <refbase.h>
+#include <mutex>
 
 #include "nocopyable.h"
+#include <refbase.h>
 
 namespace OHOS {
 namespace PowerMgr {
@@ -72,4 +72,4 @@ void DelayedStatsSpSingleton<T>::DestroyInstance()
 }
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // STATS_STATS_SP_SINGLETON_H
+#endif // STATS_DELAYED_STATS_SP_SINGLETON_H

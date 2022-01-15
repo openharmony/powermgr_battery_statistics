@@ -19,8 +19,8 @@
 #include <message_parcel.h>
 #include <string_ex.h>
 
-#include "stats_utils.h"
 #include "stats_common.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {

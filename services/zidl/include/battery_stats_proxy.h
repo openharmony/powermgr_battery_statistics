@@ -19,9 +19,8 @@
 #include <iremote_proxy.h>
 #include <nocopyable.h>
 
-#include "ibattery_stats.h"
-
 #include "battery_stats_info.h"
+#include "ibattery_stats.h"
 
 namespace OHOS {
 namespace PowerMgr {

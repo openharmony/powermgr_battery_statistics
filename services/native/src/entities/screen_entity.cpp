@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 ScreenEntity::ScreenEntity()
 {
@@ -57,9 +57,9 @@ void ScreenEntity::Calculate(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto screenOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     auto screenBrightnessAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate screen on average power: %{public}lfma", screenOnAverageMa);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate screen brightness average power: %{public}lfma",
         screenBrightnessAverageMa);
@@ -80,7 +80,6 @@ void ScreenEntity::Calculate(int32_t uid)
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     statsInfo->SetPower(screenPowerMah_);
-    statsInfo->SetTime(GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON), StatsUtils::STATS_TYPE_SCREEN_ON);
     statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate screen active power consumption: %{public}lfmAh", screenPowerMah);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");

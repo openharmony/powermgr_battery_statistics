@@ -16,8 +16,6 @@
 #include "entities/battery_stats_entity.h"
 #include "stats_hilog_wrapper.h"
 
-#include "stats_hilog_wrapper.h"
-
 namespace OHOS {
 namespace PowerMgr {
 double BatteryStatsEntity::totalPowerMah_ = StatsUtils::DEFAULT_VALUE;
@@ -100,7 +98,8 @@ std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(i
     return nullptr;
 }
 
-std::shared_ptr<StatsHelper::Counter> BatteryStatsEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
+std::shared_ptr<StatsHelper::Counter> BatteryStatsEntity::GetOrCreateCounter(StatsUtils::StatsType statsType,
+    int32_t uid)
 {
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to get or create counter, return nullptr");
     return nullptr;

@@ -16,9 +16,10 @@
 #ifndef BATTERY_STATS_STUB_H
 #define BATTERY_STATS_STUB_H
 
-#include "ibattery_stats.h"
-#include "nocopyable.h"
 #include "iremote_stub.h"
+#include "nocopyable.h"
+
+#include "ibattery_stats.h"
 
 namespace OHOS {
 namespace PowerMgr {

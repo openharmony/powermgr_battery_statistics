@@ -14,7 +14,9 @@
  */
 
 #include "statistics_shell_command.h"
+
 #include "string_ex.h"
+
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
 

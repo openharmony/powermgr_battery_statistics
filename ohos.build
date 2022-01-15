@@ -30,6 +30,9 @@
       "test_list": [
         "//base/powermgr/battery_statistics/services/native/test/:batterystats_test",
         "//base/powermgr/battery_statistics/test/:systemtest"
+      ],
+      "hisysevent_config": [
+        "//base/powermgr/battery_statistics/batterystats.yaml"
       ]
     }
   }

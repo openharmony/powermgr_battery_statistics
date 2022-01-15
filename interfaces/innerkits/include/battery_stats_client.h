@@ -18,14 +18,14 @@
 
 #include <memory>
 #include <mutex>
-#include <string>
 #include <singleton.h>
+#include <string>
 
 #include "iremote_object.h"
 
-#include "stats_utils.h"
-#include "ibattery_stats.h"
 #include "battery_stats_info.h"
+#include "ibattery_stats.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {

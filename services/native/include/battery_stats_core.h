@@ -16,18 +16,18 @@
 #ifndef BATTERY_STATS_CORE_H
 #define BATTERY_STATS_CORE_H
 
-#include <map>
+
 #include <memory>
 #include <string>
 
 #include "refbase.h"
 
-#include "stats_utils.h"
-#include "entities/battery_stats_entity.h"
 #include "battery_stats_info.h"
 #include "cpu_time_reader.h"
-#include "stats_hilog_wrapper.h"
+#include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
+#include "stats_hilog_wrapper.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -55,6 +55,8 @@ public:
     bool SaveBatteryStatsData();
     bool LoadBatteryStatsData();
     void DumpInfo(std::string& result);
+    void UpdateDebugInfo(const std::string& info);
+    void GetDebugInfo(std::string& result);
     void Reset();
     bool Init();
 private:
@@ -75,8 +77,15 @@ private:
     std::shared_ptr<BatteryStatsEntity> wakelockEntity_;
     int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
+    std::string debugInfo_;
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
+    void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
+    void UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
+    void UpdateCommonStats(StatsUtils::StatsType statsType,StatsUtils::StatsState state, int32_t uid);
+    void CreatePartEntity();
+    void CreateAppEntity();
 };
 } // namespace PowerMgr
 } // namespace OHOS

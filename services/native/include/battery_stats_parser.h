@@ -22,8 +22,8 @@
 
 #include "refbase.h"
 
-#include "stats_utils.h"
 #include "stats_hilog_wrapper.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -41,8 +41,8 @@ public:
     bool Init();
 private:
     bool LoadAveragePowerFromFile();
-    std::map <std::string, double> averageMap_;
-    std::map <std::string, std::vector<double>> averageVecMap_;
+    std::map<std::string, double> averageMap_;
+    std::map<std::string, std::vector<double>> averageVecMap_;
     uint16_t clusterNum_ = 0;
     std::vector<uint16_t> speedNum_;
 };

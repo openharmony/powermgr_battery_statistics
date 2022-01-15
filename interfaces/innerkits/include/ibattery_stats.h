@@ -16,10 +16,10 @@
 #ifndef IBATTERY_STATS_H
 #define IBATTERY_STATS_H
 
-#include "battery_stats_info.h"
-
 #include "iremote_broker.h"
 #include "iremote_object.h"
+
+#include "battery_stats_info.h"
 
 namespace OHOS {
 namespace PowerMgr {

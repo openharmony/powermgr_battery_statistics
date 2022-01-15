@@ -35,7 +35,7 @@ struct AsyncCallbackInfo {
     bool isSuccess;
 };
 
-class JsBatteryStatsInfo {
+class BatteryStats {
 public:
     int32_t uid_ = StatsUtils::INVALID_VALUE;
     int32_t type_ = BatteryStatsInfo::CONSUMPTION_TYPE_INVALID;

@@ -18,9 +18,9 @@
 
 #include <map>
 
+#include "cpu_time_reader.h"
 #include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
-#include "cpu_time_reader.h"
 
 namespace OHOS {
 namespace PowerMgr {

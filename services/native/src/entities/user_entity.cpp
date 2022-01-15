@@ -14,16 +14,17 @@
  */
 
 #include "entities/user_entity.h"
+
+#include "ohos_account_kits_impl.h"
+#include "stats_hilog_wrapper.h"
+
 #include "battery_stats_parser.h"
 #include "battery_stats_service.h"
-
-#include "stats_hilog_wrapper.h"
-#include "ohos_account_kits_impl.h"
 
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 UserEntity::UserEntity()
@@ -58,7 +59,7 @@ void UserEntity::AggregateUserPowerMah(int32_t userId, double power)
             power, userId);
     } else {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Create user power consumption: %{public}lfmAh for user id: %{public}d",
-                power, userId);
+            power, userId);
         userPowerMap_.insert(std::pair<int32_t, double>(userId, power));
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");

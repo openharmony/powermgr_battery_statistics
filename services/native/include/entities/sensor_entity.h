@@ -41,6 +41,8 @@ private:
     std::map<int32_t, double> sensorTotalPowerMap_;
     std::map<int32_t, double> gravityPowerMap_;
     std::map<int32_t, double> proximityPowerMap_;
+    double CalculateGravity(int32_t uid);
+    double CalculateProximity(int32_t uid);
 };
 } // namespace PowerMgr
 } // namespace OHOS

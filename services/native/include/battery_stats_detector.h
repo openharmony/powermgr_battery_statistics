@@ -21,8 +21,8 @@
 
 #include "refbase.h"
 
-#include "stats_utils.h"
 #include "stats_hilog_wrapper.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -37,6 +37,8 @@ public:
 private:
     bool isDurationRelated(StatsUtils::StatsType type);
     bool isStateRelated(StatsUtils::StatsType type);
+    bool isDebugInfoRelated(StatsUtils::StatsType type);
+    void handleDebugInfo(StatsUtils::StatsData data);
 };
 } // namespace PowerMgr
 } // namespace OHOS

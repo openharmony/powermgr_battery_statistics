@@ -104,7 +104,7 @@ public:
             STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
             if (count > StatsUtils::DEFAULT_VALUE) {
                 totalCount_ += count;
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Add data counts: %{public}ld, the total data counts is: %{public}ld",
+                STATS_HILOGI(STATS_MODULE_SERVICE, "Add data bytes: %{public}ld, total data bytes is: %{public}ld",
                     count, totalCount_);
             } else {
                 STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid data counts");
@@ -133,6 +133,8 @@ public:
     static long GetOnBatteryUpTimeMs();
     static bool IsOnBattery();
     static bool IsOnBatteryScreenOff();
+    static long GetBootTimeMs();
+    static long GetUpTimeMs();
 private:
     static long latestUnplugBootTimeMs_;
     static long latestUnplugUpTimeMs_;
@@ -140,8 +142,6 @@ private:
     static long onBatteryUpTimeMs_;
     static bool onBattery_;
     static bool screenOff_;
-    static long GetBootTimeMs();
-    static long GetUpTimeMs();
 };
 } // namespace PowerMgr
 } // namespace OHOS

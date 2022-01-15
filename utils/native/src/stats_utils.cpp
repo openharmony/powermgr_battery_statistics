@@ -48,177 +48,187 @@ const std::string StatsUtils::CURRENT_CPU_SPEED = "cpu_speed_cluster";
 const std::string StatsUtils::CURRENT_CPU_ACTIVE = "cpu_active";
 const std::string StatsUtils::CURRENT_CPU_SUSPEND = "cpu_suspend";
 
-std::map<std::string, StatsUtils::StatsType> StatsUtils::statsTypeMap_ = {
-    {StatsUtils::CURRENT_INVALID, STATS_TYPE_INVALID},
-    {StatsUtils::CURRENT_BLUETOOTH_ON, STATS_TYPE_BLUETOOTH_ON},
-    {StatsUtils::CURRENT_BLUETOOTH_SCAN, STATS_TYPE_BLUETOOTH_SCAN},
-    {StatsUtils::CURRENT_BLUETOOTH_RX, STATS_TYPE_BLUETOOTH_RX},
-    {StatsUtils::CURRENT_BLUETOOTH_TX, STATS_TYPE_BLUETOOTH_TX},
-    {StatsUtils::CURRENT_WIFI_ON, STATS_TYPE_WIFI_ON},
-    {StatsUtils::CURRENT_WIFI_SCAN, STATS_TYPE_WIFI_SCAN},
-    {StatsUtils::CURRENT_WIFI_RX, STATS_TYPE_WIFI_RX},
-    {StatsUtils::CURRENT_WIFI_TX, STATS_TYPE_WIFI_TX},
-    {StatsUtils::CURRENT_RADIO_ON, STATS_TYPE_RADIO_ON},
-    {StatsUtils::CURRENT_RADIO_SCAN, STATS_TYPE_RADIO_SCAN},
-    {StatsUtils::CURRENT_RADIO_ACTIVE, STATS_TYPE_PHONE_ACTIVE},
-    {StatsUtils::CURRENT_RADIO_RX, STATS_TYPE_RADIO_RX},
-    {StatsUtils::CURRENT_RADIO_TX, STATS_TYPE_RADIO_TX},
-    {StatsUtils::CURRENT_CAMERA_ON, STATS_TYPE_CAMERA_ON},
-    {StatsUtils::CURRENT_FLASHLIGHT_ON, STATS_TYPE_FLASHLIGHT_ON},
-    {StatsUtils::CURRENT_GPS_ON, STATS_TYPE_GPS_ON},
-    {StatsUtils::CURRENT_SENSOR_GRAVITY, STATS_TYPE_SENSOR_GRAVITY_ON},
-    {StatsUtils::CURRENT_SENSOR_PROXIMITY, STATS_TYPE_SENSOR_PROXIMITY_ON},
-    {StatsUtils::CURRENT_AUDIO_ON, STATS_TYPE_AUDIO_ON},
-    {StatsUtils::CURRENT_SCREEN_ON, STATS_TYPE_SCREEN_ON},
-    {StatsUtils::CURRENT_SCREEN_BRIGHTNESS, STATS_TYPE_SCREEN_BRIGHTNESS},
-    {StatsUtils::CURRENT_CPU_AWAKE, STATS_TYPE_WAKELOCK_HOLD},
-    {StatsUtils::CURRENT_CPU_IDLE, STATS_TYPE_PHONE_IDLE},
-    {StatsUtils::CURRENT_CPU_CLUSTER, STATS_TYPE_CPU_CLUSTER},
-    {StatsUtils::CURRENT_CPU_SPEED, STATS_TYPE_CPU_SPEED},
-    {StatsUtils::CURRENT_CPU_ACTIVE, STATS_TYPE_CPU_ACTIVE},
-    {StatsUtils::CURRENT_CPU_SUSPEND, STATS_TYPE_CPU_SUSPEND}
-};
-
-StatsUtils::StatsType StatsUtils::ConvertToStatsType(std::string type)
+std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    StatsType statsDataType = STATS_TYPE_INVALID;
-    auto iter = statsTypeMap_.find(type);
-    if (iter != statsTypeMap_.end()) {
-        statsDataType = iter->second;
-        STATS_HILOGD(STATS_MODULE_INNERKIT, "Convert %{public}s to %{public}d", type.c_str(), statsDataType);
-    } else {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "Convert failed for %{public}s, return %{public}d", type.c_str(),
-            statsDataType);
+    std::string result = "";
+    switch (statsType) {
+        case STATS_TYPE_BLUETOOTH_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_ON);
+            break;
+        case STATS_TYPE_BLUETOOTH_SCAN:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_SCAN);
+            break;
+        case STATS_TYPE_BLUETOOTH_RX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_RX);
+            break;
+        case STATS_TYPE_BLUETOOTH_TX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_TX);
+            break;
+        case STATS_TYPE_WIFI_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_ON);
+            break;
+        case STATS_TYPE_WIFI_SCAN:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_SCAN);
+            break;
+        case STATS_TYPE_WIFI_RX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_RX);
+            break;
+        case STATS_TYPE_WIFI_TX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_TX);
+            break;
+        case STATS_TYPE_RADIO_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_ON);
+            break;
+        case STATS_TYPE_RADIO_SCAN:
+            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_SCAN);
+            break;
+        case STATS_TYPE_PHONE_ACTIVE:
+            result = GET_VARIABLE_NAME(STATS_TYPE_PHONE_ACTIVE);
+            break;
+        case STATS_TYPE_RADIO_RX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_RX);
+            break;
+        case STATS_TYPE_RADIO_TX:
+            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_TX);
+            break;
+        default:
+            break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
-    return statsDataType;
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
+}
+
+std::string StatsUtils::ConvertTypeForCpu(StatsType statsType)
+{
+    std::string result = "";
+    switch (statsType) {
+        case STATS_TYPE_WAKELOCK_HOLD:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WAKELOCK_HOLD);
+            break;
+        case STATS_TYPE_PHONE_IDLE:
+            result = GET_VARIABLE_NAME(STATS_TYPE_PHONE_IDLE);
+            break;
+        case STATS_TYPE_CPU_CLUSTER:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CPU_CLUSTER);
+            break;
+        case STATS_TYPE_CPU_SPEED:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CPU_SPEED);
+            break;
+        case STATS_TYPE_CPU_ACTIVE:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CPU_ACTIVE);
+            break;
+        case STATS_TYPE_CPU_SUSPEND:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CPU_SUSPEND);
+            break;
+        default:
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
+}
+
+std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
+{
+    std::string result = "";
+    switch (statsType) {
+        case STATS_TYPE_CAMERA_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CAMERA_ON);
+            break;
+        case STATS_TYPE_FLASHLIGHT_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_FLASHLIGHT_ON);
+            break;
+        case STATS_TYPE_GPS_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_GPS_ON);
+            break;
+        case STATS_TYPE_SENSOR_GRAVITY_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_SENSOR_GRAVITY_ON);
+            break;
+        case STATS_TYPE_SENSOR_PROXIMITY_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_SENSOR_PROXIMITY_ON);
+            break;
+        case STATS_TYPE_AUDIO_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_AUDIO_ON);
+            break;
+        case STATS_TYPE_SCREEN_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_SCREEN_ON);
+            break;
+        case STATS_TYPE_SCREEN_BRIGHTNESS:
+            result = GET_VARIABLE_NAME(STATS_TYPE_SCREEN_BRIGHTNESS);
+            break;
+        default:
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
+}
+
+std::string StatsUtils::ConvertTypeForDebug(StatsType statsType)
+{
+    std::string result = "";
+    switch (statsType) {
+        case STATS_TYPE_BATTERY:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BATTERY);
+            break;
+        case STATS_TYPE_WORKSCHEDULER:
+            result = GET_VARIABLE_NAME(STATS_TYPE_WORKSCHEDULER);
+            break;
+        case STATS_TYPE_THERMAL:
+            result = GET_VARIABLE_NAME(STATS_TYPE_THERMAL);
+            break;
+        default:
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
 }
 
 std::string StatsUtils::ConvertStatsType(StatsType statsType)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGE(STATS_MODULE_INNERKIT, "Got stats data type = %{public}d", statsType);
-    std::string type = "";
+    std::string result = "";
     switch (statsType) {
         case STATS_TYPE_BLUETOOTH_ON:
-            type = CURRENT_BLUETOOTH_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_BLUETOOTH_SCAN:
-            type = CURRENT_BLUETOOTH_SCAN;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_BLUETOOTH_RX:
-            type = CURRENT_BLUETOOTH_RX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_BLUETOOTH_TX:
-            type = CURRENT_BLUETOOTH_TX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_WIFI_ON:
-            type = CURRENT_WIFI_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_WIFI_SCAN:
-            type = CURRENT_WIFI_SCAN;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_WIFI_RX:
-            type = CURRENT_WIFI_RX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_WIFI_TX:
-            type = CURRENT_WIFI_TX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_RADIO_ON:
-            type = CURRENT_RADIO_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_RADIO_SCAN:
-            type = CURRENT_RADIO_SCAN;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_PHONE_ACTIVE:
-            type = CURRENT_RADIO_ACTIVE;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_RADIO_RX:
-            type = CURRENT_RADIO_RX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_RADIO_TX:
-            type = CURRENT_RADIO_TX;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
+            result = ConvertTypeForConn(statsType);
             break;
         case STATS_TYPE_CAMERA_ON:
-            type = CURRENT_CAMERA_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_FLASHLIGHT_ON:
-            type = CURRENT_FLASHLIGHT_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_GPS_ON:
-            type = CURRENT_GPS_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_SENSOR_GRAVITY_ON:
-            type = CURRENT_SENSOR_GRAVITY;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_SENSOR_PROXIMITY_ON:
-            type = CURRENT_SENSOR_PROXIMITY;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_AUDIO_ON:
-            type = CURRENT_AUDIO_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_SCREEN_ON:
-            type = CURRENT_SCREEN_ON;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_SCREEN_BRIGHTNESS:
-            type = CURRENT_SCREEN_BRIGHTNESS;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
+            result = ConvertTypeForCommon(statsType);
             break;
         case STATS_TYPE_WAKELOCK_HOLD:
-            type = CURRENT_CPU_AWAKE;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
-        case STATS_TYPE_INVALID:
-            type = CURRENT_INVALID;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_PHONE_IDLE:
-            type = CURRENT_CPU_IDLE;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_CPU_CLUSTER:
-            type = CURRENT_CPU_CLUSTER;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_CPU_SPEED:
-            type = CURRENT_CPU_SPEED;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_CPU_ACTIVE:
-            type = CURRENT_CPU_ACTIVE;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
-            break;
         case STATS_TYPE_CPU_SUSPEND:
-            type = CURRENT_CPU_SUSPEND;
-            STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to type: %{public}s", type.c_str());
+            result = ConvertTypeForCommon(statsType);
+            break;
+        case STATS_TYPE_BATTERY:
+        case STATS_TYPE_WORKSCHEDULER:
+        case STATS_TYPE_THERMAL:
+            result = ConvertTypeForDebug(statsType);
             break;
         default:
             STATS_HILOGE(STATS_MODULE_INNERKIT, "Convert failed due to illegal stats data type, return empty string");
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
-    return type;
+    return result;
 }
 } // namespace PowerMgr
 } // namespace OHOS

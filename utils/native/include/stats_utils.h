@@ -16,19 +16,20 @@
 #ifndef STATS_UTILS_H
 #define STATS_UTILS_H
 
-#include <string>
 #include <map>
+#include <string>
 
 namespace OHOS {
 namespace PowerMgr {
+#define GET_VARIABLE_NAME(name) #name
 class StatsUtils {
 public:
-    static constexpr bool DEBUG = true;
     static constexpr uint8_t DEFAULT_VALUE = 0;
     static constexpr uint8_t SCREEN_BRIGHTNESS_BIN = 5;
     static constexpr uint8_t RADIO_SIGNAL_BIN = 5;
     static constexpr int8_t INVALID_VALUE = -1;
     static constexpr uint32_t MS_IN_HOUR = 3600000;
+    static constexpr uint32_t MS_IN_SECOND = 1000;
     static constexpr uint32_t NS_IN_MS = 1000000;
     static constexpr uint32_t US_IN_MS = 1000;
 
@@ -89,7 +90,10 @@ public:
         STATS_TYPE_CPU_CLUSTER,
         STATS_TYPE_CPU_SPEED,
         STATS_TYPE_CPU_ACTIVE,
-        STATS_TYPE_CPU_SUSPEND
+        STATS_TYPE_CPU_SUSPEND,
+        STATS_TYPE_BATTERY,
+        STATS_TYPE_WORKSCHEDULER,
+        STATS_TYPE_THERMAL,
     };
 
     enum StatsState {
@@ -106,22 +110,30 @@ public:
         STATS_STATE_NETWORK_NO_SERVICE, // Indicates mobile network is in no-service state
         STATS_STATE_NETWORK_EMERGENCY_ONLY, // Indicates mobile network is in emergency-only state
         STATS_STATE_NETWORK_SEARCH, // Indicates mobile network is in searching state
-        STATS_STATE_NETWORK_POWER_OFF // Indicates radio of telephony is explicitly powered off
+        STATS_STATE_NETWORK_POWER_OFF, // Indicates radio of telephony is explicitly powered off
+        STATS_STATE_WORKSCHEDULER_SCHEDULED, // Indicates work is scheduled
+        STATS_STATE_WORKSCHEDULER_EXECUTED, // Indicates work is executed
     };
 
     struct StatsData {
         StatsType type = STATS_TYPE_INVALID;
         StatsState state = STATS_STATE_INVALID;
         int32_t uid = INVALID_VALUE;
+        int32_t pid = INVALID_VALUE;
+        std::string eventDataName = "INVALID";
+        int32_t eventDataType = INVALID_VALUE;
+        int32_t eventDataExtra = INVALID_VALUE;
         int16_t level = INVALID_VALUE;
         long time = DEFAULT_VALUE;
         long traffic = DEFAULT_VALUE;
     };
 
     static std::string ConvertStatsType(StatsType statsType);
-    static StatsType ConvertToStatsType(std::string type);
 private:
-    static std::map<std::string, StatsType> statsTypeMap_;
+    static std::string ConvertTypeForConn(StatsType statsType);
+    static std::string ConvertTypeForCpu(StatsType statsType);
+    static std::string ConvertTypeForCommon(StatsType statsType);
+    static std::string ConvertTypeForDebug(StatsType statsType);
 };
 } // namespace PowerMgr
 } // namespace OHOS

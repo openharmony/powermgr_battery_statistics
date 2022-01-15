@@ -17,8 +17,8 @@
 
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
-#include "sys_mgr_client.h"
 #include "system_ability_definition.h"
+#include "sys_mgr_client.h"
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
@@ -26,7 +26,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 WifiEntity::WifiEntity()
@@ -52,7 +52,7 @@ void WifiEntity::CalculateWifiPower()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Wifi on power
     auto wifiOnAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     auto wifiOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
     auto wifiOnPowerMah = wifiOnAverageMa * wifiOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto wifiUidPowerMah = GetWifiUidPower();
@@ -64,7 +64,6 @@ void WifiEntity::CalculateWifiPower()
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     statsInfo->SetPower(wifiPowerMah_);
-    statsInfo->SetTime(wifiOnTimeMs, StatsUtils::STATS_TYPE_WIFI_ON);
     statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi on time: %{public}ldms", wifiOnTimeMs);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate wifi on power average: %{public}lfma", wifiOnAverageMa);
@@ -79,20 +78,20 @@ void WifiEntity::CalculateWifiPowerForApp(int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Wifi scan power consumption
     auto wifiScanAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     auto wifiScanTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
     auto wifiScanPowerMams = wifiScanAverageMa * wifiScanTimeMs;
 
     // Calculate Wifi traffic power consumption
     // Calculate Wifi RX power consumption
     auto wifiRxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_RX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_RX);
     auto wifiRxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
     auto wifiRxPowerMams = wifiRxAverageMa * wifiRxTimeMs;
 
     // Calculate Wifi TX power consumption
     auto wifiTxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_TX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_TX);
     auto wifiTxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
     auto wifiTxPowerMams = wifiTxAverageMa * wifiTxTimeMs;
 
@@ -450,7 +449,7 @@ double WifiEntity::GetWifiUidPower()
     std::string bundleName = "com.ohos.wifi";
     int32_t wifiUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
 
-    auto core = statsService->GetBatteryStatsCore();
+    auto core = g_statsService->GetBatteryStatsCore();
     auto uidEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
     if (uidEntity != nullptr) {
         wifiUidPower = uidEntity->GetEntityPowerMah(wifiUid);

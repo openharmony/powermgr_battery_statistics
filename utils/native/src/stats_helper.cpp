@@ -14,7 +14,7 @@
  */
 #include "stats_helper.h"
 
-#include <time.h>
+#include <ctime>
 
 #include "battery_stats_info.h"
 
@@ -36,7 +36,8 @@ long StatsHelper::GetBootTimeMs()
     if (errCode != 0) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Get boot time failed, return default time.");
     } else {
-        bootTimeMs = (long) (rawBootTime.tv_sec * 1000 + rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
+        bootTimeMs =
+            (long) (rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND + rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Got boot time: %{public}ld", bootTimeMs);
     }
     return bootTimeMs;
@@ -51,7 +52,7 @@ long StatsHelper::GetUpTimeMs()
     if (errCode != 0) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Get up time failed, return default time.");
     } else {
-        upTimeMs = (long) (rawUpTime.tv_sec * 1000 + rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
+        upTimeMs = (long) (rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND + rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Got up time: %{public}ld", upTimeMs);
     }
     return upTimeMs;

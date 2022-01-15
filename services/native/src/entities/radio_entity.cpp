@@ -15,12 +15,10 @@
 
 #include "entities/radio_entity.h"
 
-#include <vector>
-
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
-#include "sys_mgr_client.h"
 #include "system_ability_definition.h"
+#include "sys_mgr_client.h"
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
@@ -28,7 +26,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 RadioEntity::RadioEntity()
@@ -54,7 +52,7 @@ void RadioEntity::CalculateRadioPower()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Radio scan power
     auto radioScanAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_SCAN);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_SCAN);
     auto radioScanTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_SCAN);
     auto radioScanPowerMah = radioScanAverageMa * radioScanTimeMs / StatsUtils::MS_IN_HOUR;
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio scan time: %{public}ldms", radioScanTimeMs);
@@ -67,7 +65,7 @@ void RadioEntity::CalculateRadioPower()
     for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         double radioOnLevelPowerMah = StatsUtils::DEFAULT_VALUE;
         auto radioOnAverageMa =
-            statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
+            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
         auto radioOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, i);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio on time: %{public}ldms of signal level: %{public}d",
             radioOnLevelTimeMs, i);
@@ -87,8 +85,6 @@ void RadioEntity::CalculateRadioPower()
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     statsInfo->SetPower(radioOnPowerMah_);
-    statsInfo->SetTime(radioOnTime, StatsUtils::STATS_TYPE_RADIO_ON);
-    statsInfo->SetTime(radioScanTimeMs, StatsUtils::STATS_TYPE_RADIO_SCAN);
     statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio total power consumption: %{public}lfmAh", radioOnPowerMah_);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
@@ -100,23 +96,23 @@ void RadioEntity::CalculateRadioPowerForApp(int32_t uid)
     // Calculate Radio traffic power consumption
     // Calculate Radio RX power consumption
     auto radioRxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_RX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_RX);
     auto radioRxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
     auto radioRxPowerMah = radioRxAverageMa * radioRxTimeMs / StatsUtils::MS_IN_HOUR;
 
     // Calculate Radio TX power consumption
     auto radioTxAverageMa =
-        statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_TX);
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_TX);
     auto radioTxTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
     auto radioTxPowerMah = radioTxAverageMa * radioTxTimeMs / StatsUtils::MS_IN_HOUR;
 
     auto radioUidPowerMah = radioRxPowerMah + radioTxPowerMah;
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX time: %{public}ldms", radioRxTimeMs);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX power average: %{public}lfma", radioRxAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX power consumption: %{public}lfmAh",radioRxPowerMah);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX power consumption: %{public}lfmAh", radioRxPowerMah);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX time: %{public}ldms", radioTxTimeMs);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX power average: %{public}lfma", radioTxAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX power consumption: %{public}lfmAh",radioTxPowerMah);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX power consumption: %{public}lfmAh", radioTxPowerMah);
     auto iter = appRadioPowerMap_.find(uid);
     if (iter != appRadioPowerMap_.end()) {
         iter->second = radioUidPowerMah;
@@ -172,8 +168,8 @@ long RadioEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level
         auto iter = radioOnTimerMap_.find(level);
         if (iter != radioOnTimerMap_.end() && iter->second != nullptr) {
             time = iter->second->GetRunningTimeMs();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio on time: %{public}ldms of signal level: %{public}d",
-            time, level);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio on time: %{public}ldms of signal level: %{public}d", time,
+                level);
         } else {
             STATS_HILOGE(STATS_MODULE_SERVICE, "No radio on timer found, return 0");
         }

@@ -23,7 +23,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 UidEntity::UidEntity()
@@ -46,14 +46,34 @@ void UidEntity::UpdateUidMap(int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void UidEntity::Calculate(int32_t uid)
+double UidEntity::CalculateForConnectivity(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    auto core = statsService->GetBatteryStatsCore();
+    double power = StatsUtils::DEFAULT_VALUE;
+    auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     auto radioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
-    auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+
+    // Calculate bluetooth power consumption
+    bluetoothEntity->Calculate(uid);
+    power += bluetoothEntity->GetEntityPowerMah(uid);
+    // Calculate radio power consumption
+    radioEntity->Calculate(uid);
+    power += radioEntity->GetEntityPowerMah(uid);
+    // Calculate wifi power consumption
+    wifiEntity->Calculate(uid);
+    power += wifiEntity->GetEntityPowerMah(uid);
+
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return power;
+}
+
+double UidEntity::CalculateForCommon(int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    double power = StatsUtils::DEFAULT_VALUE;
+    auto core = g_statsService->GetBatteryStatsCore();
     auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
     auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
     auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
@@ -61,58 +81,64 @@ void UidEntity::Calculate(int32_t uid)
     auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
     auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
+
+    // Calculate camera power consumption
+    cameraEntity->Calculate(uid);
+    power += cameraEntity->GetEntityPowerMah(uid);
+    // Calculate flashlight power consumption
+    flashlightEntity->Calculate(uid);
+    power += flashlightEntity->GetEntityPowerMah(uid);
+    // Calculate audio power consumption
+    audioEntity->Calculate(uid);
+    power += audioEntity->GetEntityPowerMah(uid);
+    // Calculate sensor power consumption
+    sensorEntity->Calculate(uid);
+    power += sensorEntity->GetEntityPowerMah(uid);
+    // Calculate gps power consumption
+    gpsEntity->Calculate(uid);
+    power += gpsEntity->GetEntityPowerMah(uid);
+    // Calculate cpu power consumption
+    cpuEntity->Calculate(uid);
+    power += cpuEntity->GetEntityPowerMah(uid);
+    // Calculate cpu power consumption
+    wakelockEntity->Calculate(uid);
+    power += wakelockEntity->GetEntityPowerMah(uid);
+
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return power;
+}
+
+void UidEntity::Calculate(int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    auto core = g_statsService->GetBatteryStatsCore();
+    auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     for (auto& iter : uidPowerMap_) {
         double power = StatsUtils::DEFAULT_VALUE;
-        // Calculate bluetooth power consumption
-        bluetoothEntity->Calculate(iter.first);
-        power += bluetoothEntity->GetEntityPowerMah(iter.first);
-        // Calculate radio power consumption
-        radioEntity->Calculate(iter.first);
-        power += radioEntity->GetEntityPowerMah(iter.first);
-        // Calculate wifi power consumption
-        wifiEntity->Calculate(iter.first);
-        power += wifiEntity->GetEntityPowerMah(iter.first);
-        // Calculate camera power consumption
-        cameraEntity->Calculate(iter.first);
-        power += cameraEntity->GetEntityPowerMah(iter.first);
-        // Calculate flashlight power consumption
-        flashlightEntity->Calculate(iter.first);
-        power += flashlightEntity->GetEntityPowerMah(iter.first);
-        // Calculate audio power consumption
-        audioEntity->Calculate(iter.first);
-        power += audioEntity->GetEntityPowerMah(iter.first);
-        // Calculate sensor power consumption
-        sensorEntity->Calculate(iter.first);
-        power += sensorEntity->GetEntityPowerMah(iter.first);
-        // Calculate gps power consumption
-        gpsEntity->Calculate(iter.first);
-        power += gpsEntity->GetEntityPowerMah(iter.first);
-        // Calculate cpu power consumption
-        cpuEntity->Calculate(iter.first);
-        power += cpuEntity->GetEntityPowerMah(iter.first);
-        // Calculate cpu power consumption
-        wakelockEntity->Calculate(iter.first);
-        power += wakelockEntity->GetEntityPowerMah(iter.first);
+        power += CalculateForConnectivity(iter.first);
+        power += CalculateForCommon(iter.first);
         iter.second = power;
         totalPowerMah_ += power;
-        std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
-        statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
-        statsInfo->SetUid(iter.first);
-        statsInfo->SetPower(iter.second);
-        statsInfo->SetTime(bluetoothEntity->GetActiveTimeMs(iter.first, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN),
-            StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
-        statsInfo->SetTraffic(bluetoothEntity->GetTrafficByte(StatsUtils::STATS_TYPE_BLUETOOTH_RX, iter.first),
-            StatsUtils::STATS_TYPE_BLUETOOTH_RX);
-        // TO-DO, set other stats info(time/traffic)
-        statsInfoList_.push_back(statsInfo);
+        AddtoStatsList(iter.first, power);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate uid power consumption: %{public}lfmAh for uid: %{public}d",
             power, iter.first);
-        int32_t tmpUid = iter.first;
-        int32_t userId = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(tmpUid);
+        int32_t uid = iter.first;
+        int32_t userId = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(uid);
         if (userEntity != nullptr) {
             userEntity->AggregateUserPowerMah(userId, power);
         }
     }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void UidEntity::AddtoStatsList(int32_t uid, double power)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
+    statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
+    statsInfo->SetUid(uid);
+    statsInfo->SetPower(power);
+    statsInfoList_.push_back(statsInfo);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
@@ -133,22 +159,14 @@ double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
     return power;
 }
 
-double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
+double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
-    auto core = statsService->GetBatteryStatsCore();
+    auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     auto radioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
-    auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
-    auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
-    auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
-    auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
-    auto sensorEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR);
-    auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
-    auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
-    auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
 
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_SCAN) {
         power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_SCAN, uid);
@@ -166,7 +184,25 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
         power = radioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_RADIO_RX, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         power = radioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_RADIO_TX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return power;
+}
+
+double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    double power = StatsUtils::DEFAULT_VALUE;
+    auto core = g_statsService->GetBatteryStatsCore();
+    auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
+    auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
+    auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
+    auto sensorEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR);
+    auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
+    auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
+    auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
+
+    if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
         power = cameraEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CAMERA_ON, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_FLASHLIGHT_ON) {
         power = flashlightEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_FLASHLIGHT_ON, uid);
@@ -191,6 +227,45 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
     return power;
 }
 
+double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    double power = StatsUtils::DEFAULT_VALUE;
+
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_TX:
+        case StatsUtils::STATS_TYPE_WIFI_SCAN:
+        case StatsUtils::STATS_TYPE_WIFI_RX:
+        case StatsUtils::STATS_TYPE_WIFI_TX:
+        case StatsUtils::STATS_TYPE_RADIO_RX:
+        case StatsUtils::STATS_TYPE_RADIO_TX:
+            power = GetPowerForConnectivity(statsType, uid);
+            break;
+        case StatsUtils::STATS_TYPE_CAMERA_ON:
+        case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
+        case StatsUtils::STATS_TYPE_GPS_ON:
+        case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
+        case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON:
+        case StatsUtils::STATS_TYPE_AUDIO_ON:
+        case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
+        case StatsUtils::STATS_TYPE_CPU_CLUSTER:
+        case StatsUtils::STATS_TYPE_CPU_SPEED:
+        case StatsUtils::STATS_TYPE_CPU_ACTIVE:
+            power = GetPowerForConnectivity(statsType, uid);
+            break;
+        default:
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid or illegal type got, return 0");
+            break;
+    }
+
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Get %{public}s power: %{public}lfmAh for uid: %{public}d",
+        StatsUtils::ConvertStatsType(statsType).c_str(), power, uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return power;
+}
+
 void UidEntity::Reset()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
@@ -202,144 +277,154 @@ void UidEntity::Reset()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
+void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Dump for bluetooth realted info
+    auto core = g_statsService->GetBatteryStatsCore();
+    long bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
+    long bluetoothRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
+    long bluetoothTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
+    long bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
+    long bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
+
+    result.append("Bluetooth scan time: ")
+        .append(ToString(bluetoothScanTime))
+        .append("ms\n")
+        .append("Bluetooth RX time: ")
+        .append(ToString(bluetoothRxTime))
+        .append("ms\n")
+        .append("Bluetooth TX time: ")
+        .append(ToString(bluetoothTxTime))
+        .append("ms\n")
+        .append("Bluetooth RX data: ")
+        .append(ToString(bluetoothRxData))
+        .append("bytes\n")
+        .append("Bluetooth TX data: ")
+        .append(ToString(bluetoothTxData))
+        .append("bytes\n")
+        .append("Bluetooth scan time: ")
+        .append(ToString(bluetoothScanTime))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void UidEntity::DumpForWifi(int32_t uid, std::string& result)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Dump for wifi realted info
+    auto core = g_statsService->GetBatteryStatsCore();
+    long wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
+    long wifiRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
+    long wifiTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
+    long wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
+    long wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
+
+    result.append("Wifi scan time: ")
+        .append(ToString(wifiScanTime))
+        .append("ms\n")
+        .append("Wifi RX time: ")
+        .append(ToString(wifiRxTime))
+        .append("ms\n")
+        .append("Wifi TX time: ")
+        .append(ToString(wifiTxTime))
+        .append("ms\n")
+        .append("Wifi RX data: ")
+        .append(ToString(wifiRxData))
+        .append("bytes\n")
+        .append("Wifi TX data: ")
+        .append(ToString(wifiTxData))
+        .append("bytes\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void UidEntity::DumpForRadio(int32_t uid, std::string& result)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Dump for radio realted info
+    auto core = g_statsService->GetBatteryStatsCore();
+    long radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
+    long radioTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
+    long radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
+    long radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
+
+    result.append("Radio RX time: ")
+        .append(ToString(radioRxTime))
+        .append("ms\n")
+        .append("Radio TX time: ")
+        .append(ToString(radioTxTime))
+        .append("ms\n")
+        .append("Radio RX data: ")
+        .append(ToString(radioRxData))
+        .append("bytes\n")
+        .append("Radio TX data: ")
+        .append(ToString(radioTxData))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void UidEntity::DumpForCommon(int32_t uid, std::string& result)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    auto core = g_statsService->GetBatteryStatsCore();
+    // Dump for camera related info
+    long cameraTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
+
+    // Dump for flashlight related info
+    long flashlightTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
+
+    // Dump for gps related info
+    long gpsTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON);
+
+    // Dump for gravity sensor related info
+    long gravityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
+
+    // Dump for proximity sensor related info
+    long proximityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
+
+    // Dump for audio related info
+    long audioTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON);
+
+    // Dump for wakelock related info
+    long wakelockTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
+
+    result.append("Camera on time: ")
+        .append(ToString(cameraTime))
+        .append("ms\n")
+        .append("Flashlight scan time: ")
+        .append(ToString(flashlightTime))
+        .append("ms\n")
+        .append("GPS scan time: ")
+        .append(ToString(gpsTime))
+        .append("ms\n")
+        .append("Gravity sensor on time: ")
+        .append(ToString(gravityTime))
+        .append("ms\n")
+        .append("Proximity sensor on time: ")
+        .append(ToString(proximityTime))
+        .append("ms\n")
+        .append("Audio on time: ")
+        .append(ToString(audioTime))
+        .append("ms\n")
+        .append("Wakelock hold time: ")
+        .append(ToString(wakelockTime))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
 void UidEntity::DumpInfo(std::string& result)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    auto core = statsService->GetBatteryStatsCore();
+    auto core = g_statsService->GetBatteryStatsCore();
     for (auto &iter : uidPowerMap_) {
-        // Dump for bluetooth realted info
-        long bluetoothScanTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
-        long bluetoothRxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
-        long bluetoothTxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
-        long bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, iter.first);
-        long bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, iter.first);
-
-        // Dump for wifi realted info
-        long wifiScanTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_WIFI_SCAN);
-        long wifiRxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_WIFI_RX);
-        long wifiTxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_WIFI_TX);
-        long wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, iter.first);
-        long wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, iter.first);
-
-        // Dump for radio realted info
-        long radioRxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_RADIO_RX);
-        long radioTxTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_RADIO_TX);
-        long radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, iter.first);
-        long radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, iter.first);
-
-        // Dump for camera related info
-        long cameraTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_CAMERA_ON);
-
-        // Dump for flashlight related info
-        long flashlightTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
-
-        // Dump for gps related info
-        long gpsTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_GPS_ON);
-
-        // Dump for gravity sensor related info
-        long gravityTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
-
-        // Dump for proximity sensor related info
-        long proximityTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
-
-        // Dump for audio related info
-        long audioTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_AUDIO_ON);
-
-        // Dump for wakelock related info
-        long wakelockTime = core->GetTotalTimeMs(iter.first, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
-
         result.append(ToString(iter.first))
             .append(":")
-            .append("\n")
-            .append("Bluetooth scan time: ")
-            .append(ToString(bluetoothScanTime))
-            .append("ms")
-            .append("\n")
-            .append("Bluetooth RX time: ")
-            .append(ToString(bluetoothRxTime))
-            .append("ms")
-            .append("\n")
-            .append("Bluetooth TX time: ")
-            .append(ToString(bluetoothTxTime))
-            .append("ms")
-            .append("\n")
-            .append("Bluetooth RX data: ")
-            .append(ToString(bluetoothRxData))
-            .append("bytes")
-            .append("\n")
-            .append("Bluetooth TX data: ")
-            .append(ToString(bluetoothTxData))
-            .append("bytes")
-            .append("\n")
-            .append("Bluetooth scan time: ")
-            .append(ToString(bluetoothScanTime))
-            .append("ms")
-            .append("\n")
-            .append("Wifi scan time: ")
-            .append(ToString(wifiScanTime))
-            .append("ms")
-            .append("\n")
-            .append("Wifi RX time: ")
-            .append(ToString(wifiRxTime))
-            .append("ms")
-            .append("\n")
-            .append("Wifi TX time: ")
-            .append(ToString(wifiTxTime))
-            .append("ms")
-            .append("\n")
-            .append("Wifi RX data: ")
-            .append(ToString(wifiRxData))
-            .append("ms")
-            .append("\n")
-            .append("Wifi TX data: ")
-            .append(ToString(wifiTxData))
-            .append("ms")
-            .append("\n")
-            .append("Radio RX time: ")
-            .append(ToString(radioRxTime))
-            .append("ms")
-            .append("\n")
-            .append("Radio TX time: ")
-            .append(ToString(radioTxTime))
-            .append("ms")
-            .append("\n")
-            .append("Radio RX data: ")
-            .append(ToString(radioRxData))
-            .append("ms")
-            .append("\n")
-            .append("Radio TX data: ")
-            .append(ToString(radioTxData))
-            .append("ms")
-            .append("\n")
-            .append("Camera on time: ")
-            .append(ToString(cameraTime))
-            .append("ms")
-            .append("\n")
-            .append("Flashlight scan time: ")
-            .append(ToString(flashlightTime))
-            .append("ms")
-            .append("\n")
-            .append("GPS scan time: ")
-            .append(ToString(gpsTime))
-            .append("ms")
-            .append("\n")
-            .append("Gravity sensor on time: ")
-            .append(ToString(gravityTime))
-            .append("ms")
-            .append("\n")
-            .append("Proximity sensor on time: ")
-            .append(ToString(proximityTime))
-            .append("ms")
-            .append("\n")
-            .append("Audio on time: ")
-            .append(ToString(audioTime))
-            .append("ms")
-            .append("\n")
-            .append("Wakelock hold time: ")
-            .append(ToString(wakelockTime))
-            .append("ms")
             .append("\n");
-            core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU)->DumpInfo(result);
+        DumpForBluetooth(iter.first, result);
+        DumpForWifi(iter.first, result);
+        DumpForRadio(iter.first, result);
+        DumpForCommon(iter.first, result);
+        core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU)->DumpInfo(result);
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }

@@ -43,7 +43,7 @@ bool BatteryStatsParser::Init()
 uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    for (size_t i = 0; i < speedNum_.size(); i++) {
+    for (uint16_t i = 0; i < speedNum_.size(); i++) {
         if (cluster == i) {
             STATS_HILOGI(STATS_MODULE_SERVICE, "Got speed num: %{public}d, for cluster: %{public}d", speedNum_[i],
                 cluster);
@@ -61,7 +61,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
     Json::Value root;
     std::string errors;
     std::ifstream ifs(POWER_AVERAGE_FILE, std::ios::binary);
-    if(!ifs.is_open()) {
+    if (!ifs.is_open()) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Json file doesn't exist");
         return false;
     }
@@ -88,7 +88,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
 
         if (value.isArray()) {
             std::vector<double> listValues;
-            for (size_t i = 0; i < value.size(); i++) {
+            for (uint16_t i = 0; i < value.size(); i++) {
                 listValues.push_back(value[i].asDouble());
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Read list value: %{public}lf of %{public}s", value[i].asDouble(),
                     type.c_str());
@@ -108,6 +108,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
 double BatteryStatsParser::GetAveragePowerMa(std::string type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGE(STATS_MODULE_SERVICE, "type = %{public}s", type.c_str());
     double average = 0.0;
     auto iter = averageMap_.find(type);
     if (iter != averageMap_.end()) {

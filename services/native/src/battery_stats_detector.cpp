@@ -27,6 +27,10 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle state: %{public}d", data.state);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle level: %{public}d", data.level);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle uid: %{public}d", data.uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle pid: %{public}d", data.pid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataName: %{public}s", data.eventDataName.c_str());
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataType: %{public}d", data.eventDataType);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataExtra: %{public}d", data.eventDataExtra);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle time: %{public}ld", data.time);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle traffic: %{public}ld", data.traffic);
 
@@ -46,13 +50,14 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
     }
+    handleDebugInfo(data);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}d", type);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(type).c_str());
     bool isMatch = false;
     switch (type) {
         case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
@@ -63,19 +68,21 @@ bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_RADIO_TX:
             // Realated with duration
             isMatch = true;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}d is duration related", type);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}s is duration related",
+                StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
             STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
             break;
     }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return isMatch;
 }
 
 bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}d", type);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(type).c_str());
     bool isMatch = false;
     switch (type) {
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
@@ -94,15 +101,119 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_GPS_ON:
         case StatsUtils::STATS_TYPE_AUDIO_ON:
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
-            // Related with level
+            // Related with state
             isMatch = true;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}d is level related", type);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}s is state related",
+                StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
             STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
             break;
     }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return isMatch;
+}
+
+void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(data.type).c_str());
+    long bootTimeMs = StatsHelper::GetBootTimeMs();
+    auto core = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance()->GetBatteryStatsCore();
+    std::string debugInfo;
+    switch (data.type) {
+        case StatsUtils::STATS_TYPE_THERMAL:
+        {
+            debugInfo.append("Thermal event: Part name = ")
+                .append(data.eventDataName)
+                .append(", temperature = ")
+                .append(ToString(data.eventDataExtra))
+                .append("degrees Celsius, boot time after boot = ")
+                .append(ToString(bootTimeMs))
+                .append("ms\n");
+            break;
+        }
+        case StatsUtils::STATS_TYPE_BATTERY:
+        {
+            debugInfo.append("Battery event: Battery level = ")
+                .append(ToString(data.level))
+                .append(", current now = ")
+                .append(ToString(data.eventDataExtra))
+                .append("ma, boot time after boot = ")
+                .append(ToString(bootTimeMs))
+                .append("ms\n");
+            break;
+        }
+        case StatsUtils::STATS_TYPE_WORKSCHEDULER:
+        {
+            debugInfo.append("WorkScheduler event: UID = ")
+                .append(ToString(data.uid))
+                .append(", PID = ")
+                .append(ToString(data.pid))
+                .append(", work type = ")
+                .append(ToString(data.eventDataType))
+                .append(", work interval = ")
+                .append(ToString(data.eventDataExtra))
+                .append(", work state = ")
+                .append(ToString(data.state))
+                .append(", boot time after boot = ")
+                .append(ToString(bootTimeMs))
+                .append("ms\n");
+            break;
+        }
+        case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
+        {
+            std::string eventState;
+            if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
+                eventState = "LOCK";
+            } else {
+                eventState = "UNLOCK";
+            }
+            debugInfo.append("Wakelock event: UID = ")
+                .append(ToString(data.uid))
+                .append(", PID = ")
+                .append(ToString(data.pid))
+                .append(", wakelock type = ")
+                .append(ToString(data.eventDataType))
+                .append(", wakelock name = ")
+                .append(data.eventDataName)
+                .append(", wakelock state = ")
+                .append(eventState)
+                .append(", boot time after boot = ")
+                .append(ToString(bootTimeMs))
+                .append("ms\n");
+            break;
+        }
+        case StatsUtils::STATS_TYPE_SCREEN_ON:
+        {
+            std::string screenState;
+            if (data.state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
+                screenState = "off";
+            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_ON) {
+                screenState = "on";
+            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_DIM) {
+                screenState = "dim";
+            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_SUSPEND) {
+                screenState = "suspend";
+            } else {
+                screenState = "unknown state";
+            }
+
+            debugInfo.append("Display event: Screen is in ")
+                .append(screenState)
+                .append(" state, brigntness level = ")
+                .append(ToString(data.level))
+                .append(", boot time after boot = ")
+                .append(ToString(bootTimeMs))
+                .append("ms\n");
+            break;
+        }
+        default:
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
+            break;
+    }
+    core->UpdateDebugInfo(debugInfo);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS
