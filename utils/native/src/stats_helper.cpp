@@ -91,6 +91,7 @@ void StatsHelper::SetScreenOff(bool screenOff)
 
 bool StatsHelper::IsOnBattery()
 {
+    STATS_HILOGD(STATS_MODULE_SERVICE, "onBattery_ = %{public}d", onBattery_);
     return onBattery_;
 }
 
@@ -104,7 +105,10 @@ long StatsHelper::GetOnBatteryBootTimeMs()
     STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     long onBatteryBootTimeMs = onBatteryBootTimeMs_;
     long currentBootTimeMs = GetBootTimeMs();
-    if (onBattery_) {
+    STATS_HILOGI(STATS_MODULE_SERVICE, "onBatteryBootTimeMs: %{public}ld", onBatteryBootTimeMs);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "currentBootTimeMs: %{public}ld", currentBootTimeMs);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "latestUnplugBootTimeMs_: %{public}ld", latestUnplugBootTimeMs_);
+    if (IsOnBattery()) {
         onBatteryBootTimeMs += currentBootTimeMs - latestUnplugBootTimeMs_;
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Got on battery boot time: %{public}ld", onBatteryBootTimeMs);
@@ -116,7 +120,7 @@ long StatsHelper::GetOnBatteryUpTimeMs()
     STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     long onBatteryUpTimeMs = onBatteryUpTimeMs_;
     long currentUpTimeMs = GetUpTimeMs();
-    if (onBattery_) {
+    if (IsOnBattery()) {
         onBatteryUpTimeMs += currentUpTimeMs - latestUnplugUpTimeMs_;
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Got on battery up time: %{public}ld", onBatteryUpTimeMs);

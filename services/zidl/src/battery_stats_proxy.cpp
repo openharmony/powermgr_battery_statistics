@@ -134,9 +134,32 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
     }
 
     double appStatsMah = StatsUtils::DEFAULT_VALUE;
-    appStatsMah = reply.ReadFloat();
+    appStatsMah = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return appStatsMah;
+}
+
+void BatteryStatsProxy::SetOnBattery(bool isOnBattery)
+{
+    STATS_HILOGD(STATS_MODULE_INNERKIT, "%{public}s.", __func__);
+    sptr<IRemoteObject> remote = Remote();
+    STATS_RETURN_IF(remote == nullptr);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - write descriptor failed!", __func__);
+        return;
+    }
+
+    data.WriteBool(isOnBattery);
+
+    int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT), data, reply, option);
+    if (ret != ERR_OK) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - Transact is failed, error code: %{public}d", __func__, ret);
+    }
 }
 
 double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
@@ -162,7 +185,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
     }
 
     double appStatsPercent = StatsUtils::DEFAULT_VALUE;
-    appStatsPercent = reply.ReadFloat();
+    appStatsPercent = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return appStatsPercent;
 }
@@ -190,7 +213,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
     }
 
     double partStatsMah = StatsUtils::DEFAULT_VALUE;
-    partStatsMah = reply.ReadFloat();
+    partStatsMah = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return partStatsMah;
 }
@@ -218,7 +241,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
     }
 
     double partStatsPercent = StatsUtils::DEFAULT_VALUE;
-    partStatsPercent = reply.ReadFloat();
+    partStatsPercent = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return partStatsPercent;
 }

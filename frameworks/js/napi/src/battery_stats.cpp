@@ -90,7 +90,7 @@ static bool GetBatteryStatsInfoList(const napi_env env, napi_value& result)
         return false;
     }
 
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", vecCppStatsInfos.size());
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}lu", vecCppStatsInfos.size());
     std::vector<BatteryStats> vecJsStatsInfo;
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecJsStatsInfo);
     if (vecJsStatsInfo.size() > 0) {

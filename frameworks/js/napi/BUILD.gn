@@ -27,9 +27,7 @@ config("batterystatsnapi_private_config") {
 }
 
 ohos_shared_library("batterystats") {
-  sources = [
-    "${batterystats_frameworks_path}/js/napi/src/battery_stats.cpp",
-  ]
+  sources = [ "${batterystats_frameworks_path}/js/napi/src/battery_stats.cpp" ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -37,9 +35,9 @@ ohos_shared_library("batterystats") {
   ]
 
   deps = [
+    "${batterystats_utils_path}:batterystats_utils",
     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
     "//foundation/ace/napi:ace_napi",
-    "${batterystats_utils_path}:batterystats_utils"
   ]
 
   external_deps = [

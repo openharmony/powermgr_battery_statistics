@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "BatteryStatsSysTest_sys_test.h"
+#include "batterystats_sys_test.h"
 
 #include <cmath>
 #include <unistd.h>
@@ -110,8 +110,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
         .append(ToString(type))
         .append(", wakelock name = ")
         .append(name)
-        .append(", work state = ")
-        .append(ToString(stateUnlock));
+        .append(", wakelock state = ")
+        .append("UNLOCK");
 
     std::string actualDebugInfo;
     g_service->GetBatteryStatsCore()->GetDebugInfo(actualDebugInfo);

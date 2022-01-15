@@ -37,6 +37,7 @@ private:
     void processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS

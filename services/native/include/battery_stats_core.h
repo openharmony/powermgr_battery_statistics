@@ -83,7 +83,7 @@ private:
     void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
     void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
     void UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
-    void UpdateCommonStats(StatsUtils::StatsType statsType,StatsUtils::StatsState state, int32_t uid);
+    void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void CreatePartEntity();
     void CreateAppEntity();
 };

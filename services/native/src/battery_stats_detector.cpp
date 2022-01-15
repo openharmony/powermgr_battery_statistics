@@ -114,6 +114,140 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
     return isMatch;
 }
 
+void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    debugInfo.append("Thermal event: Part name = ")
+        .append(data.eventDataName)
+        .append(", temperature = ")
+        .append(ToString(data.eventDataExtra))
+        .append("degrees Celsius, boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    debugInfo.append("Battery event: Battery level = ")
+        .append(ToString(data.level))
+        .append(", current now = ")
+        .append(ToString(data.eventDataExtra))
+        .append("ma, boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::string screenState;
+    if (data.state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
+        screenState = "off";
+    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_ON) {
+        screenState = "on";
+    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_DIM) {
+        screenState = "dim";
+    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_SUSPEND) {
+        screenState = "suspend";
+    } else {
+        screenState = "unknown state";
+    }
+
+    debugInfo.append("Display event: Screen is in ")
+        .append(screenState)
+        .append(" state, brigntness level = ")
+        .append(ToString(data.level))
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::string eventState;
+    if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
+        eventState = "LOCK";
+    } else {
+        eventState = "UNLOCK";
+    }
+    debugInfo.append("Wakelock event: UID = ")
+        .append(ToString(data.uid))
+        .append(", PID = ")
+        .append(ToString(data.pid))
+        .append(", wakelock type = ")
+        .append(ToString(data.eventDataType))
+        .append(", wakelock name = ")
+        .append(data.eventDataName)
+        .append(", wakelock state = ")
+        .append(eventState)
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    debugInfo.append("WorkScheduler event: UID = ")
+        .append(ToString(data.uid))
+        .append(", PID = ")
+        .append(ToString(data.pid))
+        .append(", work type = ")
+        .append(ToString(data.eventDataType))
+        .append(", work interval = ")
+        .append(ToString(data.eventDataExtra))
+        .append(", work state = ")
+        .append(ToString(data.state))
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::string eventState;
+    if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
+        eventState = "Call active";
+    } else {
+        eventState = "Call terminated";
+    }
+    debugInfo.append("Phone event: phone state = ")
+        .append(eventState)
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::string eventState;
+    if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
+        eventState = "ON";
+    } else {
+        eventState = "OFF";
+    }
+    debugInfo.append("Flashlight event: UID = ")
+        .append(ToString(data.uid))
+        .append(", PID = ")
+        .append(ToString(data.pid))
+        .append(", flashlight state = ")
+        .append(eventState)
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
 void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
@@ -123,91 +257,26 @@ void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
     std::string debugInfo;
     switch (data.type) {
         case StatsUtils::STATS_TYPE_THERMAL:
-        {
-            debugInfo.append("Thermal event: Part name = ")
-                .append(data.eventDataName)
-                .append(", temperature = ")
-                .append(ToString(data.eventDataExtra))
-                .append("degrees Celsius, boot time after boot = ")
-                .append(ToString(bootTimeMs))
-                .append("ms\n");
+            handleThermalInfo(data, bootTimeMs, debugInfo);
             break;
-        }
         case StatsUtils::STATS_TYPE_BATTERY:
-        {
-            debugInfo.append("Battery event: Battery level = ")
-                .append(ToString(data.level))
-                .append(", current now = ")
-                .append(ToString(data.eventDataExtra))
-                .append("ma, boot time after boot = ")
-                .append(ToString(bootTimeMs))
-                .append("ms\n");
+            handleBatteryInfo(data, bootTimeMs, debugInfo);
             break;
-        }
         case StatsUtils::STATS_TYPE_WORKSCHEDULER:
-        {
-            debugInfo.append("WorkScheduler event: UID = ")
-                .append(ToString(data.uid))
-                .append(", PID = ")
-                .append(ToString(data.pid))
-                .append(", work type = ")
-                .append(ToString(data.eventDataType))
-                .append(", work interval = ")
-                .append(ToString(data.eventDataExtra))
-                .append(", work state = ")
-                .append(ToString(data.state))
-                .append(", boot time after boot = ")
-                .append(ToString(bootTimeMs))
-                .append("ms\n");
+            handleWorkschedulerInfo(data, bootTimeMs, debugInfo);
             break;
-        }
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
-        {
-            std::string eventState;
-            if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
-                eventState = "LOCK";
-            } else {
-                eventState = "UNLOCK";
-            }
-            debugInfo.append("Wakelock event: UID = ")
-                .append(ToString(data.uid))
-                .append(", PID = ")
-                .append(ToString(data.pid))
-                .append(", wakelock type = ")
-                .append(ToString(data.eventDataType))
-                .append(", wakelock name = ")
-                .append(data.eventDataName)
-                .append(", wakelock state = ")
-                .append(eventState)
-                .append(", boot time after boot = ")
-                .append(ToString(bootTimeMs))
-                .append("ms\n");
+            handleWakelockInfo(data, bootTimeMs, debugInfo);
             break;
-        }
         case StatsUtils::STATS_TYPE_SCREEN_ON:
-        {
-            std::string screenState;
-            if (data.state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
-                screenState = "off";
-            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_ON) {
-                screenState = "on";
-            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_DIM) {
-                screenState = "dim";
-            } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_SUSPEND) {
-                screenState = "suspend";
-            } else {
-                screenState = "unknown state";
-            }
-
-            debugInfo.append("Display event: Screen is in ")
-                .append(screenState)
-                .append(" state, brigntness level = ")
-                .append(ToString(data.level))
-                .append(", boot time after boot = ")
-                .append(ToString(bootTimeMs))
-                .append("ms\n");
+            handleDispalyInfo(data, bootTimeMs, debugInfo);
             break;
-        }
+        case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
+            handlePhoneInfo(data, bootTimeMs, debugInfo);
+            break;
+        case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
+            handleFlashlightInfo(data, bootTimeMs, debugInfo);
+            break;
         default:
             STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
             break;

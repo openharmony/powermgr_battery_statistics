@@ -57,7 +57,7 @@ void CpuEntity::Calculate(int32_t uid)
     // Get cpu time related with uid
     std::vector<long> cpuTimeVec = cpuReader_->GetUidCpuTimeMs(uid);
     long cpuTimeMs = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < cpuTimeVec.size(); i++) {
+    for (uint32_t i = 0; i < cpuTimeVec.size(); i++) {
         cpuTimeMs += cpuTimeVec[i];
     }
     auto cpuTimeIter = cpuTimeMap_.find(uid);

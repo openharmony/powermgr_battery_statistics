@@ -34,10 +34,11 @@ public:
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 private:
     int32_t GetBatteryStatsStub(MessageParcel& reply);
-    double GetAppStatsMahStub(MessageParcel& data, MessageParcel& reply);
-    double GetAppStatsPercentStub(MessageParcel& data, MessageParcel& reply);
-    double GetPartStatsMahStub(MessageParcel& data, MessageParcel& reply);
-    double GetPartStatsPercentStub(MessageParcel& data, MessageParcel& reply);
+    int32_t SetOnBatteryStub(MessageParcel& data);
+    int32_t GetAppStatsMahStub(MessageParcel& data, MessageParcel& reply);
+    int32_t GetAppStatsPercentStub(MessageParcel& data, MessageParcel& reply);
+    int32_t GetPartStatsMahStub(MessageParcel& data, MessageParcel& reply);
+    int32_t GetPartStatsPercentStub(MessageParcel& data, MessageParcel& reply);
     int32_t GetTotalTimeSecondStub(MessageParcel& data, MessageParcel& reply);
     int32_t GetTotalDataBytesStub(MessageParcel& data, MessageParcel& reply);
     int32_t ResetStub();

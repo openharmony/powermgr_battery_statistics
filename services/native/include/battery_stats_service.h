@@ -49,6 +49,7 @@ public:
     uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE)
         override;
     void Reset() override;
+    void SetOnBattery(bool isOnBattery) override;
     std::shared_ptr<BatteryStatsCore> GetBatteryStatsCore() const;
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;

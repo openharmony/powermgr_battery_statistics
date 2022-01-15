@@ -232,11 +232,13 @@ uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& st
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     uint64_t timeSecond = StatsUtils::DEFAULT_VALUE;
     if (uid > StatsUtils::INVALID_VALUE) {
-        timeSecond = round(core_->GetTotalTimeMs(uid, statsType) / StatsUtils::MS_IN_SECOND);
+        double timeMs = static_cast<double>(core_->GetTotalTimeMs(uid, statsType));
+        timeSecond = round(timeMs / StatsUtils::MS_IN_SECOND);
     } else {
-        timeSecond = round(core_->GetTotalTimeMs(statsType) / StatsUtils::MS_IN_SECOND);
+        double timeMs = static_cast<double>(core_->GetTotalTimeMs(statsType));
+        timeSecond = round(timeMs / StatsUtils::MS_IN_SECOND);
     }
-
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Get time: %{public}" PRId64 " seconds", timeSecond);
     return timeSecond;
 }
 
@@ -269,6 +271,13 @@ std::shared_ptr<BatteryStatsDetector> BatteryStatsService::GetBatteryStatsDetect
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return detector_;
+}
+
+void BatteryStatsService::SetOnBattery(bool isOnBattery)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter service reset");
+    StatsHelper::SetOnBattery(isOnBattery);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit service reset");
 }
 } // namespace PowerMgr
 } // namespace OHOS

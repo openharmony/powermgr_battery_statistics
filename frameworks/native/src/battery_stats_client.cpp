@@ -98,6 +98,15 @@ double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
     return appStatsMah;
 }
 
+void BatteryStatsClient::SetOnBattery(bool isOnBattery)
+{
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
+    STATS_RETURN_IF(Connect() != ERR_OK);
+    proxy_->SetOnBattery(isOnBattery);
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling SetOnBattery Success!");
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
+}
+
 double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");

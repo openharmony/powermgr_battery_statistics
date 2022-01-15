@@ -15,7 +15,7 @@
         470
     ],
     "radio_scan": 30,
-    "radio_active": 0.1,
+    "radio_active": 50,
     "radio_rx": 150,
     "radio_tx": 180,
     "camera_on": 810,

@@ -58,6 +58,9 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         case static_cast<int>(IBatteryStats::BATTERY_STATS_RESET): {
             return ResetStub();
         }
+        case static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT): {
+            return SetOnBatteryStub(data);
+        }
         default: {
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
@@ -113,7 +116,7 @@ int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParc
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t uid = data.ReadInt32();
@@ -126,7 +129,7 @@ double BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& 
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t uid = data.ReadInt32();
@@ -139,7 +142,7 @@ double BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParc
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t typeProxy = data.ReadInt32();
@@ -153,7 +156,7 @@ double BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel&
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t typeProxy = data.ReadInt32();
@@ -171,6 +174,14 @@ int32_t BatteryStatsStub::ResetStub()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
     Reset();
+    return ERR_OK;
+}
+
+int32_t BatteryStatsStub::SetOnBatteryStub(MessageParcel& data)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    bool isOnBattery = data.ReadBool();
+    SetOnBattery(isOnBattery);
     return ERR_OK;
 }
 } // namespace PowerMgr

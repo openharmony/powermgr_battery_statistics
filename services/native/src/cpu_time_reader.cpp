@@ -15,6 +15,7 @@
 
 #include "cpu_time_reader.h"
 
+#include <fstream>
 #include "string_ex.h"
 
 #include "battery_stats_service.h"

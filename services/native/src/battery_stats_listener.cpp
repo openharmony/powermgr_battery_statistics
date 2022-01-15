@@ -49,6 +49,8 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processWorkschedulerEvent(data, root);
         } else if (root["name_"].asString() == "POWER_PHONE") {
             processPhoneEvent(data, root);
+        } else if (root["name_"].asString() == "POWER_FLASHLIGHT") {
+            processFlashlightEvent(data, root);
         }
         detector->HandleStatsChangedEvent(data);
     } else {
@@ -60,6 +62,26 @@ void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const 
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
+    if (!root["STATE"].asString().empty()) {
+        if (root["STATE"].asString() == "1") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (root["STATE"].asString() == "0") {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_FLASHLIGHT_ON;
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
+    }
     if (!root["STATE"].asString().empty()) {
         if (root["STATE"].asString() == "1") {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;

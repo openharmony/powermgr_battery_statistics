@@ -16,7 +16,5 @@ import("//build/test.gni")
 
 group("systemtest") {
   testonly = true
-  deps = [
-    "systemtest:systemtest_batterystats",
-  ]
+  deps = [ "systemtest:systemtest_batterystats" ]
 }

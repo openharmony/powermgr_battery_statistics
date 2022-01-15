@@ -47,3 +47,9 @@ STATE: {type: INT32, desc: workscheduler state}
 POWER_PHONE:
 __BASE: {type: STATISTIC, level: MINOR, tag: battery_statistics, desc: ide timer message}
 STATE: {type: INT32, desc: phone call state}
+
+POWER_FLASHLIGHT:
+__BASE: {type: STATISTIC, level: MINOR, tag: battery_statistics, desc: ide timer message}
+PID: {type: INT32, desc: application pid}
+UID: {type: INT32, desc: application uid}
+STATE: {type: INT32, desc: phone call state}

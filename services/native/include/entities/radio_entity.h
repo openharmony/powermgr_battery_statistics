@@ -16,6 +16,8 @@
 #ifndef RADIO_ENTITY_H
 #define RADIO_ENTITY_H
 
+#include <map>
+
 #include "entities/battery_stats_entity.h"
 
 namespace OHOS {

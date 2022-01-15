@@ -32,6 +32,7 @@ public:
     DISALLOW_COPY_AND_MOVE(BatteryStatsProxy);
 
     virtual BatteryStatsInfoList GetBatteryStats() override;
+    virtual void SetOnBattery(bool isOnBattery) override;
     virtual double GetAppStatsMah(const int32_t& uid) override;
     virtual double GetAppStatsPercent(const int32_t& uid) override;
     virtual double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type) override;

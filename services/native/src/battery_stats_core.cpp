@@ -14,6 +14,7 @@
  */
 #include "battery_stats_core.h"
 
+#include <fstream>
 #include <map>
 
 #include <json/json.h>
@@ -215,8 +216,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
 
     switch (statsType) {
         case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_TX:
-        {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_TX: {
             auto timer = bluetoothEntity_->GetOrCreateTimer(uid, statsType);
             auto counter = bluetoothEntity_->GetOrCreateCounter(statsType, uid);
 
@@ -225,8 +225,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
             break;
         }
         case StatsUtils::STATS_TYPE_WIFI_RX:
-        case StatsUtils::STATS_TYPE_WIFI_TX:
-        {
+        case StatsUtils::STATS_TYPE_WIFI_TX: {
             auto timer = wifiEntity_->GetOrCreateTimer(uid, statsType);
             auto counter = wifiEntity_->GetOrCreateCounter(statsType, uid);
 
@@ -235,8 +234,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
             break;
         }
         case StatsUtils::STATS_TYPE_RADIO_RX:
-        case StatsUtils::STATS_TYPE_RADIO_TX:
-        {
+        case StatsUtils::STATS_TYPE_RADIO_TX: {
             auto timer = radioEntity_->GetOrCreateTimer(uid, statsType);
             auto counter = radioEntity_->GetOrCreateCounter(statsType, uid);
 
@@ -251,7 +249,8 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit for data and duration updating");
 }
 
-void BatteryStatsCore::UpdateConnectiviyStats(StatsUtils::StatsType statsType,StatsUtils::StatsState state, int32_t uid)
+void BatteryStatsCore::UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
+    int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     switch (statsType) {
@@ -276,7 +275,7 @@ void BatteryStatsCore::UpdateConnectiviyStats(StatsUtils::StatsType statsType,St
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void BatteryStatsCore::UpdateCommonStats(StatsUtils::StatsType statsType,StatsUtils::StatsState state, int32_t uid)
+void BatteryStatsCore::UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     switch (statsType) {
@@ -467,15 +466,11 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
 
     switch (state) {
         case StatsUtils::STATS_STATE_ACTIVATED:
-        {
             timer->StartRunning();
             break;
-        }
         case StatsUtils::STATS_STATE_DEACTIVATED:
-        {
             timer->StopRunning();
             break;
-        }
         default:
             break;
     }
@@ -650,7 +645,7 @@ double BatteryStatsCore::GetAppStatsPercent(const int32_t& uid)
     }
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
         if ((*iter)->GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_APP) {
-            if ((*iter)->GetUid() == uid) {
+            if ((*iter)->GetUid() == uid && totalConsumption != StatsUtils::DEFAULT_VALUE) {
                 appStatsPercent = (*iter)->GetPower() / totalConsumption;
                 break;
             }
@@ -679,12 +674,8 @@ double BatteryStatsCore::GetPartStatsPercent(const BatteryStatsInfo::Consumption
     double partStatsPercent = StatsUtils::DEFAULT_VALUE;
     auto statsInfoList = GetBatteryStats();
     auto totalConsumption = BatteryStatsEntity::GetTotalPowerMah();
-    if (totalConsumption <= StatsUtils::DEFAULT_VALUE) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "No consumption got, return 0");
-        return partStatsPercent;
-    }
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
-        if ((*iter)->GetConsumptionType() == type) {
+        if ((*iter)->GetConsumptionType() == type && totalConsumption != StatsUtils::DEFAULT_VALUE) {
             partStatsPercent = (*iter)->GetPower() / totalConsumption;
             break;
         }

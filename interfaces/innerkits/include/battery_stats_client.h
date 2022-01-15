@@ -35,6 +35,7 @@ class BatteryStatsClient final : public DelayedRefSingleton<BatteryStatsClient> 
 public:
     DISALLOW_COPY_AND_MOVE(BatteryStatsClient);
     BatteryStatsInfoList GetBatteryStats();
+    void SetOnBattery(bool isOnBattery);
     double GetAppStatsMah(const int32_t& uid);
     double GetAppStatsPercent(const int32_t& uid);
     double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);

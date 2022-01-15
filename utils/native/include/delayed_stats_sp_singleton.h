@@ -20,7 +20,7 @@
 #include <mutex>
 
 #include "nocopyable.h"
-#include <refbase.h>
+#include "refbase.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -29,7 +29,7 @@ public: \
     ~MyClass(); \
 private: \
     friend DelayedStatsSpSingleton<MyClass>; \
-    MyClass();
+    MyClass(); \
 
 template<typename T>
 class DelayedStatsSpSingleton : public NoCopyable {

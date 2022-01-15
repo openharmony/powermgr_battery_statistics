@@ -16,6 +16,8 @@
 #ifndef USER_ENTITY_H
 #define USER_ENTITY_H
 
+#include <map>
+
 #include "entities/battery_stats_entity.h"
 #include "entities/uid_entity.h"
 

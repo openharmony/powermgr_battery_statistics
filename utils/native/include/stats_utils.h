@@ -16,7 +16,6 @@
 #ifndef STATS_UTILS_H
 #define STATS_UTILS_H
 
-#include <map>
 #include <string>
 
 namespace OHOS {

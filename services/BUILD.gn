@@ -20,6 +20,7 @@ config("batterystats_private_config") {
 config("batterystats_public_config") {
   include_dirs = [
     "native/include",
+    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
     "//foundation/appexecfwk/standard/kits/appkit/native/app/include",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
@@ -65,12 +66,12 @@ ohos_shared_library("batterystats_service") {
   public_configs = [ ":batterystats_public_config" ]
 
   deps = [
-    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
-    "//foundation/appexecfwk/standard/kits:appkit_native",
+    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//foundation/appexecfwk/standard/kits:appkit_native",
     "//third_party/jsoncpp",
     "//utils/native/base:utils",
   ]
@@ -81,14 +82,14 @@ ohos_shared_library("batterystats_service") {
     "appexecfwk_standard:appexecfwk_base",
     "appexecfwk_standard:appexecfwk_core",
     "appexecfwk_standard:libeventhandler",
+    "battery_manager_native:batterysrv_client",
     "ces_standard:cesfwk_innerkits",
-    "hiviewdfx_hilog_native:libhilog",
     "hisysevent_native:libhisysevent",
+    "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "os_account_standard:libaccountkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
-    "battery_manager_native:batterysrv_client",
-    "os_account_standard:libaccountkits",
   ]
 
   part_name = "${batterystats_part_name}"

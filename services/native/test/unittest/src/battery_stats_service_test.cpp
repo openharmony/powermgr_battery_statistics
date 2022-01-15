@@ -35,18 +35,22 @@ using namespace std;
 
 void BatteryStatsServiceTest::SetUpTestCase(void)
 {
+    GTEST_LOG_(INFO) << __func__;
 }
 
 void BatteryStatsServiceTest::TearDownTestCase(void)
 {
+    GTEST_LOG_(INFO) << __func__;
 }
 
 void BatteryStatsServiceTest::SetUp(void)
 {
+    GTEST_LOG_(INFO) << __func__;
 }
 
 void BatteryStatsServiceTest::TearDown(void)
 {
+    GTEST_LOG_(INFO) << __func__;
 }
 
 /**
