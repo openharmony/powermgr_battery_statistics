@@ -1,0 +1,60 @@
+{
+    "name": "@ohos/powermgr_battery_statistics",
+    "version": "",
+    "description": "耗电统计服务，包括硬件耗电统计和软件耗电统计。",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "Apache V2",
+    "repository": "https://gitee.com/openharmony/powermgr_battery_statistics",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "base"
+    ],
+    "keywords": [
+        "powermgr",
+        "battery",
+        "statistics"
+    ],
+    "envs": [],
+    "dirs": [],
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {
+        "destPath": "base/powermgr/battery_statistics"
+    },
+    "component": {
+        "name": "battery_statistics",
+        "subsystem": "powermgr",
+        "syscap": [
+            "SystemCapability.PowerMgr.BatteryStatistics"
+        ],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
