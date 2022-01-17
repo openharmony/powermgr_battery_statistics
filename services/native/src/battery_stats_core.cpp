@@ -86,10 +86,6 @@ void BatteryStatsCore::CreateAppEntity()
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created camera entity");
         cameraEntity_ = std::make_shared<BluetoothEntity>();
     }
-    if (cpuEntity_ == nullptr) {
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Created cpu entity");
-        cpuEntity_ = std::make_shared<CpuEntity>();
-    }
     if (flashlightEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created flashlight entity");
         flashlightEntity_ = std::make_shared<FlashlightEntity>();
@@ -113,6 +109,10 @@ void BatteryStatsCore::CreateAppEntity()
     if (wakelockEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created wakelock entity");
         wakelockEntity_ = std::make_shared<WakelockEntity>();
+    }
+    if (cpuEntity_ == nullptr) {
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Created cpu entity");
+        cpuEntity_ = std::make_shared<CpuEntity>();
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
@@ -523,13 +523,28 @@ void BatteryStatsCore::DumpInfo(std::string& result)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     result.append("BATTERY STATS DUMP (hidumper -batterystats):\n");
-    bluetoothEntity_->DumpInfo(result);
-    idleEntity_->DumpInfo(result);
-    phoneEntity_->DumpInfo(result);
-    radioEntity_->DumpInfo(result);
-    screenEntity_->DumpInfo(result);
-    wifiEntity_->DumpInfo(result);
-    uidEntity_->DumpInfo(result);
+    if (bluetoothEntity_) {
+        bluetoothEntity_->DumpInfo(result);
+    }
+    if (idleEntity_) {
+        idleEntity_->DumpInfo(result);
+    }
+    if (phoneEntity_) {
+        phoneEntity_->DumpInfo(result);
+    }
+    if (radioEntity_) {
+        radioEntity_->DumpInfo(result);
+    }
+    if (screenEntity_) {
+        screenEntity_->DumpInfo(result);
+    }
+    if (wifiEntity_) {
+        wifiEntity_->DumpInfo(result);
+    }
+    if (uidEntity_) {
+        uidEntity_->DumpInfo(result);
+    }
+    GetDebugInfo(result);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 

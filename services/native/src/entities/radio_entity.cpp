@@ -432,8 +432,9 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
     }
 }
 
-void RadioEntity::DumpInfo(std::string& result)
+void RadioEntity::DumpInfo(std::string& result, int32_t uid)
 {
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     result.append("Radio on time:")
         .append("\n");
     for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
@@ -447,6 +448,7 @@ void RadioEntity::DumpInfo(std::string& result)
         .append(ToString(scanTime))
         .append("ms")
         .append("\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

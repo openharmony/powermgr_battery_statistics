@@ -238,7 +238,6 @@ uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& st
         double timeMs = static_cast<double>(core_->GetTotalTimeMs(statsType));
         timeSecond = round(timeMs / StatsUtils::MS_IN_SECOND);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Get time: %{public}" PRId64 " seconds", timeSecond);
     return timeSecond;
 }
 

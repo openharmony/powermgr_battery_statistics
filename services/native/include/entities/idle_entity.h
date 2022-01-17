@@ -30,7 +30,7 @@ public:
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     void Reset() override;
-    void DumpInfo(std::string& result) override;
+    void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
     double idleTotalPowerMah_;
     double cpuSuspendPowerMah_;

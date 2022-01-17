@@ -43,7 +43,7 @@ ErrCode StatisticsShellCommand::CreateCommandMap()
         {"dump", std::bind(&BatteryStatsService::Dump, bss, fd, argsInStr)}
     };
     return OHOS::ERR_OK;
-}  
+}
 
 ErrCode StatisticsShellCommand::CreateMessageMap()
 {

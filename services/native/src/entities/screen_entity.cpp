@@ -156,13 +156,15 @@ void ScreenEntity::Reset()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void ScreenEntity::DumpInfo(std::string& result)
+void ScreenEntity::DumpInfo(std::string& result, int32_t uid)
 {
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long onTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON);
     result.append("Screen on time: ")
         .append(ToString(onTime))
         .append("ms")
         .append("\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

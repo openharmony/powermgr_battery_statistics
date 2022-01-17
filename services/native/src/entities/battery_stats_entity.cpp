@@ -62,7 +62,7 @@ long BatteryStatsEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_
     return StatsUtils::DEFAULT_VALUE;
 }
 
-void BatteryStatsEntity::DumpInfo(std::string& result)
+void BatteryStatsEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to dump");
 }

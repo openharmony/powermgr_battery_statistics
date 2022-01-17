@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <unistd.h>
+#include <iostream>
 
 #include "display_info.h"
 #include "hisysevent.h"
@@ -320,4 +321,20 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
 
     EXPECT_TRUE(index != string::npos) << " BatteryStatsSysTest_005 fail due to no WorkScheduler debug info found";
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_005: test end";
+}
+
+/**
+ *
+ * @tc.name:  BatteryStatsSysTest_006
+ * @tc.desc: test Dump function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_006, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsSysTest_006: test start";
+    std::string result;
+    result.clear();
+    g_service->GetBatteryStatsCore()->DumpInfo(result);
+    EXPECT_TRUE(result != "") << " BatteryStatsSysTest_006 fail due to nothing";
+    GTEST_LOG_(INFO) << " BatteryStatsSysTest_006: test end";
 }

@@ -412,7 +412,7 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void UidEntity::DumpInfo(std::string& result)
+void UidEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
@@ -424,7 +424,10 @@ void UidEntity::DumpInfo(std::string& result)
         DumpForWifi(iter.first, result);
         DumpForRadio(iter.first, result);
         DumpForCommon(iter.first, result);
-        core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU)->DumpInfo(result);
+        auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
+        if (cpuEntity) {
+            cpuEntity->DumpInfo(result, iter.first);
+        }
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }

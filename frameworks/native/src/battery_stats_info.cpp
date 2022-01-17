@@ -221,7 +221,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
         case CONSUMPTION_TYPE_RADIO:
         case CONSUMPTION_TYPE_SCREEN:
         case CONSUMPTION_TYPE_WIFI:
-            ConvertTypeForPart(type);
+            result = ConvertTypeForPart(type);
             break;
         case CONSUMPTION_TYPE_USER:
         case CONSUMPTION_TYPE_APP:
@@ -232,7 +232,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
         case CONSUMPTION_TYPE_GPS:
         case CONSUMPTION_TYPE_CPU:
         case CONSUMPTION_TYPE_WAKELOCK:
-            ConvertTypeForApp(type);
+            result = ConvertTypeForApp(type);
             break;
         default:
             STATS_HILOGE(STATS_MODULE_INNERKIT, "Illegal ConsumptionType got");

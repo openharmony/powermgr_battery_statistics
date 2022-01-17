@@ -115,13 +115,15 @@ void PhoneEntity::Reset()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void PhoneEntity::DumpInfo(std::string& result)
+void PhoneEntity::DumpInfo(std::string& result, int32_t uid)
 {
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
     result.append("Phone active time: ")
         .append(ToString(time))
         .append("ms")
         .append("\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

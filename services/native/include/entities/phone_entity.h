@@ -32,7 +32,7 @@ public:
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
     void Reset() override;
-    void DumpInfo(std::string& result) override;
+    void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
     std::shared_ptr<StatsHelper::ActiveTimer> phoneTimer_;
     double phonePowerMah_;

@@ -53,6 +53,9 @@ long CpuEntity::GetCpuTimeMs(int32_t uid)
 void CpuEntity::Calculate(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    if (!cpuReader_->UpdateCpuTime()) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Update cpu time failed");
+    }
     double cpuTotalPowerMah = StatsUtils::DEFAULT_VALUE;
     // Get cpu time related with uid
     std::vector<long> cpuTimeVec = cpuReader_->GetUidCpuTimeMs(uid);
@@ -257,10 +260,12 @@ void CpuEntity::Reset()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-void CpuEntity::DumpInfo(std::string& result)
+void CpuEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    cpuReader_->DumpInfo(result);
+    if (cpuReader_) {
+        cpuReader_->DumpInfo(result, uid);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr

@@ -33,7 +33,7 @@ public:
         override;
     void UpdateUidMap(int32_t uid) override;
     void Reset() override;
-    void DumpInfo(std::string& result) override;
+    void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
     std::map<int32_t, double> uidPowerMap_;
     void AddtoStatsList(int32_t uid, double power);

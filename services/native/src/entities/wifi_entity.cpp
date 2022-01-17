@@ -458,13 +458,15 @@ double WifiEntity::GetWifiUidPower()
     return wifiUidPower;
 }
 
-void WifiEntity::DumpInfo(std::string& result)
+void WifiEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long time = wifiOnTimer_->GetRunningTimeMs();
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
     result.append("Wifi on time: ")
         .append(ToString(time))
         .append("ms")
         .append("\n");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS
