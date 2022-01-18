@@ -19,8 +19,8 @@
 #include <message_parcel.h>
 #include <string_ex.h>
 
-#include "battery_stats_utils.h"
 #include "stats_common.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -55,11 +55,11 @@ BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
     return infoList;
 }
 
-uint64_t BatteryStatsProxy::GetTotalTimeSecond(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "%{public}s.", __func__);
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -67,26 +67,27 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const std::string& hwId, const in
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - write descriptor failed!", __func__);
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
-    data.WriteCString(hwId.c_str());
-    data.WriteInt32(uid);
+    uint64_t time = StatsUtils::DEFAULT_VALUE;
+    STATS_WRITE_PARCEL_WITH_RET(data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETTIME), data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - Transact is failed, error code: %{public}d", __func__, ret);
     }
-    uint64_t time = BatteryStatsUtils::DEFAULT_VALUE;
-    time = reply.ReadUint64();
+
+    STATS_READ_PARCEL_WITH_RET(reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
     return time;
 }
 
-uint64_t BatteryStatsProxy::GetTotalDataBytes(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "%{public}s.", __func__);
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -94,18 +95,19 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const std::string& hwId, const int
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - write descriptor failed!", __func__);
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
-    data.WriteCString(hwId.c_str());
-    data.WriteInt32(uid);
+    uint64_t count = StatsUtils::DEFAULT_VALUE;
+    STATS_WRITE_PARCEL_WITH_RET(data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETDATA), data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - Transact is failed, error code: %{public}d", __func__, ret);
     }
-    uint64_t count = BatteryStatsUtils::DEFAULT_VALUE;
-    count = reply.ReadUint64();
+
+    STATS_READ_PARCEL_WITH_RET(reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
     return count;
 }
 
@@ -113,7 +115,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Enter");
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -121,7 +123,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Write descriptor failed!");
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
     data.WriteInt32(uid);
@@ -131,17 +133,40 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double appStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
-    appStatsMah = reply.ReadFloat();
+    double appStatsMah = StatsUtils::DEFAULT_VALUE;
+    appStatsMah = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return appStatsMah;
+}
+
+void BatteryStatsProxy::SetOnBattery(bool isOnBattery)
+{
+    STATS_HILOGD(STATS_MODULE_INNERKIT, "%{public}s.", __func__);
+    sptr<IRemoteObject> remote = Remote();
+    STATS_RETURN_IF(remote == nullptr);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - write descriptor failed!", __func__);
+        return;
+    }
+
+    data.WriteBool(isOnBattery);
+
+    int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT), data, reply, option);
+    if (ret != ERR_OK) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - Transact is failed, error code: %{public}d", __func__, ret);
+    }
 }
 
 double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Enter");
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -149,7 +174,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Write descriptor failed!");
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
     data.WriteInt32(uid);
@@ -159,17 +184,17 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double appStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
-    appStatsPercent = reply.ReadFloat();
+    double appStatsPercent = StatsUtils::DEFAULT_VALUE;
+    appStatsPercent = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return appStatsPercent;
 }
 
-double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Enter");
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -177,7 +202,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsTy
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Write descriptor failed!");
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
     data.WriteInt32(type);
@@ -187,17 +212,17 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsTy
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double partStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
-    partStatsMah = reply.ReadFloat();
+    double partStatsMah = StatsUtils::DEFAULT_VALUE;
+    partStatsMah = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return partStatsMah;
 }
 
-double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Enter");
     sptr<IRemoteObject> remote = Remote();
-    STATS_RETURN_IF_WITH_RET(remote == nullptr, BatteryStatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
@@ -205,7 +230,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::BatterySta
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Write descriptor failed!");
-        return BatteryStatsUtils::DEFAULT_VALUE;
+        return StatsUtils::DEFAULT_VALUE;
     }
 
     data.WriteInt32(type);
@@ -215,8 +240,8 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::BatterySta
         STATS_HILOGE(STATS_MODULE_INNERKIT, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double partStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
-    partStatsPercent = reply.ReadFloat();
+    double partStatsPercent = StatsUtils::DEFAULT_VALUE;
+    partStatsPercent = reply.ReadDouble();
     STATS_HILOGD(STATS_MODULE_INNERKIT, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return partStatsPercent;
 }

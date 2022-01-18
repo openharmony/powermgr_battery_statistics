@@ -15,25 +15,20 @@
 
 #include "battery_stats_parser.h"
 
+#include <fstream>
 #include "json/json.h"
 
 #include "stats_hilog_wrapper.h"
-#include "battery_stats_utils.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
 namespace {
 static const std::string POWER_AVERAGE_FILE = "/system/etc/profile/power_average.json";
 } // namespace
-
 bool BatteryStatsParser::Init()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    auto pmsptr = bss_.promote();
-    if (pmsptr == nullptr) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Initialization failed: promoting failure");
-        return false;
-    }
 
     if (!LoadAveragePowerFromFile()) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Initialization failed: loading average power file failure");
@@ -56,7 +51,7 @@ uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
         }
     }
     STATS_HILOGE(STATS_MODULE_SERVICE, "No related speed number, return 0");
-    return BatteryStatsUtils::DEFAULT_VALUE;
+    return StatsUtils::DEFAULT_VALUE;
 }
 
 bool BatteryStatsParser::LoadAveragePowerFromFile()
@@ -81,13 +76,13 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
         std::string type = *iter;
         Json::Value value = root[type];
 
-        if (type == BatteryStatsUtils::TYPE_CPU_CLUSTER) {
+        if (type == StatsUtils::CURRENT_CPU_CLUSTER) {
             clusterNum_ = value.size();
             STATS_HILOGD(STATS_MODULE_SERVICE, "Read cluster num: %{public}d", clusterNum_);
         }
 
-        if (type.find(BatteryStatsUtils::TYPE_CPU_SPEED) != std::string::npos) {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Read speed num: %{public}d", value.size());
+        if (type.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Read speed num: %{public}d", (int)value.size());
             speedNum_.push_back(value.size());
         }
 
@@ -110,21 +105,22 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
     return true;
 }
 
-double BatteryStatsParser::GetAveragePower(std::string type)
+double BatteryStatsParser::GetAveragePowerMa(std::string type)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGE(STATS_MODULE_SERVICE, "type = %{public}s", type.c_str());
     double average = 0.0;
     auto iter = averageMap_.find(type);
     if (iter != averageMap_.end()) {
         average = iter->second;
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Got average power: %{public}lf of %{public}s", average, type.c_str());
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Got average power: %{public}lfma of %{public}s", average, type.c_str());
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No average power of %{public}s found, return 0", type.c_str());
     }
     return average;
 }
 
-double BatteryStatsParser::GetAveragePower(std::string type, uint16_t level)
+double BatteryStatsParser::GetAveragePowerMa(std::string type, uint16_t level)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double average = 0.0;

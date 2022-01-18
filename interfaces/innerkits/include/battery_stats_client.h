@@ -18,14 +18,14 @@
 
 #include <memory>
 #include <mutex>
-#include <string>
 #include <singleton.h>
+#include <string>
 
 #include "iremote_object.h"
 
-#include "battery_stats_utils.h"
-#include "ibattery_stats.h"
 #include "battery_stats_info.h"
+#include "ibattery_stats.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -35,12 +35,13 @@ class BatteryStatsClient final : public DelayedRefSingleton<BatteryStatsClient> 
 public:
     DISALLOW_COPY_AND_MOVE(BatteryStatsClient);
     BatteryStatsInfoList GetBatteryStats();
+    void SetOnBattery(bool isOnBattery);
     double GetAppStatsMah(const int32_t& uid);
     double GetAppStatsPercent(const int32_t& uid);
-    double GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type);
-    double GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type);
-    uint64_t GetTotalTimeSecond(const std::string& hwId, const int32_t& uid = BatteryStatsUtils::INVALID_VALUE);
-    uint64_t GetTotalDataBytes(const std::string& hwId, const int32_t& uid = BatteryStatsUtils::INVALID_VALUE);
+    double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);
+    double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type);
+    uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
+    uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
     void Reset();
 private:
     class BatteryStatsDeathRecipient : public IRemoteObject::DeathRecipient {

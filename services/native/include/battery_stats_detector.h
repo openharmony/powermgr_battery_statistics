@@ -19,27 +19,33 @@
 #include <memory>
 #include <string>
 
-#include "battery_stats_utils.h"
-#include "battery_stats_service.h"
+#include "refbase.h"
+
 #include "stats_hilog_wrapper.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsService;
 class BatteryStatsDetector {
 public:
-    explicit BatteryStatsDetector(const wptr<BatteryStatsService>& bss) : bss_(bss)
+    explicit BatteryStatsDetector()
     {
         STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsDetector instance is created.");
     }
     ~BatteryStatsDetector() = default;
-    void HandleStatsChangedEvent(BatteryStatsUtils::StatsData data);
-    bool Init();
+    void HandleStatsChangedEvent(StatsUtils::StatsData data);
 private:
-    const wptr<BatteryStatsService> bss_;
-    bool isTimeRelated(BatteryStatsUtils::StatsDataType type);
-    bool isDurationRelated(BatteryStatsUtils::StatsDataType type);
-    bool isLevelRelated(BatteryStatsUtils::StatsDataType type);
+    bool isDurationRelated(StatsUtils::StatsType type);
+    bool isStateRelated(StatsUtils::StatsType type);
+    bool isDebugInfoRelated(StatsUtils::StatsType type);
+    void handleDebugInfo(StatsUtils::StatsData data);
+    void handleThermalInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleBatteryInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleWakelockInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
 };
 } // namespace PowerMgr
 } // namespace OHOS

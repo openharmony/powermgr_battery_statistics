@@ -14,13 +14,15 @@
  */
 
 #include "battery_stats_client.h"
-#include "battery_stats_proxy.h"
-#include "string_ex.h"
+
 #include "datetime_ex.h"
+#include "if_system_ability_manager.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
-#include "if_system_ability_manager.h"
+#include "string_ex.h"
 #include "system_ability_definition.h"
+
+#include "battery_stats_proxy.h"
 #include "stats_common.h"
 
 namespace OHOS {
@@ -89,37 +91,46 @@ BatteryStatsInfoList BatteryStatsClient::GetBatteryStats()
 double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    double appStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
+    double appStatsMah = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, appStatsMah);
     appStatsMah = proxy_->GetAppStatsMah(uid);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetAppStatsMah Success!");
     return appStatsMah;
 }
 
+void BatteryStatsClient::SetOnBattery(bool isOnBattery)
+{
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
+    STATS_RETURN_IF(Connect() != ERR_OK);
+    proxy_->SetOnBattery(isOnBattery);
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling SetOnBattery Success!");
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
+}
+
 double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    double appStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
+    double appStatsPercent = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, appStatsPercent);
     appStatsPercent = proxy_->GetAppStatsPercent(uid);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetAppStatsPercent Success!");
     return appStatsPercent;
 }
 
-double BatteryStatsClient::GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsClient::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    double partStatsMah = BatteryStatsUtils::DEFAULT_VALUE;
+    double partStatsMah = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, partStatsMah);
     partStatsMah = proxy_->GetPartStatsMah(type);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetPartStatsMah Success!");
     return partStatsMah;
 }
 
-double BatteryStatsClient::GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type)
+double BatteryStatsClient::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    double partStatsPercent = BatteryStatsUtils::DEFAULT_VALUE;
+    double partStatsPercent = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, partStatsPercent);
     partStatsPercent = proxy_->GetPartStatsPercent(type);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetPartStatsPercent Success!");
@@ -135,22 +146,22 @@ void BatteryStatsClient::Reset()
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
-uint64_t BatteryStatsClient::GetTotalTimeSecond(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsClient::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    uint64_t time = BatteryStatsUtils::DEFAULT_VALUE;
+    uint64_t time = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, time);
-    time = proxy_->GetTotalTimeSecond(hwId, uid);
+    time = proxy_->GetTotalTimeSecond(statsType, uid);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetTotalTimeSecond Success!");
     return time;
 }
 
-uint64_t BatteryStatsClient::GetTotalDataBytes(const std::string& hwId, const int32_t& uid)
+uint64_t BatteryStatsClient::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    uint64_t count = BatteryStatsUtils::DEFAULT_VALUE;
+    uint64_t count = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, count);
-    count = proxy_->GetTotalDataBytes(hwId, uid);
+    count = proxy_->GetTotalDataBytes(statsType, uid);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetTotalDataBytes Success!");
     return count;
 }

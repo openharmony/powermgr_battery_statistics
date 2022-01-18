@@ -16,18 +16,19 @@
 #ifndef BATTERY_STATS_SUBSCRIBER_H
 #define BATTERY_STATS_SUBSCRIBER_H
 
+#include "common_event_data.h"
 #include "common_event_subscriber.h"
 #include "common_event_subscribe_info.h"
-#include "common_event_data.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsSubscriber : public OHOS::EventFwk::CommonEventSubscriber {
+class BatteryStatsSubscriber : public EventFwk::CommonEventSubscriber {
 public:
-    explicit BatteryStatsSubscriber(const OHOS::EventFwk::CommonEventSubscribeInfo& subscribeInfo)
-        : OHOS::EventFwk::CommonEventSubscriber(subscribeInfo) {}
-    void OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data) override;
+    explicit BatteryStatsSubscriber(const EventFwk::CommonEventSubscribeInfo& subscribeInfo)
+        : EventFwk::CommonEventSubscriber(subscribeInfo) {}
+    virtual ~BatteryStatsSubscriber() {}
+    void OnReceiveEvent(const EventFwk::CommonEventData &data) override;
 };
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // BATTERY_STATS_SUBSCRIBER_H
+#endif // BATTERY_STATS 4_SUBSCRIBER_H

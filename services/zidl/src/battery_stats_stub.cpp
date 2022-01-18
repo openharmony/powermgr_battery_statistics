@@ -14,9 +14,11 @@
  */
 
 #include "battery_stats_stub.h"
+
 #include <string_ex.h>
-#include "stats_common.h"
+
 #include "battery_stats_info.h"
+#include "stats_common.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -56,6 +58,9 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         case static_cast<int>(IBatteryStats::BATTERY_STATS_RESET): {
             return ResetStub();
         }
+        case static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT): {
+            return SetOnBatteryStub(data);
+        }
         default: {
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
@@ -86,9 +91,10 @@ int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
 int32_t BatteryStatsStub::GetTotalTimeSecondStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
-    std::string hwId = data.ReadCString();
+    int32_t type = data.ReadInt32();
+    StatsUtils::StatsType statsType = StatsUtils::StatsType(type);
     int32_t uid = data.ReadInt32();
-    uint64_t ret = GetTotalTimeSecond(hwId, uid);
+    uint64_t ret = GetTotalTimeSecond(statsType, uid);
     if (!reply.WriteUint64(ret)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s - Write ret failed.", __func__);
         return false;
@@ -99,9 +105,10 @@ int32_t BatteryStatsStub::GetTotalTimeSecondStub(MessageParcel &data, MessagePar
 int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
-    std::string hwId = data.ReadCString();
+    int32_t type = data.ReadInt32();
+    StatsUtils::StatsType statsType = StatsUtils::StatsType(type);
     int32_t uid = data.ReadInt32();
-    uint64_t ret = GetTotalDataBytes(hwId, uid);
+    uint64_t ret = GetTotalDataBytes(statsType, uid);
     if (!reply.WriteUint64(ret)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s - Write ret failed.", __func__);
         return false;
@@ -109,7 +116,7 @@ int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParc
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t uid = data.ReadInt32();
@@ -122,7 +129,7 @@ double BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& 
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t uid = data.ReadInt32();
@@ -135,11 +142,11 @@ double BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParc
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t typeProxy = data.ReadInt32();
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeProxy);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsMah(type);
     if (!reply.WriteDouble(ret)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
@@ -149,11 +156,11 @@ double BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel&
     return ERR_OK;
 }
 
-double BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessageParcel& reply)
+int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     int32_t typeProxy = data.ReadInt32();
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeProxy);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsPercent(type);
     if (!reply.WriteDouble(ret)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
@@ -167,6 +174,14 @@ int32_t BatteryStatsStub::ResetStub()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
     Reset();
+    return ERR_OK;
+}
+
+int32_t BatteryStatsStub::SetOnBatteryStub(MessageParcel& data)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    bool isOnBattery = data.ReadBool();
+    SetOnBattery(isOnBattery);
     return ERR_OK;
 }
 } // namespace PowerMgr

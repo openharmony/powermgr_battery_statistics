@@ -21,39 +21,51 @@
 #include <parcel.h>
 #include <string>
 
-#include "battery_stats_utils.h"
+#include "battery_stats_info.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
 class BatteryStatsInfo : Parcelable {
 public:
-    enum BatteryStatsType {
-        STATS_TYPE_INVALID = -10,
-        STATS_TYPE_APP,
-        STATS_TYPE_BLUETOOTH,
-        STATS_TYPE_IDLE,
-        STATS_TYPE_PHONE,
-        STATS_TYPE_RADIO,
-        STATS_TYPE_SCREEN,
-        STATS_TYPE_USER,
-        STATS_TYPE_WIFI
+    enum ConsumptionType {
+        CONSUMPTION_TYPE_INVALID = -17,
+        CONSUMPTION_TYPE_APP,
+        CONSUMPTION_TYPE_BLUETOOTH,
+        CONSUMPTION_TYPE_IDLE,
+        CONSUMPTION_TYPE_PHONE,
+        CONSUMPTION_TYPE_RADIO,
+        CONSUMPTION_TYPE_SCREEN,
+        CONSUMPTION_TYPE_USER,
+        CONSUMPTION_TYPE_WIFI,
+        CONSUMPTION_TYPE_CAMERA,
+        CONSUMPTION_TYPE_FLASHLIGHT,
+        CONSUMPTION_TYPE_AUDIO,
+        CONSUMPTION_TYPE_SENSOR,
+        CONSUMPTION_TYPE_GPS,
+        CONSUMPTION_TYPE_CPU,
+        CONSUMPTION_TYPE_WAKELOCK
     };
 
     bool Marshalling(Parcel &parcel) const override;
     static std::shared_ptr<BatteryStatsInfo> Unmarshalling(Parcel &parcel);
     bool ReadFromParcel(Parcel &parcel);
     void SetUid(int32_t uid);
-    void SetType(BatteryStatsType type);
+    void SetUserId(int32_t userId);
+    void SetConsumptioType(ConsumptionType type);
     void SetPower(double power);
     int32_t GetUid();
-    BatteryStatsType GetType();
+    int32_t GetUserId();
+    ConsumptionType GetConsumptionType();
     double GetPower();
-    static BatteryStatsType CovertStatsType(std::string type);
+    static std::string ConvertConsumptionType(ConsumptionType type);
 private:
-    int32_t uid_ = BatteryStatsUtils::INVALID_VALUE;
-    BatteryStatsType type_ = STATS_TYPE_INVALID;
-    double power_ = BatteryStatsUtils::DEFAULT_VALUE;
-    static const std::map<std::string, BatteryStatsType> statsTypeMap_;
+    int32_t uid_ = StatsUtils::INVALID_VALUE;
+    int32_t userId_ = StatsUtils::INVALID_VALUE;
+    ConsumptionType type_ = CONSUMPTION_TYPE_INVALID;
+    double totalPowerMah_ = StatsUtils::DEFAULT_VALUE;
+    static std::string ConvertTypeForPart(ConsumptionType type);
+    static std::string ConvertTypeForApp(ConsumptionType type);
 };
 using BatteryStatsInfoList = std::list<std::shared_ptr<BatteryStatsInfo>>;
 } // namespace PowerMgr

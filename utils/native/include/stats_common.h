@@ -19,8 +19,8 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "stats_hilog_wrapper.h"
 #include "stats_errors.h"
+#include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {

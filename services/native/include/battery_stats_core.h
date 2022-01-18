@@ -16,175 +16,76 @@
 #ifndef BATTERY_STATS_CORE_H
 #define BATTERY_STATS_CORE_H
 
-#include <map>
+
 #include <memory>
 #include <string>
 
-#include "battery_stats_utils.h"
-#include "battery_stats_entity.h"
-#include "battery_stats_service.h"
+#include "refbase.h"
+
 #include "battery_stats_info.h"
 #include "cpu_time_reader.h"
+#include "entities/battery_stats_entity.h"
+#include "stats_helper.h"
 #include "stats_hilog_wrapper.h"
-#include "time_helper.h"
+#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsService;
 class BatteryStatsCore {
 public:
-    explicit BatteryStatsCore(const wptr<BatteryStatsService>& bss) : bss_(bss)
+    explicit BatteryStatsCore()
     {
         STATS_HILOGI(STATS_MODULE_SERVICE, "BatteryStatsCore instance is created.");
     }
     ~BatteryStatsCore() = default;
-    class ActiveTimer {
-    public:
-        ActiveTimer() = default;
-        ~ActiveTimer() = default;
-        void StartRunning()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-            if (isRunning_) {
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Active timer was already started");
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-                return;
-            }
-            startTimeMs_ = TimeHelper::GetOnBatteryBootTimeMs();
-            isRunning_ = true;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Active timer is started");
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-        }
-
-        void StopRunning()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-            if (!isRunning_) {
-                STATS_HILOGI(STATS_MODULE_SERVICE, "No related active timer is running");
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-                return;
-            }
-            auto stopTimeMs = TimeHelper::GetOnBatteryBootTimeMs();
-            totalTimeMs_ += stopTimeMs - startTimeMs_;
-            isRunning_ = false;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Active timer is stopped");
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-        }
-
-        long GetRunningTimeMs()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-            if (isRunning_) {
-                auto tmpStopTimeMs = TimeHelper::GetOnBatteryBootTimeMs();
-                totalTimeMs_ += tmpStopTimeMs - startTimeMs_;
-                startTimeMs_ = tmpStopTimeMs;
-            }
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got total Time in ms: %{public}ld", totalTimeMs_);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-            return totalTimeMs_;
-        }
-
-        void AddRunningTimeMs(long avtiveTime)
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-            if (avtiveTime > BatteryStatsUtils::DEFAULT_VALUE) {
-                totalTimeMs_ += avtiveTime;
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Add on active Time: %{public}ld", avtiveTime);
-            } else {
-                STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid active time, ignore");
-            }
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-        }
-
-        void Reset()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter active timer reset");
-            isRunning_ = false;
-            startTimeMs_ = TimeHelper::GetOnBatteryBootTimeMs();
-            totalTimeMs_ = BatteryStatsUtils::DEFAULT_VALUE;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit active timer reset");
-        }
-    private:
-        bool isRunning_ = false;
-        long startTimeMs_ = BatteryStatsUtils::DEFAULT_VALUE;
-        long totalTimeMs_ = BatteryStatsUtils::DEFAULT_VALUE;
-    };
-
-    class Counter {
-    public:
-        Counter() = default;
-        ~Counter() = default;
-        void AddCount(long count)
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-            if (count > BatteryStatsUtils::DEFAULT_VALUE) {
-                totalCount_ += count;
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Add data counts: %{public}ld, the total data counts is: %{public}ld",
-                    count, totalCount_);
-            } else {
-                STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid data counts");
-            }
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-        }
-
-        long GetCount()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got total data counts: %{public}ld", totalCount_);
-            return totalCount_;
-        }
-
-        void Reset()
-        {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Enter counter reset");
-            totalCount_ = BatteryStatsUtils::DEFAULT_VALUE;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit counter reset");
-        }
-    private:
-        long totalCount_ = BatteryStatsUtils::DEFAULT_VALUE;
-    };
-    void CreateBatteryStatsEntity(int32_t statType, int32_t id);
     void ComputePower();
     BatteryStatsInfoList GetBatteryStats();
     double GetAppStatsMah(const int32_t& uid);
     double GetAppStatsPercent(const int32_t& uid);
-    double GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type);
-    double GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type);
-    long GetTotalTimeMs(int32_t level, std::string hwId, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    long GetTotalTimeMs(std::string hwId, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    long GetTotalDataCount(std::string hwId, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    void UpdateStats(std::string hwId, BatteryStatsUtils::StatsDataState state, int32_t level,
-        int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    void UpdateStats(std::string hwId, bool isUsing, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    void UpdateStats(std::string hwId, long time, long data, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    std::shared_ptr<BatteryStatsEntity> GetEntity(int32_t id);
+    double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);
+    double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type);
+    long GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
+    long GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType,
+        int16_t level = StatsUtils::INVALID_VALUE);
+    long GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
+        int16_t level = StatsUtils::INVALID_VALUE, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateStats(StatsUtils::StatsType statsType, long time, long data, int32_t uid = StatsUtils::INVALID_VALUE);
+    std::shared_ptr<BatteryStatsEntity> GetEntity(const BatteryStatsInfo::ConsumptionType& type);
     bool SaveBatteryStatsData();
     bool LoadBatteryStatsData();
     void DumpInfo(std::string& result);
+    void UpdateDebugInfo(const std::string& info);
+    void GetDebugInfo(std::string& result);
     void Reset();
     bool Init();
 private:
-    using EntityMap = std::map<int32_t, std::shared_ptr<BatteryStatsEntity>>;
-    using TimerMap = std::map<std::string, std::shared_ptr<ActiveTimer>>;
-    using LevelTimerMap = std::map<std::string, std::vector<std::shared_ptr<ActiveTimer>>>;
-    using CounterMap = std::map<std::string, std::shared_ptr<Counter>>;
-    using UidTimerMap = std::map<int32_t, TimerMap>;
-    using UidCounterMap = std::map<int32_t, CounterMap>;
-    BatteryStatsInfoList statsInfoList_;
-    double totalConsumption = BatteryStatsUtils::DEFAULT_VALUE;
-    EntityMap statsEntityMap_;
-    TimerMap timerMap_;
-    LevelTimerMap levelTimerMap_;
-    CounterMap counterMap_;
-    UidTimerMap uidTimerMap_;
-    UidCounterMap uidCounterMap_;
-    int32_t lastScreenBrightnessbin_ = BatteryStatsUtils::INVALID_VALUE;
-    int32_t lastSignalStrengthbin_ = BatteryStatsUtils::INVALID_VALUE;
-    void AddUserEntity(int32_t uid);
-    std::shared_ptr<ActiveTimer> GetOrCreateTimer(std::string hwId, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    std::shared_ptr<ActiveTimer> GetOrCreateLevelTimer(std::string hwId, int32_t level);
-    std::shared_ptr<Counter> GetOrCreateCounter(std::string hwId, int32_t uid = BatteryStatsUtils::INVALID_VALUE);
-    const wptr<BatteryStatsService> bss_;
-    std::shared_ptr<CpuTimeReader> cpuReader_;
+    std::shared_ptr<BatteryStatsEntity> audioEntity_;
+    std::shared_ptr<BatteryStatsEntity> bluetoothEntity_;
+    std::shared_ptr<BatteryStatsEntity> cameraEntity_;
+    std::shared_ptr<BatteryStatsEntity> cpuEntity_;
+    std::shared_ptr<BatteryStatsEntity> flashlightEntity_;
+    std::shared_ptr<BatteryStatsEntity> gpsEntity_;
+    std::shared_ptr<BatteryStatsEntity> idleEntity_;
+    std::shared_ptr<BatteryStatsEntity> phoneEntity_;
+    std::shared_ptr<BatteryStatsEntity> radioEntity_;
+    std::shared_ptr<BatteryStatsEntity> screenEntity_;
+    std::shared_ptr<BatteryStatsEntity> sensorEntity_;
+    std::shared_ptr<BatteryStatsEntity> uidEntity_;
+    std::shared_ptr<BatteryStatsEntity> userEntity_;
+    std::shared_ptr<BatteryStatsEntity> wifiEntity_;
+    std::shared_ptr<BatteryStatsEntity> wakelockEntity_;
+    int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
+    int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
+    std::string debugInfo_;
+    void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
+        StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
+    void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
+    void UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
+    void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
+    void CreatePartEntity();
+    void CreateAppEntity();
 };
 } // namespace PowerMgr
 } // namespace OHOS

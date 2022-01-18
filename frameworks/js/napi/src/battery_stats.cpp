@@ -14,39 +14,41 @@
  */
 
 #include "battery_stats.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include "battery_stats_info.h"
-#include "battery_stats_client.h"
-#include "stats_hilog_wrapper.h"
+
 #include "napi/native_api.h"
-#include "napi/native_node_api.h"
+
+#include "battery_stats_client.h"
+#include "battery_stats_info.h"
+#include "stats_hilog_wrapper.h"
 
 using namespace OHOS::PowerMgr;
 
-static void SetValueInt32(const napi_env& env, const char* fieldStr, const int intValue, napi_value& result)
+static void SetValueInt32(const napi_env& env, std::string fieldStr, const int intValue, napi_value& result)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set int32_t value: %{public}d", intValue);
     napi_value value;
     napi_create_int32(env, intValue, &value);
-    napi_set_named_property(env, result, fieldStr, value);
+    napi_set_named_property(env, result, fieldStr.c_str(), value);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
-static void SetValueDouble(const napi_env& env, const char* fieldStr, const double doubleValue, napi_value& result)
+static void SetValueDouble(const napi_env& env, std::string fieldStr, const double doubleValue, napi_value& result)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set double value: %{public}lf", doubleValue);
     napi_value value;
     napi_create_double(env, doubleValue, &value);
-    napi_set_named_property(env, result, fieldStr, value);
+    napi_set_named_property(env, result, fieldStr.c_str(), value);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
-static void StatsInfoToJsArray(const napi_env& env, const std::vector<JsBatteryStatsInfo>& vecJsStatsInfo,
+static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatteryStats>& vecJsStatsInfo,
     const int idx, napi_value& arrayResult)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
@@ -65,14 +67,14 @@ static void StatsInfoToJsArray(const napi_env& env, const std::vector<JsBatteryS
 }
 
 static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppStatsInfos,
-    std::vector<JsBatteryStatsInfo>& vecJsStatsInfo)
+    std::vector<BatteryStats>& vecJsStatsInfo)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     for (auto& e : vecCppStatsInfos) {
-        JsBatteryStatsInfo jsStatsInfo;
+        BatteryStats jsStatsInfo;
 
         jsStatsInfo.uid_ = e->GetUid();
-        jsStatsInfo.type_ = e->GetType();
+        jsStatsInfo.type_ = e->GetConsumptionType();
         jsStatsInfo.power_ = e->GetPower();
         vecJsStatsInfo.push_back(jsStatsInfo);
     }
@@ -88,8 +90,8 @@ static bool GetBatteryStatsInfoList(const napi_env env, napi_value& result)
         return false;
     }
 
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", vecCppStatsInfos.size());
-    std::vector<JsBatteryStatsInfo> vecJsStatsInfo;
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", (int)vecCppStatsInfos.size());
+    std::vector<BatteryStats> vecJsStatsInfo;
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecJsStatsInfo);
     if (vecJsStatsInfo.size() > 0) {
         napi_status status = napi_create_array_with_length(env, vecJsStatsInfo.size(), &result);
@@ -209,7 +211,7 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
 
     AsyncCallbackInfo *asCallbackInfo =
-        new AsyncCallbackInfo{.env = env, .asyncWork = nullptr, .deferred = nullptr};
+        new AsyncCallbackInfo {.env = env, .asyncWork = nullptr, .deferred = nullptr};
 
     if (argc >= 1) {
         StatsInfoToCallBack(env, asCallbackInfo, argc, argv);
@@ -287,7 +289,7 @@ static napi_value GetPartStatsMah(napi_env env, napi_callback_info info)
     int32_t typeJs;
     napi_get_value_int32(env, argv[0], &typeJs);
 
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeJs);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeJs);
     double partStatsMah = BatteryStatsClient::GetInstance().GetPartStatsMah(type);
 
     napi_value result;
@@ -312,13 +314,68 @@ static napi_value GetPartStatsPercent(napi_env env, napi_callback_info info)
     int32_t typeJs;
     napi_get_value_int32(env, argv[0], &typeJs);
 
-    BatteryStatsInfo::BatteryStatsType type = BatteryStatsInfo::BatteryStatsType(typeJs);
+    BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeJs);
     double partStatsPercent = BatteryStatsClient::GetInstance().GetPartStatsPercent(type);
 
     napi_value result;
     napi_create_double(env, partStatsPercent, &result);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return result;
+}
+
+static napi_value EnumStatsTypeConstructor(napi_env env, napi_callback_info info)
+{
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
+    napi_value thisArg = nullptr;
+    void *data = nullptr;
+    napi_get_cb_info(env, info, nullptr, nullptr, &thisArg, &data);
+    napi_value global = nullptr;
+    napi_get_global(env, &global);
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
+    return thisArg;
+}
+
+static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
+{
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
+    napi_value invalid = nullptr;
+    napi_value app = nullptr;
+    napi_value bluetooth = nullptr;
+    napi_value idle = nullptr;
+    napi_value phone = nullptr;
+    napi_value radio = nullptr;
+    napi_value screen = nullptr;
+    napi_value user = nullptr;
+    napi_value wifi = nullptr;
+
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_INVALID, &invalid);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_APP, &app);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_BLUETOOTH, &bluetooth);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_IDLE, &idle);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_PHONE, &phone);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_RADIO, &radio);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_SCREEN, &screen);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_USER, &user);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_WIFI, &wifi);
+
+    napi_property_descriptor desc[] = {
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_INVALID", invalid),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_APP", app),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_BLUETOOTH", bluetooth),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_IDLE", idle),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_PHONE", phone),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_RADIO", radio),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_SCREEN", screen),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_USER", user),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_WIFI", wifi),
+    };
+    napi_value result = nullptr;
+    napi_define_class(env, "ConsumptionType", NAPI_AUTO_LENGTH, EnumStatsTypeConstructor, nullptr,
+        sizeof(desc) / sizeof(*desc), desc, &result);
+
+    napi_set_named_property(env, exports, "ConsumptionType", result);
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
+    return exports;
 }
 
 EXTERN_C_START
@@ -330,15 +387,16 @@ static napi_value BatteryStatsInit(napi_env env, napi_value exports)
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
 
     napi_property_descriptor desc[] = {
-        DECLARE_NAPI_FUNCTION("getAppPowerValue", GetBatteryStats),
-        DECLARE_NAPI_FUNCTION("getAppPowerPercent", GetAppStatsMah),
+        DECLARE_NAPI_FUNCTION("getBatteryStats", GetBatteryStats),
+        DECLARE_NAPI_FUNCTION("getAppPowerValue", GetAppStatsMah),
         DECLARE_NAPI_FUNCTION("getAppStatsPercent", GetAppStatsPercent),
         DECLARE_NAPI_FUNCTION("getHardwareUnitPowerValue", GetPartStatsMah),
         DECLARE_NAPI_FUNCTION("getHardwareUnitPowerPercent", GetPartStatsPercent),
     };
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 
+    CreateEnumStatsType(env, exports);
+    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return exports;
 }
 EXTERN_C_END

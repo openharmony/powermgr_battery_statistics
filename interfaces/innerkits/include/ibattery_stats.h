@@ -16,10 +16,10 @@
 #ifndef IBATTERY_STATS_H
 #define IBATTERY_STATS_H
 
-#include "battery_stats_info.h"
-
 #include "iremote_broker.h"
 #include "iremote_object.h"
+
+#include "battery_stats_info.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -33,15 +33,19 @@ public:
         BATTERY_STATS_GETPARTPER,
         BATTERY_STATS_GETTIME,
         BATTERY_STATS_GETDATA,
-        BATTERY_STATS_RESET
+        BATTERY_STATS_RESET,
+        BATTERY_STATS_SETONBATT,
     };
     virtual BatteryStatsInfoList GetBatteryStats() = 0;
+    virtual void SetOnBattery(bool isOnBattery) = 0;
     virtual double GetAppStatsMah(const int32_t& uid) = 0;
     virtual double GetAppStatsPercent(const int32_t& uid) = 0;
-    virtual double GetPartStatsMah(const BatteryStatsInfo::BatteryStatsType& type) = 0;
-    virtual double GetPartStatsPercent(const BatteryStatsInfo::BatteryStatsType& type) = 0;
-    virtual uint64_t GetTotalTimeSecond(const std::string& hwId, const int32_t& uid) = 0;
-    virtual uint64_t GetTotalDataBytes(const std::string& hwId, const int32_t& uid) = 0;
+    virtual double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type) = 0;
+    virtual double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type) = 0;
+    virtual uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType,
+        const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
+    virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType,
+        const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
     virtual void Reset() = 0;
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.powermgr.IBatteryStats");

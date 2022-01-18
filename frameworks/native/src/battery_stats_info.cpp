@@ -14,32 +14,23 @@
  */
 
 #include "battery_stats_info.h"
+
 #include <parcel.h>
 #include <string_ex.h>
-#include "stats_hilog_wrapper.h"
+
 #include "stats_common.h"
+#include "stats_hilog_wrapper.h"
 
 namespace OHOS {
 namespace PowerMgr {
-const std::map<std::string, BatteryStatsInfo::BatteryStatsType> BatteryStatsInfo::statsTypeMap_ = {
-    {BatteryStatsUtils::TYPE_BLUETOOTH_ON, BatteryStatsInfo::STATS_TYPE_BLUETOOTH},
-    {BatteryStatsUtils::TYPE_WIFI_ON, BatteryStatsInfo::STATS_TYPE_WIFI},
-    {BatteryStatsUtils::TYPE_RADIO_ON, BatteryStatsInfo::STATS_TYPE_RADIO},
-    {BatteryStatsUtils::TYPE_RADIO_SCAN, BatteryStatsInfo::STATS_TYPE_RADIO},
-    {BatteryStatsUtils::TYPE_RADIO_ACTIVE, BatteryStatsInfo::STATS_TYPE_PHONE},
-    {BatteryStatsUtils::TYPE_SCREEN_ON, BatteryStatsInfo::STATS_TYPE_SCREEN},
-    {BatteryStatsUtils::TYPE_SCREEN_BRIGHTNESS, BatteryStatsInfo::STATS_TYPE_SCREEN},
-    {BatteryStatsUtils::TYPE_CPU_IDLE, BatteryStatsInfo::STATS_TYPE_IDLE}
-};
-
 bool BatteryStatsInfo::Marshalling(Parcel& parcel) const
 {
     STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, uid_, false);
     STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, static_cast<int32_t>(type_), false);
-    STATS_WRITE_PARCEL_WITH_RET(parcel, Double, power_, false);
+    STATS_WRITE_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
     STATS_HILOGD(STATS_MODULE_INNERKIT, "uid: %{public}d.", uid_);
     STATS_HILOGD(STATS_MODULE_INNERKIT, "type: %{public}d.", type_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", power_);
+    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", totalPowerMah_);
     return true;
 }
 
@@ -65,11 +56,11 @@ bool BatteryStatsInfo::ReadFromParcel(Parcel &parcel)
     STATS_READ_PARCEL_WITH_RET(parcel, Int32, uid_, false);
     int32_t type = static_cast<int32_t>(0);
     STATS_READ_PARCEL_WITH_RET(parcel, Int32, type, false);
-    type_ = static_cast<BatteryStatsType>(type);
-    STATS_READ_PARCEL_WITH_RET(parcel, Double, power_, false);
+    type_ = static_cast<ConsumptionType>(type);
+    STATS_READ_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
     STATS_HILOGD(STATS_MODULE_INNERKIT, "uid: %{public}d.", uid_);
     STATS_HILOGD(STATS_MODULE_INNERKIT, "type: %{public}d.", type_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", power_);
+    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", totalPowerMah_);
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
     return true;
 }
@@ -77,12 +68,28 @@ bool BatteryStatsInfo::ReadFromParcel(Parcel &parcel)
 void BatteryStatsInfo::SetUid(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Set uid: %{public}d", uid);
-    uid_ = uid;
+    if (uid > StatsUtils::INVALID_VALUE) {
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set uid: %{public}d", uid);
+        uid_ = uid;
+    } else {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "Got illegal uid: %{public}d, ignore", uid);
+    }
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
-void BatteryStatsInfo::SetType(BatteryStatsType type)
+void BatteryStatsInfo::SetUserId(int32_t userId)
+{
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
+    if (userId > StatsUtils::INVALID_VALUE) {
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set uid: %{public}d", userId);
+        userId_ = userId;
+    } else {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "Got illegal user id: %{public}d, ignore", userId);
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
+}
+
+void BatteryStatsInfo::SetConsumptioType(ConsumptionType type)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Set type: %{public}d", type);
@@ -93,13 +100,13 @@ void BatteryStatsInfo::SetType(BatteryStatsType type)
 void BatteryStatsInfo::SetPower(double power)
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    if (uid_ > BatteryStatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Set power: %{public}lf to type: %{public}d for uid: %{public}d",
-            power, type_, uid_);
+    if (uid_ > StatsUtils::INVALID_VALUE) {
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Set power: %{public}lf to type: %{public}d", power, type_);
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+            ConvertConsumptionType(type_).c_str());
     }
-    power_ = power;
+    totalPowerMah_ = power;
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
@@ -110,7 +117,14 @@ int32_t BatteryStatsInfo::GetUid()
     return uid_;
 }
 
-BatteryStatsInfo::BatteryStatsType BatteryStatsInfo::GetType()
+int32_t BatteryStatsInfo::GetUserId()
+{
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Got user id: %{public}d", userId_);
+    return userId_;
+}
+
+BatteryStatsInfo::ConsumptionType BatteryStatsInfo::GetConsumptionType()
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Got type: %{public}d", type_);
@@ -120,23 +134,112 @@ BatteryStatsInfo::BatteryStatsType BatteryStatsInfo::GetType()
 double BatteryStatsInfo::GetPower()
 {
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Got power: %{public}lf", power_);
-    return power_;
-}
-
-BatteryStatsInfo::BatteryStatsType BatteryStatsInfo::CovertStatsType(std::string type)
-{
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    BatteryStatsType statsType = STATS_TYPE_INVALID;
-    auto iter = statsTypeMap_.find(type);
-    if (iter != statsTypeMap_.end()) {
-        statsType = iter->second;
-        STATS_HILOGD(STATS_MODULE_INNERKIT, "Covert %{public}s to %{public}d", type.c_str(), statsType);
+    if (uid_ > StatsUtils::INVALID_VALUE) {
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Got APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "Covert failed for %{public}s, return %{public}d", type.c_str(), statsType);
+        STATS_HILOGI(STATS_MODULE_INNERKIT, "Got power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+            ConvertConsumptionType(type_).c_str());
     }
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
-    return statsType;
+    return totalPowerMah_;
+}
+
+std::string BatteryStatsInfo::ConvertTypeForPart(ConsumptionType type)
+{
+    std::string result = "";
+    switch (type) {
+        case CONSUMPTION_TYPE_BLUETOOTH:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_BLUETOOTH);
+            break;
+        case CONSUMPTION_TYPE_IDLE:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_IDLE);
+            break;
+        case CONSUMPTION_TYPE_PHONE:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_PHONE);
+            break;
+        case CONSUMPTION_TYPE_RADIO:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_RADIO);
+            break;
+        case CONSUMPTION_TYPE_SCREEN:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_SCREEN);
+            break;
+        case CONSUMPTION_TYPE_WIFI:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_WIFI);
+            break;
+        default:
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
+}
+
+std::string BatteryStatsInfo::ConvertTypeForApp(ConsumptionType type)
+{
+    std::string result = "";
+    switch (type) {
+        case CONSUMPTION_TYPE_USER:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_USER);
+            break;
+        case CONSUMPTION_TYPE_APP:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_APP);
+            break;
+        case CONSUMPTION_TYPE_CAMERA:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_CAMERA);
+            break;
+        case CONSUMPTION_TYPE_FLASHLIGHT:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_FLASHLIGHT);
+            break;
+        case CONSUMPTION_TYPE_AUDIO:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_AUDIO);
+            break;
+        case CONSUMPTION_TYPE_SENSOR:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_SENSOR);
+            break;
+        case CONSUMPTION_TYPE_GPS:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_GPS);
+            break;
+        case CONSUMPTION_TYPE_CPU:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_CPU);
+            break;
+        case CONSUMPTION_TYPE_WAKELOCK:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_WAKELOCK);
+            break;
+        default:
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
+}
+
+std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
+{
+    std::string result = "";
+    switch (type) {
+        case CONSUMPTION_TYPE_BLUETOOTH:
+        case CONSUMPTION_TYPE_IDLE:
+        case CONSUMPTION_TYPE_PHONE:
+        case CONSUMPTION_TYPE_RADIO:
+        case CONSUMPTION_TYPE_SCREEN:
+        case CONSUMPTION_TYPE_WIFI:
+            result = ConvertTypeForPart(type);
+            break;
+        case CONSUMPTION_TYPE_USER:
+        case CONSUMPTION_TYPE_APP:
+        case CONSUMPTION_TYPE_CAMERA:
+        case CONSUMPTION_TYPE_FLASHLIGHT:
+        case CONSUMPTION_TYPE_AUDIO:
+        case CONSUMPTION_TYPE_SENSOR:
+        case CONSUMPTION_TYPE_GPS:
+        case CONSUMPTION_TYPE_CPU:
+        case CONSUMPTION_TYPE_WAKELOCK:
+            result = ConvertTypeForApp(type);
+            break;
+        default:
+            STATS_HILOGE(STATS_MODULE_INNERKIT, "Illegal ConsumptionType got");
+            break;
+    }
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    return result;
 }
 } // namespace PowerMgr
 } // namespace OHOS

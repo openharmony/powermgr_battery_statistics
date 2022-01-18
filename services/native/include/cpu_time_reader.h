@@ -31,7 +31,7 @@ public:
     long GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t speed);
     bool UpdateCpuTime();
     std::vector<long> GetUidCpuTimeMs(int32_t uid);
-    void DumpInfo(std::string& result);
+    void DumpInfo(std::string& result, int32_t uid);
 
 private:
     uint32_t wakelockCounts_ = 0;
@@ -45,10 +45,24 @@ private:
     std::map<int32_t, std::vector<long>> lastUidTimeMap_;
     std::map<uint16_t, uint16_t> clustersMap_;
     bool ReadUidCpuActiveTime();
+    bool ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid);
     bool ReadUidCpuClusterTime();
+    void ReadPolicy(std::vector<uint16_t>& clusters, std::string& line);
+    bool ReadClusterTimeIncrement(std::vector<long>& clusterTime, std::vector<long>& increments, int32_t uid,
+        std::vector<uint16_t>& clusters, std::string& timeLine);
     bool ReadUidCpuFreqTime();
+    bool ReadFreqTimeIncrement(std::map<uint32_t, std::vector<long>>& speedTime,
+        std::map<uint32_t, std::vector<long>>& increments, int32_t uid, std::vector<std::string>& splitedTime);
+    bool ProcessFreqTime(std::map<uint32_t, std::vector<long>>& map, std::map<uint32_t, std::vector<long>>& increments,
+        std::map<uint32_t, std::vector<long>>& speedTime, int32_t index, int32_t uid);
+    void DistributeFreqTime(std::map<uint32_t, std::vector<long>>& uidIncrements,
+        std::map<uint32_t, std::vector<long>>& increments);
+    void AddFreqTimeToUid(std::map<uint32_t, std::vector<long>>& uidIncrements,
+        std::map<uint32_t, std::vector<long>>& increments, int32_t uid);
     bool ReadUidCpuTime();
-    void split(std::string &origin, char delimiter, std::vector<std::string> &splited);
+    bool ReadUidTimeIncrement(std::vector<long>& clusterTime, std::vector<long>& uidIncrements, int32_t uid,
+        std::string& timeLine);
+    void Split(std::string &origin, char delimiter, std::vector<std::string> &splited);
 };
 } // namespace PowerMgr
 } // namespace OHOS

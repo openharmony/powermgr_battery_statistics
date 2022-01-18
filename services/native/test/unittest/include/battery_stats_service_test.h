@@ -13,7 +13,16 @@
  * limitations under the License.
  */
 
- #ifndef BATTERY_STATS_SERVICE_TEST_H
- #define BATTERY_STATS_SERVICE_TEST_H
+#ifndef BATTERY_STATS_SERVICE_TEST_H
+#define BATTERY_STATS_SERVICE_TEST_H
 
- #endif // BATTERY_STATS_SERVICE_TEST_H
+#include <gtest/gtest.h>
+
+class BatteryStatsServiceTest : public testing::Test {
+public:
+    static void SetUpTestCase(void);
+    static void TearDownTestCase(void);
+    void SetUp();
+    void TearDown();
+};
+#endif // BATTERY_STATS_SERVICE_TEST_H

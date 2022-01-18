@@ -14,7 +14,7 @@
 import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/test.gni")
 
-group("batterystats_systest") {
+group("systemtest") {
   testonly = true
-  deps = [ "systemtest:systemtest" ]
+  deps = [ "systemtest:systemtest_batterystats" ]
 }
