@@ -18,7 +18,7 @@
 #include <string>
 #include <strstream>
 
-#include "display_info.h"
+#include "display_power_info.h"
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"

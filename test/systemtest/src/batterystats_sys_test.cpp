@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "display_info.h"
+#include "display_power_info.h"
 #include "hisysevent.h"
 #include "running_lock_info.h"
 #include "string_ex.h"
