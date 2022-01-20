@@ -25,9 +25,9 @@ import { AsyncCallback } from "./basic";
  */
 declare namespace batteryStats {
 
-  export enum StatsType {
+  export enum ConsumptionType {
     /**
-     * Indicates an invalid battery statistics type
+     * Indicates an invalid consumption type
      */
     CONSUMPTION_TYPE_INVALID = -17,
     /**
@@ -91,14 +91,14 @@ declare namespace batteryStats {
    * @devices phone, tablet
    * @since 3
    */
-  function getHardwareUnitPowerValue(type: StatsType): number;
+  function getHardwareUnitPowerValue(type: ConsumptionType): number;
   /**
    * Obtains power consumption information(Percent) for a given type.
    *
    * @devices phone, tablet
    * @since 3
    */
-  function getHardwareUnitPowerPercent(type: StatsType): number;
+  function getHardwareUnitPowerPercent(type: ConsumptionType): number;
   /**
    * Contains power consumption information of a device.
    *
@@ -120,7 +120,7 @@ declare namespace batteryStats {
       * The type related with the power consumption info.
       * @devices phone, tablet
       */
-    type: StatsType;
+    type: ConsumptionType;
 
     /**
       * The power consumption value(mah).
