@@ -389,7 +389,7 @@ static napi_value BatteryStatsInit(napi_env env, napi_value exports)
     napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("getBatteryStats", GetBatteryStats),
         DECLARE_NAPI_FUNCTION("getAppPowerValue", GetAppStatsMah),
-        DECLARE_NAPI_FUNCTION("getAppStatsPercent", GetAppStatsPercent),
+        DECLARE_NAPI_FUNCTION("getAppPowerPercent", GetAppStatsPercent),
         DECLARE_NAPI_FUNCTION("getHardwareUnitPowerValue", GetPartStatsMah),
         DECLARE_NAPI_FUNCTION("getHardwareUnitPowerPercent", GetPartStatsPercent),
     };

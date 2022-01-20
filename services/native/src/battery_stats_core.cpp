@@ -50,7 +50,7 @@ void BatteryStatsCore::CreatePartEntity()
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (bluetoothEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created bluetooth entity");
-        bluetoothEntity_ = std::make_shared<AudioEntity>();
+        bluetoothEntity_ = std::make_shared<BluetoothEntity>();
     }
     if (idleEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created idle entity");
@@ -84,7 +84,7 @@ void BatteryStatsCore::CreateAppEntity()
     }
     if (cameraEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created camera entity");
-        cameraEntity_ = std::make_shared<BluetoothEntity>();
+        cameraEntity_ = std::make_shared<CameraEntity>();
     }
     if (flashlightEntity_ == nullptr) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Created flashlight entity");
