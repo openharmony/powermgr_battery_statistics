@@ -32,7 +32,7 @@ The battery statistics module provides the following functions:
 
 ## Repositories Involved<a name="section63151229062"></a>
 
-[Power Management Subsystem](https://gitee.com/openharmony/docs/blob/master/en/readme/%E7%94%B5%E6%BA%90%E7%AE%A1%E7%90%86%E5%AD%90%E7%B3%BB%E7%BB%9F.md)
+[Power Management Subsystem](https://gitee.com/openharmony/docs/blob/master/en/readme/power-management.md)
 
 [powermgr_power_manager](https://gitee.com/openharmony/powermgr_power_manager)
 
