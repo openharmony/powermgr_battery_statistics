@@ -140,10 +140,8 @@ bool BatteryStatsService::AddListener()
         OHOS::EventFwk::CommonEventSubscribeInfo info;
         listenerPtr_ = std::make_shared<BatteryStatsListener>();
     }
-    struct HiviewDFX::ListenerRule statsRule;
-    statsRule.ruleType = HiviewDFX::HiSysEvent::EventType::STATISTIC;
-    statsRule.domain = HiviewDFX::HiSysEvent::Domain::POWERMGR;
-    std::vector<struct HiviewDFX::ListenerRule> sysRules;
+    OHOS::HiviewDFX::ListenerRule statsRule("PowerStats");
+    std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
     int res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
 
