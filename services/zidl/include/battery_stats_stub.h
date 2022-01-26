@@ -42,6 +42,7 @@ private:
     int32_t GetTotalTimeSecondStub(MessageParcel& data, MessageParcel& reply);
     int32_t GetTotalDataBytesStub(MessageParcel& data, MessageParcel& reply);
     int32_t ResetStub();
+    int32_t ShellDumpStub(MessageParcel& data, MessageParcel& reply);
 };
 } // namespace PowerMgr
 } // namespace OHOS

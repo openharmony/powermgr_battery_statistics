@@ -17,6 +17,8 @@
 
 #include <file_ex.h>
 #include <cmath>
+#include <ipc_skeleton.h>
+#include <unistd.h>
 
 #include "common_event_data.h"
 #include "common_event_manager.h"
@@ -24,6 +26,8 @@
 #include "common_event_support.h"
 #include "hisysevent.h"
 #include "hisysevent_manager.h"
+#include "iservice_registry.h"
+#include "if_system_ability_manager.h"
 #include "system_ability_definition.h"
 
 #include "battery_stats_dumper.h"
@@ -36,6 +40,8 @@ namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
+constexpr int32_t COMMEVENT_REGISTER_RETRY_TIMES = 10;
+constexpr int32_t COMMEVENT_REGISTER_WAIT_DELAY_US = 700000;
 }
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
@@ -107,7 +113,33 @@ bool BatteryStatsService::Init()
         detector_ = std::make_shared<BatteryStatsDetector>();
     }
 
+    while (commEventRetryTimes_ <= COMMEVENT_REGISTER_RETRY_TIMES) {
+        if (!IsCommonEventServiceReady()) {
+            commEventRetryTimes_++;
+            usleep(COMMEVENT_REGISTER_WAIT_DELAY_US);
+        } else {
+            commEventRetryTimes_ = 0;
+            break;
+        }
+    }
+
     STATS_HILOGI(STATS_MODULE_SERVICE, "Battery stats service initialization success");
+    return true;
+}
+
+bool BatteryStatsService::IsCommonEventServiceReady()
+{
+    sptr<ISystemAbilityManager> sysMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (!sysMgr) {
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Get ISystemAbilityManager failed, no SystemAbilityManager");
+        return false;
+    }
+    sptr<IRemoteObject> remote = sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID);
+    if (!remote) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "No CesServiceAbility");
+        return false;
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "CesServiceAbility is ready");
     return true;
 }
 
@@ -128,6 +160,7 @@ bool BatteryStatsService::SubscribeCommonEvent()
     if (!result) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Subscribe CommonEvent failed");
     }
+    STATS_HILOGD(STATS_MODULE_SERVICE, "Subscribe CommonEvent successfully");
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return result;
 }
@@ -272,9 +305,22 @@ std::shared_ptr<BatteryStatsDetector> BatteryStatsService::GetBatteryStatsDetect
 
 void BatteryStatsService::SetOnBattery(bool isOnBattery)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter service reset");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "isOnBattery: %{public}d", isOnBattery);
     StatsHelper::SetOnBattery(isOnBattery);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit service reset");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args, uint32_t argc)
+{
+    std::lock_guard lock(mutex_);
+    pid_t pid = IPCSkeleton::GetCallingPid();
+    STATS_HILOGI(STATS_MODULE_SERVICE, "PID: %{public}d Calls!", pid);
+
+    std::string result;
+    bool ret = BatteryStatsDumper::Dump(args, result);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calling Dump result :%{public}d", ret);
+    return result;
 }
 } // namespace PowerMgr
 } // namespace OHOS

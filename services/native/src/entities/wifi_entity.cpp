@@ -462,7 +462,8 @@ void WifiEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
-    result.append("Wifi on time: ")
+    result.append("Wifi dump:\n")
+        .append("Wifi on time: ")
         .append(ToString(time))
         .append("ms")
         .append("\n");

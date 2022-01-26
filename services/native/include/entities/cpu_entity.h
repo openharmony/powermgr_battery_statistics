@@ -34,6 +34,7 @@ public:
     long GetCpuTimeMs(int32_t uid) override;
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
+    void UpdateCpuTime() override;
 private:
     std::shared_ptr<CpuTimeReader> cpuReader_;
     std::map<int32_t, long> cpuTimeMap_;

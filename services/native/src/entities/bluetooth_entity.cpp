@@ -471,7 +471,8 @@ void BluetoothEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON);
-    result.append("Bluetooth on time: ")
+    result.append("Bluetooth dump:\n")
+        .append("Bluetooth on time: ")
         .append(ToString(time))
         .append("ms")
         .append("\n");

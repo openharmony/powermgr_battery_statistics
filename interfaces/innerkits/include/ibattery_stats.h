@@ -35,6 +35,7 @@ public:
         BATTERY_STATS_GETDATA,
         BATTERY_STATS_RESET,
         BATTERY_STATS_SETONBATT,
+        BATTERY_STATS_DUMP,
     };
     virtual BatteryStatsInfoList GetBatteryStats() = 0;
     virtual void SetOnBattery(bool isOnBattery) = 0;
@@ -47,6 +48,7 @@ public:
     virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType,
         const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
     virtual void Reset() = 0;
+    virtual std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) = 0;
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.powermgr.IBatteryStats");
 };

@@ -61,6 +61,9 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         case static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT): {
             return SetOnBatteryStub(data);
         }
+        case static_cast<int>(IBatteryStats::BATTERY_STATS_DUMP): {
+            return ShellDumpStub(data, reply);
+        }
         default: {
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
@@ -182,6 +185,33 @@ int32_t BatteryStatsStub::SetOnBatteryStub(MessageParcel& data)
     STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
     bool isOnBattery = data.ReadBool();
     SetOnBattery(isOnBattery);
+    return ERR_OK;
+}
+
+int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& reply)
+{
+    uint32_t argc;
+    std::vector<std::string> args;
+
+    if (!data.ReadUint32(argc)) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Readback fail!");
+        return E_STATS_READ_PARCEL_ERROR;
+    }
+
+    for (uint32_t i = 0; i < argc; i++) {
+        std::string arg = data.ReadString();
+        if (!arg.empty()) {
+            args.push_back(arg);
+        } else {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "read value fail: %{public}d", i);
+        }
+    }
+
+    std::string ret = ShellDump(args, argc);
+    if (!reply.WriteString(ret)) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Dump Writeback Fail!");
+        return E_STATS_WRITE_PARCEL_ERROR;
+    }
     return ERR_OK;
 }
 } // namespace PowerMgr
