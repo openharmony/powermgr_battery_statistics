@@ -1,60 +1,74 @@
 {
-    "name": "@ohos/powermgr_battery_statistics",
-    "version": "",
+    "name": "@ohos/battery_statistics",
+    "version": "3.1",
     "description": "耗电统计服务，包括硬件耗电统计和软件耗电统计。",
     "homePage": "https://gitee.com/openharmony",
-    "license": "Apache V2",
+    "license": "Apache License 2.0",
     "repository": "https://gitee.com/openharmony/powermgr_battery_statistics",
     "domain": "os",
-    "language": "",
     "publishAs": "code-segment",
-    "private": false,
     "scripts": {},
-    "tags": [
-        "base"
-    ],
-    "keywords": [
-        "powermgr",
-        "battery",
-        "statistics"
-    ],
-    "envs": [],
-    "dirs": [],
-    "author": {
-        "name": "",
-        "email": "",
-        "url": ""
-    },
-    "contributors": [
-        {
-            "name": "",
-            "email": "",
-            "url": ""
-        }
-    ],
     "segment": {
         "destPath": "base/powermgr/battery_statistics"
     },
     "component": {
-        "name": "battery_statistics",
+        "name": "battery_statistics_native",
         "subsystem": "powermgr",
-        "syscap": [
-            "SystemCapability.PowerMgr.BatteryStatistics"
-        ],
+        "syscap": [ "SystemCapability.PowerMgr.BatteryStatistics" ],
         "features": [],
-        "adapted_system_type": [
-            "standard"
-        ],
-        "rom": "",
-        "ram": "",
+        "adapted_system_type": [ "standard" ],
+        "rom": "1024KB",
+        "ram": "2048KB",
         "deps": {
-            "components": [],
-            "third_party": []
+            "components": [
+                "ability_runtime",
+                "appexecfwk",
+                "appexecfwk_standard",
+                "battery_manager",
+                "ces_standard",
+                "hisysevent_native",
+                "hiviewdfx_hilog_native",
+                "ipc",
+                "napi",
+                "os_account_standard",
+                "safwk",
+                "samgr_standard"
+            ],
+            "third_party": [
+                "googletest",
+                "jsoncpp"
+            ]
         },
         "build": {
-            "sub_component": [],
-            "inner_kits": [],
-            "test": []
+            "sub_component": [
+                "//base/powermgr/battery_statistics/etc/init:batterystats.rc",
+                "//base/powermgr/battery_statistics/frameworks/js/napi:batterystats",
+                "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
+                "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
+                "//base/powermgr/battery_statistics/services:batterystats_service",
+                "//base/powermgr/battery_statistics/services/profile:power_average.json",
+                "//base/powermgr/battery_statistics/utils:batterystat_dump"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
+                    "header": {
+                      "header_files": [
+                        "battery_stats_client.h",
+                        "battery_stats_info.h",
+                        "ibattery_stats.h"
+                      ],
+                      "header_base": "//base/powermgr/battery_statistics/interfaces/innerkits/include"
+                    }
+                }
+            ],
+            "test": [
+                "//base/powermgr/battery_statistics/services/native/test/:batterystats_test",
+                "//base/powermgr/battery_statistics/test/:systemtest"
+            ],
+            "hisysevent_config": [
+                "//base/powermgr/battery_statistics/batterystats.yaml"
+            ]
         }
     }
 }
