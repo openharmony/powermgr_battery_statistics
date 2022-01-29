@@ -18,14 +18,21 @@
 
 ```
 /base/powermgr/battery_statistics
-├── interfaces                   # 接口层
-│   ├── innerkits                # 内部接口
-│   └── kits                     # 外部接口
-├── sa_profile                   # SA配置文件
-└── services                     # 服务层
-│   ├── native                   # native层
-│   └── zidl                     # zidl层
-└── utils                        # 工具和通用层
+├── etc                  		# 启动配置文件
+├── figures                  	# 架构图
+├── frameworks                  # FrameWork层
+│   ├── js                  	# NAPI
+│   └── native                  # Native层
+├── interfaces                  # 接口层
+│   ├── innerkits               # 内部接口
+│   └── kits                    # 外置接口
+├── sa_profile                  # SA 配置文件
+├── services                    # 服务层
+│   ├── native                  # Native 层
+│   ├── profile                 # 平均耗电配置文件
+│   └── zidl                    # zidl 接口层
+├── test                        # 测试用例
+└── utils                       # 工具和通用层
 ```
 
 
