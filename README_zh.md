@@ -18,7 +18,7 @@
 
 ```
 /base/powermgr/battery_statistics
-├── etc                  	# 启动配置文件
+├── etc                  		# 启动配置文件
 ├── figures                  	# 架构图
 ├── frameworks                  # FrameWork层
 │   ├── js                  	# NAPI

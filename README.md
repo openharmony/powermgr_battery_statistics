@@ -18,7 +18,7 @@ The battery statistics module provides the following functions:
 
 ```
 /base/powermgr/battery_statistics
-├── etc                  	# etc profile
+├── etc                  		# etc profile
 ├── figures                  	# Architecture figures
 ├── frameworks                  # FrameWork Layer
 │   ├── js                  	# NAPI code
