@@ -446,6 +446,11 @@ double WifiEntity::GetWifiUidPower()
         return wifiUidPower;
     }
     sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
+    if (bmgr == nullptr) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager proxy, return 0");
+        return wifiUidPower;
+    }
+
     std::string bundleName = "com.ohos.wifi";
     int32_t wifiUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
 

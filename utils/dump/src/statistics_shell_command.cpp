@@ -15,13 +15,7 @@
 
 #include "statistics_shell_command.h"
 
-#include <cerrno>
-#include <cstring>
-#include <fcntl.h>
-#include <getopt.h>
-#include <iostream>
 #include <string_ex.h>
-#include <unistd.h>
 
 #include "stats_errors.h"
 #include "stats_hilog_wrapper.h"
@@ -53,7 +47,7 @@ StatisticsShellCommand::StatisticsShellCommand(int argc, char *argv[]) : ShellCo
 {
     STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
     for (int i = 0; i < argc_; i++) {
-        STATS_HILOGI(STATS_MODULE_COMMON,"argv_[%{public}d]: %{public}s", i, argv_[i]);
+        STATS_HILOGI(STATS_MODULE_COMMON, "argv_[%{public}d]: %{public}s", i, argv_[i]);
     }
     STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
 }

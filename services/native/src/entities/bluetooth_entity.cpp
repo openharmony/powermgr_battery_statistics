@@ -455,6 +455,11 @@ double BluetoothEntity::GetBluetoothUidPower()
     }
 
     sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
+    if (bmgr == nullptr) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager proxy, return 0");
+        return bluetoothUidPower;
+    }
+
     std::string bundleName = "com.ohos.bluetooth";
     int32_t bluetoothUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
 

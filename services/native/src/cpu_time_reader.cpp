@@ -571,8 +571,7 @@ bool CpuTimeReader::ReadUidTimeIncrement(std::vector<long>& cpuTime, std::vector
             long increment = 0;
             increment = cpuTime[i] - iterLast->second[i];
             STATS_HILOGD(STATS_MODULE_SERVICE, "Cpu last time: %{public}ld ms", iterLast->second[i]);
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu time increment: %{public}ld ms, uid: %{public}d",
-                    increment, uid);
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Cpu time increment: %{public}ld ms, uid: %{public}d", increment, uid);
             if (increment >= 0) {
                 iterLast->second[i] = cpuTime[i];
                 increments.push_back(increment);
