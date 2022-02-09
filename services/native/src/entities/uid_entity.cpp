@@ -417,7 +417,8 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     for (auto &iter : uidPowerMap_) {
-        result.append(ToString(iter.first))
+        result.append("\n")
+            .append(ToString(iter.first))
             .append(":")
             .append("\n");
         DumpForBluetooth(iter.first, result);

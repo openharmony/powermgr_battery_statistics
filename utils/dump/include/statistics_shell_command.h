@@ -18,16 +18,24 @@
 
 #include "shell_command.h"
 
+#include "battery_stats_service.h"
+
 namespace OHOS {
 namespace PowerMgr {
 class StatisticsShellCommand : public OHOS::AAFwk::ShellCommand {
 public:
     StatisticsShellCommand(int argc, char *argv[]);
-    ~StatisticsShellCommand() override {};
-
-    ErrCode CreateCommandMap() override;
-    ErrCode CreateMessageMap() override;
-    ErrCode init() override;
+    ~StatisticsShellCommand() = default;
+private:
+    static constexpr const char * const STATS_DUMP_LOG_PATH = "/data/battery_stats_dump.log";
+    static constexpr int DUMP_BUFF_SIZE = 100;
+    virtual ErrCode CreateCommandMap() override;
+    virtual ErrCode CreateMessageMap() override;
+    virtual ErrCode init() override;
+    ErrCode CommandDump(void);
+    ErrCode CommandHelp(void);
+    ErrCode OptionHelp(void);
+    ErrCode CheckParameter(void);
 };
 }
 }

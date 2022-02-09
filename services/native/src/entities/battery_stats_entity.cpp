@@ -78,6 +78,11 @@ long BatteryStatsEntity::GetCpuTimeMs(int32_t uid)
     return StatsUtils::DEFAULT_VALUE;
 }
 
+void BatteryStatsEntity::UpdateCpuTime()
+{
+    STATS_HILOGE(STATS_MODULE_SERVICE, "No need to update cpu time");
+}
+
 double BatteryStatsEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 {
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to get stats power, return 0");

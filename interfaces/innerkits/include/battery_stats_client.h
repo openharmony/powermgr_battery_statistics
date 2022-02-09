@@ -43,6 +43,7 @@ public:
     uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
     uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
     void Reset();
+    std::string Dump(const std::vector<std::string>& args);
 private:
     class BatteryStatsDeathRecipient : public IRemoteObject::DeathRecipient {
     public:

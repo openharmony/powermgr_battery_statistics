@@ -522,27 +522,35 @@ long BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t l
 void BatteryStatsCore::DumpInfo(std::string& result)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    result.append("BATTERY STATS DUMP (hidumper -batterystats):\n");
+    result.append("BATTERY STATS DUMP (statistics dump -batterystats):\n");
+    result.append("\n");
     if (bluetoothEntity_) {
         bluetoothEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (idleEntity_) {
         idleEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (phoneEntity_) {
         phoneEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (radioEntity_) {
         radioEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (screenEntity_) {
         screenEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (wifiEntity_) {
         wifiEntity_->DumpInfo(result);
+        result.append("\n");
     }
     if (uidEntity_) {
         uidEntity_->DumpInfo(result);
+        result.append("\n");
     }
     GetDebugInfo(result);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
@@ -550,12 +558,22 @@ void BatteryStatsCore::DumpInfo(std::string& result)
 
 void BatteryStatsCore::UpdateDebugInfo(const std::string& info)
 {
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     debugInfo_.append(info);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsCore::GetDebugInfo(std::string& result)
 {
-    result = debugInfo_;
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    if (debugInfo_.size() > 0) {
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Get debug info");
+        result.append("Misc stats info dump:\n");
+        result.append(debugInfo_);
+    } else {
+        STATS_HILOGI(STATS_MODULE_SERVICE, "There's no debug info collected yet");
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 long BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)

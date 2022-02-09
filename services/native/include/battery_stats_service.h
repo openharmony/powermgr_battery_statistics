@@ -50,6 +50,7 @@ public:
         override;
     void Reset() override;
     void SetOnBattery(bool isOnBattery) override;
+    std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) override;
     std::shared_ptr<BatteryStatsCore> GetBatteryStatsCore() const;
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
@@ -62,6 +63,8 @@ private:
     std::shared_ptr<HiviewDFX::HiSysEventSubscribeCallBackNative> listenerPtr_;
     bool ready_ = false;
     std::mutex mutex_;
+    int32_t commEventRetryTimes_ {0};
+    bool IsCommonEventServiceReady();
     bool SubscribeCommonEvent();
     bool AddListener();
 };

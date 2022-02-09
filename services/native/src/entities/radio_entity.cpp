@@ -435,13 +435,17 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
 void RadioEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    result.append("Radio on time:")
-        .append("\n");
+
+    long onTime = StatsUtils::DEFAULT_VALUE;
     for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, i);
-        result.append(ToString(time))
-            .append("\n");
+        onTime += time;
     }
+    result.append("Radio dump:\n")
+        .append("Radio on time:")
+        .append(ToString(onTime))
+        .append("ms")
+        .append("\n");
 
     long scanTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_SCAN);
     result.append("Radio scan time: ")

@@ -57,8 +57,7 @@ private:
         std::map<uint32_t, std::vector<long>>& speedTime, int32_t index, int32_t uid);
     void DistributeFreqTime(std::map<uint32_t, std::vector<long>>& uidIncrements,
         std::map<uint32_t, std::vector<long>>& increments);
-    void AddFreqTimeToUid(std::map<uint32_t, std::vector<long>>& uidIncrements,
-        std::map<uint32_t, std::vector<long>>& increments, int32_t uid);
+    void AddFreqTimeToUid(std::map<uint32_t, std::vector<long>>& uidIncrements, int32_t uid);
     bool ReadUidCpuTime();
     bool ReadUidTimeIncrement(std::vector<long>& clusterTime, std::vector<long>& uidIncrements, int32_t uid,
         std::string& timeLine);

@@ -165,5 +165,13 @@ uint64_t BatteryStatsClient::GetTotalDataBytes(const StatsUtils::StatsType& stat
     STATS_HILOGI(STATS_MODULE_INNERKIT, "Calling GetTotalDataBytes Success!");
     return count;
 }
+
+std::string BatteryStatsClient::Dump(const std::vector<std::string>& args)
+{
+    std::string error = "can't connect service";
+    STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, error);
+    STATS_HILOGI(STATS_MODULE_INNERKIT, "%{public}s called.", __func__);
+    return proxy_->ShellDump(args, args.size());
+}
 }  // namespace PowerMgr
 }  // namespace OHOS

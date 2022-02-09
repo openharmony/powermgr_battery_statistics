@@ -446,6 +446,11 @@ double WifiEntity::GetWifiUidPower()
         return wifiUidPower;
     }
     sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
+    if (bmgr == nullptr) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager proxy, return 0");
+        return wifiUidPower;
+    }
+
     std::string bundleName = "com.ohos.wifi";
     int32_t wifiUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
 
@@ -462,7 +467,8 @@ void WifiEntity::DumpInfo(std::string& result, int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
-    result.append("Wifi on time: ")
+    result.append("Wifi dump:\n")
+        .append("Wifi on time: ")
         .append(ToString(time))
         .append("ms")
         .append("\n");

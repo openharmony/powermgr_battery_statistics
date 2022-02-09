@@ -27,8 +27,6 @@ public:
     ~BatteryStatsDumper() = delete;
 
     static bool Dump(const std::vector<std::string>& args, std::string& result);
-private:
-    static void ShowUsage(std::string& result);
 };
 } // namespace PowerMgr
 } // namespace OHOS

@@ -133,7 +133,8 @@ void IdleEntity::DumpInfo(std::string& result, int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long upTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE);
     long bootTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND);
-    result.append("Phone boot time: ")
+    result.append("Idle dump:\n")
+        .append("Phone boot time: ")
         .append(ToString(bootTime))
         .append("ms")
         .append("\n")

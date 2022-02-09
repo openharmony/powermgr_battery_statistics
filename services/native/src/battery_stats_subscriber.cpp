@@ -65,6 +65,8 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
                 } else {
                     STATS_HILOGD(STATS_MODULE_SERVICE, "Device is charing.");
                     StatsHelper::SetOnBattery(false);
+                    auto core = statsService->GetBatteryStatsCore();
+                    core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU)->UpdateCpuTime();
                 }
                 break;
             case BatteryInfo::COMMON_EVENT_CODE_CAPACITY:

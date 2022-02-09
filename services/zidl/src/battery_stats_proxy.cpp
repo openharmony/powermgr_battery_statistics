@@ -266,5 +266,35 @@ void BatteryStatsProxy::Reset()
         STATS_HILOGE(STATS_MODULE_INNERKIT, "%{public}s - Transact is failed, error code: %{public}d", __func__, ret);
     }
 }
+
+std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, uint32_t argc)
+{
+    sptr<IRemoteObject> remote = Remote();
+    std::string result = "remote error";
+    STATS_RETURN_IF_WITH_RET(remote == nullptr, result);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "Write descriptor failed!");
+        return 0;
+    }
+
+    data.WriteUint32(argc);
+    for (uint32_t i = 0; i < argc; i++) {
+        data.WriteString(args[i]);
+    }
+    int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_DUMP),
+        data, reply, option);
+    if (ret != ERR_OK) {
+        STATS_HILOGE(STATS_MODULE_INNERKIT, "SendRequest is failed, error code: %{public}d", ret);
+        return result;
+    }
+    result = reply.ReadString();
+
+    return result;
+}
 } // namespace PowerMgr
 } // namespace OHOS

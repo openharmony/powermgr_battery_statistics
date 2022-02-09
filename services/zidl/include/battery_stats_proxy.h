@@ -40,6 +40,7 @@ public:
     virtual uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid) override;
     virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid) override;
     virtual void Reset() override;
+    virtual std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) override;
 private:
     static inline BrokerDelegator<BatteryStatsProxy> delegator_;
 };

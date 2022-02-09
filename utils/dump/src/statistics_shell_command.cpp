@@ -15,45 +15,131 @@
 
 #include "statistics_shell_command.h"
 
-#include "string_ex.h"
+#include <string_ex.h>
 
-#include "battery_stats_service.h"
+#include "stats_errors.h"
 #include "stats_hilog_wrapper.h"
+#include "battery_stats_client.h"
 
 namespace OHOS {
 namespace PowerMgr {
-StatisticsShellCommand::StatisticsShellCommand(int argc, char *argv[])
-    : ShellCommand(argc, argv, "Statistics")
+namespace {
+static constexpr uint8_t ARG_SIZE_TWO = 2;
+static constexpr uint8_t ARG_SIZE_THREE = 3;
+static constexpr uint8_t ARG_INDEX_TWO = 2;
+static const std::string HELP_COMMAND_MSG =
+    "usage: statistics <command> [<options>]\n"
+    "command list:\n"
+    "  dump            :    Dump battery statistics info. \n"
+    "  help            :    Show this help menu. \n"
+    "\n"
+    "options list:\n"
+    "  -batterystats   :    Show the all information of battery stats.\n";
+static const std::string HELP_DUMP_OPTION_MSG =
+    "usage: statistics dump <options>\n"
+    "options list:\n"
+    "  -batterystats   :    Show the all information of battery stats.\n";
+static const std::string HELP_ERROR_OPTION_NEED_MSG = "error: needs a option\n";
+static const std::string HELP_ERROR_OPTION_WRONG_MSG = "error: wrong option\n";
+} // namespace
+
+StatisticsShellCommand::StatisticsShellCommand(int argc, char *argv[]) : ShellCommand(argc, argv, "Statistics")
 {
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    for (int i = 0; i < argc_; i++) {
+        STATS_HILOGI(STATS_MODULE_COMMON, "argv_[%{public}d]: %{public}s", i, argv_[i]);
+    }
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
 }
 
 ErrCode StatisticsShellCommand::CreateCommandMap()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "StatisticsShellCommand...");
-    auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    std::vector<std::u16string> argsInStr;
-    std::transform(argList_.begin(), argList_.end(), std::back_inserter(argsInStr),
-        [](const std::string &arg) {
-        std::u16string ret = Str8ToStr16(arg);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "StatisticsShellCommand %{public}s", arg.c_str());
-        return ret;
-    });
-    int32_t fd = 1;
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
     commandMap_ = {
-        {"dump", std::bind(&BatteryStatsService::Dump, bss, fd, argsInStr)}
+        {"help", std::bind(&StatisticsShellCommand::CommandHelp, this)},
+        {"dump", std::bind(&StatisticsShellCommand::CommandDump, this)},
     };
-    return OHOS::ERR_OK;
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
 }
 
 ErrCode StatisticsShellCommand::CreateMessageMap()
 {
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
     messageMap_ = {};
-    return OHOS::ERR_OK;
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
 }
 
 ErrCode StatisticsShellCommand::init()
 {
-    return OHOS::ERR_OK;
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
 }
+
+ErrCode StatisticsShellCommand::CheckParameter(void)
+{
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    switch (argc_) {
+        case ARG_SIZE_TWO:
+            resultReceiver_.clear();
+            resultReceiver_.append(HELP_ERROR_OPTION_NEED_MSG);
+            OptionHelp();
+            STATS_HILOGE(STATS_MODULE_COMMON, "No option parameter");
+            return ERR_INVALID_VALUE;
+        case ARG_SIZE_THREE: {
+            if ((strcmp(argv_[ARG_INDEX_TWO], "-batterystats") == 0)) {
+                break;
+            } else {
+                resultReceiver_.clear();
+                resultReceiver_.append(HELP_ERROR_OPTION_WRONG_MSG);
+                OptionHelp();
+                STATS_HILOGE(STATS_MODULE_COMMON, "Wrong option parameter");
+                return ERR_INVALID_VALUE;
+            }
+        }
+        default:
+            resultReceiver_.clear();
+            resultReceiver_.append(HELP_ERROR_OPTION_WRONG_MSG);
+            OptionHelp();
+            STATS_HILOGE(STATS_MODULE_COMMON, "Wrong option parameter");
+            return ERR_INVALID_VALUE;
+    }
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
 }
+
+ErrCode StatisticsShellCommand::CommandDump(void)
+{
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    auto res = CheckParameter();
+    if (res != ERR_OK) {
+        return res;
+    }
+    resultReceiver_.clear();
+    BatteryStatsClient &client = BatteryStatsClient::GetInstance();
+    std::string ret = client.Dump(argList_);
+    resultReceiver_.append("Battery Statistics Dump result: \n");
+    resultReceiver_.append(ret);
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
 }
+
+ErrCode StatisticsShellCommand::CommandHelp(void)
+{
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    resultReceiver_.append(HELP_COMMAND_MSG);
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
+}
+
+ErrCode StatisticsShellCommand::OptionHelp(void)
+{
+    STATS_HILOGI(STATS_MODULE_COMMON, "Enter");
+    resultReceiver_.append(HELP_DUMP_OPTION_MSG);
+    STATS_HILOGI(STATS_MODULE_COMMON, "Exit");
+    return ERR_OK;
+}
+} // namespace PowerMgr
+} // namespace OHOS

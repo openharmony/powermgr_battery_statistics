@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-domain: POWER_MANAGER
+domain: POWERMGR
 
 POWER_RUNNINGLOCK:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: runninglock state}

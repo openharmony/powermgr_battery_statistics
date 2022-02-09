@@ -50,12 +50,22 @@ long CpuEntity::GetCpuTimeMs(int32_t uid)
     return cpuTimeMs;
 }
 
+void CpuEntity::UpdateCpuTime()
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    if (!cpuReader_) {
+        if (!cpuReader_->UpdateCpuTime()) {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Update CPU time failed");
+        } else {
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Update CPU time successfully");
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
 void CpuEntity::Calculate(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    if (!cpuReader_->UpdateCpuTime()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Update cpu time failed");
-    }
     double cpuTotalPowerMah = StatsUtils::DEFAULT_VALUE;
     // Get cpu time related with uid
     std::vector<long> cpuTimeVec = cpuReader_->GetUidCpuTimeMs(uid);
