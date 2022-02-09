@@ -16,16 +16,16 @@
 #ifndef BATTERY_STATS_LISTENER_H
 #define BATTERY_STATS_LISTENER_H
 
-#include "hisysevent_subscribe_callback_native.h"
+#include "hisysevent_subscribe_callback.h"
 #include "json/json.h"
 
 #include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsListener : public HiviewDFX::HiSysEventSubscribeCallBackNative {
+class BatteryStatsListener : public HiviewDFX::HiSysEventSubscribeCallBack {
 public:
-    explicit BatteryStatsListener() : HiviewDFX::HiSysEventSubscribeCallBackNative() {}
+    explicit BatteryStatsListener() : HiviewDFX::HiSysEventSubscribeCallBack() {}
     virtual ~BatteryStatsListener() {}
     void OnHandle(const std::string& domain, const std::string& eventName, const int eventType,
             const std::string& eventDetail) override;

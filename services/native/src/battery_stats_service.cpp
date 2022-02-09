@@ -168,7 +168,6 @@ bool BatteryStatsService::SubscribeCommonEvent()
 bool BatteryStatsService::AddListener()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    bool result = false;
     if (!listenerPtr_) {
         OHOS::EventFwk::CommonEventSubscribeInfo info;
         listenerPtr_ = std::make_shared<BatteryStatsListener>();
@@ -176,24 +175,16 @@ bool BatteryStatsService::AddListener()
     OHOS::HiviewDFX::ListenerRule statsRule("PowerStats");
     std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
-    int res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
+    auto res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
 
-    switch (res) {
-        case 0:
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Listener has already been added, res code: %{public}d", res);
-            result = true;
-            break;
-        case 1:
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully, res code: %{public}d", res);
-            result = true;
-            break;
-        default:
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Add Hisys event failed, res code: %{public}d", res);
-            break;
+    if (res) {
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully");
+    } else {
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added failed");
     }
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
-    return result;
+    return res;
 }
 
 bool BatteryStatsService::IsServiceReady() const
