@@ -45,40 +45,23 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
         STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_SHUTDOWN event");
     } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED) {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_BATTERY_CHANGED event");
-        int msgCode = data.GetCode();
-        std::string msgData = data.GetData();
-        if (msgData.empty()) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No msg data got from common event");
-            return;
-        } else {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Received msgcode: %{public}d, msgdata: %{public}s",
-                msgCode, msgData.c_str());
+        int capacity = data.GetWant().GetIntParam(
+            ToString(BatteryInfo::COMMON_EVENT_CODE_CAPACITY), StatsUtils::INVALID_VALUE);
+        int pluggedType = data.GetWant().GetIntParam(
+            ToString(BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE), StatsUtils::INVALID_VALUE);
+
+        STATS_HILOGI(STATS_MODULE_SERVICE, "capacity=%{public}d, pluggedType=%{public}d", capacity, pluggedType);
+        if (capacity == BATTERY_LEVEL_FULL) {
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Battery is full charged, rest the stats");
+            statsService->GetBatteryStatsCore()->Reset();
         }
-        int32_t msgDataInt = StatsUtils::INVALID_VALUE;
-        switch (msgCode) {
-            case BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE:
-                msgDataInt = stoi(msgData);
-                if (msgDataInt == (int32_t)BatteryPluggedType::PLUGGED_TYPE_NONE ||
-                    msgDataInt == (int32_t)BatteryPluggedType::PLUGGED_TYPE_BUTT) {
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Device is not charing.");
-                    StatsHelper::SetOnBattery(true);
-                } else {
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Device is charing.");
-                    StatsHelper::SetOnBattery(false);
-                    auto core = statsService->GetBatteryStatsCore();
-                    core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU)->UpdateCpuTime();
-                }
-                break;
-            case BatteryInfo::COMMON_EVENT_CODE_CAPACITY:
-                msgDataInt = stoi(msgData);
-                if (msgDataInt == BATTERY_LEVEL_FULL) {
-                    STATS_HILOGD(STATS_MODULE_SERVICE, "Battery is full charged, rest the stats");
-                    statsService->GetBatteryStatsCore()->Reset();
-                }
-                break;
-            default:
-                STATS_HILOGD(STATS_MODULE_SERVICE, "No need to handle");
-                break;
+        if (pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_NONE ||
+            pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_BUTT) {
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Device is not charing.");
+            StatsHelper::SetOnBattery(true);
+        } else {
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Device is charing.");
+            StatsHelper::SetOnBattery(false);
         }
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
