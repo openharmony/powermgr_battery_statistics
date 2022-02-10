@@ -175,7 +175,7 @@ bool BatteryStatsService::AddListener()
     OHOS::HiviewDFX::ListenerRule statsRule("PowerStats");
     std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
-    auto res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
+    bool res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
 
     if (res) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully");
