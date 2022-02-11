@@ -50,9 +50,8 @@ ohos_unittest("battery_stats_service_test") {
   ]
 
   external_deps = [
-    "ability_runtime:app_manager",
-    "ability_runtime:base",
-    "ability_runtime:want",
+    "ability_base:base",
+    "ability_base:want",
     "battery_manager_native:batterysrv_client",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
@@ -92,9 +91,8 @@ ohos_unittest("battery_stats_client_test") {
   ]
 
   external_deps = [
-    "ability_runtime:app_manager",
-    "ability_runtime:base",
-    "ability_runtime:want",
+    "ability_base:base",
+    "ability_base:want",
     "battery_manager_native:batterysrv_client",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
