@@ -16,11 +16,7 @@ import("//build/ohos.gni")
 ################################################################################
 
 ohos_prebuilt_etc("batterystats.rc") {
-  if (use_musl) {
-    source = "batterystats.cfg"
-  } else {
-    source = "batterystats.rc"
-  }
+  source = "batterystats.cfg"
   relative_install_dir = "init"
   part_name = "battery_statistics_native"
   subsystem_name = "powermgr"

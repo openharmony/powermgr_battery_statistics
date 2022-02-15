@@ -19,6 +19,9 @@
         "adapted_system_type": [ "standard" ],
         "rom": "1024KB",
         "ram": "2048KB",
+        "hisysevent_config": [
+            "//base/powermgr/battery_statistics/batterystats.yaml"
+        ],
         "deps": {
             "components": [
                 "ability_runtime",
@@ -65,9 +68,6 @@
             "test": [
                 "//base/powermgr/battery_statistics/services/native/test/:batterystats_test",
                 "//base/powermgr/battery_statistics/test/:systemtest"
-            ],
-            "hisysevent_config": [
-                "//base/powermgr/battery_statistics/batterystats.yaml"
             ]
         }
     }
