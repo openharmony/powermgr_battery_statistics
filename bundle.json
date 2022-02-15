@@ -24,7 +24,7 @@
         ],
         "deps": {
             "components": [
-                "ability_runtime",
+                "ability_base",
                 "appexecfwk",
                 "appexecfwk_standard",
                 "battery_manager",
