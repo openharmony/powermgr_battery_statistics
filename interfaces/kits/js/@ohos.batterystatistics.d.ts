@@ -18,17 +18,16 @@ import { AsyncCallback } from "./basic";
 /**
  * Provides methods to get power consumption information.
  *
- * @since 8
- * @SysCap SystemCapability.PowerManager.BatteryStatistics
+ * @syscap SystemCapability.PowerManager.BatteryStatistics
  * @systemapi
- * @import import batteryStats from '@ohos.batterystatistics';
+ * @since 8
  */
 declare namespace batteryStats {
     /**
      * Describes the consumption type.
      *
-     * @since 8
      * @systemapi
+     * @since 8
      */
     export enum ConsumptionType {
         /** Indicates an invalid consumption type */
@@ -63,8 +62,8 @@ declare namespace batteryStats {
      * Obtains the power consumption information list.
      *
      * @return Returns power consumption information list of a device.
-     * @since 8
      * @systemapi
+     * @since 8
      */
     function getBatteryStats(): Promise<Array<BatteryStatsInfo>>;
     function getBatteryStats(callback: AsyncCallback<Array<BatteryStatsInfo>>): void;
@@ -74,8 +73,8 @@ declare namespace batteryStats {
      *
      * @param uid Indicates the uid.
      * @return Returns power consumption information(Mah).
-     * @since 8
      * @systemapi
+     * @since 8
      */
     function getAppPowerValue(uid: number): number;
 
@@ -84,8 +83,8 @@ declare namespace batteryStats {
      *
      * @param uid Indicates the uid.
      * @return Returns power consumption information(Percent).
-     * @since 8
      * @systemapi
+     * @since 8
      */
     function getAppPowerPercent(uid: number): number;
 
@@ -94,8 +93,8 @@ declare namespace batteryStats {
      *
      * @param ConsumptionType Indicates the hardware type.
      * @return Returns power consumption information(Mah).
-     * @since 8
      * @systemapi
+     * @since 8
      */
     function getHardwareUnitPowerValue(type: ConsumptionType): number;
 
@@ -104,8 +103,8 @@ declare namespace batteryStats {
      *
      * @param ConsumptionType Indicates the hardware type.
      * @return Returns power consumption information(Percent).
-     * @since 8
      * @systemapi
+     * @since 8
      */
     function getHardwareUnitPowerPercent(type: ConsumptionType): number;
 
@@ -114,8 +113,8 @@ declare namespace batteryStats {
      *
      * <p>Power consumption information includes the uid, type and power consumption value.
      *
-     * @since 8
      * @systemapi
+     * @since 8
      */
     interface BatteryStatsInfo {
         /** The uid related with the power consumption info. */
