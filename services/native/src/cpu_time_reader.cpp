@@ -283,9 +283,9 @@ void CpuTimeReader::ReadPolicy(std::vector<uint16_t>& clusters, std::string& lin
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::vector<std::string> splitedPolicy;
     Split(line, ' ', splitedPolicy);
-    int32_t step = 2;
-    for (uint16_t i = 0; i < splitedPolicy.size(); i += step) {
-        uint16_t coreNum = stoi(splitedPolicy[i + 1]);
+    uint32_t step = 2;
+    for (uint32_t i = 0; i < splitedPolicy.size(); i += step) {
+        uint16_t coreNum = static_cast<uint16_t>(stoi(splitedPolicy[i + 1]));
         clusters.push_back(coreNum);
         clustersMap_.insert(std::pair<uint16_t, uint16_t>(i, coreNum));
         STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu core num: %{public}d", coreNum);
@@ -592,8 +592,8 @@ bool CpuTimeReader::ReadUidTimeIncrement(std::vector<long>& cpuTime, std::vector
 
     if (wakelockCounts_ > 0) {
         double weight = 0.5;
-        uidIncrements[0] = increments[0] / StatsUtils::US_IN_MS * weight;
-        uidIncrements[1] = increments[1] / StatsUtils::US_IN_MS * weight;
+        uidIncrements[0] = increments[0] / (StatsUtils::US_IN_MS * 1.0) * weight;
+        uidIncrements[1] = increments[1] / (StatsUtils::US_IN_MS * 1.0) * weight;
         // TO-DO, distribute half of cpu time to wakelock holders
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");

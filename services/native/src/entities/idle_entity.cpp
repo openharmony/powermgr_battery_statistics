@@ -27,6 +27,7 @@ namespace {
 IdleEntity::IdleEntity()
 {
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_IDLE;
+    Reset();
 }
 
 long IdleEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
