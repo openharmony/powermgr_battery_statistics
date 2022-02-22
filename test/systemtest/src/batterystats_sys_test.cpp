@@ -295,7 +295,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_WORkSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
     sleep(testWaitTimeSec);
 

@@ -45,7 +45,7 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processBatteryEvent(data, root);
         } else if (root["name_"].asString() == "POWER_TEMPERATURE") {
             processThermalEvent(data, root);
-        } else if (root["name_"].asString() == "POWER_WORkSCHEDULER") {
+        } else if (root["name_"].asString() == "POWER_WORKSCHEDULER") {
             processWorkschedulerEvent(data, root);
         } else if (root["name_"].asString() == "POWER_PHONE") {
             processPhoneEvent(data, root);
