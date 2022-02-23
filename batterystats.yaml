@@ -36,7 +36,7 @@ POWER_TEMPERATURE:
   NAME: {type: STRING, desc: device temperature level}
   TEMPERATURE: {type: INT32, desc: device temperature level}
 
-POWER_WORkSCHEDULER:
+POWER_WORKSCHEDULER:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: ide timer message}
   PID: {type: INT32, desc: application pid}
   UID: {type: INT32, desc: application uid}

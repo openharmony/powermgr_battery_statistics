@@ -109,5 +109,8 @@ ohos_unittest("battery_stats_client_test") {
 
 group("unittest") {
   testonly = true
-  deps = [ ":battery_stats_service_test" ]
+  deps = [
+    ":battery_stats_client_test",
+    ":battery_stats_service_test",
+  ]
 }
