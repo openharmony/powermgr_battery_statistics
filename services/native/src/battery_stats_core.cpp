@@ -477,10 +477,10 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-long BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle level: %{public}d", level);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle statsType: %{public}s", StatsUtils::ConvertStatsType(statsType).c_str());
 
@@ -513,7 +513,7 @@ long BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t l
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Get active time: %{public}ldms for %{public}s", time,
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Get active time: %{public}sms for %{public}s", std::to_string(time).c_str(),
         StatsUtils::ConvertStatsType(statsType).c_str());
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return time;
@@ -576,13 +576,13 @@ void BatteryStatsCore::GetDebugInfo(std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
-long BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle statsType: %{public}s", StatsUtils::ConvertStatsType(statsType).c_str());
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle uid: %{public}d", uid);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Handle level: %{public}d", level);
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
 
     switch (statsType) {
         case StatsUtils::STATS_TYPE_CAMERA_ON:
@@ -615,8 +615,8 @@ long BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsTy
             break;
     }
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Get active time: %{public}ldms for %{public}s of uid: %{public}d", time,
-        StatsUtils::ConvertStatsType(statsType).c_str(), uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Get active time: %{public}sms for %{public}s of uid: %{public}d",
+        std::to_string(time).c_str(), StatsUtils::ConvertStatsType(statsType).c_str(), uid);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return time;
 }

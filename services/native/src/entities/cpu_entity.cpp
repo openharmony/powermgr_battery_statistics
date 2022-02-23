@@ -35,13 +35,14 @@ CpuEntity::CpuEntity()
     }
 }
 
-long CpuEntity::GetCpuTimeMs(int32_t uid)
+int64_t CpuEntity::GetCpuTimeMs(int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    long cpuTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t cpuTimeMs = StatsUtils::DEFAULT_VALUE;
     auto iter = cpuTimeMap_.find(uid);
     if (iter != cpuTimeMap_.end()) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got cpu time: %{public}ldms for uid: %{public}d", cpuTimeMs, uid);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Got cpu time: %{public}sms for uid: %{public}d",
+            std::to_string(cpuTimeMs).c_str(), uid);
         cpuTimeMs = iter->second;
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "No cpu time realted with uid: %{public}d found, return 0", uid);
@@ -68,18 +69,20 @@ void CpuEntity::Calculate(int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double cpuTotalPowerMah = StatsUtils::DEFAULT_VALUE;
     // Get cpu time related with uid
-    std::vector<long> cpuTimeVec = cpuReader_->GetUidCpuTimeMs(uid);
-    long cpuTimeMs = StatsUtils::DEFAULT_VALUE;
+    std::vector<int64_t> cpuTimeVec = cpuReader_->GetUidCpuTimeMs(uid);
+    int64_t cpuTimeMs = StatsUtils::DEFAULT_VALUE;
     for (uint32_t i = 0; i < cpuTimeVec.size(); i++) {
         cpuTimeMs += cpuTimeVec[i];
     }
     auto cpuTimeIter = cpuTimeMap_.find(uid);
     if (cpuTimeIter != cpuTimeMap_.end()) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Update cpu time: %{public}ldms for uid: %{public}d", cpuTimeMs, uid);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Update cpu time: %{public}sms for uid: %{public}d",
+            std::to_string(cpuTimeMs).c_str(), uid);
         cpuTimeIter->second = cpuTimeMs;
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Create cpu time: %{public}ldms for uid: %{public}d", cpuTimeMs, uid);
-        cpuTimeMap_.insert(std::pair<int32_t, long>(uid, cpuTimeMs));
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Create cpu time: %{public}sms for uid: %{public}d",
+            std::to_string(cpuTimeMs).c_str(), uid);
+        cpuTimeMap_.insert(std::pair<int32_t, int64_t>(uid, cpuTimeMs));
     }
 
     // Calculate cpu active power
@@ -109,12 +112,12 @@ double CpuEntity::CalculateCpuActivePower(int32_t uid)
     double cpuActivePower = StatsUtils::DEFAULT_VALUE;
     double cpuActiveAverageMa =
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_ACTIVE);
-    long cpuActiveTimeMs = cpuReader_->GetUidCpuActiveTimeMs(uid);
+    int64_t cpuActiveTimeMs = cpuReader_->GetUidCpuActiveTimeMs(uid);
     cpuActivePower = cpuActiveAverageMa * cpuActiveTimeMs / StatsUtils::MS_IN_HOUR;
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu active average power: %{public}lfma", cpuActiveAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu active time: %{public}ldms for uid: %{public}d", cpuActiveTimeMs,
-        uid);
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu active time: %{public}sms for uid: %{public}d",
+        std::to_string(cpuActiveTimeMs).c_str(), uid);
     auto cpuActiveIter = cpuActivePowerMap_.find(uid);
     if (cpuActiveIter != cpuActivePowerMap_.end()) {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Update cpu active power consumption: %{public}lfmAh for uid: %{public}d",
@@ -134,11 +137,11 @@ double CpuEntity::CalculateCpuClusterPower(int32_t uid)
     for (int i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
         double cpuClusterAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_CLUSTER, i);
-        long cpuClusterTimeMs = cpuReader_->GetUidCpuClusterTimeMs(uid, i);
+        int64_t cpuClusterTimeMs = cpuReader_->GetUidCpuClusterTimeMs(uid, i);
         STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu cluster: %{public}d average power: %{public}lfma", i,
             cpuClusterAverageMa);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu cluster: %{public}d time: %{public}ldms for uid: %{public}d",
-            i, cpuClusterTimeMs, uid);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu cluster: %{public}d time: %{public}sms for uid: %{public}d",
+            i, std::to_string(cpuClusterTimeMs).c_str(), uid);
         cpuClusterPower += cpuClusterAverageMa * cpuClusterTimeMs / StatsUtils::MS_IN_HOUR;
     }
     auto cpuClusterIter = cpuClusterPowerMap_.find(uid);
@@ -161,11 +164,11 @@ double CpuEntity::CalculateCpuSpeedPower(int32_t uid)
         for (int j = 0; j < g_statsService->GetBatteryStatsParser()->GetSpeedNum(i); j++) {
             std::string statType = StatsUtils::CURRENT_CPU_SPEED + std::to_string(i);
             double cpuSpeedAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(statType, j);
-            long cpuSpeedTimeMs = cpuReader_->GetUidCpuFreqTimeMs(uid, i, j);
+            int64_t cpuSpeedTimeMs = cpuReader_->GetUidCpuFreqTimeMs(uid, i, j);
             STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cluster: %{public}d, speed: %{public}d", j, i);
             STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu speed average power: %{public}lfma", cpuSpeedAverageMa);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu speed time: %{public}ldms for uid: %{public}d",
-                cpuSpeedTimeMs, uid);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate cpu speed time: %{public}sms for uid: %{public}d",
+                std::to_string(cpuSpeedTimeMs).c_str(), uid);
             cpuSpeedPower += cpuSpeedAverageMa * cpuSpeedTimeMs / StatsUtils::MS_IN_HOUR;
         }
     }

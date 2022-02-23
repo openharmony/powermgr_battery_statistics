@@ -44,8 +44,8 @@ public:
     double GetAppStatsPercent(const int32_t& uid);
     double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);
     double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type);
-    long GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
-    long GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType,
+    int64_t GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
+    int64_t GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
     long GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,

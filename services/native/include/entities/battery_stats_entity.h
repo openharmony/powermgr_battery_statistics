@@ -43,7 +43,7 @@ public:
         int32_t uid = StatsUtils::INVALID_VALUE);
     virtual void AggregateUserPowerMah(int32_t userId, double power);
     virtual void UpdateUidMap(int32_t uid);
-    virtual long GetCpuTimeMs(int32_t uid);
+    virtual int64_t GetCpuTimeMs(int32_t uid);
     virtual void UpdateCpuTime();
     virtual void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE);
     BatteryStatsInfo::ConsumptionType GetConsumptionType();
