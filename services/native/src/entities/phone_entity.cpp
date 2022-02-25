@@ -25,6 +25,7 @@ namespace {
 }
 
 PhoneEntity::PhoneEntity()
+    : phoneTimer_(nullptr), phonePowerMah_(StatsUtils::DEFAULT_VALUE)
 {
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_PHONE;
 }
