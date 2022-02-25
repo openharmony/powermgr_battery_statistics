@@ -282,9 +282,9 @@ void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for bluetooth realted info
     auto core = g_statsService->GetBatteryStatsCore();
-    long bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
-    long bluetoothRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
-    long bluetoothTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
+    int64_t bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
+    int64_t bluetoothRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
+    int64_t bluetoothTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
     long bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
     long bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
 
@@ -314,9 +314,9 @@ void UidEntity::DumpForWifi(int32_t uid, std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for wifi realted info
     auto core = g_statsService->GetBatteryStatsCore();
-    long wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
-    long wifiRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
-    long wifiTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
+    int64_t wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
+    int64_t wifiRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
+    int64_t wifiTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
     long wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
     long wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
 
@@ -343,8 +343,8 @@ void UidEntity::DumpForRadio(int32_t uid, std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for radio realted info
     auto core = g_statsService->GetBatteryStatsCore();
-    long radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
-    long radioTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
+    int64_t radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
+    int64_t radioTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
     long radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
     long radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
 
@@ -368,25 +368,25 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     // Dump for camera related info
-    long cameraTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
+    int64_t cameraTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
 
     // Dump for flashlight related info
-    long flashlightTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
+    int64_t flashlightTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
 
     // Dump for gps related info
-    long gpsTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON);
+    int64_t gpsTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON);
 
     // Dump for gravity sensor related info
-    long gravityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
+    int64_t gravityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
 
     // Dump for proximity sensor related info
-    long proximityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
+    int64_t proximityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
 
     // Dump for audio related info
-    long audioTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON);
+    int64_t audioTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON);
 
     // Dump for wakelock related info
-    long wakelockTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
+    int64_t wakelockTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
 
     result.append("Camera on time: ")
         .append(ToString(cameraTime))

@@ -72,7 +72,7 @@ void BatteryStatsEntity::UpdateUidMap(int32_t uid)
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to update uid");
 }
 
-long BatteryStatsEntity::GetCpuTimeMs(int32_t uid)
+int64_t BatteryStatsEntity::GetCpuTimeMs(int32_t uid)
 {
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to get cpu time, return 0");
     return StatsUtils::DEFAULT_VALUE;

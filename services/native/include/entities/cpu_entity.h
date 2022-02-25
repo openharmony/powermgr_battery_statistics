@@ -31,13 +31,13 @@ public:
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
-    long GetCpuTimeMs(int32_t uid) override;
+    int64_t GetCpuTimeMs(int32_t uid) override;
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
     void UpdateCpuTime() override;
 private:
     std::shared_ptr<CpuTimeReader> cpuReader_;
-    std::map<int32_t, long> cpuTimeMap_;
+    std::map<int32_t, int64_t> cpuTimeMap_;
     std::map<int32_t, double> cpuTotalPowerMap_;
     std::map<int32_t, double> cpuActivePowerMap_;
     std::map<int32_t, double> cpuClusterPowerMap_;

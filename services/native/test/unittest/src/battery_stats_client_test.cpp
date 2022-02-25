@@ -48,6 +48,8 @@ void BatteryStatsClientTest::SetUpTestCase(void)
 void BatteryStatsClientTest::TearDownTestCase(void)
 {
     GTEST_LOG_(INFO) << __func__;
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.SetOnBattery(false);
 }
 
 void BatteryStatsClientTest::SetUp(void)

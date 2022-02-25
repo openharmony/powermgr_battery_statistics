@@ -26,40 +26,41 @@ public:
     CpuTimeReader() = default;
     ~CpuTimeReader() = default;
     bool Init();
-    long GetUidCpuActiveTimeMs(int32_t uid);
-    long GetUidCpuClusterTimeMs(int32_t uid, uint32_t cluster);
-    long GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t speed);
+    int64_t GetUidCpuActiveTimeMs(int32_t uid);
+    int64_t GetUidCpuClusterTimeMs(int32_t uid, uint32_t cluster);
+    int64_t GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32_t speed);
     bool UpdateCpuTime();
-    std::vector<long> GetUidCpuTimeMs(int32_t uid);
+    std::vector<int64_t> GetUidCpuTimeMs(int32_t uid);
     void DumpInfo(std::string& result, int32_t uid);
 
 private:
     uint32_t wakelockCounts_ = 0;
-    std::map<int32_t, long> activeTimeMap_;
-    std::map<int32_t, std::vector<long>> clusterTimeMap_;
-    std::map<int32_t, std::map<uint32_t, std::vector<long>>> freqTimeMap_;
-    std::map<int32_t, std::vector<long>> uidTimeMap_;
-    std::map<int32_t, long> lastActiveTimeMap_;
-    std::map<int32_t, std::vector<long>> lastClusterTimeMap_;
-    std::map<int32_t, std::map<uint32_t, std::vector<long>>> lastFreqTimeMap_;
-    std::map<int32_t, std::vector<long>> lastUidTimeMap_;
+    std::map<int32_t, int64_t> activeTimeMap_;
+    std::map<int32_t, std::vector<int64_t>> clusterTimeMap_;
+    std::map<int32_t, std::map<uint32_t, std::vector<int64_t>>> freqTimeMap_;
+    std::map<int32_t, std::vector<int64_t>> uidTimeMap_;
+    std::map<int32_t, int64_t> lastActiveTimeMap_;
+    std::map<int32_t, std::vector<int64_t>> lastClusterTimeMap_;
+    std::map<int32_t, std::map<uint32_t, std::vector<int64_t>>> lastFreqTimeMap_;
+    std::map<int32_t, std::vector<int64_t>> lastUidTimeMap_;
     std::map<uint16_t, uint16_t> clustersMap_;
     bool ReadUidCpuActiveTime();
     bool ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid);
     bool ReadUidCpuClusterTime();
     void ReadPolicy(std::vector<uint16_t>& clusters, std::string& line);
-    bool ReadClusterTimeIncrement(std::vector<long>& clusterTime, std::vector<long>& increments, int32_t uid,
+    bool ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, std::vector<int64_t>& increments, int32_t uid,
         std::vector<uint16_t>& clusters, std::string& timeLine);
     bool ReadUidCpuFreqTime();
-    bool ReadFreqTimeIncrement(std::map<uint32_t, std::vector<long>>& speedTime,
-        std::map<uint32_t, std::vector<long>>& increments, int32_t uid, std::vector<std::string>& splitedTime);
-    bool ProcessFreqTime(std::map<uint32_t, std::vector<long>>& map, std::map<uint32_t, std::vector<long>>& increments,
-        std::map<uint32_t, std::vector<long>>& speedTime, int32_t index, int32_t uid);
-    void DistributeFreqTime(std::map<uint32_t, std::vector<long>>& uidIncrements,
-        std::map<uint32_t, std::vector<long>>& increments);
-    void AddFreqTimeToUid(std::map<uint32_t, std::vector<long>>& uidIncrements, int32_t uid);
+    bool ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t>>& speedTime,
+        std::map<uint32_t, std::vector<int64_t>>& increments, int32_t uid, std::vector<std::string>& splitedTime);
+    bool ProcessFreqTime(std::map<uint32_t, std::vector<int64_t>>& map, std::map<uint32_t,
+        std::vector<int64_t>>& increments, std::map<uint32_t, std::vector<int64_t>>& speedTime, int32_t index,
+        int32_t uid);
+    void DistributeFreqTime(std::map<uint32_t, std::vector<int64_t>>& uidIncrements,
+        std::map<uint32_t, std::vector<int64_t>>& increments);
+    void AddFreqTimeToUid(std::map<uint32_t, std::vector<int64_t>>& uidIncrements, int32_t uid);
     bool ReadUidCpuTime();
-    bool ReadUidTimeIncrement(std::vector<long>& clusterTime, std::vector<long>& uidIncrements, int32_t uid,
+    bool ReadUidTimeIncrement(std::vector<int64_t>& clusterTime, std::vector<int64_t>& uidIncrements, int32_t uid,
         std::string& timeLine);
     void Split(std::string &origin, char delimiter, std::vector<std::string> &splited);
 };
