@@ -27,7 +27,6 @@ using BatteryStatsInfo = OHOS::PowerMgr::BatteryStatsInfo;
 using StatsUtils = OHOS::PowerMgr::StatsUtils;
 
 struct AsyncCallbackInfo {
-    napi_env env;
     napi_async_work asyncWork;
     napi_deferred deferred;
     napi_ref callback[2] = { 0 };
