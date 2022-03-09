@@ -40,6 +40,8 @@
 #include "entities/wakelock_entity.h"
 #include "stats_hilog_wrapper.h"
 
+#include "xcollie.h"
+
 namespace OHOS {
 namespace PowerMgr {
 namespace {
@@ -144,6 +146,10 @@ void BatteryStatsCore::ComputePower()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
 
+    const int DFX_DELAY_MS = 10000;
+    int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsCoreComputePower", DFX_DELAY_MS, nullptr, nullptr,
+        HiviewDFX::XCOLLIE_FLAG_NOOP);
+
     BatteryStatsEntity::ResetStatsEntity();
     uidEntity_->Calculate();
     bluetoothEntity_->Calculate();
@@ -153,6 +159,8 @@ void BatteryStatsCore::ComputePower()
     screenEntity_->Calculate();
     wifiEntity_->Calculate();
     userEntity_->Calculate();
+
+    HiviewDFX::XCollie::GetInstance().CancelTimer(id);
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
