@@ -45,7 +45,7 @@
         "build": {
             "sub_component": [
                 "//base/powermgr/battery_statistics/etc/init:batterystats.rc",
-                "//base/powermgr/battery_statistics/frameworks/js/napi:batterystats",
+                "//base/powermgr/battery_statistics/frameworks/js/napi:batterystatistics",
                 "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
                 "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
                 "//base/powermgr/battery_statistics/services:batterystats_service",
