@@ -21,6 +21,7 @@ config("module_private_config") {
 
   include_dirs = [
     "include",
+    "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
     "//utils/system/safwk/native/include",
   ]
 }
@@ -56,6 +57,7 @@ ohos_systemtest("batterystats_sys_test") {
     "bundle_framework:appexecfwk_core",
     "ces_standard:cesfwk_innerkits",
     "eventhandler:libeventhandler",
+    "hicollie_native:libhicollie",
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
