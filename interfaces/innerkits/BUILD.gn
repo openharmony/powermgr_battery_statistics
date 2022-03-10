@@ -48,8 +48,8 @@ ohos_shared_library("batterystats_client") {
   ]
 
   external_deps = [
-    "hicollie_native:libhicollie",
     "eventhandler:libeventhandler",
+    "hicollie_native:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
