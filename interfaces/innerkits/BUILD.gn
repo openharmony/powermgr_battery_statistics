@@ -14,7 +14,10 @@
 import("//base/powermgr/battery_statistics/batterystats.gni")
 
 config("batterystats_private_config") {
-  include_dirs = [ "//utils/system/safwk/native/include" ]
+  include_dirs = [
+    "//utils/system/safwk/native/include",
+    "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
+  ]
 }
 
 config("batterystats_public_config") {
@@ -46,6 +49,7 @@ ohos_shared_library("batterystats_client") {
 
   external_deps = [
     "eventhandler:libeventhandler",
+    "hicollie_native:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
