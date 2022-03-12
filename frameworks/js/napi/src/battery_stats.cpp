@@ -129,9 +129,9 @@ static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asC
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfo *asCallbackInfo = (AsyncCallbackInfo *)data;
             if (asCallbackInfo->isSuccess) {
-                napi_resolve_deferred(asCallbackInfo->env, asCallbackInfo->deferred, asCallbackInfo->result);
+                napi_resolve_deferred(env, asCallbackInfo->deferred, asCallbackInfo->result);
             } else {
-                napi_reject_deferred(asCallbackInfo->env, asCallbackInfo->deferred, asCallbackInfo->result);
+                napi_reject_deferred(env, asCallbackInfo->deferred, asCallbackInfo->result);
             }
             napi_delete_async_work(env, asCallbackInfo->asyncWork);
             delete asCallbackInfo;
@@ -211,7 +211,7 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, &data));
 
     AsyncCallbackInfo *asCallbackInfo =
-        new AsyncCallbackInfo {.env = env, .asyncWork = nullptr, .deferred = nullptr};
+        new AsyncCallbackInfo {.asyncWork = nullptr, .deferred = nullptr};
 
     if (argc >= 1) {
         StatsInfoToCallBack(env, asCallbackInfo, argc, argv);
