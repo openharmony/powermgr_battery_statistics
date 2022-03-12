@@ -43,6 +43,7 @@ private:
     int32_t GetTotalDataBytesStub(MessageParcel& data, MessageParcel& reply);
     int32_t ResetStub();
     int32_t ShellDumpStub(MessageParcel& data, MessageParcel& reply);
+    int32_t ChooseCodeStub(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option);
 };
 } // namespace PowerMgr
 } // namespace OHOS

@@ -19,6 +19,7 @@
 
 #include "battery_stats_info.h"
 #include "stats_common.h"
+#include "xcollie.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -26,49 +27,72 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
 {
     STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d",
         code, option.GetFlags());
+    const int DFX_DELAY_MS = 10000;
+    int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_MS, nullptr, nullptr,
+        HiviewDFX::XCOLLIE_FLAG_NOOP);
+
     std::u16string descriptor = BatteryStatsStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest failed, descriptor is not matched!");
         return E_STATS_GET_SERVICE_FAILED;
     }
+    ChooseCodeStub(code, data, reply, option);
+    HiviewDFX::XCollie::GetInstance().CancelTimer(id);
+    return ERR_OK;
+}
 
+int32_t BatteryStatsStub::ChooseCodeStub(uint32_t code, MessageParcel &data, MessageParcel &reply,
+    MessageOption &option)
+{
+    int32_t ret = ERR_OK;
     switch (code) {
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GET): {
-            return GetBatteryStatsStub(reply);
+            ret = GetBatteryStatsStub(reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETTIME): {
-            return GetTotalTimeSecondStub(data, reply);
+            ret = GetTotalTimeSecondStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETDATA): {
-            return GetTotalDataBytesStub(data, reply);
+            ret = GetTotalDataBytesStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPMAH): {
-            return GetAppStatsMahStub(data, reply);
+            ret = GetAppStatsMahStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPPER): {
-            return GetAppStatsPercentStub(data, reply);
+            ret = GetAppStatsPercentStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTMAH): {
-            return GetPartStatsMahStub(data, reply);
+            ret = GetPartStatsMahStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTPER): {
-            return GetPartStatsPercentStub(data, reply);
+            ret = GetPartStatsPercentStub(data, reply);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_RESET): {
-            return ResetStub();
+            ret = ResetStub();
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT): {
-            return SetOnBatteryStub(data);
+            ret = SetOnBatteryStub(data);
+            break;
         }
         case static_cast<int>(IBatteryStats::BATTERY_STATS_DUMP): {
-            return ShellDumpStub(data, reply);
+            ret = ShellDumpStub(data, reply);
+            break;
         }
         default: {
-            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+            ret = IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+            break;
         }
     }
-    return ERR_OK;
+    return ret;
 }
 
 int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
