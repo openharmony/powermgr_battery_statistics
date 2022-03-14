@@ -18,7 +18,6 @@
 #include <file_ex.h>
 #include <cmath>
 #include <ipc_skeleton.h>
-#include <unistd.h>
 
 #include "common_event_data.h"
 #include "common_event_manager.h"
@@ -29,6 +28,7 @@
 #include "iservice_registry.h"
 #include "if_system_ability_manager.h"
 #include "system_ability_definition.h"
+#include "watchdog.h"
 
 #include "battery_stats_dumper.h"
 #include "battery_stats_listener.h"
@@ -40,8 +40,6 @@ namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
-constexpr int32_t COMMEVENT_REGISTER_RETRY_TIMES = 10;
-constexpr int32_t COMMEVENT_REGISTER_WAIT_DELAY_US = 700000;
 }
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
@@ -63,15 +61,13 @@ void BatteryStatsService::OnStart()
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart register to system ability manager failed.");
         return;
     }
-    if (!SubscribeCommonEvent()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart register to commonevent manager failed.");
-        return;
-    }
 
     if (!AddListener()) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart add listener to hisysevent manager failed.");
         return;
     }
+
+    InitDependency();
 
     ready_ = true;
     STATS_HILOGI(STATS_MODULE_SERVICE, "OnStart and add system ability success");
@@ -113,34 +109,44 @@ bool BatteryStatsService::Init()
         detector_ = std::make_shared<BatteryStatsDetector>();
     }
 
-    while (commEventRetryTimes_ <= COMMEVENT_REGISTER_RETRY_TIMES) {
-        if (!IsCommonEventServiceReady()) {
-            commEventRetryTimes_++;
-            usleep(COMMEVENT_REGISTER_WAIT_DELAY_US);
-        } else {
-            commEventRetryTimes_ = 0;
-            break;
+    if (!runner_) {
+        runner_ = AppExecFwk::EventRunner::Create("BatteryStatsEventRunner");
+        if (runner_ == nullptr) {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Create EventRunner failed");
+            return false;
         }
+    }
+
+    if (!handler_) {
+        handler_ = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner_);
+        if (handler_ == nullptr) {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Create EventHandler failed");
+            return false;
+        }
+        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_MS);
     }
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Battery stats service initialization success");
     return true;
 }
 
-bool BatteryStatsService::IsCommonEventServiceReady()
+void BatteryStatsService::InitDependency()
 {
     sptr<ISystemAbilityManager> sysMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (!sysMgr) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Get ISystemAbilityManager failed, no SystemAbilityManager");
-        return false;
+
+    if (!sysMgr || !sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID)) {
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Dependency is not ready yet, re-check in 2s later");
+        auto task = [this]() { this->InitDependency(); };
+        handler_->PostTask(task, DEPENDENCY_CHECK_DELAY_MS);
+        return;
     }
-    sptr<IRemoteObject> remote = sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID);
-    if (!remote) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "No CesServiceAbility");
-        return false;
+
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Dependency is ready now");
+    if (!SubscribeCommonEvent()) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Register to commonevent manager failed.");
+    } else {
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Register to commonevent manager successfuly.");
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "CesServiceAbility is ready");
-    return true;
 }
 
 bool BatteryStatsService::SubscribeCommonEvent()
