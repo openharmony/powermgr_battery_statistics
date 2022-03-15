@@ -136,7 +136,7 @@ double CpuEntity::CalculateCpuActivePower(int32_t uid)
 double CpuEntity::CalculateCpuClusterPower(int32_t uid)
 {
     double cpuClusterPower = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
+    for (uint16_t i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
         double cpuClusterAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_CLUSTER, i);
         int64_t cpuClusterTimeMs = cpuReader_->GetUidCpuClusterTimeMs(uid, i);
@@ -162,8 +162,8 @@ double CpuEntity::CalculateCpuClusterPower(int32_t uid)
 double CpuEntity::CalculateCpuSpeedPower(int32_t uid)
 {
     double cpuSpeedPower = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
-        for (int j = 0; j < g_statsService->GetBatteryStatsParser()->GetSpeedNum(i); j++) {
+    for (uint16_t i = 0; i < g_statsService->GetBatteryStatsParser()->GetClusterNum(); i++) {
+        for (uint16_t j = 0; j < g_statsService->GetBatteryStatsParser()->GetSpeedNum(i); j++) {
             std::string statType = StatsUtils::CURRENT_CPU_SPEED + std::to_string(i);
             double cpuSpeedAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(statType, j);
             int64_t cpuSpeedTimeMs = cpuReader_->GetUidCpuFreqTimeMs(uid, i, j);
