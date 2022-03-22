@@ -308,7 +308,7 @@ bool CpuTimeReader::ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, 
     uint16_t count = 0;
     for (uint16_t i = 0; i < clusters.size(); i++) {
         int64_t tempTimeMs = 0;
-        for (int j = 0; j < clusters[i]; j++) {
+        for (uint16_t j = 0; j < clusters[i]; j++) {
             tempTimeMs += stoll(splitedTime[count++]) * 10; // Unit is 10ms
         }
         STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu cluster time: %{public}s", std::to_string(tempTimeMs).c_str());
@@ -437,7 +437,7 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
     for (uint16_t i = 0; i < clusterNum; i++) {
         std::vector<int64_t> tempSpeedTimes;
         tempSpeedTimes.clear();
-        for (int j = 0; j < parser->GetSpeedNum(i); j++) {
+        for (uint16_t j = 0; j < parser->GetSpeedNum(i); j++) {
             int64_t tempTimeMs = stoll(splitedTime[count++]) * 10; // Unit is 10ms
             tempSpeedTimes.push_back(tempTimeMs);
             STATS_HILOGD(STATS_MODULE_SERVICE, "Got cpu freq time: %{public}s", std::to_string(tempTimeMs).c_str());
@@ -470,7 +470,7 @@ void CpuTimeReader::DistributeFreqTime(std::map<uint32_t, std::vector<int64_t>>&
     if (wakelockCounts_ > 0) {
         for (uint16_t i = 0; i < clusterNum; i++) {
             uint16_t speedNum = parser->GetSpeedNum(i);
-            for (int j = 0; j < speedNum; j++) {
+            for (uint16_t j = 0; j < speedNum; j++) {
                 int32_t step = 2;
                 uidIncrements.at(i)[j] = increments.at(i)[j] / step;
             }
@@ -489,7 +489,7 @@ void CpuTimeReader::AddFreqTimeToUid(std::map<uint32_t, std::vector<int64_t>>& u
     if (iter != freqTimeMap_.end()) {
         for (uint16_t i = 0; i < clusterNum; i++) {
             uint16_t speedNum = parser->GetSpeedNum(i);
-            for (int j = 0; j < speedNum; j++) {
+            for (uint16_t j = 0; j < speedNum; j++) {
                 iter->second.at(i)[j] += uidIncrements.at(i)[j];
                 STATS_HILOGD(STATS_MODULE_SERVICE, "Update cpu freq time to: %{public}s ms for uid: %{public}d",
                     std::to_string(iter->second.at(i)[j]).c_str(), uid);
