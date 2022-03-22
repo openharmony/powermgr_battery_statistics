@@ -15,7 +15,11 @@
 
 #include "entities/uid_entity.h"
 
+#include <bundle_constants.h>
+#include <bundle_mgr_interface.h>
 #include <ohos_account_kits_impl.h>
+#include <system_ability_definition.h>
+#include <sys_mgr_client.h>
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
@@ -44,6 +48,17 @@ void UidEntity::UpdateUidMap(int32_t uid)
         }
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+std::vector<int32_t> UidEntity::GetUids()
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    std::vector<int32_t> uids;
+    for (auto &iter : uidPowerMap_) {
+        uids.push_back(iter.first);
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    return uids;
 }
 
 double UidEntity::CalculateForConnectivity(int32_t uid)
@@ -417,8 +432,28 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     for (auto &iter : uidPowerMap_) {
+        std::string bundleName = "NULL";
+        auto bundleObj =
+            DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()
+                ->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+        if (bundleObj == nullptr) {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager service");
+        } else {
+            sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
+            if (bmgr == nullptr) {
+                STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager proxy");
+            } else {
+                bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
+                if (!res) {
+                    STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle name for uid: %{public}d", iter.first);
+                }
+            }
+        }
         result.append("\n")
             .append(ToString(iter.first))
+            .append("(Bundle name: ")
+            .append(bundleName)
+            .append(")")
             .append(":")
             .append("\n");
         DumpForBluetooth(iter.first, result);
