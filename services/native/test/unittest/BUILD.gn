@@ -21,8 +21,10 @@ config("module_private_config") {
 
   include_dirs = [
     "include",
-    "//utils/system/safwk/native/include",
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
+    "//foundation/communication/bluetooth/services/bluetooth_standard/common/",
+    "//foundation/communication/wifi/utils/inc",
+    "//utils/system/safwk/native/include",
   ]
 }
 
@@ -44,6 +46,7 @@ ohos_unittest("battery_stats_service_test") {
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp",
@@ -86,6 +89,7 @@ ohos_unittest("battery_stats_client_test") {
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp",
