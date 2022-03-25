@@ -18,7 +18,10 @@
 #include <string>
 #include <strstream>
 
+#include "bt_def.h"
 #include "display_power_info.h"
+#include "network_search_types.h"
+#include "wifi_hisysevent.h"
 
 #include "battery_stats_service.h"
 #include "stats_hilog_wrapper.h"
@@ -51,11 +54,192 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processPhoneEvent(data, root);
         } else if (root["name_"].asString() == "POWER_FLASHLIGHT") {
             processFlashlightEvent(data, root);
+        } else if (root["name_"].asString() == "POWER_CAMERA") {
+            processCameraEvent(data, root);
+        } else if (root["name_"].asString() == "POWER_AUDIO") {
+            processAudioEvent(data, root);
+        } else if (root["name_"].asString() == "POWER_SENSOR_GRAVITY" ||
+            root["name_"].asString() == "POWER_SENSOR_PROXIMITY") {
+            processSensorEvent(data, root);
+        } else if (root["name_"].asString() == "POWER_RADIO") {
+            processRadioEvent(data, root);
+        } else if (root["name_"].asString() == "GNSS_STATE") {
+            processGpsEvent(data, root);
+        } else if (root["name_"].asString() == "BLUETOOTH_BR_STATE" ||
+            root["name_"].asString() == "BLUETOOTH_SCAN_STATE") {
+            processBluetoothEvent(data, root);
+        } else if (root["name_"].asString() == "WIFI_STATE" ||
+            root["name_"].asString() == "WIFI_SCAN") {
+            processWifiEvent(data, root);
         }
         detector->HandleStatsChangedEvent(data);
     } else {
         STATS_HILOGE(STATS_MODULE_SERVICE, "Parse hisysevent data failed");
     }
+}
+
+void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
+    }
+    if (!root["STATE"].asString().empty()) {
+        if (root["STATE"].asString() == "1") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (root["STATE"].asString() == "0") {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_AUDIO_ON;
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
+    }
+    if (!root["STATE"].asString().empty()) {
+        if (root["STATE"].asString() == "1") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (root["STATE"].asString() == "0") {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processSensorEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    if (root["name_"].asString() == "POWER_SENSOR_GRAVITY") {
+        data.type = StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON;
+    } else if (root["name_"].asString() == "POWER_SENSOR_PROXIMITY") {
+        data.type = StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON;
+    }
+
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
+    }
+    if (!root["STATE"].asString().empty()) {
+        if (root["STATE"].asString() == "1") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (root["STATE"].asString() == "0") {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processRadioEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_RADIO_ON;
+    if (!root["STATE"].asString().empty()) {
+        Telephony::RegServiceState radioState = Telephony::RegServiceState(stoi(root["STATE"].asString()));
+        switch (radioState) {
+            case Telephony::RegServiceState::REG_STATE_UNKNOWN:
+                data.state = StatsUtils::STATS_STATE_NETWORK_UNKNOWN;
+                break;
+            case Telephony::RegServiceState::REG_STATE_IN_SERVICE:
+                data.state = StatsUtils::STATS_STATE_NETWORK_IN_SERVICE;
+                break;
+            case Telephony::RegServiceState::REG_STATE_NO_SERVICE:
+                data.state = StatsUtils::STATS_STATE_NETWORK_NO_SERVICE;
+                break;
+            case Telephony::RegServiceState::REG_STATE_EMERGENCY_ONLY:
+                data.state = StatsUtils::STATS_STATE_NETWORK_EMERGENCY_ONLY;
+                break;
+            case Telephony::RegServiceState::REG_STATE_SEARCH:
+                data.state = StatsUtils::STATS_STATE_NETWORK_SEARCH;
+                break;
+            default:
+                break;
+        }
+    }
+    if (!root["SIGNAL"].asString().empty()) {
+        data.level = stoi(root["SIGNAL"].asString());
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_GPS_ON;
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
+    }
+    if (!root["STATE"].asString().empty()) {
+        if (root["STATE"].asString() == "start") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (root["STATE"].asString() == "stop") {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    if (root["name_"].asString() == "BLUETOOTH_BR_STATE") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_ON;
+        if (!root["BR_STATE"].asString().empty()) {
+            if (stoi(root["BR_STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+            } else if (stoi(root["BR_STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+            }
+        }
+    } else if (root["name_"].asString() == "BLUETOOTH_SCAN_STATE") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_SCAN;
+        if (!root["BR_SCAN_STATE"].asString().empty()) {
+            if (stoi(root["BR_SCAN_STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+            } else if (stoi(root["BR_SCAN_STATE"].asString()) == bluetooth::DISCOVERY_STOPED) {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+            }
+        }
+        if (!root["UID"].asString().empty()) {
+            data.uid = stoi(root["UID"].asString());
+        }
+        if (!root["PID"].asString().empty()) {
+            data.pid = stoi(root["PID"].asString());
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsListener::processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    data.type = StatsUtils::STATS_TYPE_WIFI_ON;
+    int32_t wifiEnable = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
+    int32_t wifiDisable = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
+    if (!root["OPER_TYPE"].asString().empty()) {
+        if (stoi(root["OPER_TYPE"].asString()) == wifiEnable) {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else if (stoi(root["OPER_TYPE"].asString()) == wifiDisable) {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root)

@@ -15,8 +15,10 @@ import("//base/powermgr/battery_statistics/batterystats.gni")
 
 config("batterystats_private_config") {
   include_dirs = [
-    "//utils/system/safwk/native/include",
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
+    "//foundation/communication/bluetooth/services/bluetooth_standard/common/",
+    "//foundation/communication/wifi/utils/inc",
+    "//utils/system/safwk/native/include",
   ]
 }
 
@@ -74,6 +76,7 @@ ohos_shared_library("batterystats_service") {
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
+    "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//third_party/jsoncpp",
     "//utils/native/base:utils",

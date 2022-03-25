@@ -45,7 +45,7 @@ POWER_TEMPERATURE:
   TEMPERATURE: {type: INT32, desc: device temperature level}
 
 POWER_WORKSCHEDULER:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: ide timer message}
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: workscheduler message}
   PID: {type: INT32, desc: application pid}
   UID: {type: INT32, desc: application uid}
   TYPE: {type: INT32, desc: workscheduler message}
@@ -53,11 +53,63 @@ POWER_WORKSCHEDULER:
   STATE: {type: INT32, desc: workscheduler state}
 
 POWER_PHONE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: ide timer message}
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: phone call message}
   STATE: {type: INT32, desc: phone call state}
 
 POWER_FLASHLIGHT:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: ide timer message}
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: flashlight message}
   PID: {type: INT32, desc: application pid}
   UID: {type: INT32, desc: application uid}
-  STATE: {type: INT32, desc: phone call state}
+  STATE: {type: INT32, desc: flashlight on or off}
+
+POWER_CAMERA:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: camera message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  STATE: {type: INT32, desc: camera on or off}
+
+POWER_AUDIO:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: audio message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  STATE: {type: INT32, desc: audio on or off}
+
+POWER_SENSOR_GRAVITY:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: gravity sensor message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  STATE: {type: INT32, desc: gravity sensor on or off}
+
+POWER_SENSOR_PROXIMITY:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: proximity sensor message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  STATE: {type: INT32, desc: proximity sensor on or off}
+
+POWER_RADIO:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: radio message}
+  STATE: {type: INT32, desc: radio state}
+  SIGNAL: {type: INT32, desc: signal level}
+
+GNSS_STATE:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: GNSS location status}
+  STATE: {type: STRING, desc: start or stop}
+  PID: {type: INT32, desc: PID value}
+  UID: {type: INT32, desc: UID value}
+
+BLUETOOTH_BR_STATE:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: bluetooth br message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  BR_STATE: {type: INT32, desc: br state}
+
+BLUETOOTH_SCAN_STATE:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: bluetooth scan message}
+  PID: {type: INT32, desc: application pid}
+  UID: {type: INT32, desc: application uid}
+  BR_SCAN_STATE: {type: INT32, desc: br scan state}
+
+WIFI_STATE:
+  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: start or stop wifi AP message}
+  TYPE: {type: STRING, desc: sta or ap}
+  OPER_TYPE: {type: INT32, desc: operation type, enable or disable}
