@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,6 @@
 #include "napi/native_api.h"
 
 #include "battery_stats_client.h"
-#include "battery_stats_info.h"
 #include "stats_hilog_wrapper.h"
 
 using namespace OHOS::PowerMgr;
@@ -81,7 +80,7 @@ static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppSt
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
-static bool GetBatteryStatsInfoList(const napi_env env, napi_value& result)
+static bool GetBatteryStatsInfoList(std::vector<BatteryStats>& vecStatsInfo)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     BatteryStatsInfoList vecCppStatsInfos = BatteryStatsClient::GetInstance().GetBatteryStats();
@@ -91,21 +90,21 @@ static bool GetBatteryStatsInfoList(const napi_env env, napi_value& result)
     }
 
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", (int)vecCppStatsInfos.size());
-    std::vector<BatteryStats> vecJsStatsInfo;
-    NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecJsStatsInfo);
-    if (vecJsStatsInfo.size() > 0) {
-        napi_status status = napi_create_array_with_length(env, vecJsStatsInfo.size(), &result);
-        if (status != napi_ok) {
-            STATS_HILOGE(STATS_MODULE_JS_NAPI, "BatteryStats napi_create_array_with_length error: %{public}d", status);
-        }
-        for (size_t i = 0; i != vecJsStatsInfo.size(); ++i) {
-            StatsInfoToJsArray(env, vecJsStatsInfo, i, result);
-        }
-    } else {
-        STATS_HILOGE(STATS_MODULE_JS_NAPI, "BatteryStats js info is null");
-    }
+    NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecStatsInfo);
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return true;
+}
+
+static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vecStatsInfo, napi_value& result)
+{
+    napi_status status = napi_create_array_with_length(env, vecStatsInfo.size(), &result);
+    if (status != napi_ok) {
+        STATS_HILOGE(STATS_MODULE_JS_NAPI, "BatteryStats napi_create_array_with_length error: %{public}d", status);
+        return;
+    }
+    for (size_t i = 0; i < vecStatsInfo.size(); ++i) {
+        StatsInfoToJsArray(env, vecStatsInfo, i, result);
+    }
 }
 
 static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asCallbackInfo, napi_value& promise)
@@ -124,14 +123,16 @@ static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asC
         resourceName,
         [](napi_env env, void *data) {
             AsyncCallbackInfo *asCallbackInfo = (AsyncCallbackInfo *)data;
-            asCallbackInfo->isSuccess = GetBatteryStatsInfoList(env, asCallbackInfo->result);
+            GetBatteryStatsInfoList(asCallbackInfo->vecStatsInfo);
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfo *asCallbackInfo = (AsyncCallbackInfo *)data;
-            if (asCallbackInfo->isSuccess) {
-                napi_resolve_deferred(env, asCallbackInfo->deferred, asCallbackInfo->result);
+            napi_value result = nullptr;
+            if (!asCallbackInfo->vecStatsInfo.empty()) {
+                BatteryStatsToNapiValue(env, asCallbackInfo->vecStatsInfo, result);
+                napi_resolve_deferred(env, asCallbackInfo->deferred, result);
             } else {
-                napi_reject_deferred(env, asCallbackInfo->deferred, asCallbackInfo->result);
+                napi_reject_deferred(env, asCallbackInfo->deferred, result);
             }
             napi_delete_async_work(env, asCallbackInfo->asyncWork);
             delete asCallbackInfo;
@@ -161,24 +162,22 @@ static napi_value StatsInfoToCallBack(const napi_env& env, AsyncCallbackInfo *as
         env, nullptr, resourceName,
         [](napi_env env, void* data) {
             AsyncCallbackInfo *asCallbackInfo = (AsyncCallbackInfo *)data;
-            napi_value result;
-            napi_create_array(env, &result);
-            asCallbackInfo->isSuccess = GetBatteryStatsInfoList(env, result);
-            asCallbackInfo->result = result;
+            GetBatteryStatsInfoList(asCallbackInfo->vecStatsInfo);
         },
         [](napi_env env, napi_status status, void* data) {
             AsyncCallbackInfo* asCallbackInfo = (AsyncCallbackInfo *)data;
-
             napi_value undefine;
             napi_get_undefined(env, &undefine);
             napi_value callback;
-            if (asCallbackInfo->isSuccess) {
+            napi_value result = nullptr;
+            if (!asCallbackInfo->vecStatsInfo.empty()) {
+                BatteryStatsToNapiValue(env, asCallbackInfo->vecStatsInfo, result);
                 napi_get_reference_value(env, asCallbackInfo->callback[0], &callback);
-                napi_call_function(env, nullptr, callback, 1, &asCallbackInfo->result, &undefine);
+                napi_call_function(env, nullptr, callback, 1, &result, &undefine);
             } else {
                 if (asCallbackInfo->callback[1]) {
                     napi_get_reference_value(env, asCallbackInfo->callback[1], &callback);
-                    napi_call_function(env, nullptr, callback, 1, &asCallbackInfo->result, &undefine);
+                    napi_call_function(env, nullptr, callback, 1, &result, &undefine);
                 } else {
                     STATS_HILOGE(STATS_MODULE_JS_NAPI, "StatsInfoList callback func is null");
                     napi_throw_error(env, "error", "StatsInfoList callback func is null");
