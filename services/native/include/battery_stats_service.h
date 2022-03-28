@@ -17,6 +17,7 @@
 #define BATTERY_STATS_SERVICE_H
 
 #include "common_event_subscriber.h"
+#include "event_handler.h"
 #include "hisysevent_subscribe_callback.h"
 #include "system_ability.h"
 
@@ -55,7 +56,11 @@ public:
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
 private:
+    static constexpr int32_t DEPENDENCY_CHECK_DELAY_MS = 2000;
+    static constexpr int32_t WATCH_DOG_DELAY_MS = 10000;
     bool Init();
+    std::shared_ptr<AppExecFwk::EventHandler> handler_;
+    std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<BatteryStatsCore> core_;
     std::shared_ptr<BatteryStatsParser> parser_;
     std::shared_ptr<BatteryStatsDetector> detector_;
@@ -63,8 +68,7 @@ private:
     std::shared_ptr<HiviewDFX::HiSysEventSubscribeCallBack> listenerPtr_;
     bool ready_ = false;
     std::mutex mutex_;
-    int32_t commEventRetryTimes_ {0};
-    bool IsCommonEventServiceReady();
+    void InitDependency();
     bool SubscribeCommonEvent();
     bool AddListener();
 };
