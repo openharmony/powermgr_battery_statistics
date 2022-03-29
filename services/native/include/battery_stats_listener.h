@@ -38,6 +38,13 @@ private:
     void processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processSensorEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processRadioEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS
