@@ -32,6 +32,7 @@ public:
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE)
         override;
     void UpdateUidMap(int32_t uid) override;
+    std::vector<int32_t> GetUids() override;
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:

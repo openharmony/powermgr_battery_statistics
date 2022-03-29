@@ -118,6 +118,10 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
             return screenOnTimer_;
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
+        if (level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Illegal brightness");
+            return nullptr;
+        }
         auto iter = screenBrightnessTimerMap_.find(level);
         if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
             STATS_HILOGI(STATS_MODULE_SERVICE, "Got screen brightness timer of brightness level: %{public}d", level);

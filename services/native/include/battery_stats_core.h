@@ -16,7 +16,7 @@
 #ifndef BATTERY_STATS_CORE_H
 #define BATTERY_STATS_CORE_H
 
-
+#include <json/json.h>
 #include <memory>
 #include <string>
 
@@ -77,15 +77,21 @@ private:
     std::shared_ptr<BatteryStatsEntity> wakelockEntity_;
     int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
+    bool isScanning_ = false;
     std::string debugInfo_;
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
     void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
-    void UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
+    void UpdateConnectivityStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void CreatePartEntity();
     void CreateAppEntity();
+    void SaveForHardware(Json::Value& root);
+    void SaveForSoftware(Json::Value& root);
+    void SaveForSoftwareCommon(Json::Value& root, int32_t uid);
+    void SaveForSoftwareConnectivity(Json::Value& root, int32_t uid);
+    void SaveForPower(Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS

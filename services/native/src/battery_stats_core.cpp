@@ -17,7 +17,6 @@
 #include <fstream>
 #include <map>
 
-#include <json/json.h>
 #include <ohos_account_kits_impl.h>
 
 #include "battery_info.h"
@@ -257,7 +256,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit for data and duration updating");
 }
 
-void BatteryStatsCore::UpdateConnectiviyStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
+void BatteryStatsCore::UpdateConnectivityStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
     int32_t uid)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
@@ -340,7 +339,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
         case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
-            UpdateConnectiviyStats(statsType, state, uid);
+            UpdateConnectivityStats(statsType, state, uid);
             break;
         case StatsUtils::STATS_TYPE_CAMERA_ON:
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
@@ -360,36 +359,40 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
 void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t level)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Last signal level: %{public}d", lastSignalLevel_);
 
-    bool isScanning = false;
     auto scanTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_SCAN);
-    if (scanTimer == nullptr) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Found no related timer, update failed");
-        return;
-    }
+
     if (state == StatsUtils::STATS_STATE_NETWORK_SEARCH) {
-        isScanning = true;
+        isScanning_ = true;
         STATS_HILOGI(STATS_MODULE_SERVICE, "Updated %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_SCAN).c_str(), state);
         scanTimer->StartRunning();
+    } else {
+        STATS_HILOGD(STATS_MODULE_SERVICE, "Stop network search");
+        isScanning_ = false;
     }
-    if (!isScanning) {
+    if (!isScanning_) {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Updated %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_SCAN).c_str(), state);
         scanTimer->StopRunning();
     }
 
-    if (lastSignalLevel_ != level) {
-        if (lastSignalLevel_ > StatsUtils::INVALID_VALUE) {
-            auto oldTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, lastSignalLevel_);
-            if (oldTimer != nullptr) {
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Stop %{public}s timer for last level: %{public}d",
-                    StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
-                oldTimer->StopRunning();
-            } else {
-                STATS_HILOGE(STATS_MODULE_SERVICE, "Found no %{public}s timer, update level: %{public}d failed",
-                    StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
-            }
+    if (lastSignalLevel_ <= StatsUtils::INVALID_VALUE ||
+        (level > StatsUtils::INVALID_VALUE && level == lastSignalLevel_)) {
+        auto signalTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
+        STATS_HILOGI(STATS_MODULE_SERVICE, "Start %{public}s timer for first/same level: %{public}d",
+            StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
+        signalTimer->StartRunning();
+    } else if (lastSignalLevel_ != level) {
+        auto oldTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, lastSignalLevel_);
+        if (oldTimer != nullptr) {
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Stop %{public}s timer for last level: %{public}d",
+                StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
+            oldTimer->StopRunning();
+        } else {
+            STATS_HILOGE(STATS_MODULE_SERVICE, "Found no %{public}s timer, update level: %{public}d failed",
+                StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
         }
         auto newTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
         if (newTimer != nullptr) {
@@ -400,36 +403,36 @@ void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t le
             STATS_HILOGE(STATS_MODULE_SERVICE, "Found no %{public}s timer for level: %{public}d, update failed",
                 StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
         }
-        lastSignalLevel_ = level;
     }
+    lastSignalLevel_ = level;
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsState state, int16_t level)
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Last brightness level: %{public}d", lastBrightnessLevel_);
+
     auto onTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_ON);
-    if (onTimer == nullptr) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Found no %{public}s timer, update failed",
-            StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_SCREEN_ON).c_str());
-        return;
-    }
     if (state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Stop %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_SCREEN_ON).c_str(), state);
         onTimer->StopRunning();
-        if (lastBrightnessLevel_ != StatsUtils::INVALID_VALUE) {
+        if (lastBrightnessLevel_ > StatsUtils::INVALID_VALUE) {
             auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
                 lastBrightnessLevel_);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Stop timer for last level: %{public}d", lastBrightnessLevel_);
             brightnessTimer->StopRunning();
         }
     } else {
         STATS_HILOGI(STATS_MODULE_SERVICE, "Start %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_SCREEN_ON).c_str(), state);
         onTimer->StartRunning();
-        if (lastBrightnessLevel_ == StatsUtils::INVALID_VALUE) {
+        if (lastBrightnessLevel_ <= StatsUtils::INVALID_VALUE ||
+            (level > StatsUtils::INVALID_VALUE && level == lastBrightnessLevel_)) {
             auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
                 level);
+            STATS_HILOGI(STATS_MODULE_SERVICE, "Start screen_brightness timer for first/same level: %{public}d", level);
             brightnessTimer->StartRunning();
         } else if (lastBrightnessLevel_ != level) {
             auto oldTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
@@ -444,12 +447,10 @@ void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsState state, int16_t l
                     "Found no screen_brightness timer for level: %{public}d, update failed", lastBrightnessLevel_);
             }
             if (newTimer != nullptr) {
-                STATS_HILOGI(STATS_MODULE_SERVICE, "Start screen_brightness timer for latest level: %{public}d",
-                    level);
+                STATS_HILOGI(STATS_MODULE_SERVICE, "Start screen_brightness timer for latest level: %{public}d", level);
                 newTimer->StartRunning();
             } else {
-                STATS_HILOGE(STATS_MODULE_SERVICE,
-                    "Found no screen_brightness timer for level: %{public}d, update failed", level);
+                STATS_HILOGE(STATS_MODULE_SERVICE, "Found no timer for level: %{public}d, update failed", level);
             }
         }
     }
@@ -470,6 +471,11 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
         timer = entity->GetOrCreateTimer(uid, statsType);
     } else {
         timer = entity->GetOrCreateTimer(statsType);
+    }
+
+    if (timer == nullptr) {
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Timer is null, return");
+        return;
     }
 
     switch (state) {
@@ -725,25 +731,159 @@ double BatteryStatsCore::GetPartStatsPercent(const BatteryStatsInfo::Consumption
     return partStatsPercent;
 }
 
+void BatteryStatsCore::SaveForHardware(Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Save for Bluetooth
+    root["Hardware"]["bluetooth_on"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON));
+
+    // Save for Screen
+    root["Hardware"]["screen_on"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON));
+    for (uint16_t brightNess = 0; brightNess <= StatsUtils::SCREEN_BRIGHTNESS_BIN; brightNess++) {
+        root["Hardware"]["screen_brightness"][brightNess] =
+            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, brightNess));
+    }
+
+    // Save for Wifi
+    root["Hardware"]["wifi_on"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_WIFI_ON));
+
+    // Save for CPU idle
+    root["Hardware"]["cpu_idle"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE));
+
+    // Save for Phone
+    root["Hardware"]["radio_active"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE));
+
+    // Save for Radio
+    root["Hardware"]["radio_scan"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_RADIO_SCAN));
+    for (uint16_t signal = 0; signal <= StatsUtils::RADIO_SIGNAL_BIN; signal++) {
+        root["Hardware"]["radio_on"][signal] =
+            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, signal));
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsCore::SaveForSoftware(Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    for (auto it : uidEntity_->GetUids()) {
+        SaveForSoftwareCommon(root, it);
+        SaveForSoftwareConnectivity(root, it);
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsCore::SaveForSoftwareCommon(Json::Value& root, int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Save for camera related
+    root["Software"][uid]["camera_on"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON));
+
+    // Save for flashlight related
+    root["Software"][uid]["flashlight_on"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
+
+    // Save for gps related
+    root["Software"][uid]["gps_on"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON));
+
+    // Save for audio related
+    root["Software"][uid]["audio_on"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON));
+
+    // Save for wakelock related
+    root["Software"][uid]["cpu_awake"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD));
+
+    // Save for sensor related
+    root["Software"][uid]["sensor_gravity"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
+    root["Software"][uid]["sensor_proximity"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
+
+    // Save for cpu related
+    root["Software"][uid]["cpu_time"] = Json::Value(cpuEntity_->GetCpuTimeMs(uid));
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsCore::SaveForSoftwareConnectivity(Json::Value& root, int32_t uid)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    // Save for Bluetooth related
+    root["Software"][uid]["bluetooth_scan"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN));
+    root["Software"][uid]["bluetooth_rx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX));
+    root["Software"][uid]["bluetooth_tx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX));
+    int32_t bluetoothTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
+    int32_t bluetoothRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
+    root["Software"][uid]["bluetooth_byte"] = Json::Value(bluetoothTxBytes + bluetoothRxBytes);
+
+    // Save for wifi related
+    root["Software"][uid]["wifi_scan"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN));
+    root["Software"][uid]["wifi_rx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX));
+    root["Software"][uid]["wifi_tx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX));
+    int32_t wifiTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
+    int32_t wifiRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
+    root["Software"][uid]["wifi_byte"] = Json::Value(wifiTxBytes + wifiRxBytes);
+
+    // Save for radio related
+    root["Software"][uid]["radio_tx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX));
+    root["Software"][uid]["radio_rx"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX));
+    int32_t radioTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
+    int32_t radioRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
+    root["Software"][uid]["radio_byte"] = Json::Value(radioTxBytes + radioRxBytes);
+
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
+void BatteryStatsCore::SaveForPower(Json::Value& root)
+{
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    auto statsInfoList = BatteryStatsEntity::GetStatsInfoList();
+    for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
+        if ((*iter)->GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_APP) {
+            std::string name = std::to_string((*iter)->GetUid());
+            root["Power"][name] = Json::Value((*iter)->GetPower());
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Saved power: %{public}lf for uid: %{public}s", (*iter)->GetPower(),
+                name.c_str());
+        } else if ((*iter)->GetConsumptionType() != BatteryStatsInfo::CONSUMPTION_TYPE_USER) {
+            std::string name = std::to_string((*iter)->GetConsumptionType());
+            root["Power"][name] = Json::Value((*iter)->GetPower());
+            STATS_HILOGD(STATS_MODULE_SERVICE, "Saved power: %{public}lf for type: %{public}s", (*iter)->GetPower(),
+                name.c_str());
+        }
+    }
+    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+}
+
 bool BatteryStatsCore::SaveBatteryStatsData()
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     ComputePower();
     Json::Value root;
-    auto statsInfoList = BatteryStatsEntity::GetStatsInfoList();
-    for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
-        if ((*iter)->GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_APP) {
-            std::string name = std::to_string((*iter)->GetUid());
-            root[name] = Json::Value((*iter)->GetPower());
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Saved power: %{public}lf for uid: %{public}s", (*iter)->GetPower(),
-                name.c_str());
-        } else if ((*iter)->GetConsumptionType() != BatteryStatsInfo::CONSUMPTION_TYPE_USER) {
-            std::string name = std::to_string((*iter)->GetConsumptionType());
-            root[name] = Json::Value((*iter)->GetPower());
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Saved power: %{public}lf for type: %{public}s", (*iter)->GetPower(),
-                name.c_str());
-        }
-    }
+
+    // Save for power
+    SaveForPower(root);
+
+    // Save for hardware
+    SaveForHardware(root);
+
+    // Save for software
+    SaveForSoftware(root);
+
     Json::StreamWriterBuilder swb;
     std::ofstream ofs;
     ofs.open(BATTERY_STATS_JSON);
@@ -773,7 +913,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
     }
     ifs.close();
     BatteryStatsEntity::ResetStatsEntity();
-    Json::Value::Members member = root.getMemberNames();
+    Json::Value::Members member = root["Power"].getMemberNames();
     std::map<int32_t, double> tmpUserPowerMap;
     for (auto iter = member.begin(); iter != member.end(); iter++) {
         auto id = std::stoi(*iter);
@@ -781,7 +921,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         if (id > StatsUtils::INVALID_VALUE) {
             info->SetUid(id);
             info->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
-            info->SetPower(root[*iter].asDouble());
+            info->SetPower(root["Power"][*iter].asDouble());
             int32_t usr = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(id);
             auto iter = tmpUserPowerMap.find(usr);
             if (iter != tmpUserPowerMap.end()) {
@@ -793,7 +933,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         } else if (id < StatsUtils::INVALID_VALUE && id > BatteryStatsInfo::CONSUMPTION_TYPE_INVALID) {
             info->SetUid(StatsUtils::INVALID_VALUE);
             info->SetConsumptioType(static_cast<BatteryStatsInfo::ConsumptionType>(id));
-            info->SetPower(root[*iter].asDouble());
+            info->SetPower(root["Power"][*iter].asDouble());
         }
         STATS_HILOGD(STATS_MODULE_SERVICE, "Load power: %{public}lfmAh for id: %{public}d", info->GetPower(), id);
         BatteryStatsEntity::UpdateStatsInfoList(info);

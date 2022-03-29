@@ -72,6 +72,13 @@ void BatteryStatsEntity::UpdateUidMap(int32_t uid)
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to update uid");
 }
 
+std::vector<int32_t> BatteryStatsEntity::GetUids()
+{
+    STATS_HILOGE(STATS_MODULE_SERVICE, "No need to get uids");
+    std::vector<int32_t> empty;
+    return empty;
+}
+
 int64_t BatteryStatsEntity::GetCpuTimeMs(int32_t uid)
 {
     STATS_HILOGE(STATS_MODULE_SERVICE, "No need to get cpu time, return 0");
