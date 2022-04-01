@@ -45,6 +45,7 @@ private:
     void processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS

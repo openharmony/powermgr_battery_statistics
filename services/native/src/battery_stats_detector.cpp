@@ -124,6 +124,10 @@ void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bo
         .append("degrees Celsius, boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
@@ -137,6 +141,10 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
         .append("ma, boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
@@ -163,6 +171,10 @@ void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bo
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
@@ -188,6 +200,10 @@ void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long b
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
@@ -207,6 +223,10 @@ void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, l
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo);
+    }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
