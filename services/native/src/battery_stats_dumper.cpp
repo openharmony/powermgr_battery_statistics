@@ -21,12 +21,18 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
+const std::string ARGS_HELP = "-h";
 const std::string ARGS_STATS = "-batterystats";
 }
 
 bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string& result)
 {
     result.clear();
+    auto argc = args.size();
+    if ((argc == 0) || (args[0] == ARGS_HELP)) {
+        ShowUsage(result);
+        return true;
+    }
     auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (bss == nullptr) {
         return true;
@@ -41,6 +47,16 @@ bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string&
         }
     }
     return true;
+}
+
+void BatteryStatsDumper::ShowUsage(std::string& result)
+{
+    std::string HELP_COMMAND_MSG =
+        "usage: statistics <command> [<options>]\n"
+        "command list:\n"
+        "  -h              :    Show this help menu. \n"
+        "  -batterystats   :    Show all the information of battery stats.\n";
+    result.append(HELP_COMMAND_MSG);
 }
 } // namespace PowerMgr
 } // namespace OHOS
