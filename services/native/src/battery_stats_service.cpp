@@ -123,7 +123,7 @@ bool BatteryStatsService::Init()
             STATS_HILOGE(STATS_MODULE_SERVICE, "Create EventHandler failed");
             return false;
         }
-        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_MS);
+        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_S);
     }
 
     STATS_HILOGI(STATS_MODULE_SERVICE, "Battery stats service initialization success");

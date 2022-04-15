@@ -57,7 +57,7 @@ public:
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
 private:
     static constexpr int32_t DEPENDENCY_CHECK_DELAY_MS = 2000;
-    static constexpr int32_t WATCH_DOG_DELAY_MS = 10000;
+    static constexpr int32_t WATCH_DOG_DELAY_S = 60;
     bool Init();
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
