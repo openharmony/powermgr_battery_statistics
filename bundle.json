@@ -28,7 +28,7 @@
                 "appexecfwk",
                 "appexecfwk_standard",
                 "battery_manager",
-                "ces_standard",
+                "common_event_service",
                 "hisysevent_native",
                 "hiviewdfx_hilog_native",
                 "ipc",
