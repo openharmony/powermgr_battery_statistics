@@ -27,8 +27,6 @@ config("batterystats_public_config") {
     "native/include",
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager/include",
     "//foundation/aafwk/standard/frameworks/kits/appkit/native/app/include",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core/include/bundlemgr",
-    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_base/include",
     "${batterystats_interfaces_path}/include",
     "${batterystats_service_path}/zidl/include",
   ]
