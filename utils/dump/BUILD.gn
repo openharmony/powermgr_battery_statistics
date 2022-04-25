@@ -33,11 +33,6 @@ ohos_executable("statistics") {
     "//utils/native/base:utils",
   ]
 
-  cflags = []
-  if (target_cpu == "arm") {
-    cflags += [ "-DBINDER_IPC_32BIT" ]
-  }
-
   configs = [
     "//foundation/aafwk/standard/tools/aa:ability_command_config",
     "//foundation/aafwk/standard/services/common:common_config",
