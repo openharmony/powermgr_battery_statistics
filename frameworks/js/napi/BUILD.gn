@@ -16,8 +16,8 @@ import("//base/powermgr/battery_statistics/batterystats.gni")
 config("batterystatsnapi_private_config") {
   include_dirs = [
     "include",
-    "//foundation/ace/napi/native_engine",
-    "//foundation/ace/napi/interfaces/kits",
+    "//foundation/arkui/napi/native_engine",
+    "//foundation/arkui/napi/interfaces/kits",
     "//utils/system/safwk/native/include",
     "//third_party/node/src",
     "${batterystats_interfaces_path}/innerkits/include",
@@ -37,7 +37,7 @@ ohos_shared_library("batterystatistics") {
   deps = [
     "${batterystats_utils_path}:batterystats_utils",
     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
-    "//foundation/ace/napi:ace_napi",
+    "//foundation/arkui/napi:ace_napi",
   ]
 
   external_deps = [
