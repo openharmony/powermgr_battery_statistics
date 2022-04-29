@@ -120,6 +120,7 @@ public:
         int32_t uid = INVALID_VALUE;
         int32_t pid = INVALID_VALUE;
         std::string eventDataName = "INVALID";
+        std::string eventDebugInfo = "INVALID";
         int32_t eventDataType = INVALID_VALUE;
         int32_t eventDataExtra = INVALID_VALUE;
         int16_t level = INVALID_VALUE;
