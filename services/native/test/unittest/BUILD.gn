@@ -63,7 +63,7 @@ ohos_unittest("battery_stats_service_test") {
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:libaccountkits",
+    "os_account:libaccountkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
@@ -104,7 +104,7 @@ ohos_unittest("battery_stats_client_test") {
     "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "os_account_standard:libaccountkits",
+    "os_account:libaccountkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
