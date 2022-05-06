@@ -16,7 +16,7 @@ import("//base/powermgr/battery_statistics/batterystats.gni")
 config("batterystats_private_config") {
   include_dirs = [
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
-    "//foundation/communication/bluetooth/services/bluetooth_standard/common/",
+    "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
     "//utils/system/safwk/native/include",
   ]

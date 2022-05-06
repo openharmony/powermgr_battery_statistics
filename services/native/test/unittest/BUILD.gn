@@ -22,7 +22,7 @@ config("module_private_config") {
   include_dirs = [
     "include",
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
-    "//foundation/communication/bluetooth/services/bluetooth_standard/common/",
+    "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
     "//utils/system/safwk/native/include",
   ]
