@@ -33,7 +33,7 @@
                 "hiviewdfx_hilog_native",
                 "ipc",
                 "napi",
-                "os_account_standard",
+                "os_account",
                 "safwk",
                 "samgr_standard"
             ],
