@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -451,11 +451,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -588,6 +588,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
  * @tc.desc: test Gps consumption
  * @tc.type: FUNC
  */
+
+#if GNSS_STATE
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_014: test start";
@@ -603,11 +605,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     std::string stateOff = "stop";
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -619,6 +621,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_014 fail due to power mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_014: test end";
 }
+#endif
 
 /**
  *
@@ -773,11 +776,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     double wifiOnAverageMa = 83;
     stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -888,17 +891,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     std::string gpsStateOn = "start";
     std::string gpsStateOff = "stop";
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", gpsStateOn);
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", gpsStateOff);
     sleep(testWaitTimeSec);
 
     expectedPower = testTimeSec * gpsOnAverageMa / SECOND_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
+#if GNSS_STATE
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
-
+#endif
     double sensorGravityOnAverageMa = 15;
     uid = 10005;
     pid = 3457;
