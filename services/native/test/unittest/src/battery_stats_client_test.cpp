@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -119,11 +119,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_002, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -378,11 +378,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_012, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -469,6 +469,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_014, TestSize.Level0)
  * @tc.desc: Test GetTotalTimeSecond function
  * @tc.type: FUNC
  */
+#if GNSS_STATE
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_015: test start";
@@ -483,11 +484,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_015, TestSize.Level0)
     int32_t pid = 3458;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
         uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
         uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -498,6 +499,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_015, TestSize.Level0)
         <<" BatteryStatsClientTest_015 fail due to time mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_015: test end";
 }
+#endif
 
 /**
  * @tc.name: BatteryStatsClientTest_016
@@ -551,11 +553,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_017, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -738,11 +740,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_022, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -1265,11 +1267,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_037, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -1672,11 +1674,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_047, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -1890,11 +1892,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_052, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -1989,6 +1991,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_054, TestSize.Level0)
  * @tc.desc: Test GetTotalDataBytes and GetTotalTimeSecond function
  * @tc.type: FUNC
  */
+#if GNSS_STATE
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_055, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_055: test start";
@@ -2007,11 +2010,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_055, TestSize.Level0)
     int32_t pid = 3458;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
         uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
+    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
         uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -2022,6 +2025,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_055, TestSize.Level0)
         <<" BatteryStatsClientTest_055 fail due to time mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_055: test end";
 }
+#endif
 
 /**
  * @tc.name: BatteryStatsClientTest_056
@@ -2061,11 +2065,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_056, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -2093,11 +2097,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_057, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
@@ -2538,11 +2542,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_065, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
+    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
         stateOff);
     sleep(testWaitTimeSec);
 
