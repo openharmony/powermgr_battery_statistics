@@ -40,6 +40,7 @@ ohos_unittest("battery_stats_service_test") {
   ]
 
   deps = [
+    "${aafwk_kits_path}/appkit:appkit_native",
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
@@ -47,7 +48,6 @@ ohos_unittest("battery_stats_service_test") {
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
-    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp",
     "//utils/native/base:utils",
@@ -81,6 +81,7 @@ ohos_unittest("battery_stats_client_test") {
   ]
 
   deps = [
+    "${aafwk_kits_path}/appkit:appkit_native",
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
@@ -88,7 +89,6 @@ ohos_unittest("battery_stats_client_test") {
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
-    "//foundation/aafwk/standard/frameworks/kits/appkit:appkit_native",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp",
     "//utils/native/base:utils",
