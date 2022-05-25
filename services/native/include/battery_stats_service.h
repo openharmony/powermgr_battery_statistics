@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,6 +37,7 @@ class BatteryStatsService final : public SystemAbility, public BatteryStatsStub 
 public:
     virtual void OnStart() override;
     virtual void OnStop() override;
+    virtual void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
 
     bool IsServiceReady() const;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
@@ -70,7 +71,7 @@ private:
     std::mutex mutex_;
     void InitDependency();
     bool SubscribeCommonEvent();
-    bool AddListener();
+    bool AddHiSysEventListener();
 };
 } // namespace PowerMgr
 } // namespace OHOS
