@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +40,7 @@ namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
+constexpr int32_t SA_ID_HISYSEVENT = 1203;
 }
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
@@ -57,16 +58,11 @@ void BatteryStatsService::OnStart()
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart call init fail");
         return;
     }
+    AddSystemAbilityListener(SA_ID_HISYSEVENT);
     if (!Publish(DelayedStatsSpSingleton<BatteryStatsService>::GetInstance())) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart register to system ability manager failed.");
         return;
     }
-
-    if (!AddListener()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart add listener to hisysevent manager failed.");
-        return;
-    }
-
     InitDependency();
 
     ready_ = true;
@@ -80,9 +76,19 @@ void BatteryStatsService::OnStop()
         return;
     }
     ready_ = false;
+    RemoveSystemAbilityListener(SA_ID_HISYSEVENT);
     HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
     if (!OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_)) {
         STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart unregister to commonevent manager failed.");
+    }
+}
+
+void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
+{
+    STATS_HILOGD(STATS_MODULE_SERVICE, "systemAbilityId=%{public}d, deviceId=%{public}s", systemAbilityId,
+                 deviceId.c_str());
+    if (systemAbilityId == SA_ID_HISYSEVENT) {
+        AddHiSysEventListener();
     }
 }
 
@@ -171,9 +177,8 @@ bool BatteryStatsService::SubscribeCommonEvent()
     return result;
 }
 
-bool BatteryStatsService::AddListener()
+bool BatteryStatsService::AddHiSysEventListener()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (!listenerPtr_) {
         OHOS::EventFwk::CommonEventSubscribeInfo info;
         listenerPtr_ = std::make_shared<BatteryStatsListener>();
@@ -185,9 +190,8 @@ bool BatteryStatsService::AddListener()
     if (res) {
         STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully");
     } else {
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added failed");
+        STATS_HILOGE(STATS_MODULE_SERVICE, "Listener is added failed");
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return res;
 }
 
