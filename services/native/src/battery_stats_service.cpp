@@ -85,7 +85,7 @@ void BatteryStatsService::OnStop()
 
 void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "systemAbilityId=%{public}d, deviceId=%{public}s", systemAbilityId,
+    STATS_HILOGD(STATS_MODULE_SERVICE, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId,
                  deviceId.c_str());
     if (systemAbilityId == SA_ID_HISYSEVENT) {
         AddHiSysEventListener();
