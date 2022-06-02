@@ -17,6 +17,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -107,7 +108,8 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
     }
 }
 
-static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asCallbackInfo, napi_value& promise)
+static napi_value StatsInfoToPromise(const napi_env& env, std::unique_ptr<AsyncCallbackInfo>& asCallbackInfoPtr,
+    napi_value& promise)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     napi_value resourceName;
@@ -115,7 +117,7 @@ static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asC
 
     napi_deferred deferred;
     NAPI_CALL(env, napi_create_promise(env, &deferred, &promise));
-    asCallbackInfo->deferred = deferred;
+    asCallbackInfoPtr->deferred = deferred;
 
     napi_create_async_work(
         env,
@@ -137,14 +139,15 @@ static napi_value StatsInfoToPromise(const napi_env& env, AsyncCallbackInfo *asC
             napi_delete_async_work(env, asCallbackInfo->asyncWork);
             delete asCallbackInfo;
         },
-        (void *)asCallbackInfo,
-        &asCallbackInfo->asyncWork);
-    napi_queue_async_work(env, asCallbackInfo->asyncWork);
+        (void *)asCallbackInfoPtr.get(),
+        &asCallbackInfoPtr->asyncWork);
+    NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
+    asCallbackInfoPtr.release();
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return NULL;
 }
 
-static napi_value StatsInfoToCallBack(const napi_env& env, AsyncCallbackInfo *asCallbackInfo,
+static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<AsyncCallbackInfo>& asCallbackInfoPtr,
     const size_t argc, const napi_value *argv)
 {
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
@@ -155,7 +158,7 @@ static napi_value StatsInfoToCallBack(const napi_env& env, AsyncCallbackInfo *as
         napi_valuetype valuetype;
         NAPI_CALL(env, napi_typeof(env, argv[i], &valuetype));
         NAPI_ASSERT(env, valuetype == napi_function, "Wrong argument type. Function expected.");
-        napi_create_reference(env, argv[i], 1, &asCallbackInfo->callback[i]);
+        napi_create_reference(env, argv[i], 1, &asCallbackInfoPtr->callback[i]);
     }
 
     napi_create_async_work(
@@ -193,9 +196,10 @@ static napi_value StatsInfoToCallBack(const napi_env& env, AsyncCallbackInfo *as
             napi_delete_async_work(env, asCallbackInfo->asyncWork);
             delete asCallbackInfo;
         },
-        (void *)asCallbackInfo,
-        &asCallbackInfo->asyncWork);
-    NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfo->asyncWork));
+        (void *)asCallbackInfoPtr.get(),
+        &asCallbackInfoPtr->asyncWork);
+    NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
+    asCallbackInfoPtr.release();
     STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return NULL;
 }
@@ -212,13 +216,15 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
     AsyncCallbackInfo *asCallbackInfo =
         new AsyncCallbackInfo {.asyncWork = nullptr, .deferred = nullptr};
 
+    std::unique_ptr<AsyncCallbackInfo> asCallbackInfoPtr(asCallbackInfo);
+
     if (argc >= 1) {
-        StatsInfoToCallBack(env, asCallbackInfo, argc, argv);
+        StatsInfoToCallBack(env, asCallbackInfoPtr, argc, argv);
         STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit_callback");
         return NULL;
     } else {
         napi_value promise;
-        StatsInfoToPromise(env, asCallbackInfo, promise);
+        StatsInfoToPromise(env, asCallbackInfoPtr, promise);
         STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit_promise");
         return promise;
     }
