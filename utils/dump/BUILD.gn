@@ -17,12 +17,12 @@ import("//build/ohos.gni")
 ohos_executable("statistics") {
   include_dirs = [
     "include",
-    "//foundation/aafwk/standard/tools/aa/include",
+    "//foundation/ability/ability_runtime/tools/aa/include",
     "${batterystats_interfaces_path}/include",
   ]
 
   sources = [
-    "//foundation/aafwk/standard/tools/aa/src/shell_command.cpp",
+    "//foundation/ability/ability_runtime/tools/aa/src/shell_command.cpp",
     "src/main.cpp",
     "src/statistics_shell_command.cpp",
   ]
@@ -34,7 +34,7 @@ ohos_executable("statistics") {
   ]
 
   configs = [
-    "//foundation/aafwk/standard/tools/aa:ability_command_config",
+    "//foundation/ability/ability_runtime/tools/aa:ability_command_config",
     "${aafwk_services_path}/common:common_config",
     "${batterystats_utils_path}:batterystats_utils_config",
   ]
