@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -395,8 +395,8 @@ void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, cons
     if (!root["VOLTAGE"].asString().empty()) {
         data.eventDebugInfo.append(" Voltage = ").append(root["VOLTAGE"].asString());
     }
-    if (!root["TEMP"].asString().empty()) {
-        data.eventDebugInfo.append(" Temperature = ").append(root["TEMP"].asString());
+    if (!root["TEMPERATURE"].asString().empty()) {
+        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
     }
     if (!root["HEALTH"].asString().empty()) {
         data.eventDebugInfo.append(" Health = ").append(root["HEALTH"].asString());
