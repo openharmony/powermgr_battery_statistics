@@ -592,11 +592,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_018, TestSize.Level0)
     double screenBrightnessAverage = 2;
     double deviation = 0.1;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     sleep(testWaitTimeSec);
 
@@ -775,11 +775,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_023, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     sleep(testWaitTimeSec);
 
@@ -1304,11 +1304,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_038, TestSize.Level0)
     int32_t brightnessBefore = 120;
     int32_t brightnessAfter = 130;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     sleep(testWaitTimeSec);
 
@@ -1411,18 +1411,17 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_041, TestSize.Level0)
 
     long testWaitTimeSec = 1;
     int32_t batteryLevel = 60;
-    int32_t batteryCurrent = 30;
+    int32_t batteryChargerType = 2;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_BATTERY", HiSysEvent::EventType::STATISTIC, "BATTERY_LEVEL",
-        batteryLevel, "CURRENT_NOW", batteryCurrent);
+    HiSysEvent::Write("BATTERY", "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
+        batteryLevel, "CHARGER", batteryChargerType);
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
         .append(ToString(batteryLevel))
-        .append(", current now = ")
-        .append(ToString(batteryCurrent))
-        .append("ma");
+        .append(", Charger type = ")
+        .append(ToString(batteryChargerType));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -1457,11 +1456,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_042, TestSize.Level0)
     int32_t type = static_cast<int>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " BatteryStatsClientTest_001";
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
     sleep(testWaitTimeSec);
 
@@ -1508,11 +1507,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_043, TestSize.Level0)
     int32_t brightnessBefore = 130;
     int32_t brightnessAfter = 140;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     sleep(testWaitTimeSec);
 
@@ -1595,7 +1594,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_045, TestSize.Level0)
     std::string partName = "Battery";
     int32_t temperature = 40;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
+    HiSysEvent::Write("THERMAL", "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
         partName, "TEMPERATURE", temperature);
     sleep(testWaitTimeSec);
 
@@ -1719,11 +1718,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_048, TestSize.Level0)
     double screenBrightnessAverage = 2;
     double deviation = 0.1;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     sleep(testWaitTimeSec);
 

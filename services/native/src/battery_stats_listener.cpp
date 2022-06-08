@@ -47,9 +47,9 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
         } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||
             eventName == "BACKLIGHT_DISCOUNT" || eventName == "AMBIENT_LIGHT") {
             processDispalyEvent(data, root);
-        } else if (eventName == "POWER_BATTERY" || eventName == "BATTERY_CHANGED") {
+        } else if (eventName == "BATTERY_CHANGED") {
             processBatteryEvent(data, root);
-        } else if (eventName == "POWER_TEMPERATURE" || eventName == "TEMPERATURE_CHANGED") {
+        } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED") {
             processThermalEvent(data, root);
         } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
             eventName == "WORK_START" || eventName == "WORK_STOP") {
@@ -380,29 +380,20 @@ void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, cons
 {
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_BATTERY;
-    if (!root["BATTERY_LEVEL"].asString().empty()) {
-        data.level = stoi(root["BATTERY_LEVEL"].asString());
-    }
-    if (!root["CURRENT_NOW"].asString().empty()) {
-        data.eventDataExtra = stoi(root["CURRENT_NOW"].asString());
-    }
     if (!root["LEVEL"].asString().empty()) {
-        data.eventDebugInfo.append(" Battery level = ").append(root["LEVEL"].asString());
+        data.level = stoi(root["LEVEL"].asString());
     }
     if (!root["CHARGER"].asString().empty()) {
-        data.eventDebugInfo.append(" Charger type = ").append(root["CHARGER"].asString());
+        data.eventDataExtra = stoi(root["CHARGER"].asString());
     }
     if (!root["VOLTAGE"].asString().empty()) {
         data.eventDebugInfo.append(" Voltage = ").append(root["VOLTAGE"].asString());
     }
-    if (!root["TEMPERATURE"].asString().empty()) {
-        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
-    }
     if (!root["HEALTH"].asString().empty()) {
         data.eventDebugInfo.append(" Health = ").append(root["HEALTH"].asString());
     }
-    if (!root["CURRENT"].asString().empty()) {
-        data.eventDebugInfo.append(" Current = ").append(root["CURRENT"].asString());
+    if (!root["TEMPERATURE"].asString().empty()) {
+        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
     }
     STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
