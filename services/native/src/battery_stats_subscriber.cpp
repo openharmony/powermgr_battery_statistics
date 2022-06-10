@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@
 #include "battery_info.h"
 #include "battery_stats_service.h"
 #include "stats_helper.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -33,39 +33,34 @@ namespace {
 }
 void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::string action = data.GetWant().GetAction();
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (statsService == nullptr) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "statsService is null");
+        STATS_HILOGE(COMP_SVC, "statsService is null");
         return;
     }
     if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN) {
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_SHUTDOWN event");
+        STATS_HILOGI(COMP_SVC, "Received COMMON_EVENT_SHUTDOWN event");
     } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Received COMMON_EVENT_BATTERY_CHANGED event");
+        STATS_HILOGI(COMP_SVC, "Received COMMON_EVENT_BATTERY_CHANGED event");
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
         int capacity = data.GetWant().GetIntParam(
             ToString(BatteryInfo::COMMON_EVENT_CODE_CAPACITY), StatsUtils::INVALID_VALUE);
         int pluggedType = data.GetWant().GetIntParam(
             ToString(BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE), StatsUtils::INVALID_VALUE);
 
-        STATS_HILOGI(STATS_MODULE_SERVICE, "capacity=%{public}d, pluggedType=%{public}d", capacity, pluggedType);
+        STATS_HILOGI(COMP_SVC, "capacity=%{public}d, pluggedType=%{public}d", capacity, pluggedType);
         if (capacity == BATTERY_LEVEL_FULL) {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Battery is full charged, rest the stats");
             statsService->GetBatteryStatsCore()->Reset();
         }
         if (pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_NONE ||
             pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_BUTT) {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Device is not charing.");
             StatsHelper::SetOnBattery(true);
         } else {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Device is charing.");
             StatsHelper::SetOnBattery(false);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

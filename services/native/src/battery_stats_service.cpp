@@ -49,29 +49,28 @@ BatteryStatsService::~BatteryStatsService() {}
 
 void BatteryStatsService::OnStart()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (ready_) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart is ready, nothing to do");
+        STATS_HILOGI(COMP_SVC, "OnStart is ready, nothing to do");
         return;
     }
     if (!(Init())) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart call init fail");
+        STATS_HILOGE(COMP_SVC, "OnStart call init fail");
         return;
     }
     AddSystemAbilityListener(SA_ID_HISYSEVENT);
     if (!Publish(DelayedStatsSpSingleton<BatteryStatsService>::GetInstance())) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart register to system ability manager failed.");
+        STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }
     InitDependency();
 
     ready_ = true;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "OnStart and add system ability success");
+    STATS_HILOGI(COMP_SVC, "OnStart and add system ability success");
 }
 
 void BatteryStatsService::OnStop()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "stop service");
+    STATS_HILOGI(COMP_SVC, "Stop battery stats service");
     if (!ready_) {
         return;
     }
@@ -79,13 +78,13 @@ void BatteryStatsService::OnStop()
     RemoveSystemAbilityListener(SA_ID_HISYSEVENT);
     HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
     if (!OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "OnStart unregister to commonevent manager failed.");
+        STATS_HILOGE(COMP_SVC, "OnStart unregister to commonevent manager failed");
     }
 }
 
 void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId,
+    STATS_HILOGD(COMP_SVC, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId,
                  deviceId.c_str());
     if (systemAbilityId == SA_ID_HISYSEVENT) {
         AddHiSysEventListener();
@@ -94,11 +93,10 @@ void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std:
 
 bool BatteryStatsService::Init()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (parser_ == nullptr) {
         parser_ = std::make_shared<BatteryStatsParser>();
         if (!parser_->Init()) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Battery stats parser initialization failed");
+            STATS_HILOGE(COMP_SVC, "Battery stats parser initialization failed");
             return false;
         }
     }
@@ -106,7 +104,7 @@ bool BatteryStatsService::Init()
     if (core_ == nullptr) {
         core_ = std::make_shared<BatteryStatsCore>();
         if (!core_->Init()) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Battery stats core initialization failed");
+            STATS_HILOGE(COMP_SVC, "Battery stats core initialization failed");
             return false;
         }
     }
@@ -118,7 +116,7 @@ bool BatteryStatsService::Init()
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create("BatteryStatsEventRunner");
         if (runner_ == nullptr) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create EventRunner failed");
+            STATS_HILOGE(COMP_SVC, "Create EventRunner failed");
             return false;
         }
     }
@@ -126,40 +124,36 @@ bool BatteryStatsService::Init()
     if (!handler_) {
         handler_ = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner_);
         if (handler_ == nullptr) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create EventHandler failed");
+            STATS_HILOGE(COMP_SVC, "Create EventHandler failed");
             return false;
         }
         HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_S);
     }
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Battery stats service initialization success");
+    STATS_HILOGI(COMP_SVC, "Battery stats service initialization success");
     return true;
 }
 
 void BatteryStatsService::InitDependency()
 {
     sptr<ISystemAbilityManager> sysMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-
     if (!sysMgr || !sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID)) {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Dependency is not ready yet, re-check in 2s later");
+        STATS_HILOGI(COMP_SVC, "Dependency is not ready yet, re-check in 2s later");
         auto task = [this]() { this->InitDependency(); };
         handler_->PostTask(task, DEPENDENCY_CHECK_DELAY_MS);
         return;
     }
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Dependency is ready now");
     if (!SubscribeCommonEvent()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Register to commonevent manager failed.");
+        STATS_HILOGE(COMP_SVC, "Register to commonevent manager failed");
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Register to commonevent manager successfuly.");
+        STATS_HILOGI(COMP_SVC, "Register to commonevent manager successfuly");
     }
 }
 
 bool BatteryStatsService::SubscribeCommonEvent()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     bool result = false;
-
     OHOS::EventFwk::MatchingSkills matchingSkills;
     matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN);
     matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
@@ -170,10 +164,8 @@ bool BatteryStatsService::SubscribeCommonEvent()
     }
     result = OHOS::EventFwk::CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
     if (!result) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Subscribe CommonEvent failed");
+        STATS_HILOGE(COMP_SVC, "Subscribe CommonEvent failed");
     }
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Subscribe CommonEvent successfully");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return result;
 }
 
@@ -188,22 +180,20 @@ bool BatteryStatsService::AddHiSysEventListener()
     sysRules.push_back(statsRule);
     auto res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
     if (res == 0) {
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Listener is added successfully");
+        STATS_HILOGD(COMP_SVC, "Listener is added successfully");
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Listener is added failed");
+        STATS_HILOGE(COMP_SVC, "Listener is added failed");
     }
     return res;
 }
 
 bool BatteryStatsService::IsServiceReady() const
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return ready_;
 }
 
 BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetBatteryStats();
 }
@@ -215,15 +205,13 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
     std::transform(args.begin(), args.end(), std::back_inserter(argsInStr),
         [](const std::u16string &arg) {
         std::string ret = Str16ToStr8(arg);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "arg: %{public}s", ret.c_str());
+        STATS_HILOGD(COMP_SVC, "arg: %{public}s", ret.c_str());
         return ret;
     });
     std::string result;
     BatteryStatsDumper::Dump(argsInStr, result);
     if (!SaveStringToFd(fd, result)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Dump failed, save to fd failed.");
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Dump Info:\n");
-        STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s", result.c_str());
+        STATS_HILOGE(COMP_SVC, "Dump save to fd failed, %{public}s", result.c_str());
         return ERR_OK;
     }
     return ERR_OK;
@@ -231,35 +219,31 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
 
 double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetAppStatsMah(uid);
 }
 
 double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetAppStatsPercent(uid);
 }
 
 double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetPartStatsMah(type);
 }
 
 double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     core_->ComputePower();
     return core_->GetPartStatsPercent(type);
 }
 
 uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "statsType: %{public}d, uid: %{public}d", statsType, uid);
     uint64_t timeSecond = StatsUtils::DEFAULT_VALUE;
     if (uid > StatsUtils::INVALID_VALUE) {
         double timeMs = static_cast<double>(core_->GetTotalTimeMs(uid, statsType));
@@ -273,52 +257,41 @@ uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& st
 
 uint64_t BatteryStatsService::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return core_->GetTotalDataCount(statsType, uid);
 }
 
 void BatteryStatsService::Reset()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter service reset");
     core_->Reset();
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit service reset");
 }
 
 std::shared_ptr<BatteryStatsCore> BatteryStatsService::GetBatteryStatsCore() const
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return core_;
 }
 
 std::shared_ptr<BatteryStatsParser> BatteryStatsService::GetBatteryStatsParser() const
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return parser_;
 }
 
 std::shared_ptr<BatteryStatsDetector> BatteryStatsService::GetBatteryStatsDetector() const
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     return detector_;
 }
 
 void BatteryStatsService::SetOnBattery(bool isOnBattery)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "isOnBattery: %{public}d", isOnBattery);
     StatsHelper::SetOnBattery(isOnBattery);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args, uint32_t argc)
 {
     std::lock_guard lock(mutex_);
     pid_t pid = IPCSkeleton::GetCallingPid();
-    STATS_HILOGI(STATS_MODULE_SERVICE, "PID: %{public}d Calls!", pid);
-
     std::string result;
     bool ret = BatteryStatsDumper::Dump(args, result);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calling Dump result :%{public}d", ret);
+    STATS_HILOGI(COMP_SVC, "PID: %{public}d, Dump result :%{public}d", pid, ret);
     return result;
 }
 } // namespace PowerMgr

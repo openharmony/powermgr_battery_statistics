@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,7 @@
 #include <type_traits>
 
 #include "stats_errors.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -29,7 +29,7 @@ namespace PowerMgr {
 #define STATS_RETURN_IF_WITH_LOG(cond, loginfo)                                             \
     do {                                                                                    \
         if (cond) {                                                                         \
-            STATS_HILOGE(STATS_MODULE_COMMON, "%{public}s "#loginfo" ", __func__);          \
+            STATS_HILOGE(COMP_FWK, ""#loginfo"");                                           \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -37,7 +37,7 @@ namespace PowerMgr {
 #define STATS_READ_PARCEL_NO_RET(parcel, type, out)                                         \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGE(STATS_MODULE_COMMON, "%{public}s read "#out" failed", __func__);   \
+            STATS_HILOGE(COMP_FWK, "Read "#out" failed");                                   \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -45,7 +45,7 @@ namespace PowerMgr {
 #define STATS_WRITE_PARCEL_NO_RET(parcel, type, data)                                       \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGE(STATS_MODULE_COMMON, "%{public}s write "#data" failed", __func__); \
+            STATS_HILOGE(COMP_FWK, "Write "#data" failed");                                 \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -53,7 +53,7 @@ namespace PowerMgr {
 #define STATS_READ_PARCEL_WITH_RET(parcel, type, out, retval)                               \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGE(STATS_MODULE_COMMON, "%{public}s read "#out" failed", __func__);   \
+            STATS_HILOGE(COMP_FWK, "Read "#out" failed");                                   \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)                                                                             \
@@ -61,7 +61,7 @@ namespace PowerMgr {
 #define STATS_WRITE_PARCEL_WITH_RET(parcel, type, data, retval)                             \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGE(STATS_MODULE_COMMON, "%{public}s write "#data" failed", __func__); \
+            STATS_HILOGE(COMP_FWK, "Write "#data" failed");                                 \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)

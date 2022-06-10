@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,7 @@
 
 #include "refbase.h"
 
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 #include "stats_utils.h"
 
 namespace OHOS {
@@ -31,7 +31,7 @@ class BatteryStatsParser {
 public:
     explicit BatteryStatsParser()
     {
-        STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsParser instance is created.");
+        STATS_HILOGI(COMP_SVC, "BatteryStatsParser instance is created");
     }
     ~BatteryStatsParser() = default;
     double GetAveragePowerMa(std::string type);

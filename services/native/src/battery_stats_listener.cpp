@@ -24,14 +24,14 @@
 #include "wifi_hisysevent.h"
 
 #include "battery_stats_service.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
 void BatteryStatsListener::OnHandle(const std::string& domain, const std::string& eventName,
     const int eventType, const std::string& eventDetail)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "EventDetail: %{public}s", eventDetail.c_str());
+    STATS_HILOGD(COMP_SVC, "EventDetail: %{public}s", eventDetail.c_str());
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     auto detector = statsService->GetBatteryStatsDetector();
     StatsUtils::StatsData data;
@@ -75,13 +75,12 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
         }
         detector->HandleStatsChangedEvent(data);
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Parse hisysevent data failed");
+        STATS_HILOGE(COMP_SVC, "Parse hisysevent data failed");
     }
 }
 
 void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
@@ -96,12 +95,10 @@ void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_AUDIO_ON;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
@@ -116,12 +113,10 @@ void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const 
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processSensorEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (root["name_"].asString() == "POWER_SENSOR_GRAVITY") {
         data.type = StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON;
     } else if (root["name_"].asString() == "POWER_SENSOR_PROXIMITY") {
@@ -141,12 +136,10 @@ void BatteryStatsListener::processSensorEvent(StatsUtils::StatsData& data, const
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processRadioEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_RADIO_ON;
     if (!root["STATE"].asString().empty()) {
         Telephony::RegServiceState radioState = Telephony::RegServiceState(stoi(root["STATE"].asString()));
@@ -173,12 +166,10 @@ void BatteryStatsListener::processRadioEvent(StatsUtils::StatsData& data, const 
     if (!root["SIGNAL"].asString().empty()) {
         data.level = stoi(root["SIGNAL"].asString());
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_GPS_ON;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
@@ -193,12 +184,10 @@ void BatteryStatsListener::processGpsEvent(StatsUtils::StatsData& data, const Js
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (root["name_"].asString() == "BLUETOOTH_BR_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_ON;
         if (!root["BR_STATE"].asString().empty()) {
@@ -224,12 +213,10 @@ void BatteryStatsListener::processBluetoothEvent(StatsUtils::StatsData& data, co
             data.pid = stoi(root["PID"].asString());
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_WIFI_ON;
     int32_t wifiEnable = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     int32_t wifiDisable = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
@@ -240,12 +227,10 @@ void BatteryStatsListener::processWifiEvent(StatsUtils::StatsData& data, const J
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
     if (!root["STATE"].asString().empty()) {
         if (root["STATE"].asString() == "1") {
@@ -254,12 +239,10 @@ void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const 
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_FLASHLIGHT_ON;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
@@ -274,12 +257,10 @@ void BatteryStatsListener::processFlashlightEvent(StatsUtils::StatsData& data, c
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_WAKELOCK_HOLD;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
@@ -309,7 +290,6 @@ void BatteryStatsListener::processWakelockEvent(StatsUtils::StatsData& data, con
     if (!root["MESSAGE"].asString().empty()) {
         data.eventDebugInfo.append(" MESSAGE = ").append(root["MESSAGE"].asString());
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
@@ -342,7 +322,6 @@ void BatteryStatsListener::processDispalyDebugInfo(StatsUtils::StatsData& data, 
 
 void BatteryStatsListener::processDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
     if (root["name_"].asString() == "POWER_SCREEN") {
         if (!root["STATE"].asString().empty()) {
@@ -373,12 +352,10 @@ void BatteryStatsListener::processDispalyEvent(StatsUtils::StatsData& data, cons
     } else {
         processDispalyDebugInfo(data, root);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_BATTERY;
     if (!root["BATTERY_LEVEL"].asString().empty()) {
         data.level = stoi(root["BATTERY_LEVEL"].asString());
@@ -404,12 +381,10 @@ void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, cons
     if (!root["CURRENT"].asString().empty()) {
         data.eventDebugInfo.append(" Current = ").append(root["CURRENT"].asString());
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     data.type = StatsUtils::STATS_TYPE_THERMAL;
     if (!root["NAME"].asString().empty()) {
         data.eventDataName = root["NAME"].asString();
@@ -420,7 +395,6 @@ void BatteryStatsListener::processThermalEvent(StatsUtils::StatsData& data, cons
     if (!root["LEVEL"].asString().empty()) {
         data.eventDebugInfo.append(" Temperature level = ").append(root["LEVEL"].asString());
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsListener::processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
@@ -472,7 +446,7 @@ void BatteryStatsListener::processWorkschedulerEvent(StatsUtils::StatsData& data
 
 void BatteryStatsListener::OnServiceDied()
 {
-    STATS_HILOGE(STATS_MODULE_SERVICE, "Service disconnected");
+    STATS_HILOGE(COMP_SVC, "Service disconnected");
     exit(0);
 }
 } // namespace PowerMgr

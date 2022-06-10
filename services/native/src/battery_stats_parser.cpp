@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@
 #include <fstream>
 #include "json/json.h"
 
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 #include "stats_utils.h"
 
 namespace OHOS {
@@ -28,45 +28,39 @@ static const std::string POWER_AVERAGE_FILE = "/system/etc/profile/power_average
 } // namespace
 bool BatteryStatsParser::Init()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-
     if (!LoadAveragePowerFromFile()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Initialization failed: loading average power file failure");
+        STATS_HILOGE(COMP_SVC, "Initialization failed: loading average power file failure");
         return false;
     }
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Initialization succeeded");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    STATS_HILOGI(COMP_SVC, "Initialization succeeded");
     return true;
 }
 
 uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     for (uint16_t i = 0; i < speedNum_.size(); i++) {
         if (cluster == i) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got speed num: %{public}d, for cluster: %{public}d", speedNum_[i],
+            STATS_HILOGD(COMP_SVC, "Got speed num: %{public}d, for cluster: %{public}d", speedNum_[i],
                 cluster);
             return speedNum_[i];
         }
     }
-    STATS_HILOGE(STATS_MODULE_SERVICE, "No related speed number, return 0");
+    STATS_HILOGE(COMP_SVC, "No related speed number, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
 bool BatteryStatsParser::LoadAveragePowerFromFile()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     Json::CharReaderBuilder reader;
     Json::Value root;
     std::string errors;
     std::ifstream ifs(POWER_AVERAGE_FILE, std::ios::binary);
     if (!ifs.is_open()) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Json file doesn't exist");
+        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
         return false;
     }
     if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Parsing json file failed");
+        STATS_HILOGE(COMP_SVC, "Parsing json file failed");
         return false;
     }
     ifs.close();
@@ -78,11 +72,11 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
 
         if (type == StatsUtils::CURRENT_CPU_CLUSTER) {
             clusterNum_ = value.size();
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Read cluster num: %{public}d", clusterNum_);
+            STATS_HILOGD(COMP_SVC, "Read cluster num: %{public}d", clusterNum_);
         }
 
         if (type.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Read speed num: %{public}d", (int)value.size());
+            STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d", (int)value.size());
             speedNum_.push_back(value.size());
         }
 
@@ -90,55 +84,51 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
             std::vector<double> listValues;
             for (uint16_t i = 0; i < value.size(); i++) {
                 listValues.push_back(value[i].asDouble());
-                STATS_HILOGD(STATS_MODULE_SERVICE, "Read list value: %{public}lf of %{public}s", value[i].asDouble(),
+                STATS_HILOGD(COMP_SVC, "Read list value: %{public}lf of %{public}s", value[i].asDouble(),
                     type.c_str());
             }
             averageVecMap_.insert(std::pair<std::string, std::vector<double>>(type, listValues));
         } else {
             double singleValue = value.asDouble();
             averageMap_.insert(std::pair<std::string, double>(type, singleValue));
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Read single value: %{public}lf of %{public}s", singleValue,
+            STATS_HILOGD(COMP_SVC, "Read single value: %{public}lf of %{public}s", singleValue,
                 type.c_str());
         }
     }
-    STATS_HILOGE(STATS_MODULE_SERVICE, "Load power average json file complete");
+    STATS_HILOGI(COMP_SVC, "Load power average json file complete");
     return true;
 }
 
 double BatteryStatsParser::GetAveragePowerMa(std::string type)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGE(STATS_MODULE_SERVICE, "type = %{public}s", type.c_str());
     double average = 0.0;
     auto iter = averageMap_.find(type);
     if (iter != averageMap_.end()) {
         average = iter->second;
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Got average power: %{public}lfma of %{public}s", average, type.c_str());
+        STATS_HILOGD(COMP_SVC, "Got average power: %{public}lfma of %{public}s", average, type.c_str());
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "No average power of %{public}s found, return 0", type.c_str());
+        STATS_HILOGE(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
     return average;
 }
 
 double BatteryStatsParser::GetAveragePowerMa(std::string type, uint16_t level)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double average = 0.0;
     auto iter = averageVecMap_.find(type);
     if (iter != averageVecMap_.end()) {
         if (level < iter->second.size()) {
             average = iter->second[level];
         }
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Got average power: %{public}lf of %{public}s", average, type.c_str());
+        STATS_HILOGD(COMP_SVC, "Got average power: %{public}lf of %{public}s", average, type.c_str());
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "No average power of %{public}s found, return 0", type.c_str());
+        STATS_HILOGE(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
     return average;
 }
 
 uint16_t BatteryStatsParser::GetClusterNum()
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Got cluster number: %{public}d", clusterNum_);
     return clusterNum_;
 }
 } // namespace PowerMgr
