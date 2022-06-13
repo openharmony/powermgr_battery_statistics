@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 
 #include "stats_utils.h"
 
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -94,7 +94,7 @@ std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -123,7 +123,7 @@ std::string StatsUtils::ConvertTypeForCpu(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -158,7 +158,7 @@ std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -178,7 +178,7 @@ std::string StatsUtils::ConvertTypeForDebug(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -225,7 +225,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
             result = ConvertTypeForDebug(statsType);
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_INNERKIT, "Convert failed due to illegal stats data type, return empty string");
+            STATS_HILOGE(COMP_FWK, "Convert failed due to illegal ConsumptionType, return empty string");
             break;
     }
     return result;

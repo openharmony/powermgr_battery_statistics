@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,7 +22,7 @@
 #include <sys_mgr_client.h>
 
 #include "battery_stats_service.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -37,33 +37,28 @@ UidEntity::UidEntity()
 
 void UidEntity::UpdateUidMap(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (uid > StatsUtils::INVALID_VALUE) {
         auto iter = uidPowerMap_.find(uid);
         if (iter != uidPowerMap_.end()) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Uid has already been added, ignore");
+            STATS_HILOGE(COMP_SVC, "Uid has already been added, ignore");
         } else {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Update %{public}d to uid power map", uid);
+            STATS_HILOGI(COMP_SVC, "Update %{public}d to uid power map", uid);
             uidPowerMap_.insert(std::pair<int32_t, long>(uid, StatsUtils::DEFAULT_VALUE));
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 std::vector<int32_t> UidEntity::GetUids()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::vector<int32_t> uids;
     for (auto &iter : uidPowerMap_) {
         uids.push_back(iter.first);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return uids;
 }
 
 double UidEntity::CalculateForConnectivity(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -79,14 +74,12 @@ double UidEntity::CalculateForConnectivity(int32_t uid)
     // Calculate wifi power consumption
     wifiEntity->Calculate(uid);
     power += wifiEntity->GetEntityPowerMah(uid);
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    STATS_HILOGD(COMP_SVC, "Connectivity power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
     return power;
 }
 
 double UidEntity::CalculateForCommon(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
@@ -119,13 +112,12 @@ double UidEntity::CalculateForCommon(int32_t uid)
     wakelockEntity->Calculate(uid);
     power += wakelockEntity->GetEntityPowerMah(uid);
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    STATS_HILOGD(COMP_SVC, "Common power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
     return power;
 }
 
 void UidEntity::Calculate(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     for (auto& iter : uidPowerMap_) {
@@ -135,7 +127,7 @@ void UidEntity::Calculate(int32_t uid)
         iter.second = power;
         totalPowerMah_ += power;
         AddtoStatsList(iter.first, power);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate uid power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Calculate uid power consumption: %{public}lfmAh for uid: %{public}d",
             power, iter.first);
         int32_t uid = iter.first;
         int32_t userId = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(uid);
@@ -143,40 +135,34 @@ void UidEntity::Calculate(int32_t uid)
             userEntity->AggregateUserPowerMah(userId, power);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::AddtoStatsList(int32_t uid, double power)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
     statsInfo->SetUid(uid);
     statsInfo->SetPower(power);
     statsInfoList_.push_back(statsInfo);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     auto iter = uidPowerMap_.find(uidOrUserId);
     if (iter != uidPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got app uid power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Got app uid power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE,
+        STATS_HILOGE(COMP_SVC,
             "No app uid power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -200,13 +186,11 @@ double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         power = radioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_RADIO_TX, uid);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
@@ -238,13 +222,11 @@ double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_ACTIVE) {
         power = cpuEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CPU_ACTIVE, uid);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
 
     switch (statsType) {
@@ -271,30 +253,26 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             power = GetPowerForConnectivity(statsType, uid);
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Invalid or illegal type got, return 0");
+            STATS_HILOGE(COMP_SVC, "Invalid or illegal type got, return 0");
             break;
     }
 
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Get %{public}s power: %{public}lfmAh for uid: %{public}d",
+    STATS_HILOGD(COMP_SVC, "Get %{public}s power: %{public}lfmAh for uid: %{public}d",
         StatsUtils::ConvertStatsType(statsType).c_str(), power, uid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 void UidEntity::Reset()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Uid total power consumption
     for (auto &iter : uidPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for bluetooth realted info
     auto core = g_statsService->GetBatteryStatsCore();
     int64_t bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
@@ -321,12 +299,10 @@ void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
         .append("Bluetooth scan time: ")
         .append(ToString(bluetoothScanTime))
         .append("ms\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::DumpForWifi(int32_t uid, std::string& result)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for wifi realted info
     auto core = g_statsService->GetBatteryStatsCore();
     int64_t wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
@@ -350,12 +326,10 @@ void UidEntity::DumpForWifi(int32_t uid, std::string& result)
         .append("Wifi TX data: ")
         .append(ToString(wifiTxData))
         .append("bytes\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::DumpForRadio(int32_t uid, std::string& result)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Dump for radio realted info
     auto core = g_statsService->GetBatteryStatsCore();
     int64_t radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
@@ -375,12 +349,10 @@ void UidEntity::DumpForRadio(int32_t uid, std::string& result)
         .append("Radio TX data: ")
         .append(ToString(radioTxData))
         .append("ms\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     // Dump for camera related info
     int64_t cameraTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
@@ -424,12 +396,10 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
         .append("Wakelock hold time: ")
         .append(ToString(wakelockTime))
         .append("ms\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void UidEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     auto core = g_statsService->GetBatteryStatsCore();
     for (auto &iter : uidPowerMap_) {
         std::string bundleName = "NULL";
@@ -437,15 +407,15 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()
                 ->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
         if (bundleObj == nullptr) {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager service");
+            STATS_HILOGW(COMP_SVC, "failed to get bundle manager service");
         } else {
             sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
             if (bmgr == nullptr) {
-                STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle manager proxy");
+                STATS_HILOGW(COMP_SVC, "failed to get bundle manager proxy");
             } else {
                 bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
                 if (!res) {
-                    STATS_HILOGE(STATS_MODULE_SERVICE, "failed to get bundle name for uid: %{public}d", iter.first);
+                    STATS_HILOGW(COMP_SVC, "failed to get bundle name for uid: %{public}d", iter.first);
                 }
             }
         }
@@ -465,7 +435,6 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             cpuEntity->DumpInfo(result, iter.first);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

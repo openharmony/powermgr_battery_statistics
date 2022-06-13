@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +25,7 @@ namespace OHOS {
 namespace PowerMgr {
 int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d",
+    STATS_HILOGD(COMP_SVC, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d",
         code, option.GetFlags());
     const int DFX_DELAY_MS = 10000;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_MS, nullptr, nullptr,
@@ -34,7 +34,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
     std::u16string descriptor = BatteryStatsStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "BatteryStatsStub::OnRemoteRequest failed, descriptor is not matched!");
+        STATS_HILOGE(COMP_SVC, "BatteryStatsStub::OnRemoteRequest failed, descriptor is not matched");
         return E_STATS_GET_SERVICE_FAILED;
     }
     ChooseCodeStub(code, data, reply, option);
@@ -97,15 +97,15 @@ int32_t BatteryStatsStub::ChooseCodeStub(uint32_t code, MessageParcel &data, Mes
 
 int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    STATS_HILOGD(COMP_SVC, "Enter");
     BatteryStatsInfoList ret = GetBatteryStats();
 
     uint32_t size = static_cast<uint32_t>(ret.size());
     if (!reply.WriteUint32(size)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s - Write size failed.", __func__);
+        STATS_HILOGE(COMP_SVC, "Write size failed");
         return false;
     }
-    STATS_HILOGD(STATS_MODULE_SERVICE, "%{public}s - Write size: %{public}u", __func__, size);
+    STATS_HILOGD(COMP_SVC, "Write size: %{public}u", size);
     for (const auto& templateVal : ret) {
         if (templateVal == nullptr) {
             continue;
@@ -117,13 +117,13 @@ int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
 
 int32_t BatteryStatsStub::GetTotalTimeSecondStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t type = data.ReadInt32();
     StatsUtils::StatsType statsType = StatsUtils::StatsType(type);
     int32_t uid = data.ReadInt32();
     uint64_t ret = GetTotalTimeSecond(statsType, uid);
     if (!reply.WriteUint64(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s - Write ret failed.", __func__);
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -131,13 +131,13 @@ int32_t BatteryStatsStub::GetTotalTimeSecondStub(MessageParcel &data, MessagePar
 
 int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t type = data.ReadInt32();
     StatsUtils::StatsType statsType = StatsUtils::StatsType(type);
     int32_t uid = data.ReadInt32();
     uint64_t ret = GetTotalDataBytes(statsType, uid);
     if (!reply.WriteUint64(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "%{public}s - Write ret failed.", __func__);
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -145,68 +145,64 @@ int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParc
 
 int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t uid = data.ReadInt32();
     double ret = GetAppStatsMah(uid);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return ERR_OK;
 }
 
 int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t uid = data.ReadInt32();
     double ret = GetAppStatsPercent(uid);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return ERR_OK;
 }
 
 int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t typeProxy = data.ReadInt32();
     BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsMah(type);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return ERR_OK;
 }
 
 int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessageParcel& reply)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Enter");
     int32_t typeProxy = data.ReadInt32();
     BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsPercent(type);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Write ret failed.");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return ERR_OK;
 }
 
 int32_t BatteryStatsStub::ResetStub()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    STATS_HILOGD(COMP_SVC, "Enter");
     Reset();
     return ERR_OK;
 }
 
 int32_t BatteryStatsStub::SetOnBatteryStub(MessageParcel& data)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "%{public}s.", __func__);
+    STATS_HILOGD(COMP_SVC, "Enter");
     bool isOnBattery = data.ReadBool();
     SetOnBattery(isOnBattery);
     return ERR_OK;
@@ -218,7 +214,7 @@ int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& repl
     std::vector<std::string> args;
 
     if (!data.ReadUint32(argc)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Readback fail!");
+        STATS_HILOGE(COMP_SVC, "Readback fail");
         return E_STATS_READ_PARCEL_ERROR;
     }
 
@@ -227,13 +223,13 @@ int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& repl
         if (!arg.empty()) {
             args.push_back(arg);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "read value fail: %{public}d", i);
+            STATS_HILOGE(COMP_SVC, "read value fail: %{public}d", i);
         }
     }
 
     std::string ret = ShellDump(args, argc);
     if (!reply.WriteString(ret)) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Dump Writeback Fail!");
+        STATS_HILOGE(COMP_SVC, "Dump Writeback Fail");
         return E_STATS_WRITE_PARCEL_ERROR;
     }
     return ERR_OK;

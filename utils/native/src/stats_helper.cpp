@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,69 +29,62 @@ bool StatsHelper::screenOff_ = false;
 
 long StatsHelper::GetBootTimeMs()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long bootTimeMs = StatsUtils::DEFAULT_VALUE;
     struct timespec rawBootTime;
     int errCode = clock_gettime(CLOCK_BOOTTIME, &rawBootTime);
     if (errCode != 0) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Get boot time failed, return default time.");
+        STATS_HILOGE(COMP_SVC, "Get boot time failed, return default time");
     } else {
         bootTimeMs =
             (long) (rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND + rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got boot time: %{public}ld", bootTimeMs);
+        STATS_HILOGD(COMP_SVC, "Got boot time: %{public}ld", bootTimeMs);
     }
     return bootTimeMs;
 }
 
 long StatsHelper::GetUpTimeMs()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long upTimeMs = StatsUtils::DEFAULT_VALUE;
     struct timespec rawUpTime;
     int errCode = clock_gettime(CLOCK_MONOTONIC, &rawUpTime);
     if (errCode != 0) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Get up time failed, return default time.");
+        STATS_HILOGE(COMP_SVC, "Get up time failed, return default time");
     } else {
         upTimeMs = (long) (rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND + rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got up time: %{public}ld", upTimeMs);
+        STATS_HILOGD(COMP_SVC, "Got up time: %{public}ld", upTimeMs);
     }
     return upTimeMs;
 }
 
 void StatsHelper::SetOnBattery(bool onBattery)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     if (onBattery_ != onBattery) {
         onBattery_ = onBattery;
         // when onBattery is ture, status is unplugin.
         long currentBootTimeMs = GetBootTimeMs();
         long currentUpTimeMs = GetUpTimeMs();
         if (onBattery) {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Power supply is disconnected");
+            STATS_HILOGD(COMP_SVC, "Power supply is disconnected");
             latestUnplugBootTimeMs_ = currentBootTimeMs;
             latestUnplugUpTimeMs_ = currentUpTimeMs;
         } else {
-            STATS_HILOGD(STATS_MODULE_SERVICE, "Power supply is connected");
+            STATS_HILOGD(COMP_SVC, "Power supply is connected");
             onBatteryBootTimeMs_ += currentBootTimeMs - latestUnplugBootTimeMs_;
             onBatteryUpTimeMs_ += currentUpTimeMs - latestUnplugUpTimeMs_;
         }
     }
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Exit");
 }
 
 void StatsHelper::SetScreenOff(bool screenOff)
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     if (screenOff_ != screenOff) {
         screenOff_ = screenOff;
-        STATS_HILOGD(STATS_MODULE_SERVICE, "Update screen off state: %{public}d", screenOff);
+        STATS_HILOGD(COMP_SVC, "Update screen off state: %{public}d", screenOff);
     }
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Exit");
 }
 
 bool StatsHelper::IsOnBattery()
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "onBattery_ = %{public}d", onBattery_);
     return onBattery_;
 }
 
@@ -102,28 +95,25 @@ bool StatsHelper::IsOnBatteryScreenOff()
 
 long StatsHelper::GetOnBatteryBootTimeMs()
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     long onBatteryBootTimeMs = onBatteryBootTimeMs_;
     long currentBootTimeMs = GetBootTimeMs();
-    STATS_HILOGI(STATS_MODULE_SERVICE, "onBatteryBootTimeMs: %{public}ld", onBatteryBootTimeMs);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "currentBootTimeMs: %{public}ld", currentBootTimeMs);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "latestUnplugBootTimeMs_: %{public}ld", latestUnplugBootTimeMs_);
     if (IsOnBattery()) {
         onBatteryBootTimeMs += currentBootTimeMs - latestUnplugBootTimeMs_;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Got on battery boot time: %{public}ld", onBatteryBootTimeMs);
+    STATS_HILOGD(COMP_SVC, "Got on battery boot time: %{public}ld, currentBootTimeMs: %{public}ld," \
+        "latestUnplugBootTimeMs_: %{public}ld",
+        onBatteryBootTimeMs, currentBootTimeMs, latestUnplugBootTimeMs_);
     return onBatteryBootTimeMs;
 }
 
 long StatsHelper::GetOnBatteryUpTimeMs()
 {
-    STATS_HILOGD(STATS_MODULE_SERVICE, "Enter");
     long onBatteryUpTimeMs = onBatteryUpTimeMs_;
     long currentUpTimeMs = GetUpTimeMs();
     if (IsOnBattery()) {
         onBatteryUpTimeMs += currentUpTimeMs - latestUnplugUpTimeMs_;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Got on battery up time: %{public}ld", onBatteryUpTimeMs);
+    STATS_HILOGD(COMP_SVC, "Got on battery up time: %{public}ld", onBatteryUpTimeMs);
     return onBatteryUpTimeMs;
 }
 } // namespace PowerMgr

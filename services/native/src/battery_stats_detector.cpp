@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,22 +21,24 @@ namespace OHOS {
 namespace PowerMgr {
 void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(data.type).c_str());
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle state: %{public}d", data.state);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle level: %{public}d", data.level);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle uid: %{public}d", data.uid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle pid: %{public}d", data.pid);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataName: %{public}s", data.eventDataName.c_str());
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataType: %{public}d", data.eventDataType);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle eventDataExtra: %{public}d", data.eventDataExtra);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle time: %{public}ld", data.time);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle traffic: %{public}ld", data.traffic);
+    STATS_HILOGD(COMP_SVC,
+        "Handle type: %{public}s, state: %{public}d, level: %{public}d, uid: %{public}d, pid: %{public}d,"      \
+        "eventDataName: %{public}s, eventDataType: %{public}d, eventDataExtra: %{public}d, time: %{public}ld,"  \
+        "traffic: %{public}ld",
+        StatsUtils::ConvertStatsType(data.type).c_str(),
+        data.state,
+        data.level,
+        data.uid,
+        data.pid,
+        data.eventDataName.c_str(),
+        data.eventDataType,
+        data.eventDataExtra,
+        data.time,
+        data.traffic);
 
     auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (bss == nullptr) {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Got Battery stats service failed");
+        STATS_HILOGE(COMP_SVC, "Got Battery stats service failed");
         return;
     }
     auto core = bss->GetBatteryStatsCore();
@@ -48,16 +50,13 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         // Update related timer based on state or level
         core->UpdateStats(data.type, data.state, data.level, data.uid);
     } else {
-        STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
+        STATS_HILOGE(COMP_SVC, "Got invalid type");
     }
     handleDebugInfo(data);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(type).c_str());
     bool isMatch = false;
     switch (type) {
         case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
@@ -68,21 +67,18 @@ bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_RADIO_TX:
             // Realated with duration
             isMatch = true;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}s is duration related",
+            STATS_HILOGI(COMP_SVC, "Type: %{public}s is duration related",
                 StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
+            STATS_HILOGE(COMP_SVC, "Got invalid type");
             break;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return isMatch;
 }
 
 bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(type).c_str());
     bool isMatch = false;
     switch (type) {
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
@@ -103,20 +99,18 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
             // Related with state
             isMatch = true;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Type: %{public}s is state related",
+            STATS_HILOGI(COMP_SVC, "Type: %{public}s is state related",
                 StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
+            STATS_HILOGE(COMP_SVC, "Got invalid type");
             break;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return isMatch;
 }
 
 void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     debugInfo.append("Thermal event: Part name = ")
         .append(data.eventDataName)
         .append(", temperature = ")
@@ -128,12 +122,10 @@ void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bo
         debugInfo.append("Additional debug info: ")
             .append(data.eventDebugInfo);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     debugInfo.append("Battery event: Battery level = ")
         .append(ToString(data.level))
         .append(", Charger type = ")
@@ -145,12 +137,10 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
         debugInfo.append("Additional debug info: ")
             .append(data.eventDebugInfo);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::string screenState;
     if (data.state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
         screenState = "off";
@@ -175,12 +165,10 @@ void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bo
         debugInfo.append("Additional debug info: ")
             .append(data.eventDebugInfo);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
         eventState = "LOCK";
@@ -204,12 +192,10 @@ void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long b
         debugInfo.append("Additional debug info: ")
             .append(data.eventDebugInfo);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     debugInfo.append("WorkScheduler event: UID = ")
         .append(ToString(data.uid))
         .append(", PID = ")
@@ -227,12 +213,10 @@ void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, l
         debugInfo.append("Additional debug info: ")
             .append(data.eventDebugInfo);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
         eventState = "Call active";
@@ -244,12 +228,10 @@ void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, long boot
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
         eventState = "ON";
@@ -265,13 +247,10 @@ void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Handle type: %{public}s", StatsUtils::ConvertStatsType(data.type).c_str());
     long bootTimeMs = StatsHelper::GetBootTimeMs();
     auto core = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance()->GetBatteryStatsCore();
     std::string debugInfo;
@@ -298,11 +277,10 @@ void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
             handleFlashlightInfo(data, bootTimeMs, debugInfo);
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Got invalid type");
+            STATS_HILOGE(COMP_SVC, "Got invalid type");
             break;
     }
     core->UpdateDebugInfo(debugInfo);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

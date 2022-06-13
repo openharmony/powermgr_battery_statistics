@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@
 #include "sys_mgr_client.h"
 
 #include "battery_stats_service.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -36,7 +36,6 @@ RadioEntity::RadioEntity()
 
 void RadioEntity::Calculate(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (uid > StatsUtils::INVALID_VALUE) {
         // Calculate Radio scan and traffic power consumption caused by app
         CalculateRadioPowerForApp(uid);
@@ -44,20 +43,16 @@ void RadioEntity::Calculate(int32_t uid)
         // Calculate Radio on and Radio app power consumption caused by Radio hardware
         CalculateRadioPower();
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 void RadioEntity::CalculateRadioPower()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Enter");
     // Calculate Radio scan power
     auto radioScanAverageMa =
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_SCAN);
     auto radioScanTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_SCAN);
     auto radioScanPowerMah = radioScanAverageMa * radioScanTimeMs / StatsUtils::MS_IN_HOUR;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio scan time: %{public}ldms", radioScanTimeMs);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio scan power average: %{public}lfma", radioScanAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio scan power consumption: %{public}lfmAh", radioScanPowerMah);
 
     // Calculate Radio on power
     double radioOnPowerMah = StatsUtils::DEFAULT_VALUE;
@@ -67,17 +62,12 @@ void RadioEntity::CalculateRadioPower()
         auto radioOnAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
         auto radioOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, i);
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio on time: %{public}ldms of signal level: %{public}d",
-            radioOnLevelTimeMs, i);
-        STATS_HILOGI(STATS_MODULE_SERVICE,
-            "Calculate radio on power average: %{public}lfma of signal level: %{public}d", radioScanAverageMa, i);
         radioOnLevelPowerMah = radioOnAverageMa * radioOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio on power consumption: %{public}lfmAh for level: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Calculate radio on power consumption: %{public}lfmAh for level: %{public}d",
             radioOnLevelPowerMah, i);
         radioOnPowerMah += radioOnLevelPowerMah;
         radioOnTime += radioOnLevelTimeMs;
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio on power consumption: %{public}lfmAh", radioOnPowerMah);
 
     // Sum Radio power
     radioOnPowerMah_ = radioScanPowerMah + radioOnPowerMah;
@@ -86,13 +76,13 @@ void RadioEntity::CalculateRadioPower()
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     statsInfo->SetPower(radioOnPowerMah_);
     statsInfoList_.push_back(statsInfo);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio total power consumption: %{public}lfmAh", radioOnPowerMah_);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+    STATS_HILOGD(COMP_SVC, "Calculate radio, scan power consumption: %{public}lfmAh,"   \
+        "on power consumption: %{public}lfmAh, total power consumption: %{public}lfmAh",
+        radioScanPowerMah, radioOnPowerMah, radioOnPowerMah_);
 }
 
 void RadioEntity::CalculateRadioPowerForApp(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     // Calculate Radio traffic power consumption
     // Calculate Radio RX power consumption
     auto radioRxAverageMa =
@@ -107,139 +97,125 @@ void RadioEntity::CalculateRadioPowerForApp(int32_t uid)
     auto radioTxPowerMah = radioTxAverageMa * radioTxTimeMs / StatsUtils::MS_IN_HOUR;
 
     auto radioUidPowerMah = radioRxPowerMah + radioTxPowerMah;
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX time: %{public}ldms", radioRxTimeMs);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX power average: %{public}lfma", radioRxAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio RX power consumption: %{public}lfmAh", radioRxPowerMah);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX time: %{public}ldms", radioTxTimeMs);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX power average: %{public}lfma", radioTxAverageMa);
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Calculate radio TX power consumption: %{public}lfmAh", radioTxPowerMah);
+
+    STATS_HILOGD(COMP_SVC,
+        "Calculate radio RX power consumption: %{public}lfmAh, TX power consumption: %{public}lfmAh",
+        radioRxPowerMah, radioTxPowerMah);
     auto iter = appRadioPowerMap_.find(uid);
     if (iter != appRadioPowerMap_.end()) {
         iter->second = radioUidPowerMah;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Update app radio power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Update app radio power consumption: %{public}lfmAh for uid: %{public}d",
             radioUidPowerMah, uid);
     } else {
         appRadioPowerMap_.insert(std::pair<int32_t, double>(uid, radioUidPowerMah));
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Create app radio power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Create app radio power consumption: %{public}lfmAh for uid: %{public}d",
             radioUidPowerMah, uid);
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 long RadioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
         auto rxIter = appRadioRxTimerMap_.find(uid);
         if (rxIter != appRadioRxTimerMap_.end()) {
             time = rxIter->second->GetRunningTimeMs();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio RX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got radio RX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio RX timer related with uid: %{public}d found, return 0",
-                uid);
+            STATS_HILOGE(COMP_SVC, "No radio RX timer related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxTimerMap_.find(uid);
         if (txIter != appRadioTxTimerMap_.end()) {
             time = txIter->second->GetRunningTimeMs();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio TX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got radio TX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio TX timer related with uid: %{public}d found, return 0",
-                uid);
+            STATS_HILOGE(COMP_SVC, "No radio TX timer related with uid: %{public}d found, return 0", uid);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return time;
 }
 
 long RadioEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
         if (radioScanTimer_ != nullptr) {
             time = radioScanTimer_->GetRunningTimeMs();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio scan time: %{public}ldms", time);
+            STATS_HILOGD(COMP_SVC, "Got radio scan time: %{public}ldms", time);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio scan timer found, return 0");
+            STATS_HILOGE(COMP_SVC, "No radio scan timer found, return 0");
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_ON) {
         auto iter = radioOnTimerMap_.find(level);
         if (iter != radioOnTimerMap_.end() && iter->second != nullptr) {
             time = iter->second->GetRunningTimeMs();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio on time: %{public}ldms of signal level: %{public}d", time,
+            STATS_HILOGD(COMP_SVC, "Got radio on time: %{public}ldms of signal level: %{public}d", time,
                 level);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio on timer found, return 0");
+            STATS_HILOGE(COMP_SVC, "No radio on timer found, return 0");
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return time;
 }
 
 double RadioEntity::GetEntityPowerMah(int32_t uidOrUserId)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
 
     if (uidOrUserId > StatsUtils::INVALID_VALUE) {
         auto iter = appRadioPowerMap_.find(uidOrUserId);
         if (iter != appRadioPowerMap_.end()) {
             power = iter->second;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got app radio power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Got app radio power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uidOrUserId);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE,
+            STATS_HILOGE(COMP_SVC,
                 "No app radio power consumption related with uid: %{public}d found, return 0", uidOrUserId);
         }
     } else {
         power = radioPowerMah_;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Got radio power consumption: %{public}lfmAh", power);
     }
-
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 double RadioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     double power = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
         power = radioScanPowerMah_;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio scan power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Got radio scan power consumption: %{public}lfmAh", power);
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_ON) {
         power = radioOnPowerMah_;
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio on power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Got radio on power consumption: %{public}lfmAh", power);
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
         auto rxIter = appRadioRxPowerMap_.find(uid);
         if (rxIter != appRadioRxPowerMap_.end()) {
             power = rxIter->second;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio RX power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Got radio RX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE,
+            STATS_HILOGE(COMP_SVC,
                 "No radio RX power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxPowerMap_.find(uid);
         if (txIter != appRadioTxPowerMap_.end()) {
             power = txIter->second;
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio TX power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Got radio TX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE,
+            STATS_HILOGE(COMP_SVC,
                 "No radio TX power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return power;
 }
 
 void RadioEntity::Reset()
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Reset");
     // Reset Radio total power consumption
     radioPowerMah_ = StatsUtils::DEFAULT_VALUE;
 
@@ -297,144 +273,126 @@ void RadioEntity::Reset()
             iter.second->Reset();
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 
 long RadioEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     long count = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
         auto rxIter = appRadioRxCounterMap_.find(uid);
         if (rxIter != appRadioRxCounterMap_.end()) {
             count = rxIter->second->GetCount();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio RX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got radio RX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio RX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGE(COMP_SVC, "No radio RX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxCounterMap_.find(uid);
         if (txIter != appRadioTxCounterMap_.end()) {
             count = txIter->second->GetCount();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio TX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got radio TX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "No radio TX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGE(COMP_SVC, "No radio TX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     }
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
     return count;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
-        auto rxIter = appRadioTxTimerMap_.find(uid);
+        auto rxIter = appRadioRxTimerMap_.find(uid);
         if (rxIter != appRadioRxTimerMap_.end()) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio RX timer for uid: %{public}d", uid);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGD(COMP_SVC, "Got radio RX timer for uid: %{public}d", uid);
             return rxIter->second;
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio RX timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create radio RX timer for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
             appRadioRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
             return timer;
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxTimerMap_.find(uid);
         if (txIter != appRadioTxTimerMap_.end()) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio TX timer for uid: %{public}d", uid);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGD(COMP_SVC, "Got radio TX timer for uid: %{public}d", uid);
             return txIter->second;
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio TX timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create radio TX timer for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
             appRadioTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
             return timer;
         }
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Create active timer failed");
+        STATS_HILOGI(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
         if (radioScanTimer_ != nullptr) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio scan timer");
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGI(COMP_SVC, "Got radio scan timer");
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio scan timer");
+            STATS_HILOGD(COMP_SVC, "Create radio scan timer");
             radioScanTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
         }
         return radioScanTimer_;
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_ON) {
         auto onIter = radioOnTimerMap_.find(level);
         if (onIter != radioOnTimerMap_.end()) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio on timer for level: %{public}d", level);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGD(COMP_SVC, "Got radio on timer for level: %{public}d", level);
             return onIter->second;
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio on timer for level: %{public}d", level);
+            STATS_HILOGD(COMP_SVC, "Create radio on timer for level: %{public}d", level);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
             radioOnTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, timer));
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
             return timer;
         }
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Create active timer failed");
+        STATS_HILOGI(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
 
 std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
         auto rxIter = appRadioRxCounterMap_.find(uid);
         if (rxIter != appRadioRxCounterMap_.end()) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio RX counter for uid: %{public}d", uid);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGD(COMP_SVC, "Got radio RX counter for uid: %{public}d", uid);
             return rxIter->second;
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio RX counter for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create radio RX counter for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
             appRadioRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
             return counter;
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxCounterMap_.find(uid);
         if (txIter != appRadioTxCounterMap_.end()) {
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Got radio TX counter for uid: %{public}d", uid);
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
+            STATS_HILOGD(COMP_SVC, "Got radio TX counter for uid: %{public}d", uid);
             return txIter->second;
         } else {
-            STATS_HILOGE(STATS_MODULE_SERVICE, "Create radio TX counter for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create radio TX counter for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
             appRadioTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
             return counter;
         }
     } else {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "Create counter failed");
+        STATS_HILOGI(COMP_SVC, "Create counter failed");
         return nullptr;
     }
 }
 
 void RadioEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
+    STATS_HILOGD(COMP_SVC, "Reset");
 
     long onTime = StatsUtils::DEFAULT_VALUE;
     for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
@@ -452,7 +410,6 @@ void RadioEntity::DumpInfo(std::string& result, int32_t uid)
         .append(ToString(scanTime))
         .append("ms")
         .append("\n");
-    STATS_HILOGI(STATS_MODULE_SERVICE, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

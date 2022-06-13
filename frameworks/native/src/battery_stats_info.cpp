@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@
 #include <string_ex.h>
 
 #include "stats_common.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -28,119 +28,94 @@ bool BatteryStatsInfo::Marshalling(Parcel& parcel) const
     STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, uid_, false);
     STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, static_cast<int32_t>(type_), false);
     STATS_WRITE_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "uid: %{public}d.", uid_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "type: %{public}d.", type_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", totalPowerMah_);
+    STATS_HILOGD(COMP_FWK, "uid: %{public}d, type: %{public}d, power: %{public}lf", uid_, type_, totalPowerMah_);
     return true;
 }
 
 std::shared_ptr<BatteryStatsInfo> BatteryStatsInfo::Unmarshalling(Parcel& parcel)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     if (statsInfo == nullptr) {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "BatteryStatsInfo object creating is failed.");
+        STATS_HILOGE(COMP_FWK, "BatteryStatsInfo object creating is failed");
         statsInfo = nullptr;
     }
     if (!statsInfo->ReadFromParcel(parcel)) {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "ReadFromParcel failed.");
+        STATS_HILOGE(COMP_FWK, "ReadFromParcel failed");
         statsInfo = nullptr;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
     return statsInfo;
 }
 
 bool BatteryStatsInfo::ReadFromParcel(Parcel &parcel)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     STATS_READ_PARCEL_WITH_RET(parcel, Int32, uid_, false);
     int32_t type = static_cast<int32_t>(0);
     STATS_READ_PARCEL_WITH_RET(parcel, Int32, type, false);
     type_ = static_cast<ConsumptionType>(type);
     STATS_READ_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "uid: %{public}d.", uid_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "type: %{public}d.", type_);
-    STATS_HILOGD(STATS_MODULE_INNERKIT, "power: %{public}lf.", totalPowerMah_);
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
+    STATS_HILOGD(COMP_FWK, "uid: %{public}d, type: %{public}d, power: %{public}lf", uid_, type_, totalPowerMah_);
     return true;
 }
 
 void BatteryStatsInfo::SetUid(int32_t uid)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     if (uid > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set uid: %{public}d", uid);
+        STATS_HILOGD(COMP_FWK, "Set uid: %{public}d", uid);
         uid_ = uid;
     } else {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "Got illegal uid: %{public}d, ignore", uid);
+        STATS_HILOGE(COMP_FWK, "Got illegal uid: %{public}d, ignore", uid);
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
 void BatteryStatsInfo::SetUserId(int32_t userId)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     if (userId > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set uid: %{public}d", userId);
+        STATS_HILOGD(COMP_FWK, "Set uid: %{public}d", userId);
         userId_ = userId;
     } else {
-        STATS_HILOGE(STATS_MODULE_INNERKIT, "Got illegal user id: %{public}d, ignore", userId);
+        STATS_HILOGE(COMP_FWK, "Got illegal user id: %{public}d, ignore", userId);
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
 void BatteryStatsInfo::SetConsumptioType(ConsumptionType type)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Set type: %{public}d", type);
     type_ = type;
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
 void BatteryStatsInfo::SetPower(double power)
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     if (uid_ > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
+        STATS_HILOGI(COMP_FWK, "Set APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Set power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+        STATS_HILOGI(COMP_FWK, "Set power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
             ConvertConsumptionType(type_).c_str());
     }
     totalPowerMah_ = power;
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
 }
 
 int32_t BatteryStatsInfo::GetUid()
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Got uid: %{public}d", uid_);
     return uid_;
 }
 
 int32_t BatteryStatsInfo::GetUserId()
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Got user id: %{public}d", userId_);
     return userId_;
 }
 
 BatteryStatsInfo::ConsumptionType BatteryStatsInfo::GetConsumptionType()
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Got type: %{public}d", type_);
     return type_;
 }
 
 double BatteryStatsInfo::GetPower()
 {
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Enter");
     if (uid_ > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Got APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
+        STATS_HILOGI(COMP_FWK, "Got APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGI(STATS_MODULE_INNERKIT, "Got power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+        STATS_HILOGI(COMP_FWK, "Got power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
             ConvertConsumptionType(type_).c_str());
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Exit");
     return totalPowerMah_;
 }
 
@@ -169,7 +144,7 @@ std::string BatteryStatsInfo::ConvertTypeForPart(ConsumptionType type)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGD(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -207,7 +182,7 @@ std::string BatteryStatsInfo::ConvertTypeForApp(ConsumptionType type)
         default:
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
+    STATS_HILOGD(COMP_FWK, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -235,10 +210,9 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
             result = ConvertTypeForApp(type);
             break;
         default:
-            STATS_HILOGE(STATS_MODULE_INNERKIT, "Illegal ConsumptionType got");
+            STATS_HILOGE(COMP_FWK, "Convert failed due to illegal type, return empty string");
             break;
     }
-    STATS_HILOGI(STATS_MODULE_INNERKIT, "Convert to %{public}s", result.c_str());
     return result;
 }
 } // namespace PowerMgr

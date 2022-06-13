@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,7 +26,7 @@
 #include "cpu_time_reader.h"
 #include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 #include "stats_utils.h"
 
 namespace OHOS {
@@ -35,7 +35,7 @@ class BatteryStatsCore {
 public:
     explicit BatteryStatsCore()
     {
-        STATS_HILOGI(STATS_MODULE_SERVICE, "BatteryStatsCore instance is created.");
+        STATS_HILOGI(COMP_SVC, "BatteryStatsCore instance is created");
     }
     ~BatteryStatsCore() = default;
     void ComputePower();

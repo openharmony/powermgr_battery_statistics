@@ -24,34 +24,29 @@
 #include "napi/native_api.h"
 
 #include "battery_stats_client.h"
-#include "stats_hilog_wrapper.h"
+#include "stats_log.h"
 
 using namespace OHOS::PowerMgr;
 
 static void SetValueInt32(const napi_env& env, std::string fieldStr, const int intValue, napi_value& result)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set int32_t value: %{public}d", intValue);
+    STATS_HILOGD(COMP_FWK, "Set int32_t value: %{public}d", intValue);
     napi_value value;
     napi_create_int32(env, intValue, &value);
     napi_set_named_property(env, result, fieldStr.c_str(), value);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
 static void SetValueDouble(const napi_env& env, std::string fieldStr, const double doubleValue, napi_value& result)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Set double value: %{public}lf", doubleValue);
+    STATS_HILOGD(COMP_FWK, "Set double value: %{public}lf", doubleValue);
     napi_value value;
     napi_create_double(env, doubleValue, &value);
     napi_set_named_property(env, result, fieldStr.c_str(), value);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
 static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatteryStats>& vecJsStatsInfo,
     const int idx, napi_value& arrayResult)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     napi_value result;
     napi_create_object(env, &result);
 
@@ -61,15 +56,13 @@ static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatterySta
 
     napi_status status = napi_set_element(env, arrayResult, idx, result);
     if (status != napi_ok) {
-        STATS_HILOGE(STATS_MODULE_JS_NAPI, "BatteryStats js napi set element error: %{public}d", status);
+        STATS_HILOGE(COMP_FWK, "BatteryStats js napi set element error: %{public}d", status);
     }
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
 static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppStatsInfos,
     std::vector<BatteryStats>& vecJsStatsInfo)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     for (auto& e : vecCppStatsInfos) {
         BatteryStats jsStatsInfo;
 
@@ -78,21 +71,18 @@ static void NativeCppStatsInfoToJsStatsInfo(const BatteryStatsInfoList& vecCppSt
         jsStatsInfo.power_ = e->GetPower();
         vecJsStatsInfo.push_back(jsStatsInfo);
     }
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
 }
 
 static bool GetBatteryStatsInfoList(std::vector<BatteryStats>& vecStatsInfo)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     BatteryStatsInfoList vecCppStatsInfos = BatteryStatsClient::GetInstance().GetBatteryStats();
     if (vecCppStatsInfos.size() <= 0) {
-        STATS_HILOGE(STATS_MODULE_JS_NAPI, "Get Stats info failed");
+        STATS_HILOGE(COMP_FWK, "Get Stats info failed");
         return false;
     }
-
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "StatsInfoList size: %{public}d", (int)vecCppStatsInfos.size());
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecStatsInfo);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
+    STATS_HILOGD(COMP_FWK, "CppStatsInfos size: %{public}d, JsStatsInfo size: %{public}d",
+        (int)vecCppStatsInfos.size(), (int)vecStatsInfo.size());
     return true;
 }
 
@@ -100,7 +90,7 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
 {
     napi_status status = napi_create_array_with_length(env, vecStatsInfo.size(), &result);
     if (status != napi_ok) {
-        STATS_HILOGE(STATS_MODULE_JS_NAPI, "BatteryStats napi_create_array_with_length error: %{public}d", status);
+        STATS_HILOGE(COMP_FWK, "BatteryStats napi_create_array_with_length error: %{public}d", status);
         return;
     }
     for (size_t i = 0; i < vecStatsInfo.size(); ++i) {
@@ -111,7 +101,6 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
 static napi_value StatsInfoToPromise(const napi_env& env, std::unique_ptr<AsyncCallbackInfo>& asCallbackInfoPtr,
     napi_value& promise)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     napi_value resourceName;
     napi_create_string_latin1(env, "getBatteryStats", NAPI_AUTO_LENGTH, &resourceName);
 
@@ -143,14 +132,13 @@ static napi_value StatsInfoToPromise(const napi_env& env, std::unique_ptr<AsyncC
         &asCallbackInfoPtr->asyncWork);
     NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
     asCallbackInfoPtr.release();
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
+    STATS_HILOGD(COMP_FWK, "Exit");
     return NULL;
 }
 
 static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<AsyncCallbackInfo>& asCallbackInfoPtr,
     const size_t argc, const napi_value *argv)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     napi_value resourceName;
     napi_create_string_latin1(env, "getBatteryStats", NAPI_AUTO_LENGTH, &resourceName);
 
@@ -182,7 +170,7 @@ static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<Async
                     napi_get_reference_value(env, asCallbackInfo->callback[1], &callback);
                     napi_call_function(env, nullptr, callback, 1, &result, &undefine);
                 } else {
-                    STATS_HILOGE(STATS_MODULE_JS_NAPI, "StatsInfoList callback func is null");
+                    STATS_HILOGE(COMP_FWK, "StatsInfoList callback func is null");
                     napi_throw_error(env, "error", "StatsInfoList callback func is null");
                 }
             }
@@ -200,13 +188,12 @@ static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<Async
         &asCallbackInfoPtr->asyncWork);
     NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
     asCallbackInfoPtr.release();
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
+    STATS_HILOGD(COMP_FWK, "Exit");
     return NULL;
 }
 
 static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     size_t argc = 2;
     napi_value argv[argc];
     napi_value thisVar = nullptr;
@@ -220,19 +207,18 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
 
     if (argc >= 1) {
         StatsInfoToCallBack(env, asCallbackInfoPtr, argc, argv);
-        STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit_callback");
+        STATS_HILOGD(COMP_FWK, "Exit_callback");
         return NULL;
     } else {
         napi_value promise;
         StatsInfoToPromise(env, asCallbackInfoPtr, promise);
-        STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit_promise");
+        STATS_HILOGD(COMP_FWK, "Exit_promise");
         return promise;
     }
 }
 
 static napi_value GetAppStatsMah(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     size_t argc = 1;
     napi_value argv[1];
     napi_value thisVar;
@@ -250,13 +236,12 @@ static napi_value GetAppStatsMah(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, appStatsMah, &result);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Got stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
+    STATS_HILOGI(COMP_FWK, "Got stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return result;
 }
 
 static napi_value GetAppStatsPercent(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     size_t argc = 1;
     napi_value argv[1];
     napi_value thisVar;
@@ -274,13 +259,12 @@ static napi_value GetAppStatsPercent(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, appStatsPercent, &result);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Got stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
+    STATS_HILOGI(COMP_FWK, "Got stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return result;
 }
 
 static napi_value GetPartStatsMah(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     size_t argc = 1;
     napi_value argv[1];
     napi_value thisVar;
@@ -299,13 +283,12 @@ static napi_value GetPartStatsMah(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, partStatsMah, &result);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Got stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
+    STATS_HILOGI(COMP_FWK, "Got stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return result;
 }
 
 static napi_value GetPartStatsPercent(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     size_t argc = 1;
     napi_value argv[1];
     napi_value thisVar;
@@ -324,25 +307,23 @@ static napi_value GetPartStatsPercent(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, partStatsPercent, &result);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
+    STATS_HILOGI(COMP_FWK, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return result;
 }
 
 static napi_value EnumStatsTypeConstructor(napi_env env, napi_callback_info info)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
     napi_value thisArg = nullptr;
     void *data = nullptr;
     napi_get_cb_info(env, info, nullptr, nullptr, &thisArg, &data);
     napi_value global = nullptr;
     napi_get_global(env, &global);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return thisArg;
 }
 
 static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
+    STATS_HILOGD(COMP_FWK, "Create battery stats type");
     napi_value invalid = nullptr;
     napi_value app = nullptr;
     napi_value bluetooth = nullptr;
@@ -379,7 +360,6 @@ static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
         sizeof(desc) / sizeof(*desc), desc, &result);
 
     napi_set_named_property(env, exports, "ConsumptionType", result);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return exports;
 }
 
@@ -389,8 +369,6 @@ EXTERN_C_START
  */
 static napi_value BatteryStatsInit(napi_env env, napi_value exports)
 {
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Enter");
-
     napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("getBatteryStats", GetBatteryStats),
         DECLARE_NAPI_FUNCTION("getAppPowerValue", GetAppStatsMah),
@@ -401,7 +379,6 @@ static napi_value BatteryStatsInit(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
 
     CreateEnumStatsType(env, exports);
-    STATS_HILOGD(STATS_MODULE_JS_NAPI, "Exit");
     return exports;
 }
 EXTERN_C_END
