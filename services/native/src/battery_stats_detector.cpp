@@ -136,7 +136,7 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
     STATS_HILOGI(STATS_MODULE_SERVICE, "Enter");
     debugInfo.append("Battery event: Battery level = ")
         .append(ToString(data.level))
-        .append(", current now = ")
+        .append(", Charger type = ")
         .append(ToString(data.eventDataExtra))
         .append("ma, boot time after boot = ")
         .append(ToString(bootTimeMs))

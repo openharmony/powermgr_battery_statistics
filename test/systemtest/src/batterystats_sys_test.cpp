@@ -100,11 +100,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
     std::string name = " BatteryStatsSysTest_001";
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -167,11 +167,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     double screenBrightnessAverage = 2;
     double deviation = 0.1;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
         "BRIGHTNESS", brightnessBefore);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
+    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
         "BRIGHTNESS", brightnessAfter);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -220,19 +220,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
 
     long testWaitTimeSec = 1;
     int32_t batteryLevel = 60;
-    int32_t batteryCurrent = 30;
+    int32_t batteryChargerType = 2;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_BATTERY", HiSysEvent::EventType::STATISTIC, "BATTERY_LEVEL",
-        batteryLevel, "CURRENT_NOW", batteryCurrent);
+    HiSysEvent::Write("BATTERY", "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
+        batteryLevel, "CHARGER", batteryChargerType);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
         .append(ToString(batteryLevel))
-        .append(", current now = ")
-        .append(ToString(batteryCurrent))
-        .append("ma");
+        .append(", Charger type = ")
+        .append(ToString(batteryChargerType));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -262,7 +261,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
     std::string partName = "Battery";
     int32_t temperature = 40;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
+    HiSysEvent::Write("THERMAL", "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
         partName, "TEMPERATURE", temperature);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);

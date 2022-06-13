@@ -13,58 +13,6 @@
 
 domain: POWERMGR
 
-POWER_RUNNINGLOCK:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: runninglock state}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  STATE: {type: INT32, desc: runninglock state}
-  TYPE: {type: INT32, desc: runninglock type}
-  NAME: {type: STRING, desc: runninglock name}
-  LOG_LEVEL: {type: INT32, desc: runninglock log level}
-  TAG: {type: STRING, desc: runninglock tag}
-  MESSAGE: {type: STRING, desc: runninglock message}
-
-POWER_SCREEN:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: screen state}
-  STATE: {type: INT32, desc: screen state}
-  BRIGHTNESS: {type: INT32, desc: brightness level}
-
-SCREEN_STATE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: screen state}
-  STATE: {type: INT32, desc: screen_state}
-
-BRIGHTNESS_NIT:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: lcd brightness }
-  BRIGHTNESS: {type: INT32, desc: brightness}
-  REASON: {type: STRING, desc: brightness reason}
-  NIT: {type: INT32, desc: brightness nit}
-
-BACKLIGHT_DISCOUNT:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: backlight discount}
-  RATIO: {type: INT32, desc: ratio}
-
-AMBIENT_LIGHT:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: ambient light}
-  TYPE: {type: INT32, desc: type}
-  LEVEL: {type: INT32, desc: level}
-
-SCREEN_ON_TIMEOUT:
-  __BASE: {type: FAULT, level: CRITICAL, desc: screen on timeout }
-  PID: {type: INT32, desc: session pid}
-  UID: {type: INT32, desc: session uid}
-  PACKAGE_NAME: {type: STRING, desc: package name}
-  PROCESS_NAME: {type: STRING, desc: process name}
-  MSG: {type: STRING, desc: screen on timeout message}
-
-POWER_TEMPERATURE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: device temperature}
-  NAME: {type: STRING, desc: device temperature level}
-  TEMPERATURE: {type: INT32, desc: device temperature level}
-
-TEMPERATURE_CHANGED:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: temperature changed}
-  LEVEL: {type: INT32, desc: level}
-
 POWER_WORKSCHEDULER:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: workscheduler message}
   PID: {type: INT32, desc: application pid}
