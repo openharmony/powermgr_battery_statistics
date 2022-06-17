@@ -26,7 +26,7 @@ config("batterystats_public_config") {
   include_dirs = [
     "native/include",
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager/include",
-    "${aafwk_kits_path}/appkit/native/app/include",
+    "${aafwk_path}/interfaces/kits/native/appkit/app",
     "${batterystats_interfaces_path}/include",
     "${batterystats_service_path}/zidl/include",
   ]
@@ -69,7 +69,7 @@ ohos_shared_library("batterystats_service") {
   public_configs = [ ":batterystats_public_config" ]
 
   deps = [
-    "${aafwk_kits_path}/appkit:appkit_native",
+    "${aafwk_path}/frameworks/native/appkit:appkit_native",
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
