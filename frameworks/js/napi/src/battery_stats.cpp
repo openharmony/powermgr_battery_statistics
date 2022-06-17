@@ -408,7 +408,7 @@ static napi_module batteryStatsModule = {
     .nm_flags = 0,
     .nm_filename = "batteryStats",
     .nm_register_func = BatteryStatsInit,
-    .nm_modname = "batteryStats",
+    .nm_modname = "batteryStatistics",
     .nm_priv = ((void *)0),
     .reserved = {0}
 };
