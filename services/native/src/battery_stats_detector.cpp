@@ -130,7 +130,7 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
         .append(ToString(data.level))
         .append(", Charger type = ")
         .append(ToString(data.eventDataExtra))
-        .append("ma, boot time after boot = ")
+        .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
     if (!data.eventDebugInfo.empty()) {
@@ -141,24 +141,8 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
 
 void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    std::string screenState;
-    if (data.state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
-        screenState = "off";
-    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_ON) {
-        screenState = "on";
-    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_DIM) {
-        screenState = "dim";
-    } else if (data.state == StatsUtils::STATS_STATE_DISPLAY_SUSPEND) {
-        screenState = "suspend";
-    } else {
-        screenState = "unknown state";
-    }
-
-    debugInfo.append("Display event: Screen is in ")
-        .append(screenState)
-        .append(" state, brigntness level = ")
-        .append(ToString(data.level))
-        .append(", boot time after boot = ")
+    debugInfo.append("\n")
+        .append("Dislpay event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
     if (!data.eventDebugInfo.empty()) {
@@ -175,7 +159,8 @@ void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long b
     } else {
         eventState = "UNLOCK";
     }
-    debugInfo.append("Wakelock event: UID = ")
+    debugInfo.append("\n")
+        .append("Wakelock event: UID = ")
         .append(ToString(data.uid))
         .append(", PID = ")
         .append(ToString(data.pid))
