@@ -2572,3 +2572,87 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_065, TestSize.Level0)
         <<" BatteryStatsClientTest_065 fail due to percent mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_065: test end";
 }
+
+/**
+ *
+ * @tc.name: BatteryStatsClientTest_076
+ * @tc.desc: test Dump function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_076, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_076: test start";
+
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    std::string type = "ToRemote";
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string toPkg = "name_To_Pkg";
+    int32_t targetId = 1;
+
+    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "DUBAI_TAG_DIST_SCHED_TO_REMOTE", HiSysEvent::EventType::STATISTIC,
+        "TYPE", type, "UID", uid, "PID", pid, "TO_PKG", toPkg, "TARGET_ID", targetId);
+    sleep(testWaitTimeSec);
+
+    std::string expectedDebugInfo;
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = DUBAI_TAG_DIST_SCHED_TO_REMOTE")
+        .append(",")
+        .append(" Type = ")
+        .append(type);
+
+    std::string actualDebugInfo = statsClient.Dump(dumpArgs);
+
+    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
+    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
+
+    auto index = actualDebugInfo.find(expectedDebugInfo);
+
+    EXPECT_TRUE(index != string::npos) << " BatteryStatsClientTest_076 fail due to not found related debug info";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_076: test end";
+}
+
+/**
+ *
+ * @tc.name: BatteryStatsClientTest_077
+ * @tc.desc: test Dump function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_077, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_077: test start";
+
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    std::string type = "FromRemote";
+    int32_t fromUid = 10003;
+    std::string pkg = "name_Pkg";
+    int32_t sourceId = 1;
+
+    HiSysEvent::Write(
+        HiSysEvent::Domain::POWERMGR, "DUBAI_TAG_DIST_SCHED_FROM_REMOTE", HiSysEvent::EventType::STATISTIC,
+        "TYPE", type, "FROM_UID", fromUid, "PKG", pkg, "SOURCE_ID", sourceId);
+    sleep(testWaitTimeSec);
+
+    std::string expectedDebugInfo;
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = DUBAI_TAG_DIST_SCHED_FROM_REMOTE")
+        .append(",")
+        .append(" Type = ")
+        .append(type);
+
+    std::string actualDebugInfo = statsClient.Dump(dumpArgs);
+
+    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
+    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
+
+    auto index = actualDebugInfo.find(expectedDebugInfo);
+
+    EXPECT_TRUE(index != string::npos) << " BatteryStatsClientTest_076 fail due to not found related debug info";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_076: test end";
+}

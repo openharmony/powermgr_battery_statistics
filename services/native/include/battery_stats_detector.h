@@ -46,6 +46,7 @@ private:
     void handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
     void handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
     void handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleDistributedSchedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
 };
 } // namespace PowerMgr
 } // namespace OHOS

@@ -93,6 +93,7 @@ public:
         STATS_TYPE_BATTERY,
         STATS_TYPE_WORKSCHEDULER,
         STATS_TYPE_THERMAL,
+        STATS_TYPE_DISTRIBUTEDSCHEDULER,
     };
 
     enum StatsState {

@@ -175,6 +175,9 @@ std::string StatsUtils::ConvertTypeForDebug(StatsType statsType)
         case STATS_TYPE_THERMAL:
             result = GET_VARIABLE_NAME(STATS_TYPE_THERMAL);
             break;
+        case STATS_TYPE_DISTRIBUTEDSCHEDULER:
+            result = GET_VARIABLE_NAME(STATS_TYPE_DISTRIBUTEDSCHEDULER);
+            break;
         default:
             break;
     }
@@ -222,6 +225,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
         case STATS_TYPE_BATTERY:
         case STATS_TYPE_WORKSCHEDULER:
         case STATS_TYPE_THERMAL:
+        case STATS_TYPE_DISTRIBUTEDSCHEDULER:
             result = ConvertTypeForDebug(statsType);
             break;
         default:
