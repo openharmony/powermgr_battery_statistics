@@ -60,7 +60,7 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processFlashlightEvent(data, root);
         } else if (eventName == "POWER_CAMERA") {
             processCameraEvent(data, root);
-        } else if (eventName == "POWER_AUDIO") {
+        } else if (eventName == "AUDIO_STREAM_CHANGE") {
             processAudioEvent(data, root);
         } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
             processSensorEvent(data, root);

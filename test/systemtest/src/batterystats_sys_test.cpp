@@ -564,11 +564,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -873,10 +873,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOn);
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -959,11 +959,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     stateOn = 1;
     stateOff = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_AUDIO", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
