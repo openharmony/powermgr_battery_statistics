@@ -26,42 +26,42 @@ namespace OHOS {
 namespace PowerMgr {
 #define STATS_RETURN_IF_WITH_RET(cond, retval) if (cond) { return (retval); }
 #define STATS_RETURN_IF(cond) if (cond) { return; }
-#define STATS_RETURN_IF_WITH_LOG(cond, loginfo)                                             \
+#define STATS_RETURN_IF_WITH_LOG(loglabel, cond, loginfo)                                   \
     do {                                                                                    \
         if (cond) {                                                                         \
-            STATS_HILOGE(COMP_FWK, ""#loginfo"");                                           \
+            STATS_HILOGE(loglabel, ""#loginfo"");                                           \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
 
-#define STATS_READ_PARCEL_NO_RET(parcel, type, out)                                         \
+#define STATS_READ_PARCEL_NO_RET(loglabel, parcel, type, out)                               \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGE(COMP_FWK, "Read "#out" failed");                                   \
+            STATS_HILOGE(loglabel, "Read "#out" failed");                                   \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
 
-#define STATS_WRITE_PARCEL_NO_RET(parcel, type, data)                                       \
+#define STATS_WRITE_PARCEL_NO_RET(loglabel, parcel, type, data)                             \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGE(COMP_FWK, "Write "#data" failed");                                 \
+            STATS_HILOGE(loglabel, "Write "#data" failed");                                 \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
 
-#define STATS_READ_PARCEL_WITH_RET(parcel, type, out, retval)                               \
+#define STATS_READ_PARCEL_WITH_RET(loglabel, parcel, type, out, retval)                     \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGE(COMP_FWK, "Read "#out" failed");                                   \
+            STATS_HILOGE(loglabel, "Read "#out" failed");                                   \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)                                                                             \
 
-#define STATS_WRITE_PARCEL_WITH_RET(parcel, type, data, retval)                             \
+#define STATS_WRITE_PARCEL_WITH_RET(loglabel, parcel, type, data, retval)                   \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGE(COMP_FWK, "Write "#data" failed");                                 \
+            STATS_HILOGE(loglabel, "Write "#data" failed");                                 \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)

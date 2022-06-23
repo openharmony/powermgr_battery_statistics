@@ -94,7 +94,7 @@ std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_UTILS, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -123,7 +123,7 @@ std::string StatsUtils::ConvertTypeForCpu(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_UTILS, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -158,7 +158,7 @@ std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_UTILS, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -178,7 +178,7 @@ std::string StatsUtils::ConvertTypeForDebug(StatsType statsType)
         default:
             break;
     }
-    STATS_HILOGI(COMP_FWK, "Convert to %{public}s", result.c_str());
+    STATS_HILOGI(COMP_UTILS, "Convert to %{public}s", result.c_str());
     return result;
 }
 
@@ -225,7 +225,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
             result = ConvertTypeForDebug(statsType);
             break;
         default:
-            STATS_HILOGE(COMP_FWK, "Convert failed due to illegal ConsumptionType, return empty string");
+            STATS_HILOGE(COMP_UTILS, "Convert failed due to illegal ConsumptionType, return empty string");
             break;
     }
     return result;

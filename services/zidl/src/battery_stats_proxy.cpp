@@ -71,15 +71,15 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& stat
     }
 
     uint64_t time = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETTIME), data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
     return time;
 }
 
@@ -99,15 +99,15 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& stats
     }
 
     uint64_t count = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, static_cast<int>(statsType), StatsUtils::DEFAULT_VALUE);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETDATA), data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
     return count;
 }
 
