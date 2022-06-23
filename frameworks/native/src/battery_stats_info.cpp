@@ -25,9 +25,9 @@ namespace OHOS {
 namespace PowerMgr {
 bool BatteryStatsInfo::Marshalling(Parcel& parcel) const
 {
-    STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, uid_, false);
-    STATS_WRITE_PARCEL_WITH_RET(parcel, Int32, static_cast<int32_t>(type_), false);
-    STATS_WRITE_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, parcel, Int32, uid_, false);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, parcel, Int32, static_cast<int32_t>(type_), false);
+    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, parcel, Double, totalPowerMah_, false);
     STATS_HILOGD(COMP_FWK, "uid: %{public}d, type: %{public}d, power: %{public}lf", uid_, type_, totalPowerMah_);
     return true;
 }
@@ -48,11 +48,11 @@ std::shared_ptr<BatteryStatsInfo> BatteryStatsInfo::Unmarshalling(Parcel& parcel
 
 bool BatteryStatsInfo::ReadFromParcel(Parcel &parcel)
 {
-    STATS_READ_PARCEL_WITH_RET(parcel, Int32, uid_, false);
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, parcel, Int32, uid_, false);
     int32_t type = static_cast<int32_t>(0);
-    STATS_READ_PARCEL_WITH_RET(parcel, Int32, type, false);
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, parcel, Int32, type, false);
     type_ = static_cast<ConsumptionType>(type);
-    STATS_READ_PARCEL_WITH_RET(parcel, Double, totalPowerMah_, false);
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, parcel, Double, totalPowerMah_, false);
     STATS_HILOGD(COMP_FWK, "uid: %{public}d, type: %{public}d, power: %{public}lf", uid_, type_, totalPowerMah_);
     return true;
 }

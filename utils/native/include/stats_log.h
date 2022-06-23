@@ -60,6 +60,7 @@ enum BatteryStatsLogLabel {
     COMP_SVC = 2,
     COMP_HDI = 3,
     COMP_DRV = 4,
+    COMP_UTILS = 5,
     // Test label
     LABEL_TEST,
     // The end of labels, max to the domain id range length 32
@@ -72,6 +73,7 @@ enum BatteryStatsLogDomain {
     DOMAIN_SERVICE, // 0xD002962
     DOMAIN_HDI, // 0xD002963
     DOMAIN_DRIVER, // 0xD002964
+    DOMAIN_UTILS, // 0xD002965
     DOMAIN_TEST = TEST_DOMAIN_ID, // 0xD000F00
     DOMAIN_END = STATS_DOMAIN_ID_END, // Max to 0xD002980, keep the sequence and length same as BatteryStatsLogLabel
 };
@@ -83,6 +85,7 @@ static constexpr OHOS::HiviewDFX::HiLogLabel STATS_LABEL[LABEL_END] = {
     {LOG_CORE, DOMAIN_SERVICE,   "StatsSvc"},
     {LOG_CORE, DOMAIN_HDI,       "StatsHdi"},
     {LOG_CORE, DOMAIN_DRIVER,    "StatsDrv"},
+    {LOG_CORE, DOMAIN_UTILS,     "StatsUtils"},
     {LOG_CORE, DOMAIN_TEST,      "StatsTest"},
 };
 
