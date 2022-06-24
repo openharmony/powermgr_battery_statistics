@@ -37,12 +37,6 @@ POWER_CAMERA:
   UID: {type: INT32, desc: application uid}
   STATE: {type: INT32, desc: camera on or off}
 
-POWER_AUDIO:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: audio message}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  STATE: {type: INT32, desc: audio on or off}
-
 POWER_SENSOR_GRAVITY:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: gravity sensor message}
   PID: {type: INT32, desc: application pid}
