@@ -141,13 +141,13 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
 
 void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
 {
-    debugInfo.append("\n")
-        .append("Dislpay event: Boot time after boot = ")
+    debugInfo.append("Dislpay event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
     if (!data.eventDebugInfo.empty()) {
         debugInfo.append("Additional debug info: ")
-            .append(data.eventDebugInfo);
+            .append(data.eventDebugInfo)
+            .append("\n");
     }
 }
 
