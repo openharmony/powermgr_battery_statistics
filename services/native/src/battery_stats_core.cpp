@@ -44,7 +44,7 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-static const std::string BATTERY_STATS_JSON = "/data/system/battery_stats.json";
+static const std::string BATTERY_STATS_JSON = "/data/service/el0/stats/battery_stats.json";
 } // namespace
 void BatteryStatsCore::CreatePartEntity()
 {
