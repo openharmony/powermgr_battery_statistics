@@ -294,8 +294,8 @@ void BatteryStatsListener::processWakelockEvent(StatsUtils::StatsData& data, con
 
 void BatteryStatsListener::processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    if (root["name_"].asString().empty()) {
-        data.eventDebugInfo.append(root["name_"].asString()).append(":");
+    if (!root["name_"].asString().empty()) {
+        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
     if (!root["STATE"].asString().empty()) {
         data.eventDebugInfo.append(" Screen state = ").append(root["STATE"].asString());
@@ -349,9 +349,8 @@ void BatteryStatsListener::processDispalyEvent(StatsUtils::StatsData& data, cons
         if (!root["BRIGHTNESS"].asString().empty()) {
             data.level = stoi(root["BRIGHTNESS"].asString());
         }
-    } else {
-        processDispalyDebugInfo(data, root);
     }
+    processDispalyDebugInfo(data, root);
 }
 
 void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)

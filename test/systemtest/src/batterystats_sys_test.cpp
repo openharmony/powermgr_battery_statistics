@@ -183,8 +183,9 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     long actualTimeSec = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_ON);
 
     std::string expectedDebugInfo;
-    expectedDebugInfo.append("Screen is in off state, brigntness level = ")
-        .append(ToString(brightnessAfter));
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = ")
+        .append("POWER_SCREEN");
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
