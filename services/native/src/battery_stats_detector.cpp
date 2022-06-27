@@ -234,6 +234,20 @@ void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long
         .append("ms\n");
 }
 
+void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData data, long bootTimeMs,
+    std::string& debugInfo)
+{
+    debugInfo.append("Distributed schedule event")
+        .append(", boot time after boot = ")
+        .append(ToString(bootTimeMs))
+        .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo)
+            .append("\n");
+    }
+}
+
 void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
 {
     long bootTimeMs = StatsHelper::GetBootTimeMs();
@@ -260,6 +274,9 @@ void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
             break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
             handleFlashlightInfo(data, bootTimeMs, debugInfo);
+            break;
+        case StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER:
+            handleDistributedSchedulerInfo(data, bootTimeMs, debugInfo);
             break;
         default:
             STATS_HILOGE(COMP_SVC, "Got invalid type");

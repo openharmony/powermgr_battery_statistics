@@ -72,6 +72,9 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processBluetoothEvent(data, root);
         } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
             processWifiEvent(data, root);
+        } else if (eventName == "DUBAI_TAG_DIST_SCHED_TO_REMOTE" ||
+            eventName == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
+            processDistributedSchedulerEvent(data, root);
         }
         detector->HandleStatsChangedEvent(data);
     } else {
@@ -430,6 +433,41 @@ void BatteryStatsListener::processWorkschedulerEvent(StatsUtils::StatsData& data
         }
         if (!root["INTERVAL"].asString().empty()) {
             data.eventDebugInfo.append(" Interval = ").append(root["INTERVAL"].asString());
+        }
+    }
+}
+
+void BatteryStatsListener::processDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    data.type = StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER;
+    if (!root["name_"].asString().empty()) {
+        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString()).append(",");
+    }
+    if (!root["TYPE"].asString().empty()) {
+        data.eventDebugInfo.append(" Type = ").append(root["TYPE"].asString()).append(",");
+    }
+    if (root["name_"].asString() == "DUBAI_TAG_DIST_SCHED_TO_REMOTE") {
+        if (!root["UID"].asString().empty()) {
+            data.eventDebugInfo.append(" Uid = ").append(root["UID"].asString()).append(",");
+        }
+        if (!root["PID"].asString().empty()) {
+            data.eventDebugInfo.append(" Pid = ").append(root["PID"].asString()).append(",");
+        }
+        if (!root["TO_PKG"].asString().empty()) {
+            data.eventDebugInfo.append(" To Pkg = ").append(root["TO_PKG"].asString()).append(",");
+        }
+        if (!root["TARGET_ID"].asString().empty()) {
+            data.eventDebugInfo.append(" Target ID = ").append(root["TARGET_ID"].asString());
+        }
+    } else if (root["name_"].asString() == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
+        if (!root["FROM_UID"].asString().empty()) {
+            data.eventDebugInfo.append(" From Uid = ").append(root["FROM_UID"].asString()).append(",");
+        }
+        if (!root["PKG"].asString().empty()) {
+            data.eventDebugInfo.append(" Pkg = ").append(root["PKG"].asString()).append(",");
+        }
+        if (!root["SOURCE_ID"].asString().empty()) {
+            data.eventDebugInfo.append(" Source ID = ").append(root["SOURCE_ID"].asString());
         }
     }
 }
