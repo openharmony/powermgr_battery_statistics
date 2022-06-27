@@ -32,55 +32,62 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
     const int eventType, const std::string& eventDetail)
 {
     STATS_HILOGD(COMP_SVC, "EventDetail: %{public}s", eventDetail.c_str());
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    auto detector = statsService->GetBatteryStatsDetector();
-    StatsUtils::StatsData data;
-    data.eventDebugInfo.clear();
     Json::Value root;
     Json::CharReaderBuilder reader;
     std::string errors;
     std::istrstream is(eventDetail.c_str());
     if (parseFromStream(reader, is, &root, &errors)) {
-        std::string eventName = root["name_"].asString();
-        if (eventName == "POWER_RUNNINGLOCK") {
-            processWakelockEvent(data, root);
-        } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||
-            eventName == "BACKLIGHT_DISCOUNT" || eventName == "AMBIENT_LIGHT") {
-            processDispalyEvent(data, root);
-        } else if (eventName == "BATTERY_CHANGED") {
-            processBatteryEvent(data, root);
-        } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED") {
-            processThermalEvent(data, root);
-        } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
-            eventName == "WORK_START" || eventName == "WORK_STOP") {
-            processWorkschedulerEvent(data, root);
-        } else if (eventName == "POWER_PHONE") {
-            processPhoneEvent(data, root);
-        } else if (eventName == "TORCH_STATE") {
-            processFlashlightEvent(data, root);
-        } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
-            eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
-            processCameraEvent(data, root);
-        } else if (eventName == "AUDIO_STREAM_CHANGE") {
-            processAudioEvent(data, root);
-        } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
-            processSensorEvent(data, root);
-        } else if (eventName == "POWER_RADIO") {
-            processRadioEvent(data, root);
-        } else if (eventName == "GNSS_STATE") {
-            processGpsEvent(data, root);
-        } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
-            processBluetoothEvent(data, root);
-        } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
-            processWifiEvent(data, root);
-        } else if (eventName == "DUBAI_TAG_DIST_SCHED_TO_REMOTE" ||
-            eventName == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
-            processDistributedSchedulerEvent(data, root);
-        }
-        detector->HandleStatsChangedEvent(data);
+        processHiSysEvent(root);
     } else {
         STATS_HILOGE(COMP_SVC, "Parse hisysevent data failed");
     }
+}
+
+void BatteryStatsListener::processHiSysEvent(const Json::Value& root)
+{
+    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto detector = statsService->GetBatteryStatsDetector();
+    StatsUtils::StatsData data;
+    data.eventDebugInfo.clear();
+    std::string eventName = root["name_"].asString();
+    if (eventName == "POWER_RUNNINGLOCK") {
+        processWakelockEvent(data, root);
+    } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||
+        eventName == "BACKLIGHT_DISCOUNT" || eventName == "AMBIENT_LIGHT") {
+        processDispalyEvent(data, root);
+    } else if (eventName == "BATTERY_CHANGED") {
+        processBatteryEvent(data, root);
+    } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED") {
+        processThermalEvent(data, root);
+    } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
+        eventName == "WORK_START" || eventName == "WORK_STOP") {
+        processWorkschedulerEvent(data, root);
+    } else if (eventName == "POWER_PHONE") {
+        processPhoneEvent(data, root);
+    } else if (eventName == "TORCH_STATE") {
+        processFlashlightEvent(data, root);
+    } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
+        eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
+        processCameraEvent(data, root);
+    } else if (eventName == "AUDIO_STREAM_CHANGE") {
+        processAudioEvent(data, root);
+    } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
+        processSensorEvent(data, root);
+    } else if (eventName == "POWER_RADIO") {
+        processRadioEvent(data, root);
+    } else if (eventName == "GNSS_STATE") {
+        processGpsEvent(data, root);
+    } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
+        processBluetoothEvent(data, root);
+    } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
+        processWifiEvent(data, root);
+    } else if (eventName == "DUBAI_TAG_DIST_SCHED_TO_REMOTE" ||
+        eventName == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
+        processDistributedSchedulerEvent(data, root);
+    } else if (eventName == "ALARM_TRIGGER") {
+        processAlarmEvent(data, root);
+    }
+    detector->HandleStatsChangedEvent(data);
 }
 
 void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
@@ -481,6 +488,18 @@ void BatteryStatsListener::processDistributedSchedulerEvent(StatsUtils::StatsDat
         if (!root["SOURCE_ID"].asString().empty()) {
             data.eventDebugInfo.append(" Source ID = ").append(root["SOURCE_ID"].asString());
         }
+    }
+}
+
+void BatteryStatsListener::processAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    data.type = StatsUtils::STATS_TYPE_ALARM;
+    data.traffic = 1;
+    if (!root["UID"].asString().empty()) {
+        data.uid = stoi(root["UID"].asString());
+    }
+    if (!root["PID"].asString().empty()) {
+        data.pid = stoi(root["PID"].asString());
     }
 }
 

@@ -3066,3 +3066,104 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_077, TestSize.Level0)
     EXPECT_TRUE(index != string::npos) << " BatteryStatsClientTest_076 fail due to not found related debug info";
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_076: test end";
 }
+
+/**
+ * @tc.name: BatteryStatsClientTest_078
+ * @tc.desc: Test Reset function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_078, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_078: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int16_t count = 10;
+
+    for (int16_t i = 0; i < count; i++) {
+        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid);
+        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+        sleep(testWaitTimeSec);
+    }
+    sleep(testWaitTimeSec);
+
+    double powerMahBefore = statsClient.GetAppStatsMah(uid);
+    statsClient.Reset();
+    double powerMahAfter = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
+        << " BatteryStatsClientTest_078 fail due to reset failed";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_078: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_079
+ * @tc.desc: Test Reset function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_079, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_079: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double alarmOnAverageMa = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int16_t count = 10;
+    double deviation = 0.01;
+
+    for (int16_t i = 0; i < count; i++) {
+        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid);
+        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+        sleep(testWaitTimeSec);
+    }
+    sleep(testWaitTimeSec);
+
+    double expectedPower = count * alarmOnAverageMa;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_079 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_079: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_080
+ * @tc.desc: Test GetAppStatsPercent function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_080, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_080: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int16_t count = 10;
+    double fullPercent = 1;
+    double zeroPercent = 0;
+
+    for (int16_t i = 0; i < count; i++) {
+        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid);
+        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+        sleep(testWaitTimeSec);
+    }
+    sleep(testWaitTimeSec);
+    double actualPercent = statsClient.GetAppStatsPercent(uid);
+    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
+        <<" BatteryStatsClientTest_080 fail due to percent mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_080: test end";
+}
