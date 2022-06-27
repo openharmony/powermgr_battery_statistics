@@ -27,27 +27,29 @@ public:
     public:
         ActiveTimer() = default;
         ~ActiveTimer() = default;
-        void StartRunning()
+        bool StartRunning()
         {
             if (isRunning_) {
                 STATS_HILOGI(COMP_SVC, "Active timer was already started");
-                return;
+                return false;
             }
             startTimeMs_ = GetOnBatteryBootTimeMs();
             isRunning_ = true;
             STATS_HILOGI(COMP_SVC, "Active timer is started");
+            return true;
         }
 
-        void StopRunning()
+        bool StopRunning()
         {
             if (!isRunning_) {
                 STATS_HILOGI(COMP_SVC, "No related active timer is running");
-                return;
+                return false;
             }
             auto stopTimeMs = GetOnBatteryBootTimeMs();
             totalTimeMs_ += stopTimeMs - startTimeMs_;
             isRunning_ = false;
             STATS_HILOGI(COMP_SVC, "Active timer is stopped");
+            return true;
         }
 
         long GetRunningTimeMs()

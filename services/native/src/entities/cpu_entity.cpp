@@ -227,27 +227,27 @@ void CpuEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Cpu time
-    for (auto &iter : cpuTimeMap_) {
+    for (auto& iter : cpuTimeMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app Cpu total power consumption
-    for (auto &iter : cpuTotalPowerMap_) {
+    for (auto& iter : cpuTotalPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app Cpu active power consumption
-    for (auto &iter : cpuActivePowerMap_) {
+    for (auto& iter : cpuActivePowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app Cpu cluster power consumption
-    for (auto &iter : cpuClusterPowerMap_) {
+    for (auto& iter : cpuClusterPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app Cpu speed power consumption
-    for (auto &iter : cpuSpeedPowerMap_) {
+    for (auto& iter : cpuSpeedPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 }

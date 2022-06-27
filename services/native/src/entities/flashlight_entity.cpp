@@ -119,12 +119,12 @@ void FlashlightEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Flashlight on total power consumption
-    for (auto &iter : flashlightPowerMap_) {
+    for (auto& iter : flashlightPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Flashlight on timer
-    for (auto &iter : flashlightTimerMap_) {
+    for (auto& iter : flashlightTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

@@ -118,12 +118,12 @@ void AudioEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Audio on total power consumption
-    for (auto &iter : audioPowerMap_) {
+    for (auto& iter : audioPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Audio on timer
-    for (auto &iter : audioTimerMap_) {
+    for (auto& iter : audioTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

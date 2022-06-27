@@ -225,50 +225,50 @@ void RadioEntity::Reset()
     }
 
     // Reset Radio on timer and power consumption
-    for (auto &iter : radioOnTimerMap_) {
+    for (auto& iter : radioOnTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset app Radio total power consumption
-    for (auto &iter : appRadioPowerMap_) {
+    for (auto& iter : appRadioPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Radio RX power consumption
-    for (auto &iter : appRadioRxPowerMap_) {
+    for (auto& iter : appRadioRxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Radio TX power consumption
-    for (auto &iter : appRadioTxPowerMap_) {
+    for (auto& iter : appRadioTxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Radio RX timer
-    for (auto &iter : appRadioRxTimerMap_) {
+    for (auto& iter : appRadioRxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Radio TX timer
-    for (auto &iter : appRadioTxTimerMap_) {
+    for (auto& iter : appRadioTxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Radio RX counter
-    for (auto &iter : appRadioRxCounterMap_) {
+    for (auto& iter : appRadioRxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Radio TX counter
-    for (auto &iter : appRadioTxCounterMap_) {
+    for (auto& iter : appRadioTxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

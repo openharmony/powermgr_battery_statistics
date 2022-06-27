@@ -228,53 +228,53 @@ void WifiEntity::Reset()
     }
 
     // Reset app Wifi total power consumption
-    for (auto &iter : appWifiPowerMap_) {
+    for (auto& iter : appWifiPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Wifi scan power consumption
-    for (auto &iter : appWifiScanPowerMap_) {
+    for (auto& iter : appWifiScanPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Wifi RX power consumption
-    for (auto &iter : appWifiRxPowerMap_) {
+    for (auto& iter : appWifiRxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Wifi TX power consumption
-    for (auto &iter : appWifiTxPowerMap_) {
+    for (auto& iter : appWifiTxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Wifi scan timer
-    for (auto &iter : appWifiScanTimerMap_) {
+    for (auto& iter : appWifiScanTimerMap_) {
         iter.second->Reset();
     }
 
     // Reset Wifi RX timer
-    for (auto &iter : appWifiRxTimerMap_) {
+    for (auto& iter : appWifiRxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Wifi TX timer
-    for (auto &iter : appWifiTxTimerMap_) {
+    for (auto& iter : appWifiTxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Wifi RX counter
-    for (auto &iter : appWifiRxCounterMap_) {
+    for (auto& iter : appWifiRxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Wifi TX counter
-    for (auto &iter : appWifiTxCounterMap_) {
+    for (auto& iter : appWifiTxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

@@ -134,6 +134,9 @@ std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
         case STATS_TYPE_CAMERA_ON:
             result = GET_VARIABLE_NAME(STATS_TYPE_CAMERA_ON);
             break;
+        case STATS_TYPE_CAMERA_FLASHLIGHT_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_CAMERA_FLASHLIGHT_ON);
+            break;
         case STATS_TYPE_FLASHLIGHT_ON:
             result = GET_VARIABLE_NAME(STATS_TYPE_FLASHLIGHT_ON);
             break;
@@ -205,6 +208,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
             result = ConvertTypeForConn(statsType);
             break;
         case STATS_TYPE_CAMERA_ON:
+        case STATS_TYPE_CAMERA_FLASHLIGHT_ON:
         case STATS_TYPE_FLASHLIGHT_ON:
         case STATS_TYPE_GPS_ON:
         case STATS_TYPE_SENSOR_GRAVITY_ON:
@@ -220,7 +224,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
         case STATS_TYPE_CPU_SPEED:
         case STATS_TYPE_CPU_ACTIVE:
         case STATS_TYPE_CPU_SUSPEND:
-            result = ConvertTypeForCommon(statsType);
+            result = ConvertTypeForCpu(statsType);
             break;
         case STATS_TYPE_BATTERY:
         case STATS_TYPE_WORKSCHEDULER:

@@ -155,11 +155,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_003, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -188,15 +188,14 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_004, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    std::string cameraId = "Camera0";
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
     sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -880,11 +879,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_026, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -913,16 +912,15 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_027, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    std::string cameraId = "Camera0";
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR;
@@ -1065,11 +1063,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_031, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -1094,17 +1092,16 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_032, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    std::string deviceId = "Camera0";
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", deviceId);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -2208,11 +2205,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_059, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
@@ -2225,17 +2222,16 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_059, TestSize.Level0)
 
     uid = 10004;
     pid = 3459;
-    stateOn = 1;
-    stateOff = 0;
+    std::string deviceId = "Camera0";
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", deviceId);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -2260,16 +2256,17 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_060, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
+    std::string deviceId = "Camera0";
     int32_t stateOn = 1;
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", deviceId);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR;
@@ -2454,11 +2451,11 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_063, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -2557,15 +2554,14 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_065, TestSize.Level0)
 
     int32_t uid = 10003;
     int32_t pid = 3458;
-    stateOn = 1;
-    stateOff = 0;
+    std::string deviceId = "Camera0";
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", deviceId);
     sleep(testWaitTimeSec);
     actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -2575,7 +2571,421 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_065, TestSize.Level0)
 }
 
 /**
- *
+ * @tc.name: BatteryStatsClientTest_066
+ * @tc.desc: Test Reset function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_066, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_066: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId = "Camera0";
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Camera sleep 2 seconds";
+    sleep(testTimeSec);
+    GTEST_LOG_(INFO) << __func__ << ": Notify camera flashfight";
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Camera flashlight sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    sleep(testWaitTimeSec);
+
+    double powerMahBefore = statsClient.GetAppStatsMah(uid);
+    statsClient.Reset();
+    double powerMahAfter = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
+        << " BatteryStatsClientTest_066 fail due to reset failed";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_066: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_067
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_067, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_067: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    double flashlightOnAverageMa = 320;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId = "Camera0";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Camera flashlight sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = (3 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR) +
+        (testTimeSec * flashlightOnAverageMa / SECOND_PER_HOUR);
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_067 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_067: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_068
+ * @tc.desc: Test GetAppStatsPercent function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_068, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_068: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId = "Camera0";
+    double fullPercent = 1;
+    double zeroPercent = 0;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Camera flashlight sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    sleep(testWaitTimeSec);
+
+    double actualPercent = statsClient.GetAppStatsPercent(uid);
+    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
+        <<" BatteryStatsClientTest_068 fail due to percent mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_068: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_069
+ * @tc.desc: Test Reset function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_069, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_069: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId0 = "Camera0";
+    std::string cameraId1 = "Camera1";
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId0);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId0);
+    sleep(testWaitTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId1);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId1);
+    sleep(testWaitTimeSec);
+
+    double powerMahBefore = statsClient.GetAppStatsMah(uid);
+    statsClient.Reset();
+    double powerMahAfter = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
+        << " BatteryStatsClientTest_069 fail due to reset failed";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_069: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_070
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_070, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_070: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId0 = "Camera0";
+    std::string cameraId1 = "Camera1";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId0);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId0);
+    sleep(testWaitTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId1);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId1);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = 2 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_070 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_070: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_071
+ * @tc.desc: Test GetAppStatsPercent function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_071, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_071: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId0 = "Camera0";
+    std::string cameraId1 = "Camera1";
+    double fullPercent = 1;
+    double zeroPercent = 0;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId0);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId0);
+    sleep(testWaitTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId1);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId1);
+    sleep(testWaitTimeSec);
+
+    double actualPercent = statsClient.GetAppStatsPercent(uid);
+    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
+        <<" BatteryStatsClientTest_071 fail due to percent mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_071: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_072
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_072, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_072: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId0 = "Camera0";
+    std::string cameraId1 = "Camera1";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId0);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId1);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId1);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId0);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = 3 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_072 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_072: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_073
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_073, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_073: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid1 = 10003;
+    int32_t pid1 = 3458;
+    int32_t uid2 = 10004;
+    int32_t pid2 = 3459;
+    std::string cameraId = "Camera0";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid1,
+        "UID", uid1, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid2,
+        "UID", uid2, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = 2 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR;
+    double actualPower = statsClient.GetAppStatsMah(uid1);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_073 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_073: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_074
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_074, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_074: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    sleep(testWaitTimeSec);
+
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_TRUE(actualPower == StatsUtils::DEFAULT_VALUE)
+        <<" BatteryStatsClientTest_074 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_074: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_075
+ * @tc.desc: Test GetAppStatsMah function
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_075, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_075: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    double flashlightOnAverageMa = 320;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId = "Camera0";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC, "ID", cameraId);
+    sleep(testTimeSec);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = (2 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR) +
+        (testTimeSec * flashlightOnAverageMa / SECOND_PER_HOUR);
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_075 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_075: test end";
+}
+
+/**
  * @tc.name: BatteryStatsClientTest_076
  * @tc.desc: test Dump function
  * @tc.type: FUNC
@@ -2617,7 +3027,6 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_076, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: BatteryStatsClientTest_077
  * @tc.desc: test Dump function
  * @tc.type: FUNC

@@ -118,12 +118,12 @@ void GpsEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Gps on total power consumption
-    for (auto &iter : gpsPowerMap_) {
+    for (auto& iter : gpsPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Gps on timer
-    for (auto &iter : gpsTimerMap_) {
+    for (auto& iter : gpsTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

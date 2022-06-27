@@ -59,7 +59,7 @@ void ScreenEntity::Calculate(int32_t uid)
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
 
     double screenPowerMah = StatsUtils::DEFAULT_VALUE;
-    for (auto &iter : screenBrightnessTimerMap_) {
+    for (auto& iter : screenBrightnessTimerMap_) {
         if (iter.second != nullptr) {
             auto averageMa = screenBrightnessAverageMa * iter.first + screenOnAverageMa;
             auto timeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, iter.first);
@@ -132,7 +132,7 @@ void ScreenEntity::Reset()
     }
 
     // Reset Screen brightness timer
-    for (auto &iter : screenBrightnessTimerMap_) {
+    for (auto& iter : screenBrightnessTimerMap_) {
         if (iter.second != nullptr) {
             iter.second->Reset();
         }

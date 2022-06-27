@@ -63,7 +63,7 @@ void UserEntity::AggregateUserPowerMah(int32_t userId, double power)
 
 void UserEntity::Calculate(int32_t uid)
 {
-    for (auto &iter : userPowerMap_) {
+    for (auto& iter : userPowerMap_) {
         std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
         statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
         statsInfo->SetUserId(iter.first);
@@ -76,7 +76,7 @@ void UserEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app user total power consumption
-    for (auto &iter : userPowerMap_) {
+    for (auto& iter : userPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 }

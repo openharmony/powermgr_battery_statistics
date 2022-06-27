@@ -39,6 +39,8 @@ public:
         int16_t level = StatsUtils::INVALID_VALUE);
     virtual std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
+    virtual std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(const std::string& deviceId, int32_t uid,
+        StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
     virtual std::shared_ptr<StatsHelper::Counter> GetOrCreateCounter(StatsUtils::StatsType statsType,
         int32_t uid = StatsUtils::INVALID_VALUE);
     virtual void AggregateUserPowerMah(int32_t userId, double power);

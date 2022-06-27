@@ -32,11 +32,11 @@ public:
         int16_t level = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
-    std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
-        int16_t level = StatsUtils::INVALID_VALUE) override;
+    std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(const std::string& deviceId, int32_t uid,
+        StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE) override;
     void Reset() override;
 private:
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> cameraTimerMap_;
+    std::map<std::string, std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>> cameraTimerMap_;
     std::map<int32_t, double> cameraPowerMap_;
 };
 } // namespace PowerMgr

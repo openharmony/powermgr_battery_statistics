@@ -56,9 +56,10 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
             processWorkschedulerEvent(data, root);
         } else if (eventName == "POWER_PHONE") {
             processPhoneEvent(data, root);
-        } else if (eventName == "POWER_FLASHLIGHT") {
+        } else if (eventName == "TORCH_STATE") {
             processFlashlightEvent(data, root);
-        } else if (eventName == "POWER_CAMERA") {
+        } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
+            eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
             processCameraEvent(data, root);
         } else if (eventName == "AUDIO_STREAM_CHANGE") {
             processAudioEvent(data, root);
@@ -84,17 +85,28 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
 
 void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
-    }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
-    }
-    if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
+    std::string eventName = root["name_"].asString();
+    if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT") {
+        data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
+        if (!root["UID"].asString().empty()) {
+            data.uid = stoi(root["UID"].asString());
+        }
+        if (!root["PID"].asString().empty()) {
+            data.pid = stoi(root["PID"].asString());
+        }
+        if (!root["ID"].asString().empty()) {
+            data.deviceId = root["ID"].asString();
+        }
+        if (eventName == "CAMERA_CONNECT") {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
+        } else {
+            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        }
+    } else if (eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
+        data.type = StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON;
+        if (eventName == "FLASHLIGHT_ON") {
+            data.state = StatsUtils::STATS_STATE_ACTIVATED;
+        } else {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }

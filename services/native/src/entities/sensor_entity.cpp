@@ -187,29 +187,29 @@ void SensorEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app sensor total power consumption
-    for (auto &iter : sensorTotalPowerMap_) {
+    for (auto& iter : sensorTotalPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app gravity on total power consumption
-    for (auto &iter : gravityPowerMap_) {
+    for (auto& iter : gravityPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset app proximity on total power consumption
-    for (auto &iter : proximityPowerMap_) {
+    for (auto& iter : proximityPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset gravity on timer
-    for (auto &iter : gravityTimerMap_) {
+    for (auto& iter : gravityTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset proximity on timer
-    for (auto &iter : proximityTimerMap_) {
+    for (auto& iter : proximityTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
