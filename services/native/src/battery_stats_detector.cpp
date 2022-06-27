@@ -24,7 +24,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
     STATS_HILOGD(COMP_SVC,
         "Handle type: %{public}s, state: %{public}d, level: %{public}d, uid: %{public}d, pid: %{public}d,"      \
         "eventDataName: %{public}s, eventDataType: %{public}d, eventDataExtra: %{public}d, time: %{public}ld,"  \
-        "traffic: %{public}ld",
+        "traffic: %{public}ld, deviceId: %{private}s",
         StatsUtils::ConvertStatsType(data.type).c_str(),
         data.state,
         data.level,
@@ -34,7 +34,8 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         data.eventDataType,
         data.eventDataExtra,
         data.time,
-        data.traffic);
+        data.traffic,
+        data.deviceId.c_str());
 
     auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (bss == nullptr) {
@@ -48,7 +49,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         core->UpdateStats(data.type, data.time, data.traffic, data.uid);
     } else if (isStateRelated(data.type)) {
         // Update related timer based on state or level
-        core->UpdateStats(data.type, data.state, data.level, data.uid);
+        core->UpdateStats(data.type, data.state, data.level, data.uid, data.deviceId);
     } else {
         STATS_HILOGE(COMP_SVC, "Got invalid type");
     }
@@ -93,6 +94,7 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_RADIO_SCAN:
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
         case StatsUtils::STATS_TYPE_CAMERA_ON:
+        case StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON:
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
         case StatsUtils::STATS_TYPE_GPS_ON:
         case StatsUtils::STATS_TYPE_AUDIO_ON:

@@ -25,18 +25,6 @@ POWER_PHONE:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: phone call message}
   STATE: {type: INT32, desc: phone call state}
 
-POWER_FLASHLIGHT:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: flashlight message}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  STATE: {type: INT32, desc: flashlight on or off}
-
-POWER_CAMERA:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: camera message}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  STATE: {type: INT32, desc: camera on or off}
-
 POWER_SENSOR_GRAVITY:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: gravity sensor message}
   PID: {type: INT32, desc: application pid}

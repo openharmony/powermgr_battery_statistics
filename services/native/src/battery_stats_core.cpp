@@ -269,9 +269,6 @@ void BatteryStatsCore::UpdateConnectivityStats(StatsUtils::StatsType statsType, 
 void BatteryStatsCore::UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid)
 {
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_CAMERA_ON:
-            UpdateTimer(cameraEntity_, statsType, state, uid);
-            break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
             UpdateTimer(flashlightEntity_, statsType, state, uid);
             break;
@@ -296,11 +293,12 @@ void BatteryStatsCore::UpdateCommonStats(StatsUtils::StatsType statsType, StatsU
 }
 
 void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level,
-    int32_t uid)
+    int32_t uid, const std::string& deviceId)
 {
     STATS_HILOGD(COMP_SVC,
-        "Update for state, statsType: %{public}s, uid: %{public}d, state: %{public}d, level: %{public}d",
-        StatsUtils::ConvertStatsType(statsType).c_str(), uid, state, level);
+        "Update for state, statsType: %{public}s, uid: %{public}d, state: %{public}d, level: %{public}d,"   \
+        "deviceId: %{private}s",
+        StatsUtils::ConvertStatsType(statsType).c_str(), uid, state, level, deviceId.c_str());
     if (uid > StatsUtils::INVALID_VALUE) {
         uidEntity_->UpdateUidMap(uid);
     }
@@ -314,6 +312,10 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
             UpdateScreenStats(state, level);
             break;
+        case StatsUtils::STATS_TYPE_CAMERA_ON:
+        case StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON:
+            UpdateCameraStats(statsType, state, uid, deviceId);
+            break;
         case StatsUtils::STATS_TYPE_BLUETOOTH_ON:
         case StatsUtils::STATS_TYPE_WIFI_ON:
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
@@ -321,7 +323,6 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
             UpdateConnectivityStats(statsType, state, uid);
             break;
-        case StatsUtils::STATS_TYPE_CAMERA_ON:
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
         case StatsUtils::STATS_TYPE_GPS_ON:
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
@@ -431,6 +432,33 @@ void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsState state, int16_t l
     lastBrightnessLevel_ = level;
 }
 
+void BatteryStatsCore::UpdateCameraStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
+    int32_t uid, const std::string& deviceId)
+{
+    STATS_HILOGD(COMP_SVC, "Camera status: %{public}d, Last camera uid: %{public}d", isCameraOn_, lastCameraUid_);
+    if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
+        if (state == StatsUtils::STATS_STATE_ACTIVATED) {
+            if (isCameraOn_) {
+                STATS_HILOGW(COMP_SVC, "Camera is already opened, return");
+                return;
+            }
+            UpdateCameraTimer(state, uid, deviceId);
+        } else if (state == StatsUtils::STATS_STATE_DEACTIVATED) {
+            if (!isCameraOn_) {
+                STATS_HILOGW(COMP_SVC, "Camera is off, return");
+                return;
+            }
+            UpdateCameraTimer(state, lastCameraUid_, deviceId);
+        }
+    } else if (statsType == StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON) {
+        if (!isCameraOn_) {
+            STATS_HILOGW(COMP_SVC, "Camera is off, return");
+            return;
+        }
+        UpdateTimer(flashlightEntity_, StatsUtils::STATS_TYPE_FLASHLIGHT_ON, state, lastCameraUid_);
+    }
+}
+
 void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
     StatsUtils::StatsState state, int32_t uid)
 {
@@ -459,6 +487,46 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
         case StatsUtils::STATS_STATE_DEACTIVATED:
             timer->StopRunning();
             break;
+        default:
+            break;
+    }
+}
+
+void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t uid, const std::string& deviceId)
+{
+    STATS_HILOGD(COMP_SVC, "Camera status: %{public}d, uid: %{public}d, deviceId: %{private}s",
+        state, uid, deviceId.c_str());
+    std::shared_ptr<StatsHelper::ActiveTimer> timer;
+    if (uid > StatsUtils::INVALID_VALUE && deviceId != "") {
+        timer = cameraEntity_->GetOrCreateTimer(deviceId, uid, StatsUtils::STATS_TYPE_CAMERA_ON);
+    } else {
+        timer = cameraEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_CAMERA_ON);
+    }
+
+    if (timer == nullptr) {
+        STATS_HILOGE(COMP_SVC, "Timer is null, return");
+        return;
+    }
+
+    switch (state) {
+        case StatsUtils::STATS_STATE_ACTIVATED: {
+            if (timer->StartRunning()) {
+                isCameraOn_ = true;
+                lastCameraUid_ = uid;
+                break;
+            }
+        }
+        case StatsUtils::STATS_STATE_DEACTIVATED: {
+            if (timer->StopRunning()) {
+                UpdateTimer(flashlightEntity_,
+                            StatsUtils::STATS_TYPE_FLASHLIGHT_ON,
+                            StatsUtils::STATS_STATE_DEACTIVATED,
+                            lastCameraUid_);
+                isCameraOn_ = false;
+                lastCameraUid_ = StatsUtils::INVALID_VALUE;
+                break;
+            }
+        }
         default:
             break;
     }
@@ -884,7 +952,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         STATS_HILOGD(COMP_SVC, "Load power: %{public}lfmAh for id: %{public}d", info->GetPower(), id);
         BatteryStatsEntity::UpdateStatsInfoList(info);
     }
-    for (auto &iter : tmpUserPowerMap) {
+    for (auto& iter : tmpUserPowerMap) {
         std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
         statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
         statsInfo->SetUserId(iter.first);

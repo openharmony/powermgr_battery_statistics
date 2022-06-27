@@ -51,7 +51,7 @@ void UidEntity::UpdateUidMap(int32_t uid)
 std::vector<int32_t> UidEntity::GetUids()
 {
     std::vector<int32_t> uids;
-    for (auto &iter : uidPowerMap_) {
+    for (auto& iter : uidPowerMap_) {
         uids.push_back(iter.first);
     }
     return uids;
@@ -250,7 +250,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
         case StatsUtils::STATS_TYPE_CPU_CLUSTER:
         case StatsUtils::STATS_TYPE_CPU_SPEED:
         case StatsUtils::STATS_TYPE_CPU_ACTIVE:
-            power = GetPowerForConnectivity(statsType, uid);
+            power = GetPowerForCommon(statsType, uid);
             break;
         default:
             STATS_HILOGE(COMP_SVC, "Invalid or illegal type got, return 0");
@@ -266,7 +266,7 @@ void UidEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Uid total power consumption
-    for (auto &iter : uidPowerMap_) {
+    for (auto& iter : uidPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 }
@@ -401,7 +401,7 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 void UidEntity::DumpInfo(std::string& result, int32_t uid)
 {
     auto core = g_statsService->GetBatteryStatsCore();
-    for (auto &iter : uidPowerMap_) {
+    for (auto& iter : uidPowerMap_) {
         std::string bundleName = "NULL";
         auto bundleObj =
             DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()

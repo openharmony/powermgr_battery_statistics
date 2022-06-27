@@ -119,12 +119,12 @@ void WakelockEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Wakelock on total power consumption
-    for (auto &iter : wakelockPowerMap_) {
+    for (auto& iter : wakelockPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Wakelock on timer
-    for (auto &iter : wakelockTimerMap_) {
+    for (auto& iter : wakelockTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

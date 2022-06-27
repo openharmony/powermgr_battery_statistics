@@ -107,6 +107,13 @@ std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(i
     return nullptr;
 }
 
+std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(const std::string& deviceId, int32_t uid,
+    StatsUtils::StatsType statsType, int16_t level)
+{
+    STATS_HILOGE(COMP_SVC, "No need to get or create timer, return nullptr");
+    return nullptr;
+}
+
 std::shared_ptr<StatsHelper::Counter> BatteryStatsEntity::GetOrCreateCounter(StatsUtils::StatsType statsType,
     int32_t uid)
 {

@@ -678,16 +678,15 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    std::string cameraId = "Camera0";
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
 
@@ -720,11 +719,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -815,11 +814,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     int32_t stateOff = 0;
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_FLASHLIGHT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
@@ -833,15 +832,14 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     double cameraOnAverageMa = 810;
     uid = 10004;
     pid = 3459;
-    stateOn = 1;
-    stateOff = 0;
+    std::string deviceId = "Camera0";
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_CAMERA", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", deviceId);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
 
@@ -1005,4 +1003,48 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_022, TestSize.Level0)
     result = statsClient.Dump(dumpArgs);
     EXPECT_TRUE(result != "") << " BatteryStatsSysTest_022 fail due to nothing";
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_022: test end";
+}
+
+/**
+ *
+ * @tc.name: BatteryStatsSysTest_023
+ * @tc.desc: test Camera and Camera Flashlight consumption
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsSysTest_023: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double cameraOnAverageMa = 810;
+    double flashlightOnAverageMa = 320;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    std::string cameraId = "Camera0";
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid, "ID", cameraId);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Camera flashlight sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CAMERA", "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        "ID", cameraId);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = (3 * testTimeSec * cameraOnAverageMa / SECOND_PER_HOUR) +
+        (testTimeSec * flashlightOnAverageMa / SECOND_PER_HOUR);
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation) <<" BatteryStatsSysTest_023 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsSysTest_023: test end";
 }

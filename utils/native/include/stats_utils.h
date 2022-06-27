@@ -77,6 +77,7 @@ public:
         STATS_TYPE_RADIO_RX,
         STATS_TYPE_RADIO_TX,
         STATS_TYPE_CAMERA_ON,
+        STATS_TYPE_CAMERA_FLASHLIGHT_ON,
         STATS_TYPE_FLASHLIGHT_ON,
         STATS_TYPE_GPS_ON,
         STATS_TYPE_SENSOR_GRAVITY_ON,
@@ -127,6 +128,7 @@ public:
         int16_t level = INVALID_VALUE;
         long time = DEFAULT_VALUE;
         long traffic = DEFAULT_VALUE;
+        std::string deviceId = "";
     };
 
     static std::string ConvertStatsType(StatsType statsType);

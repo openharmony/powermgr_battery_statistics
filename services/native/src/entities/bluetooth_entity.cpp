@@ -235,55 +235,55 @@ void BluetoothEntity::Reset()
     }
 
     // Reset app Bluetooth total power consumption
-    for (auto &iter : appBluetoothPowerMap_) {
+    for (auto& iter : appBluetoothPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Bluetooth scan power consumption
-    for (auto &iter : appBluetoothScanPowerMap_) {
+    for (auto& iter : appBluetoothScanPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Bluetooth RX power consumption
-    for (auto &iter : appBluetoothRxPowerMap_) {
+    for (auto& iter : appBluetoothRxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Bluetooth TX power consumption
-    for (auto &iter : appBluetoothTxPowerMap_) {
+    for (auto& iter : appBluetoothTxPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Bluetooth scan timer
-    for (auto &iter : appBluetoothScanTimerMap_) {
+    for (auto& iter : appBluetoothScanTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Bluetooth RX timer
-    for (auto &iter : appBluetoothRxTimerMap_) {
+    for (auto& iter : appBluetoothRxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Bluetooth TX timer
-    for (auto &iter : appBluetoothTxTimerMap_) {
+    for (auto& iter : appBluetoothTxTimerMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Bluetooth RX counter
-    for (auto &iter : appBluetoothRxCounterMap_) {
+    for (auto& iter : appBluetoothRxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }
     }
 
     // Reset Bluetooth TX counter
-    for (auto &iter : appBluetoothTxCounterMap_) {
+    for (auto& iter : appBluetoothTxCounterMap_) {
         if (iter.second) {
             iter.second->Reset();
         }

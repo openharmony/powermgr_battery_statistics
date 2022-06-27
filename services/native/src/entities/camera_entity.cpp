@@ -33,13 +33,14 @@ long CameraEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
 {
     long activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
-        auto iter = cameraTimerMap_.find(uid);
-        if (iter != cameraTimerMap_.end()) {
-            activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got camera on time: %{public}ldms for uid: %{public}d", activeTimeMs,
-                uid);
-        } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+        for (auto& cameraIter : cameraTimerMap_) {
+            auto uidIter = cameraIter.second.find(uid);
+            if (uidIter != cameraIter.second.end()) {
+                activeTimeMs += uidIter->second->GetRunningTimeMs();
+            } else {
+                STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d in camera id: %{public}s",
+                    uid, cameraIter.first.c_str());
+            }
         }
     }
     return activeTimeMs;
@@ -94,18 +95,26 @@ double CameraEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
     return power;
 }
 
-std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
-    int16_t level)
+std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const std::string& deviceId, int32_t uid,
+    StatsUtils::StatsType statsType, int16_t level)
 {
     if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
-        auto cameraOnIter = cameraTimerMap_.find(uid);
-        if (cameraOnIter != cameraTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got camera on timer for uid: %{public}d", uid);
-            return cameraOnIter->second;
+        auto cameraIter = cameraTimerMap_.find(deviceId);
+        if (cameraIter != cameraTimerMap_.end()) {
+            auto uidIter = cameraIter->second.find(uid);
+            if (uidIter != cameraIter->second.end()) {
+                return uidIter->second;
+            } else {
+                std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
+                cameraIter->second.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
+                return timer;
+            }
         } else {
-            STATS_HILOGD(COMP_SVC, "Create camera on timer for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            cameraTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
+            std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> uidTimerMap;
+            uidTimerMap.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
+            cameraTimerMap_.insert(std::pair<std::string, std::map<int32_t,
+                std::shared_ptr<StatsHelper::ActiveTimer>>>(deviceId, uidTimerMap));
             return timer;
         }
     } else {
@@ -118,14 +127,16 @@ void CameraEntity::Reset()
 {
     STATS_HILOGD(COMP_SVC, "Reset");
     // Reset app Camera on total power consumption
-    for (auto &iter : cameraPowerMap_) {
+    for (auto& iter : cameraPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
     // Reset Camera on timer
-    for (auto &iter : cameraTimerMap_) {
-        if (iter.second) {
-            iter.second->Reset();
+    for (auto& cameraIter : cameraTimerMap_) {
+        for (auto& uidIter : cameraIter.second) {
+            if (uidIter.second) {
+                uidIter.second->Reset();
+            }
         }
     }
 }
