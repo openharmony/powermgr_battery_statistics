@@ -89,6 +89,7 @@ double UidEntity::CalculateForCommon(int32_t uid)
     auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
     auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
+    auto alarmEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM);
 
     // Calculate camera power consumption
     cameraEntity->Calculate(uid);
@@ -111,6 +112,9 @@ double UidEntity::CalculateForCommon(int32_t uid)
     // Calculate cpu power consumption
     wakelockEntity->Calculate(uid);
     power += wakelockEntity->GetEntityPowerMah(uid);
+    // Calculate alarm power consumption
+    alarmEntity->Calculate(uid);
+    power += alarmEntity->GetEntityPowerMah(uid);
 
     STATS_HILOGD(COMP_SVC, "Common power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
     return power;
@@ -200,6 +204,7 @@ double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid
     auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
     auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
+    auto alarmEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM);
 
     if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
         power = cameraEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CAMERA_ON, uid);
@@ -221,6 +226,8 @@ double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid
         power = cpuEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CPU_SPEED, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_ACTIVE) {
         power = cpuEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CPU_ACTIVE, uid);
+    } else if (statsType == StatsUtils::STATS_TYPE_ALARM) {
+        power = alarmEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_ALARM, uid);
     }
     return power;
 }
@@ -250,6 +257,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
         case StatsUtils::STATS_TYPE_CPU_CLUSTER:
         case StatsUtils::STATS_TYPE_CPU_SPEED:
         case StatsUtils::STATS_TYPE_CPU_ACTIVE:
+        case StatsUtils::STATS_TYPE_ALARM:
             power = GetPowerForCommon(statsType, uid);
             break;
         default:
@@ -375,6 +383,9 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
     // Dump for wakelock related info
     int64_t wakelockTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
 
+    // Dump for alarm related info
+    int64_t alarmCount = core->GetTotalDataCount(StatsUtils::STATS_TYPE_ALARM, uid);
+
     result.append("Camera on time: ")
         .append(ToString(cameraTime))
         .append("ms\n")
@@ -395,6 +406,9 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
         .append("ms\n")
         .append("Wakelock hold time: ")
         .append(ToString(wakelockTime))
+        .append("ms\n")
+        .append("Alarm trigger count: ")
+        .append(ToString(alarmCount))
         .append("ms\n");
 }
 

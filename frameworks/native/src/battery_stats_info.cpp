@@ -179,6 +179,9 @@ std::string BatteryStatsInfo::ConvertTypeForApp(ConsumptionType type)
         case CONSUMPTION_TYPE_WAKELOCK:
             result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_WAKELOCK);
             break;
+        case CONSUMPTION_TYPE_ALARM:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_ALARM);
+            break;
         default:
             break;
     }
@@ -207,6 +210,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
         case CONSUMPTION_TYPE_GPS:
         case CONSUMPTION_TYPE_CPU:
         case CONSUMPTION_TYPE_WAKELOCK:
+        case CONSUMPTION_TYPE_ALARM:
             result = ConvertTypeForApp(type);
             break;
         default:

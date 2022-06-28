@@ -31,6 +31,7 @@ public:
             const std::string& eventDetail) override;
     void OnServiceDied() override;
 private:
+    void processHiSysEvent(const Json::Value& root);
     void processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root);
@@ -46,6 +47,7 @@ private:
     void processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void processAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr

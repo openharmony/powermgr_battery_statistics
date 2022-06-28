@@ -1,4 +1,5 @@
 {
+    "alarm_on": 2,
     "bluetooth_on": 1,
     "bluetooth_scan": 5,
     "bluetooth_rx": 11,

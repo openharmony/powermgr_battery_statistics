@@ -13,9 +13,9 @@
 
 import("//build/ohos.gni")
 
-aafwk_services_path = "//foundation/ability/ability_runtime/services"
-aafwk_kits_path = "//foundation/ability/ability_runtime/frameworks/kits"
-aafwk_path = "//foundation/ability/ability_runtime"
+ability_runtime_path = "//foundation/ability/ability_runtime"
+ability_runtime_services_path = "${ability_runtime_path}/services"
+ability_runtime_kits_path = "${ability_runtime_path}/frameworks/kits"
 batterystats_part_name = "battery_statistics_native"
 batterystats_root_path = "//base/powermgr/battery_statistics"
 batterystats_interfaces_path = "${batterystats_root_path}/interfaces"

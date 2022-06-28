@@ -66,6 +66,7 @@ bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_WIFI_TX:
         case StatsUtils::STATS_TYPE_RADIO_RX:
         case StatsUtils::STATS_TYPE_RADIO_TX:
+        case StatsUtils::STATS_TYPE_ALARM:
             // Realated with duration
             isMatch = true;
             STATS_HILOGI(COMP_SVC, "Type: %{public}s is duration related",

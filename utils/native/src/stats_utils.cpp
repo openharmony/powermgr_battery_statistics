@@ -47,6 +47,7 @@ const std::string StatsUtils::CURRENT_CPU_CLUSTER = "cpu_clusters";
 const std::string StatsUtils::CURRENT_CPU_SPEED = "cpu_speed_cluster";
 const std::string StatsUtils::CURRENT_CPU_ACTIVE = "cpu_active";
 const std::string StatsUtils::CURRENT_CPU_SUSPEND = "cpu_suspend";
+const std::string StatsUtils::CURRENT_ALARM_ON = "alarm_on";
 
 std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
 {
@@ -158,6 +159,9 @@ std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
         case STATS_TYPE_SCREEN_BRIGHTNESS:
             result = GET_VARIABLE_NAME(STATS_TYPE_SCREEN_BRIGHTNESS);
             break;
+        case STATS_TYPE_ALARM:
+            result = GET_VARIABLE_NAME(STATS_TYPE_ALARM);
+            break;
         default:
             break;
     }
@@ -216,6 +220,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
         case STATS_TYPE_AUDIO_ON:
         case STATS_TYPE_SCREEN_ON:
         case STATS_TYPE_SCREEN_BRIGHTNESS:
+        case STATS_TYPE_ALARM:
             result = ConvertTypeForCommon(statsType);
             break;
         case STATS_TYPE_WAKELOCK_HOLD:
