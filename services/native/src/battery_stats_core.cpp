@@ -37,6 +37,7 @@
 #include "entities/user_entity.h"
 #include "entities/wifi_entity.h"
 #include "entities/wakelock_entity.h"
+#include "entities/alarm_entity.h"
 #include "stats_log.h"
 
 #include "xcollie.h"
@@ -111,6 +112,10 @@ void BatteryStatsCore::CreateAppEntity()
     if (cpuEntity_ == nullptr) {
         STATS_HILOGD(COMP_SVC, "Created cpu entity");
         cpuEntity_ = std::make_shared<CpuEntity>();
+    }
+    if (alarmEntity_ == nullptr) {
+        STATS_HILOGD(COMP_SVC, "Created alarm entity");
+        alarmEntity_ = std::make_shared<AlarmEntity>();
     }
 }
 
@@ -194,6 +199,8 @@ std::shared_ptr<BatteryStatsEntity> BatteryStatsCore::GetEntity(const BatterySta
             return cpuEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK:
             return wakelockEntity_;
+        case BatteryStatsInfo::CONSUMPTION_TYPE_ALARM:
+            return alarmEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_INVALID:
         default:
             return nullptr;
@@ -212,31 +219,25 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, l
     switch (statsType) {
         case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
         case StatsUtils::STATS_TYPE_BLUETOOTH_TX: {
-            auto timer = bluetoothEntity_->GetOrCreateTimer(uid, statsType);
-            auto counter = bluetoothEntity_->GetOrCreateCounter(statsType, uid);
-
-            timer->AddRunningTimeMs(time);
-            counter->AddCount(data);
+            UpdateTimer(bluetoothEntity_, statsType, time, uid);
+            UpdateCounter(bluetoothEntity_, statsType, data, uid);
             break;
         }
         case StatsUtils::STATS_TYPE_WIFI_RX:
         case StatsUtils::STATS_TYPE_WIFI_TX: {
-            auto timer = wifiEntity_->GetOrCreateTimer(uid, statsType);
-            auto counter = wifiEntity_->GetOrCreateCounter(statsType, uid);
-
-            timer->AddRunningTimeMs(time);
-            counter->AddCount(data);
+            UpdateTimer(wifiEntity_, statsType, time, uid);
+            UpdateCounter(wifiEntity_, statsType, data, uid);
             break;
         }
         case StatsUtils::STATS_TYPE_RADIO_RX:
         case StatsUtils::STATS_TYPE_RADIO_TX: {
-            auto timer = radioEntity_->GetOrCreateTimer(uid, statsType);
-            auto counter = radioEntity_->GetOrCreateCounter(statsType, uid);
-
-            timer->AddRunningTimeMs(time);
-            counter->AddCount(data);
+            UpdateTimer(radioEntity_, statsType, time, uid);
+            UpdateCounter(radioEntity_, statsType, data, uid);
             break;
         }
+        case StatsUtils::STATS_TYPE_ALARM:
+            UpdateCounter(alarmEntity_, statsType, data, uid);
+            break;
         default:
             break;
     }
@@ -532,6 +533,52 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
     }
 }
 
+void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
+    long time, int32_t uid)
+{
+    STATS_HILOGD(COMP_SVC,
+        "entity: %{public}s, statsType: %{public}s, time: %{public}ld, uid: %{public}d",
+        BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
+        StatsUtils::ConvertStatsType(statsType).c_str(),
+        time,
+        uid);
+    std::shared_ptr<StatsHelper::ActiveTimer> timer;
+    if (uid > StatsUtils::INVALID_VALUE) {
+        timer = entity->GetOrCreateTimer(uid, statsType);
+    } else {
+        timer = entity->GetOrCreateTimer(statsType);
+    }
+
+    if (timer == nullptr) {
+        STATS_HILOGE(COMP_SVC, "Timer is null, return");
+        return;
+    }
+    timer->AddRunningTimeMs(time);
+}
+
+void BatteryStatsCore::UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
+    long data, int32_t uid)
+{
+    STATS_HILOGD(COMP_SVC,
+        "entity: %{public}s, statsType: %{public}s, data: %{public}ld, uid: %{public}d",
+        BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
+        StatsUtils::ConvertStatsType(statsType).c_str(),
+        data,
+        uid);
+    std::shared_ptr<StatsHelper::Counter> counter;
+    if (uid > StatsUtils::INVALID_VALUE) {
+        counter = entity->GetOrCreateCounter(statsType, uid);
+    } else {
+        counter = entity->GetOrCreateCounter(statsType);
+    }
+
+    if (counter == nullptr) {
+        STATS_HILOGE(COMP_SVC, "Counter is null, return");
+        return;
+    }
+    counter->AddCount(data);
+}
+
 int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     STATS_HILOGD(COMP_SVC, "Handle statsType: %{public}s, level: %{public}d",
@@ -679,6 +726,9 @@ long BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int32_
         case StatsUtils::STATS_TYPE_RADIO_RX:
         case StatsUtils::STATS_TYPE_RADIO_TX:
             data = bluetoothEntity_->GetTrafficByte(statsType, uid);
+            break;
+        case StatsUtils::STATS_TYPE_ALARM:
+            data = alarmEntity_->GetTrafficByte(statsType, uid);
             break;
         default:
             break;
@@ -980,6 +1030,7 @@ void BatteryStatsCore::Reset()
     userEntity_->Reset();
     wifiEntity_->Reset();
     wakelockEntity_->Reset();
+    alarmEntity_->Reset();
     BatteryStatsEntity::ResetStatsEntity();
     debugInfo_.clear();
 }

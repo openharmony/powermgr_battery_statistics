@@ -43,6 +43,7 @@ ohos_shared_library("batterystats_service") {
     "native/src/battery_stats_service.cpp",
     "native/src/battery_stats_subscriber.cpp",
     "native/src/cpu_time_reader.cpp",
+    "native/src/entities/alarm_entity.cpp",
     "native/src/entities/audio_entity.cpp",
     "native/src/entities/battery_stats_entity.cpp",
     "native/src/entities/bluetooth_entity.cpp",

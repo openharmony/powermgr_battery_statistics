@@ -44,7 +44,8 @@ public:
         CONSUMPTION_TYPE_SENSOR,
         CONSUMPTION_TYPE_GPS,
         CONSUMPTION_TYPE_CPU,
-        CONSUMPTION_TYPE_WAKELOCK
+        CONSUMPTION_TYPE_WAKELOCK,
+        CONSUMPTION_TYPE_ALARM
     };
 
     bool Marshalling(Parcel &parcel) const override;

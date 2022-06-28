@@ -60,6 +60,7 @@ public:
     static const std::string CURRENT_CPU_SPEED;
     static const std::string CURRENT_CPU_ACTIVE;
     static const std::string CURRENT_CPU_SUSPEND;
+    static const std::string CURRENT_ALARM_ON;
 
     enum StatsType {
         STATS_TYPE_INVALID = -1,
@@ -95,6 +96,7 @@ public:
         STATS_TYPE_WORKSCHEDULER,
         STATS_TYPE_THERMAL,
         STATS_TYPE_DISTRIBUTEDSCHEDULER,
+        STATS_TYPE_ALARM,
     };
 
     enum StatsState {
