@@ -177,9 +177,11 @@ bool BatteryStatsService::AddHiSysEventListener()
     }
     OHOS::HiviewDFX::ListenerRule statsRule("PowerStats");
     OHOS::HiviewDFX::ListenerRule audioRule("AUDIO", "AUDIO_STREAM_CHANGE");
+    OHOS::HiviewDFX::ListenerRule distSchedRule("DISTSCHEDULE", "START_REMOTE_ABILITY");
     std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
     sysRules.push_back(audioRule);
+    sysRules.push_back(distSchedRule);
     auto res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
     if (res == 0) {
         STATS_HILOGD(COMP_SVC, "Listener is added successfully");

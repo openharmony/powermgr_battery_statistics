@@ -54,21 +54,6 @@ BLUETOOTH_SCAN_STATE:
   UID: {type: INT32, desc: application uid}
   BR_SCAN_STATE: {type: INT32, desc: br scan state}
 
-DUBAI_TAG_DIST_SCHED_TO_REMOTE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: distributed schedule ability to remote}
-  TYPE: {type: STRING, desc: type}
-  UID: {type: INT32, desc: calling uid}
-  PID: {type: INT32, desc: calling pid}
-  TO_PKG: {type: STRING, desc: package name}
-  TARGET_ID: {type: INT32, desc: target id}
-
-DUBAI_TAG_DIST_SCHED_FROM_REMOTE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: distributed schedule ability from remote}
-  TYPE: {type: STRING, desc: type}
-  FROM_UID: {type: INT32, desc: from uid}
-  PKG: {type: STRING, desc: package name}
-  SOURCE_ID: {type: INT32, desc: source id}
-
 ALARM_TRIGGER:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: alarm trigger}
   PID: {type: INT32, desc: thread pid}

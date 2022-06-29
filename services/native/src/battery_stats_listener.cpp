@@ -81,8 +81,7 @@ void BatteryStatsListener::processHiSysEvent(const Json::Value& root)
         processBluetoothEvent(data, root);
     } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
         processWifiEvent(data, root);
-    } else if (eventName == "DUBAI_TAG_DIST_SCHED_TO_REMOTE" ||
-        eventName == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
+    } else if (eventName == "START_REMOTE_ABILITY") {
         processDistributedSchedulerEvent(data, root);
     } else if (eventName == "ALARM_TRIGGER") {
         processAlarmEvent(data, root);
@@ -460,34 +459,28 @@ void BatteryStatsListener::processDistributedSchedulerEvent(StatsUtils::StatsDat
 {
     data.type = StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER;
     if (!root["name_"].asString().empty()) {
-        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString()).append(",");
+        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
-    if (!root["TYPE"].asString().empty()) {
-        data.eventDebugInfo.append(" Type = ").append(root["TYPE"].asString()).append(",");
+    if (!root["CALLING_TYPE"].asString().empty()) {
+        data.eventDebugInfo.append(" Calling Type = ").append(root["CALLING_TYPE"].asString());
     }
-    if (root["name_"].asString() == "DUBAI_TAG_DIST_SCHED_TO_REMOTE") {
-        if (!root["UID"].asString().empty()) {
-            data.eventDebugInfo.append(" Uid = ").append(root["UID"].asString()).append(",");
-        }
-        if (!root["PID"].asString().empty()) {
-            data.eventDebugInfo.append(" Pid = ").append(root["PID"].asString()).append(",");
-        }
-        if (!root["TO_PKG"].asString().empty()) {
-            data.eventDebugInfo.append(" To Pkg = ").append(root["TO_PKG"].asString()).append(",");
-        }
-        if (!root["TARGET_ID"].asString().empty()) {
-            data.eventDebugInfo.append(" Target ID = ").append(root["TARGET_ID"].asString());
-        }
-    } else if (root["name_"].asString() == "DUBAI_TAG_DIST_SCHED_FROM_REMOTE") {
-        if (!root["FROM_UID"].asString().empty()) {
-            data.eventDebugInfo.append(" From Uid = ").append(root["FROM_UID"].asString()).append(",");
-        }
-        if (!root["PKG"].asString().empty()) {
-            data.eventDebugInfo.append(" Pkg = ").append(root["PKG"].asString()).append(",");
-        }
-        if (!root["SOURCE_ID"].asString().empty()) {
-            data.eventDebugInfo.append(" Source ID = ").append(root["SOURCE_ID"].asString());
-        }
+    if (!root["CALLING_UID"].asString().empty()) {
+        data.eventDebugInfo.append(" Calling Uid = ").append(root["CALLING_UID"].asString());
+    }
+    if (!root["CALLING_PID"].asString().empty()) {
+        data.eventDebugInfo.append(" Calling Pid = ").append(root["CALLING_PID"].asString());
+    }
+    if (!root["TARGET_BUNDLE"].asString().empty()) {
+        data.eventDebugInfo.append(" Target Bundle Name = ").append(root["TARGET_BUNDLE"].asString());
+    }
+    if (!root["TARGET_ABILITY"].asString().empty()) {
+        data.eventDebugInfo.append(" Target Ability Name = ").append(root["TARGET_ABILITY"].asString());
+    }
+    if (!root["CALLING_APP_UID"].asString().empty()) {
+        data.eventDebugInfo.append(" Calling App Uid = ").append(root["CALLING_APP_UID"].asString());
+    }
+    if (!root["RESULT"].asString().empty()) {
+        data.eventDebugInfo.append(" RESULT = ").append(root["RESULT"].asString());
     }
 }
 
