@@ -25,6 +25,7 @@
 
 #include "battery_stats_service.h"
 #include "stats_log.h"
+#include "stats_types.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -129,10 +130,18 @@ void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const 
         data.pid = stoi(root["PID"].asString());
     }
     if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
-            data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
-            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        AudioState audioState = AudioState(stoi(root["STATE"].asString()));
+        switch (audioState) {
+            case AudioState::AUDIO_STATE_RUNNING:
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+                break;
+            case AudioState::AUDIO_STATE_STOPPED:
+            case AudioState::AUDIO_STATE_RELEASED:
+            case AudioState::AUDIO_STATE_PAUSED:
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+                break;
+            default:
+                break;
         }
     }
 }
