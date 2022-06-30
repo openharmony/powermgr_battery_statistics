@@ -320,91 +320,118 @@ long BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t ui
 std::shared_ptr<StatsHelper::ActiveTimer> BluetoothEntity::GetOrCreateTimer(int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_SCAN) {
-        auto scanIter = appBluetoothScanTimerMap_.find(uid);
-        if (scanIter != appBluetoothScanTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth scan timer for uid: %{public}d", uid);
-            return scanIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN: {
+            auto scanIter = appBluetoothScanTimerMap_.find(uid);
+            if (scanIter != appBluetoothScanTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth scan timer for uid: %{public}d", uid);
+                timer = scanIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create bluetooth scan timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appBluetoothScanTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> scanTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appBluetoothScanTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, scanTimer));
+            timer = scanTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
-        auto rxIter = appBluetoothTxTimerMap_.find(uid);
-        if (rxIter != appBluetoothRxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth RX timer for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_RX: {
+            auto rxIter = appBluetoothTxTimerMap_.find(uid);
+            if (rxIter != appBluetoothRxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth RX timer for uid: %{public}d", uid);
+                timer = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create bluetooth RX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appBluetoothRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> rxTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appBluetoothRxTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, rxTimer));
+            timer = rxTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
-        auto txIter = appBluetoothTxTimerMap_.find(uid);
-        if (txIter != appBluetoothTxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth TX timer for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_TX: {
+            auto txIter = appBluetoothTxTimerMap_.find(uid);
+            if (txIter != appBluetoothTxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth TX timer for uid: %{public}d", uid);
+                timer = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create bluetooth TX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appBluetoothTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> txTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appBluetoothTxTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, txTimer));
+            timer = txTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> BluetoothEntity::GetOrCreateTimer(StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_ON) {
-        if (bluetoothOnTimer_ != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth on timer");
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_ON: {
+            if (bluetoothOnTimer_ != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth on timer");
+                timer = bluetoothOnTimer_;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create blueooth on timer");
             bluetoothOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
+            timer = bluetoothOnTimer_;
+            break;
         }
-        return bluetoothOnTimer_;
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::Counter> BluetoothEntity::GetOrCreateCounter(StatsUtils::StatsType statsType,
     int32_t uid)
 {
-    if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
-        auto rxIter = appBluetoothRxCounterMap_.find(uid);
-        if (rxIter != appBluetoothRxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth RX counter for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::Counter> counter = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_RX: {
+            auto rxIter = appBluetoothRxCounterMap_.find(uid);
+            if (rxIter != appBluetoothRxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth RX counter for uid: %{public}d", uid);
+                counter = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create bluetooth RX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appBluetoothRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> rxCounter = std::make_shared<StatsHelper::Counter>();
+            appBluetoothRxCounterMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, rxCounter));
+            counter = rxCounter;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
-        auto txIter = appBluetoothTxCounterMap_.find(uid);
-        if (txIter != appBluetoothTxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got blueooth TX counter for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_TX: {
+            auto txIter = appBluetoothTxCounterMap_.find(uid);
+            if (txIter != appBluetoothTxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got blueooth TX counter for uid: %{public}d", uid);
+                counter = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create bluetooth TX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appBluetoothTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> txCounter = std::make_shared<StatsHelper::Counter>();
+            appBluetoothTxCounterMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, txCounter));
+            counter = txCounter;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create counter failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create counter failed");
+            break;
     }
+    return counter;
 }
 
 double BluetoothEntity::GetBluetoothUidPower()

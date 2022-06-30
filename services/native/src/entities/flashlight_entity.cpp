@@ -98,21 +98,27 @@ double FlashlightEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32
 std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_FLASHLIGHT_ON) {
-        auto flashlightOnIter = flashlightTimerMap_.find(uid);
-        if (flashlightOnIter != flashlightTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got flashlight on timer for uid: %{public}d", uid);
-            return flashlightOnIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_FLASHLIGHT_ON: {
+            auto flashlightOnIter = flashlightTimerMap_.find(uid);
+            if (flashlightOnIter != flashlightTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got flashlight on timer for uid: %{public}d", uid);
+                timer = flashlightOnIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create flashlight on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            flashlightTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> flashTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            flashlightTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, flashTimer));
+            timer = flashTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void FlashlightEntity::Reset()

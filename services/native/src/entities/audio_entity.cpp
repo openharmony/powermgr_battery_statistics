@@ -97,21 +97,26 @@ double AudioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 std::shared_ptr<StatsHelper::ActiveTimer> AudioEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_AUDIO_ON) {
-        auto audioOnIter = audioTimerMap_.find(uid);
-        if (audioOnIter != audioTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got audio on timer for uid: %{public}d", uid);
-            return audioOnIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_AUDIO_ON: {
+            auto audioOnIter = audioTimerMap_.find(uid);
+            if (audioOnIter != audioTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got audio on timer for uid: %{public}d", uid);
+                timer = audioOnIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create audio on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            audioTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> audioTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            audioTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, audioTimer));
+            timer = audioTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void AudioEntity::Reset()

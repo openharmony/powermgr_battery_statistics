@@ -102,12 +102,12 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
             if (alarmOnIter != alarmCounterMap_.end()) {
                 STATS_HILOGD(COMP_SVC, "Got alarm on counter for uid: %{public}d", uid);
                 counter = alarmOnIter->second;
-            } else {
-                STATS_HILOGD(COMP_SVC, "Create alarm on counter for uid: %{public}d", uid);
-                std::shared_ptr<StatsHelper::Counter> alarmConuter = std::make_shared<StatsHelper::Counter>();
-                alarmCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, alarmConuter));
-                counter = alarmConuter;
+                break;
             }
+            STATS_HILOGD(COMP_SVC, "Create alarm on counter for uid: %{public}d", uid);
+            std::shared_ptr<StatsHelper::Counter> alarmConuter = std::make_shared<StatsHelper::Counter>();
+            alarmCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, alarmConuter));
+            counter = alarmConuter;
             break;
         }
         default:

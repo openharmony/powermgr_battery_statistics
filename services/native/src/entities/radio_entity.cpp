@@ -305,89 +305,112 @@ long RadioEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
-        auto rxIter = appRadioRxTimerMap_.find(uid);
-        if (rxIter != appRadioRxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got radio RX timer for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_RADIO_RX: {
+            auto rxIter = appRadioRxTimerMap_.find(uid);
+            if (rxIter != appRadioRxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got radio RX timer for uid: %{public}d", uid);
+                timer = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio RX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appRadioRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> rxTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appRadioRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, rxTimer));
+            timer = rxTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
-        auto txIter = appRadioTxTimerMap_.find(uid);
-        if (txIter != appRadioTxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got radio TX timer for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_RADIO_TX: {
+            auto txIter = appRadioTxTimerMap_.find(uid);
+            if (txIter != appRadioTxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got radio TX timer for uid: %{public}d", uid);
+                timer = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio TX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appRadioTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> txTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appRadioTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, txTimer));
+            timer = txTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
-        if (radioScanTimer_ != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got radio scan timer");
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_RADIO_SCAN: {
+            if (radioScanTimer_ != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got radio scan timer");
+                timer = radioScanTimer_;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio scan timer");
             radioScanTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
+            timer = radioScanTimer_;
+            break;
         }
-        return radioScanTimer_;
-    } else if (statsType == StatsUtils::STATS_TYPE_RADIO_ON) {
-        auto onIter = radioOnTimerMap_.find(level);
-        if (onIter != radioOnTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got radio on timer for level: %{public}d", level);
-            return onIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_RADIO_ON: {
+            auto onIter = radioOnTimerMap_.find(level);
+            if (onIter != radioOnTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got radio on timer for level: %{public}d", level);
+                timer = onIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio on timer for level: %{public}d", level);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            radioOnTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> radioOnTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            radioOnTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, radioOnTimer));
+            timer = radioOnTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
 {
-    if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
-        auto rxIter = appRadioRxCounterMap_.find(uid);
-        if (rxIter != appRadioRxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got radio RX counter for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::Counter> counter = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_RADIO_RX: {
+            auto rxIter = appRadioRxCounterMap_.find(uid);
+            if (rxIter != appRadioRxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got radio RX counter for uid: %{public}d", uid);
+                counter = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio RX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appRadioRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> rxCounter = std::make_shared<StatsHelper::Counter>();
+            appRadioRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, rxCounter));
+            counter = rxCounter;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
-        auto txIter = appRadioTxCounterMap_.find(uid);
-        if (txIter != appRadioTxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got radio TX counter for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_RADIO_TX: {
+            auto txIter = appRadioTxCounterMap_.find(uid);
+            if (txIter != appRadioTxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got radio TX counter for uid: %{public}d", uid);
+                counter = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create radio TX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appRadioTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> txCounter = std::make_shared<StatsHelper::Counter>();
+            appRadioTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, txCounter));
+            counter = txCounter;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create counter failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create counter failed");
+            break;
     }
+    return counter;
 }
 
 void RadioEntity::DumpInfo(std::string& result, int32_t uid)

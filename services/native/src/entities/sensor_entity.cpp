@@ -155,32 +155,41 @@ double SensorEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
 std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON) {
-        auto gravityOnIter = gravityTimerMap_.find(uid);
-        if (gravityOnIter != gravityTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got gravity on timer for uid: %{public}d", uid);
-            return gravityOnIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON: {
+            auto gravityOnIter = gravityTimerMap_.find(uid);
+            if (gravityOnIter != gravityTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got gravity on timer for uid: %{public}d", uid);
+                timer = gravityOnIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create gravity on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            gravityTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> gravityTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            gravityTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, gravityTimer));
+            timer = gravityTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
-        auto proximityOnIter = proximityTimerMap_.find(uid);
-        if (proximityOnIter != proximityTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got proximity on timer for uid: %{public}d", uid);
-            return proximityOnIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON: {
+            auto proximityOnIter = proximityTimerMap_.find(uid);
+            if (proximityOnIter != proximityTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got proximity on timer for uid: %{public}d", uid);
+                timer = proximityOnIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create proximity on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            proximityTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> proximityTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            proximityTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, proximityTimer));
+            timer = proximityTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void SensorEntity::Reset()

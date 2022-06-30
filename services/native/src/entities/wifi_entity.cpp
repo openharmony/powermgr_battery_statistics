@@ -311,89 +311,112 @@ long WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 std::shared_ptr<StatsHelper::ActiveTimer> WifiEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_WIFI_SCAN) {
-        auto scanIter = appWifiScanTimerMap_.find(uid);
-        if (scanIter != appWifiScanTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got wifi scan timer for uid: %{public}d", uid);
-            return scanIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_WIFI_SCAN: {
+            auto scanIter = appWifiScanTimerMap_.find(uid);
+            if (scanIter != appWifiScanTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got wifi scan timer for uid: %{public}d", uid);
+                timer = scanIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi scan timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appWifiScanTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> scanTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appWifiScanTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, scanTimer));
+            timer = scanTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
-        auto rxIter = appWifiTxTimerMap_.find(uid);
-        if (rxIter != appWifiRxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got wifi RX timer for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_WIFI_RX: {
+            auto rxIter = appWifiTxTimerMap_.find(uid);
+            if (rxIter != appWifiRxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got wifi RX timer for uid: %{public}d", uid);
+                timer = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi RX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appWifiRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> rxTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appWifiRxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, rxTimer));
+            timer = rxTimer;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
-        auto txIter = appWifiTxTimerMap_.find(uid);
-        if (txIter != appWifiTxTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got wifi TX timer for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_WIFI_TX: {
+            auto txIter = appWifiTxTimerMap_.find(uid);
+            if (txIter != appWifiTxTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got wifi TX timer for uid: %{public}d", uid);
+                timer = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi TX timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            appWifiTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> txTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            appWifiTxTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, txTimer));
+            timer = txTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> WifiEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_WIFI_ON) {
-        if (wifiOnTimer_ != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got wifi on timer");
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_WIFI_ON: {
+            if (wifiOnTimer_ != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got wifi on timer");
+                timer = wifiOnTimer_;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi on timer");
             wifiOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
+            timer = wifiOnTimer_;
+            break;
         }
-        return wifiOnTimer_;
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 std::shared_ptr<StatsHelper::Counter> WifiEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
 {
-    if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
-        auto rxIter = appWifiRxCounterMap_.find(uid);
-        if (rxIter != appWifiRxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got wifi RX counter for uid: %{public}d", uid);
-            return rxIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::Counter> counter = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_WIFI_RX: {
+            auto rxIter = appWifiRxCounterMap_.find(uid);
+            if (rxIter != appWifiRxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got wifi RX counter for uid: %{public}d", uid);
+                counter = rxIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi RX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appWifiRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> rxCounter = std::make_shared<StatsHelper::Counter>();
+            appWifiRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, rxCounter));
+            counter = rxCounter;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
-        auto txIter = appWifiTxCounterMap_.find(uid);
-        if (txIter != appWifiTxCounterMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got wifi TX counter for uid: %{public}d", uid);
-            return txIter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_WIFI_TX: {
+            auto txIter = appWifiTxCounterMap_.find(uid);
+            if (txIter != appWifiTxCounterMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got wifi TX counter for uid: %{public}d", uid);
+                counter = txIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create wifi TX counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
-            appWifiTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
-            return counter;
+            std::shared_ptr<StatsHelper::Counter> txCounter = std::make_shared<StatsHelper::Counter>();
+            appWifiTxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, txCounter));
+            counter = txCounter;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create counter failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create counter failed");
+            break;
     }
+    return counter;
 }
 
 double WifiEntity::GetWifiUidPower()
