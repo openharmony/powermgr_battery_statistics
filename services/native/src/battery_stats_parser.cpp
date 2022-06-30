@@ -29,10 +29,10 @@ static const std::string POWER_AVERAGE_FILE = "/system/etc/profile/power_average
 bool BatteryStatsParser::Init()
 {
     if (!LoadAveragePowerFromFile()) {
-        STATS_HILOGE(COMP_SVC, "Initialization failed: loading average power file failure");
+        STATS_HILOGD(COMP_SVC, "Initialization failed: loading average power file failure");
         return false;
     }
-    STATS_HILOGI(COMP_SVC, "Initialization succeeded");
+    STATS_HILOGD(COMP_SVC, "Initialization succeeded");
     return true;
 }
 
@@ -45,7 +45,7 @@ uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
             return speedNum_[i];
         }
     }
-    STATS_HILOGE(COMP_SVC, "No related speed number, return 0");
+    STATS_HILOGD(COMP_SVC, "No related speed number, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
@@ -56,11 +56,11 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
     std::string errors;
     std::ifstream ifs(POWER_AVERAGE_FILE, std::ios::binary);
     if (!ifs.is_open()) {
-        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
+        STATS_HILOGD(COMP_SVC, "Json file doesn't exist");
         return false;
     }
     if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(COMP_SVC, "Parsing json file failed");
+        STATS_HILOGD(COMP_SVC, "Parsing json file failed");
         return false;
     }
     ifs.close();
@@ -95,7 +95,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile()
                 type.c_str());
         }
     }
-    STATS_HILOGI(COMP_SVC, "Load power average json file complete");
+    STATS_HILOGD(COMP_SVC, "Load power average json file complete");
     return true;
 }
 
@@ -107,7 +107,7 @@ double BatteryStatsParser::GetAveragePowerMa(std::string type)
         average = iter->second;
         STATS_HILOGD(COMP_SVC, "Got average power: %{public}lfma of %{public}s", average, type.c_str());
     } else {
-        STATS_HILOGE(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
+        STATS_HILOGD(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
     return average;
 }
@@ -122,7 +122,7 @@ double BatteryStatsParser::GetAveragePowerMa(std::string type, uint16_t level)
         }
         STATS_HILOGD(COMP_SVC, "Got average power: %{public}lf of %{public}s", average, type.c_str());
     } else {
-        STATS_HILOGE(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
+        STATS_HILOGD(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
     return average;
 }

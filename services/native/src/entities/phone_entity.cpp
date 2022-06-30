@@ -38,7 +38,7 @@ long PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level
             activeTimeMs = phoneTimer_->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got phone active time: %{public}ldms", activeTimeMs);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer, return 0");
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
     }
     return activeTimeMs;
@@ -73,15 +73,15 @@ std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUti
 {
     if (statsType == StatsUtils::STATS_TYPE_PHONE_ACTIVE) {
         if (phoneTimer_ != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Got phone active timer");
+            STATS_HILOGD(COMP_SVC, "Got phone active timer");
             return phoneTimer_;
         } else {
-            STATS_HILOGI(COMP_SVC, "Create phone active timer");
+            STATS_HILOGD(COMP_SVC, "Create phone active timer");
             phoneTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
             return phoneTimer_;
         }
     } else {
-        STATS_HILOGE(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

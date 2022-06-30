@@ -36,11 +36,11 @@ std::shared_ptr<BatteryStatsInfo> BatteryStatsInfo::Unmarshalling(Parcel& parcel
 {
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     if (statsInfo == nullptr) {
-        STATS_HILOGE(COMP_FWK, "BatteryStatsInfo object creating is failed");
+        STATS_HILOGD(COMP_FWK, "BatteryStatsInfo object creating is failed");
         statsInfo = nullptr;
     }
     if (!statsInfo->ReadFromParcel(parcel)) {
-        STATS_HILOGE(COMP_FWK, "ReadFromParcel failed");
+        STATS_HILOGD(COMP_FWK, "ReadFromParcel failed");
         statsInfo = nullptr;
     }
     return statsInfo;
@@ -63,7 +63,7 @@ void BatteryStatsInfo::SetUid(int32_t uid)
         STATS_HILOGD(COMP_FWK, "Set uid: %{public}d", uid);
         uid_ = uid;
     } else {
-        STATS_HILOGE(COMP_FWK, "Got illegal uid: %{public}d, ignore", uid);
+        STATS_HILOGD(COMP_FWK, "Got illegal uid: %{public}d, ignore", uid);
     }
 }
 
@@ -73,7 +73,7 @@ void BatteryStatsInfo::SetUserId(int32_t userId)
         STATS_HILOGD(COMP_FWK, "Set uid: %{public}d", userId);
         userId_ = userId;
     } else {
-        STATS_HILOGE(COMP_FWK, "Got illegal user id: %{public}d, ignore", userId);
+        STATS_HILOGD(COMP_FWK, "Got illegal user id: %{public}d, ignore", userId);
     }
 }
 
@@ -85,9 +85,9 @@ void BatteryStatsInfo::SetConsumptioType(ConsumptionType type)
 void BatteryStatsInfo::SetPower(double power)
 {
     if (uid_ > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(COMP_FWK, "Set APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
+        STATS_HILOGD(COMP_FWK, "Set APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGI(COMP_FWK, "Set power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+        STATS_HILOGD(COMP_FWK, "Set power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
             ConvertConsumptionType(type_).c_str());
     }
     totalPowerMah_ = power;
@@ -111,9 +111,9 @@ BatteryStatsInfo::ConsumptionType BatteryStatsInfo::GetConsumptionType()
 double BatteryStatsInfo::GetPower()
 {
     if (uid_ > StatsUtils::INVALID_VALUE) {
-        STATS_HILOGI(COMP_FWK, "Got APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
+        STATS_HILOGD(COMP_FWK, "Got APP power: %{public}lfmAh for uid: %{public}d", totalPowerMah_, uid_);
     } else {
-        STATS_HILOGI(COMP_FWK, "Got power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
+        STATS_HILOGD(COMP_FWK, "Got power: %{public}lfmAh for part: %{public}s", totalPowerMah_,
             ConvertConsumptionType(type_).c_str());
     }
     return totalPowerMah_;
@@ -214,7 +214,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
             result = ConvertTypeForApp(type);
             break;
         default:
-            STATS_HILOGE(COMP_FWK, "Convert failed due to illegal type, return empty string");
+            STATS_HILOGD(COMP_FWK, "Convert failed due to illegal type, return empty string");
             break;
     }
     return result;

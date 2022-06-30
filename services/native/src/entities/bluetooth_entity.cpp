@@ -126,7 +126,7 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
             time = scanIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got blueooth scan time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No bluetooth scan timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No bluetooth scan timer related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
@@ -135,7 +135,7 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
             time = rxIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got blueooth RX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No bluetooth RX timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No bluetooth RX timer related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
@@ -144,7 +144,7 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
             time = txIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got blueooth TX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No bluetooth TX timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No bluetooth TX timer related with uid: %{public}d found, return 0",
                 uid);
         }
     }
@@ -159,7 +159,7 @@ long BluetoothEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t l
             time = bluetoothOnTimer_->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got blueooth on time: %{public}ldms", time);
         } else {
-            STATS_HILOGE(COMP_SVC, "Bluetooth has not been turned on yet, return 0");
+            STATS_HILOGD(COMP_SVC, "Bluetooth has not been turned on yet, return 0");
         }
     }
     return time;
@@ -175,12 +175,12 @@ double BluetoothEntity::GetEntityPowerMah(int32_t uidOrUserId)
             STATS_HILOGD(COMP_SVC, "Got app blueooth power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uidOrUserId);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No app blueooth power consumption related with uid: %{public}d found, return 0", uidOrUserId);
         }
     } else {
         power = bluetoothPowerMah_;
-        STATS_HILOGI(COMP_SVC, "Got blueooth power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Got blueooth power consumption: %{public}lfmAh", power);
     }
     return power;
 }
@@ -198,7 +198,7 @@ double BluetoothEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_
             STATS_HILOGD(COMP_SVC,
                 "Got blueooth scan power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No bluetooth scan power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
@@ -208,7 +208,7 @@ double BluetoothEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_
             STATS_HILOGD(COMP_SVC, "Got blueooth RX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No bluetooth RX power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
@@ -218,7 +218,7 @@ double BluetoothEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_
             STATS_HILOGD(COMP_SVC, "Got blueooth TX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No bluetooth TX power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -300,7 +300,7 @@ long BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t ui
             STATS_HILOGD(COMP_SVC, "Got blueooth RX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No bluetooth RX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No bluetooth RX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
@@ -310,7 +310,7 @@ long BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t ui
             STATS_HILOGD(COMP_SVC, "Got blueooth TX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No bluetooth TX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No bluetooth TX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     }
@@ -354,7 +354,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> BluetoothEntity::GetOrCreateTimer(int3
             return timer;
         }
     } else {
-        STATS_HILOGW(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
@@ -364,14 +364,14 @@ std::shared_ptr<StatsHelper::ActiveTimer> BluetoothEntity::GetOrCreateTimer(Stat
 {
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_ON) {
         if (bluetoothOnTimer_ != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Got blueooth on timer");
+            STATS_HILOGD(COMP_SVC, "Got blueooth on timer");
         } else {
-            STATS_HILOGI(COMP_SVC, "Create blueooth on timer");
+            STATS_HILOGD(COMP_SVC, "Create blueooth on timer");
             bluetoothOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
         }
         return bluetoothOnTimer_;
     } else {
-        STATS_HILOGW(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
@@ -402,7 +402,7 @@ std::shared_ptr<StatsHelper::Counter> BluetoothEntity::GetOrCreateCounter(StatsU
             return counter;
         }
     } else {
-        STATS_HILOGW(COMP_SVC, "Create counter failed");
+        STATS_HILOGD(COMP_SVC, "Create counter failed");
         return nullptr;
     }
 }
@@ -413,13 +413,13 @@ double BluetoothEntity::GetBluetoothUidPower()
     auto bundleObj =
         DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     if (bundleObj == nullptr) {
-        STATS_HILOGE(COMP_SVC, "failed to get bundle manager service, return 0");
+        STATS_HILOGD(COMP_SVC, "failed to get bundle manager service, return 0");
         return bluetoothUidPower;
     }
 
     sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
     if (bmgr == nullptr) {
-        STATS_HILOGE(COMP_SVC, "failed to get bundle manager proxy, return 0");
+        STATS_HILOGD(COMP_SVC, "failed to get bundle manager proxy, return 0");
         return bluetoothUidPower;
     }
 

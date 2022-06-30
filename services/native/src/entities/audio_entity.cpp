@@ -36,10 +36,10 @@ long AudioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, 
         auto iter = audioTimerMap_.find(uid);
         if (iter != audioTimerMap_.end()) {
             activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGI(COMP_SVC, "Got audio on time: %{public}ldms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Got audio on time: %{public}ldms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     }
     return activeTimeMs;
@@ -52,11 +52,11 @@ void AudioEntity::Calculate(int32_t uid)
     auto audioOnPowerMah = audioOnAverageMa * audioOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = audioPowerMap_.find(uid);
     if (iter != audioPowerMap_.end()) {
-        STATS_HILOGI(COMP_SVC, "Update audio on power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Update audio on power consumption: %{public}lfmAh for uid: %{public}d",
             audioOnAverageMa, uid);
         iter->second = audioOnPowerMah;
     } else {
-        STATS_HILOGI(COMP_SVC, "Create audio on power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Create audio on power consumption: %{public}lfmAh for uid: %{public}d",
             audioOnPowerMah, uid);
         audioPowerMap_.insert(std::pair<int32_t, double>(uid, audioOnPowerMah));
     }
@@ -71,7 +71,7 @@ double AudioEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app audio power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app audio power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -87,7 +87,7 @@ double AudioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
             STATS_HILOGD(COMP_SVC, "Got audio on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No audio on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -100,16 +100,16 @@ std::shared_ptr<StatsHelper::ActiveTimer> AudioEntity::GetOrCreateTimer(int32_t 
     if (statsType == StatsUtils::STATS_TYPE_AUDIO_ON) {
         auto audioOnIter = audioTimerMap_.find(uid);
         if (audioOnIter != audioTimerMap_.end()) {
-            STATS_HILOGI(COMP_SVC, "Got audio on timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Got audio on timer for uid: %{public}d", uid);
             return audioOnIter->second;
         } else {
-            STATS_HILOGI(COMP_SVC, "Create audio on timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create audio on timer for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
             audioTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
             return timer;
         }
     } else {
-        STATS_HILOGE(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

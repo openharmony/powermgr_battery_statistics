@@ -39,7 +39,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
 
     auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (bss == nullptr) {
-        STATS_HILOGE(COMP_SVC, "Got Battery stats service failed");
+        STATS_HILOGD(COMP_SVC, "Got Battery stats service failed");
         return;
     }
     auto core = bss->GetBatteryStatsCore();
@@ -51,7 +51,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         // Update related timer based on state or level
         core->UpdateStats(data.type, data.state, data.level, data.uid, data.deviceId);
     } else {
-        STATS_HILOGE(COMP_SVC, "Got invalid type");
+        STATS_HILOGD(COMP_SVC, "Got invalid type");
     }
     handleDebugInfo(data);
 }
@@ -69,11 +69,11 @@ bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_ALARM:
             // Realated with duration
             isMatch = true;
-            STATS_HILOGI(COMP_SVC, "Type: %{public}s is duration related",
+            STATS_HILOGD(COMP_SVC, "Type: %{public}s is duration related",
                 StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGE(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "Got invalid type");
             break;
     }
     return isMatch;
@@ -102,11 +102,11 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
             // Related with state
             isMatch = true;
-            STATS_HILOGI(COMP_SVC, "Type: %{public}s is state related",
+            STATS_HILOGD(COMP_SVC, "Type: %{public}s is state related",
                 StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGE(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "Got invalid type");
             break;
     }
     return isMatch;
@@ -282,7 +282,7 @@ void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
             handleDistributedSchedulerInfo(data, bootTimeMs, debugInfo);
             break;
         default:
-            STATS_HILOGE(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "Got invalid type");
             break;
     }
     core->UpdateDebugInfo(debugInfo);

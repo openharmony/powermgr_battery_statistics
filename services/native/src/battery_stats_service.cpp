@@ -50,27 +50,27 @@ BatteryStatsService::~BatteryStatsService() {}
 void BatteryStatsService::OnStart()
 {
     if (ready_) {
-        STATS_HILOGI(COMP_SVC, "OnStart is ready, nothing to do");
+        STATS_HILOGD(COMP_SVC, "OnStart is ready, nothing to do");
         return;
     }
     if (!(Init())) {
-        STATS_HILOGE(COMP_SVC, "OnStart call init fail");
+        STATS_HILOGD(COMP_SVC, "OnStart call init fail");
         return;
     }
     AddSystemAbilityListener(SA_ID_HISYSEVENT);
     if (!Publish(DelayedStatsSpSingleton<BatteryStatsService>::GetInstance())) {
-        STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
+        STATS_HILOGD(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }
     InitDependency();
 
     ready_ = true;
-    STATS_HILOGI(COMP_SVC, "OnStart and add system ability success");
+    STATS_HILOGD(COMP_SVC, "OnStart and add system ability success");
 }
 
 void BatteryStatsService::OnStop()
 {
-    STATS_HILOGI(COMP_SVC, "Stop battery stats service");
+    STATS_HILOGD(COMP_SVC, "Stop battery stats service");
     if (!ready_) {
         return;
     }
@@ -78,7 +78,7 @@ void BatteryStatsService::OnStop()
     RemoveSystemAbilityListener(SA_ID_HISYSEVENT);
     HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
     if (!OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_)) {
-        STATS_HILOGE(COMP_SVC, "OnStart unregister to commonevent manager failed");
+        STATS_HILOGD(COMP_SVC, "OnStart unregister to commonevent manager failed");
     }
 }
 
@@ -96,7 +96,7 @@ bool BatteryStatsService::Init()
     if (parser_ == nullptr) {
         parser_ = std::make_shared<BatteryStatsParser>();
         if (!parser_->Init()) {
-            STATS_HILOGE(COMP_SVC, "Battery stats parser initialization failed");
+            STATS_HILOGD(COMP_SVC, "Battery stats parser initialization failed");
             return false;
         }
     }
@@ -104,7 +104,7 @@ bool BatteryStatsService::Init()
     if (core_ == nullptr) {
         core_ = std::make_shared<BatteryStatsCore>();
         if (!core_->Init()) {
-            STATS_HILOGE(COMP_SVC, "Battery stats core initialization failed");
+            STATS_HILOGD(COMP_SVC, "Battery stats core initialization failed");
             return false;
         }
     }
@@ -116,7 +116,7 @@ bool BatteryStatsService::Init()
     if (!runner_) {
         runner_ = AppExecFwk::EventRunner::Create("BatteryStatsEventRunner");
         if (runner_ == nullptr) {
-            STATS_HILOGE(COMP_SVC, "Create EventRunner failed");
+            STATS_HILOGD(COMP_SVC, "Create EventRunner failed");
             return false;
         }
     }
@@ -124,13 +124,13 @@ bool BatteryStatsService::Init()
     if (!handler_) {
         handler_ = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner_);
         if (handler_ == nullptr) {
-            STATS_HILOGE(COMP_SVC, "Create EventHandler failed");
+            STATS_HILOGD(COMP_SVC, "Create EventHandler failed");
             return false;
         }
         HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_S);
     }
 
-    STATS_HILOGI(COMP_SVC, "Battery stats service initialization success");
+    STATS_HILOGD(COMP_SVC, "Battery stats service initialization success");
     return true;
 }
 
@@ -138,16 +138,16 @@ void BatteryStatsService::InitDependency()
 {
     sptr<ISystemAbilityManager> sysMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (!sysMgr || !sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID)) {
-        STATS_HILOGI(COMP_SVC, "Dependency is not ready yet, re-check in 2s later");
+        STATS_HILOGD(COMP_SVC, "Dependency is not ready yet, re-check in 2s later");
         auto task = [this]() { this->InitDependency(); };
         handler_->PostTask(task, DEPENDENCY_CHECK_DELAY_MS);
         return;
     }
 
     if (!SubscribeCommonEvent()) {
-        STATS_HILOGE(COMP_SVC, "Register to commonevent manager failed");
+        STATS_HILOGD(COMP_SVC, "Register to commonevent manager failed");
     } else {
-        STATS_HILOGI(COMP_SVC, "Register to commonevent manager successfuly");
+        STATS_HILOGD(COMP_SVC, "Register to commonevent manager successfuly");
     }
 }
 
@@ -164,7 +164,7 @@ bool BatteryStatsService::SubscribeCommonEvent()
     }
     result = OHOS::EventFwk::CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
     if (!result) {
-        STATS_HILOGE(COMP_SVC, "Subscribe CommonEvent failed");
+        STATS_HILOGD(COMP_SVC, "Subscribe CommonEvent failed");
     }
     return result;
 }
@@ -184,7 +184,7 @@ bool BatteryStatsService::AddHiSysEventListener()
     if (res == 0) {
         STATS_HILOGD(COMP_SVC, "Listener is added successfully");
     } else {
-        STATS_HILOGE(COMP_SVC, "Listener is added failed");
+        STATS_HILOGD(COMP_SVC, "Listener is added failed");
     }
     return res;
 }
@@ -213,7 +213,7 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
     std::string result;
     BatteryStatsDumper::Dump(argsInStr, result);
     if (!SaveStringToFd(fd, result)) {
-        STATS_HILOGE(COMP_SVC, "Dump save to fd failed, %{public}s", result.c_str());
+        STATS_HILOGD(COMP_SVC, "Dump save to fd failed, %{public}s", result.c_str());
         return ERR_OK;
     }
     return ERR_OK;
@@ -293,7 +293,7 @@ std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args,
     pid_t pid = IPCSkeleton::GetCallingPid();
     std::string result;
     bool ret = BatteryStatsDumper::Dump(args, result);
-    STATS_HILOGI(COMP_SVC, "PID: %{public}d, Dump result :%{public}d", pid, ret);
+    STATS_HILOGD(COMP_SVC, "PID: %{public}d, Dump result :%{public}d", pid, ret);
     return result;
 }
 } // namespace PowerMgr

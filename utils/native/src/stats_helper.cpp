@@ -33,7 +33,7 @@ long StatsHelper::GetBootTimeMs()
     struct timespec rawBootTime;
     int errCode = clock_gettime(CLOCK_BOOTTIME, &rawBootTime);
     if (errCode != 0) {
-        STATS_HILOGE(COMP_SVC, "Get boot time failed, return default time");
+        STATS_HILOGD(COMP_SVC, "Get boot time failed, return default time");
     } else {
         bootTimeMs =
             (long) (rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND + rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
@@ -48,7 +48,7 @@ long StatsHelper::GetUpTimeMs()
     struct timespec rawUpTime;
     int errCode = clock_gettime(CLOCK_MONOTONIC, &rawUpTime);
     if (errCode != 0) {
-        STATS_HILOGE(COMP_SVC, "Get up time failed, return default time");
+        STATS_HILOGD(COMP_SVC, "Get up time failed, return default time");
     } else {
         upTimeMs = (long) (rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND + rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
         STATS_HILOGD(COMP_SVC, "Got up time: %{public}ld", upTimeMs);

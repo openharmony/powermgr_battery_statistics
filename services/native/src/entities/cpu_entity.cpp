@@ -43,7 +43,7 @@ int64_t CpuEntity::GetCpuTimeMs(int32_t uid)
             std::to_string(cpuTimeMs).c_str(), uid);
         cpuTimeMs = iter->second;
     } else {
-        STATS_HILOGE(COMP_SVC, "No cpu time realted with uid: %{public}d found, return 0", uid);
+        STATS_HILOGD(COMP_SVC, "No cpu time realted with uid: %{public}d found, return 0", uid);
     }
     return cpuTimeMs;
 }
@@ -52,12 +52,12 @@ void CpuEntity::UpdateCpuTime()
 {
     if (cpuReader_) {
         if (!cpuReader_->UpdateCpuTime()) {
-            STATS_HILOGE(COMP_SVC, "Update CPU time failed");
+            STATS_HILOGD(COMP_SVC, "Update CPU time failed");
         } else {
             STATS_HILOGD(COMP_SVC, "Update CPU time successfully");
         }
     } else {
-        STATS_HILOGE(COMP_SVC, "Can't find CPU reader");
+        STATS_HILOGD(COMP_SVC, "Can't find CPU reader");
     }
 }
 
@@ -179,7 +179,7 @@ double CpuEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app cpu total power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app cpu total power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -196,7 +196,7 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got cpu active power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No cpu active power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_CLUSTER) {
@@ -206,7 +206,7 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got cpu cluster power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No cpu cluster power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_SPEED) {
@@ -216,7 +216,7 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got cpu speed power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No cpu speed power consumption related with uid: %{public}d found, return 0", uid);
         }
     }

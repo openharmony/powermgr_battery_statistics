@@ -121,21 +121,21 @@ void BatteryStatsCore::CreateAppEntity()
 
 bool BatteryStatsCore::Init()
 {
-    STATS_HILOGI(COMP_SVC, "Battery stats core init");
+    STATS_HILOGD(COMP_SVC, "Battery stats core init");
     CreateAppEntity();
     CreatePartEntity();
     auto& batterySrvClient = BatterySrvClient::GetInstance();
     BatteryPluggedType plugType = batterySrvClient.GetPluggedType();
     if (plugType == BatteryPluggedType::PLUGGED_TYPE_NONE || plugType == BatteryPluggedType::PLUGGED_TYPE_BUTT) {
-        STATS_HILOGI(COMP_SVC, "Device is not charing");
+        STATS_HILOGD(COMP_SVC, "Device is not charing");
         StatsHelper::SetOnBattery(true);
     } else {
-        STATS_HILOGI(COMP_SVC, "Device is charing");
+        STATS_HILOGD(COMP_SVC, "Device is charing");
         StatsHelper::SetOnBattery(false);
     }
 
     if (!LoadBatteryStatsData()) {
-        STATS_HILOGE(COMP_SVC, "Load battery stats failed");
+        STATS_HILOGD(COMP_SVC, "Load battery stats failed");
     }
     return true;
 }
@@ -344,7 +344,7 @@ void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t le
 
     if (state == StatsUtils::STATS_STATE_NETWORK_SEARCH) {
         isScanning_ = true;
-        STATS_HILOGI(COMP_SVC, "Updated %{public}s timer for state: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Updated %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_SCAN).c_str(), state);
         scanTimer->StartRunning();
     } else {
@@ -352,7 +352,7 @@ void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t le
         isScanning_ = false;
     }
     if (!isScanning_) {
-        STATS_HILOGI(COMP_SVC, "Updated %{public}s timer for state: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Updated %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_SCAN).c_str(), state);
         scanTimer->StopRunning();
     }
@@ -360,26 +360,26 @@ void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t le
     if (lastSignalLevel_ <= StatsUtils::INVALID_VALUE ||
         (level > StatsUtils::INVALID_VALUE && level == lastSignalLevel_)) {
         auto signalTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
-        STATS_HILOGI(COMP_SVC, "Start %{public}s timer for first/same level: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Start %{public}s timer for first/same level: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
         signalTimer->StartRunning();
     } else if (lastSignalLevel_ != level) {
         auto oldTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, lastSignalLevel_);
         if (oldTimer != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Stop %{public}s timer for last level: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Stop %{public}s timer for last level: %{public}d",
                 StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
             oldTimer->StopRunning();
         } else {
-            STATS_HILOGW(COMP_SVC, "Found no %{public}s timer, update level: %{public}d failed",
+            STATS_HILOGD(COMP_SVC, "Found no %{public}s timer, update level: %{public}d failed",
                 StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
         }
         auto newTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
         if (newTimer != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Start %{public}s timer for latest level: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Start %{public}s timer for latest level: %{public}d",
                 StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
             newTimer->StartRunning();
         } else {
-            STATS_HILOGW(COMP_SVC, "Found no %{public}s timer for level: %{public}d, update failed",
+            STATS_HILOGD(COMP_SVC, "Found no %{public}s timer for level: %{public}d, update failed",
                 StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
         }
     }
@@ -391,42 +391,42 @@ void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsState state, int16_t l
     STATS_HILOGD(COMP_SVC, "Last brightness level: %{public}d", lastBrightnessLevel_);
     auto onTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_ON);
     if (state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
-        STATS_HILOGI(COMP_SVC, "Stop %{public}s timer for state: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Stop %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_SCREEN_ON).c_str(), state);
         onTimer->StopRunning();
         if (lastBrightnessLevel_ > StatsUtils::INVALID_VALUE) {
             auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
                 lastBrightnessLevel_);
-            STATS_HILOGI(COMP_SVC, "Stop timer for last level: %{public}d", lastBrightnessLevel_);
+            STATS_HILOGD(COMP_SVC, "Stop timer for last level: %{public}d", lastBrightnessLevel_);
             brightnessTimer->StopRunning();
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Start %{public}s timer for state: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Start %{public}s timer for state: %{public}d",
             StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_SCREEN_ON).c_str(), state);
         onTimer->StartRunning();
         if (lastBrightnessLevel_ <= StatsUtils::INVALID_VALUE ||
             (level > StatsUtils::INVALID_VALUE && level == lastBrightnessLevel_)) {
             auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
                 level);
-            STATS_HILOGI(COMP_SVC, "Start screen_brightness timer for first/same level: %{public}d", level);
+            STATS_HILOGD(COMP_SVC, "Start screen_brightness timer for first/same level: %{public}d", level);
             brightnessTimer->StartRunning();
         } else if (lastBrightnessLevel_ != level) {
             auto oldTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
                 lastBrightnessLevel_);
             auto newTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, level);
             if (oldTimer != nullptr) {
-                STATS_HILOGI(COMP_SVC, "Stop screen_brightness timer for last level: %{public}d",
+                STATS_HILOGD(COMP_SVC, "Stop screen_brightness timer for last level: %{public}d",
                     lastBrightnessLevel_);
                 oldTimer->StopRunning();
             } else {
-                STATS_HILOGW(COMP_SVC,
+                STATS_HILOGD(COMP_SVC,
                     "Found no screen_brightness timer for level: %{public}d, update failed", lastBrightnessLevel_);
             }
             if (newTimer != nullptr) {
-                STATS_HILOGI(COMP_SVC, "Start screen_brightness timer for latest level: %{public}d", level);
+                STATS_HILOGD(COMP_SVC, "Start screen_brightness timer for latest level: %{public}d", level);
                 newTimer->StartRunning();
             } else {
-                STATS_HILOGW(COMP_SVC, "Found no timer for level: %{public}d, update failed", level);
+                STATS_HILOGD(COMP_SVC, "Found no timer for level: %{public}d, update failed", level);
             }
         }
     }
@@ -440,20 +440,20 @@ void BatteryStatsCore::UpdateCameraStats(StatsUtils::StatsType statsType, StatsU
     if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
         if (state == StatsUtils::STATS_STATE_ACTIVATED) {
             if (isCameraOn_) {
-                STATS_HILOGW(COMP_SVC, "Camera is already opened, return");
+                STATS_HILOGD(COMP_SVC, "Camera is already opened, return");
                 return;
             }
             UpdateCameraTimer(state, uid, deviceId);
         } else if (state == StatsUtils::STATS_STATE_DEACTIVATED) {
             if (!isCameraOn_) {
-                STATS_HILOGW(COMP_SVC, "Camera is off, return");
+                STATS_HILOGD(COMP_SVC, "Camera is off, return");
                 return;
             }
             UpdateCameraTimer(state, lastCameraUid_, deviceId);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON) {
         if (!isCameraOn_) {
-            STATS_HILOGW(COMP_SVC, "Camera is off, return");
+            STATS_HILOGD(COMP_SVC, "Camera is off, return");
             return;
         }
         UpdateTimer(flashlightEntity_, StatsUtils::STATS_TYPE_FLASHLIGHT_ON, state, lastCameraUid_);
@@ -477,7 +477,7 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
     }
 
     if (timer == nullptr) {
-        STATS_HILOGE(COMP_SVC, "Timer is null, return");
+        STATS_HILOGD(COMP_SVC, "Timer is null, return");
         return;
     }
 
@@ -505,7 +505,7 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
     }
 
     if (timer == nullptr) {
-        STATS_HILOGE(COMP_SVC, "Timer is null, return");
+        STATS_HILOGD(COMP_SVC, "Timer is null, return");
         return;
     }
 
@@ -550,7 +550,7 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
     }
 
     if (timer == nullptr) {
-        STATS_HILOGE(COMP_SVC, "Timer is null, return");
+        STATS_HILOGD(COMP_SVC, "Timer is null, return");
         return;
     }
     timer->AddRunningTimeMs(time);
@@ -573,7 +573,7 @@ void BatteryStatsCore::UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity,
     }
 
     if (counter == nullptr) {
-        STATS_HILOGE(COMP_SVC, "Counter is null, return");
+        STATS_HILOGD(COMP_SVC, "Counter is null, return");
         return;
     }
     counter->AddCount(data);
@@ -661,11 +661,11 @@ void BatteryStatsCore::UpdateDebugInfo(const std::string& info)
 void BatteryStatsCore::GetDebugInfo(std::string& result)
 {
     if (debugInfo_.size() > 0) {
-        STATS_HILOGI(COMP_SVC, "Get debug info");
+        STATS_HILOGD(COMP_SVC, "Get debug info");
         result.append("Misc stats info dump:\n");
         result.append(debugInfo_);
     } else {
-        STATS_HILOGI(COMP_SVC, "There's no debug info collected yet");
+        STATS_HILOGD(COMP_SVC, "There's no debug info collected yet");
     }
 }
 
@@ -760,7 +760,7 @@ double BatteryStatsCore::GetAppStatsPercent(const int32_t& uid)
     auto statsInfoList = GetBatteryStats();
     auto totalConsumption = BatteryStatsEntity::GetTotalPowerMah();
     if (totalConsumption <= StatsUtils::DEFAULT_VALUE) {
-        STATS_HILOGE(COMP_SVC, "No consumption got, return 0");
+        STATS_HILOGD(COMP_SVC, "No consumption got, return 0");
         return appStatsPercent;
     }
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
@@ -953,7 +953,7 @@ bool BatteryStatsCore::SaveBatteryStatsData()
     std::ofstream ofs;
     ofs.open(BATTERY_STATS_JSON);
     if (!ofs.is_open()) {
-        STATS_HILOGE(COMP_SVC, "Opening json file failed");
+        STATS_HILOGD(COMP_SVC, "Opening json file failed");
         return false;
     }
     swb.newStreamWriter()->write(root, &ofs);
@@ -968,11 +968,11 @@ bool BatteryStatsCore::LoadBatteryStatsData()
     std::string errors;
     std::ifstream ifs(BATTERY_STATS_JSON, std::ios::binary);
     if (!ifs.is_open()) {
-        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
+        STATS_HILOGD(COMP_SVC, "Json file doesn't exist");
         return false;
     }
     if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(COMP_SVC, "Parsing json file failed");
+        STATS_HILOGD(COMP_SVC, "Parsing json file failed");
         return false;
     }
     ifs.close();
@@ -993,7 +993,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
             } else {
                 tmpUserPowerMap.insert(std::pair<int32_t, double>(usr, info->GetPower()));
             }
-            STATS_HILOGI(COMP_SVC, "Update power: %{public}lfmAh, user: %{public}d", info->GetPower(), usr);
+            STATS_HILOGD(COMP_SVC, "Update power: %{public}lfmAh, user: %{public}d", info->GetPower(), usr);
         } else if (id < StatsUtils::INVALID_VALUE && id > BatteryStatsInfo::CONSUMPTION_TYPE_INVALID) {
             info->SetUid(StatsUtils::INVALID_VALUE);
             info->SetConsumptioType(static_cast<BatteryStatsInfo::ConsumptionType>(id));
