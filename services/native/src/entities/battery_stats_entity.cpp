@@ -23,17 +23,17 @@ BatteryStatsInfoList BatteryStatsEntity::statsInfoList_;
 
 void BatteryStatsEntity::AggregateUserPowerMah(int32_t userId, double power)
 {
-    STATS_HILOGE(COMP_SVC, "No need to add app power to related user");
+    STATS_HILOGD(COMP_SVC, "No need to add app power to related user");
 }
 
 void BatteryStatsEntity::Calculate(int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to calculate");
+    STATS_HILOGD(COMP_SVC, "No need to calculate");
 }
 
 long BatteryStatsEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get traffic");
+    STATS_HILOGD(COMP_SVC, "No need to get traffic");
     return StatsUtils::DEFAULT_VALUE;
 }
 
@@ -49,75 +49,75 @@ void BatteryStatsEntity::UpdateStatsInfoList(std::shared_ptr<BatteryStatsInfo> i
 
 long BatteryStatsEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get active time, return 0");
+    STATS_HILOGD(COMP_SVC, "No need to get active time, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
 long BatteryStatsEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get active time, return 0");
+    STATS_HILOGD(COMP_SVC, "No need to get active time, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
 void BatteryStatsEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to dump");
+    STATS_HILOGD(COMP_SVC, "No need to dump");
 }
 
 void BatteryStatsEntity::UpdateUidMap(int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to update uid");
+    STATS_HILOGD(COMP_SVC, "No need to update uid");
 }
 
 std::vector<int32_t> BatteryStatsEntity::GetUids()
 {
-    STATS_HILOGE(COMP_SVC, "No need to get uids");
+    STATS_HILOGD(COMP_SVC, "No need to get uids");
     std::vector<int32_t> empty;
     return empty;
 }
 
 int64_t BatteryStatsEntity::GetCpuTimeMs(int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get cpu time, return 0");
+    STATS_HILOGD(COMP_SVC, "No need to get cpu time, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
 void BatteryStatsEntity::UpdateCpuTime()
 {
-    STATS_HILOGE(COMP_SVC, "No need to update cpu time");
+    STATS_HILOGD(COMP_SVC, "No need to update cpu time");
 }
 
 double BatteryStatsEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get stats power, return 0");
+    STATS_HILOGD(COMP_SVC, "No need to get stats power, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(StatsUtils::StatsType statsType,
     int16_t level)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get or create timer, return nullptr");
+    STATS_HILOGD(COMP_SVC, "No need to get or create timer, return nullptr");
     return nullptr;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get or create timer, return nullptr");
+    STATS_HILOGD(COMP_SVC, "No need to get or create timer, return nullptr");
     return nullptr;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> BatteryStatsEntity::GetOrCreateTimer(const std::string& deviceId, int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get or create timer, return nullptr");
+    STATS_HILOGD(COMP_SVC, "No need to get or create timer, return nullptr");
     return nullptr;
 }
 
 std::shared_ptr<StatsHelper::Counter> BatteryStatsEntity::GetOrCreateCounter(StatsUtils::StatsType statsType,
     int32_t uid)
 {
-    STATS_HILOGE(COMP_SVC, "No need to get or create counter, return nullptr");
+    STATS_HILOGD(COMP_SVC, "No need to get or create counter, return nullptr");
     return nullptr;
 }
 
@@ -133,7 +133,7 @@ double BatteryStatsEntity::GetTotalPowerMah()
 
 void BatteryStatsEntity::ResetStatsEntity()
 {
-    STATS_HILOGI(COMP_SVC, "Reset total consumption power and battery stats list");
+    STATS_HILOGD(COMP_SVC, "Reset total consumption power and battery stats list");
     totalPowerMah_ = StatsUtils::DEFAULT_VALUE;
     statsInfoList_.clear();
 }

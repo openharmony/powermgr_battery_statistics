@@ -35,7 +35,7 @@ class BatteryStatsCore {
 public:
     explicit BatteryStatsCore()
     {
-        STATS_HILOGI(COMP_SVC, "BatteryStatsCore instance is created");
+        STATS_HILOGD(COMP_SVC, "BatteryStatsCore instance is created");
     }
     ~BatteryStatsCore() = default;
     void ComputePower();

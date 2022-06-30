@@ -52,7 +52,7 @@ void IdleEntity::Calculate(int32_t uid)
     statsInfo->SetPower(idleTotalPowerMah_);
     statsInfoList_.push_back(statsInfo);
 
-    STATS_HILOGI(COMP_SVC, "Calculate idle total power consumption: %{public}lfmAh", idleTotalPowerMah_);
+    STATS_HILOGD(COMP_SVC, "Calculate idle total power consumption: %{public}lfmAh", idleTotalPowerMah_);
 }
 
 double IdleEntity::CalculateCpuSuspendPower()

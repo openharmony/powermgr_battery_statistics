@@ -30,7 +30,7 @@ class BatteryStatsDetector {
 public:
     explicit BatteryStatsDetector()
     {
-        STATS_HILOGI(COMP_SVC, "BatteryStatsDetector instance is created");
+        STATS_HILOGD(COMP_SVC, "BatteryStatsDetector instance is created");
     }
     ~BatteryStatsDetector() = default;
     void HandleStatsChangedEvent(StatsUtils::StatsData data);

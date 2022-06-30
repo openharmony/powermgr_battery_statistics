@@ -36,21 +36,21 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
     std::string action = data.GetWant().GetAction();
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (statsService == nullptr) {
-        STATS_HILOGE(COMP_SVC, "statsService is null");
+        STATS_HILOGD(COMP_SVC, "statsService is null");
         return;
     }
     if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN) {
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
-        STATS_HILOGI(COMP_SVC, "Received COMMON_EVENT_SHUTDOWN event");
+        STATS_HILOGD(COMP_SVC, "Received COMMON_EVENT_SHUTDOWN event");
     } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED) {
-        STATS_HILOGI(COMP_SVC, "Received COMMON_EVENT_BATTERY_CHANGED event");
+        STATS_HILOGD(COMP_SVC, "Received COMMON_EVENT_BATTERY_CHANGED event");
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
         int capacity = data.GetWant().GetIntParam(
             ToString(BatteryInfo::COMMON_EVENT_CODE_CAPACITY), StatsUtils::INVALID_VALUE);
         int pluggedType = data.GetWant().GetIntParam(
             ToString(BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE), StatsUtils::INVALID_VALUE);
 
-        STATS_HILOGI(COMP_SVC, "capacity=%{public}d, pluggedType=%{public}d", capacity, pluggedType);
+        STATS_HILOGD(COMP_SVC, "capacity=%{public}d, pluggedType=%{public}d", capacity, pluggedType);
         if (capacity == BATTERY_LEVEL_FULL) {
             statsService->GetBatteryStatsCore()->Reset();
         }

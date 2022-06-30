@@ -39,7 +39,7 @@ long SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
             STATS_HILOGD(COMP_SVC, "Got gravity on time: %{public}ldms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
         auto proximityIter = proximityTimerMap_.find(uid);
@@ -48,7 +48,7 @@ long SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
             STATS_HILOGD(COMP_SVC, "Got proximity on time: %{public}ldms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     }
     return activeTimeMs;
@@ -119,7 +119,7 @@ double SensorEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app sensor power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app sensor power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -135,7 +135,7 @@ double SensorEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
             STATS_HILOGD(COMP_SVC, "Got gravity on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No gravity on power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
@@ -145,7 +145,7 @@ double SensorEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
             STATS_HILOGD(COMP_SVC, "Got proximity on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No proximity on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -178,7 +178,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
             return timer;
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

@@ -39,7 +39,7 @@ long FlashlightEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsT
             STATS_HILOGD(COMP_SVC, "Got flashlight on time: %{public}ldms for uid: %{public}d",
                 activeTimeMs, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     }
     return activeTimeMs;
@@ -72,7 +72,7 @@ double FlashlightEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app flashlight power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app flashlight power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -88,7 +88,7 @@ double FlashlightEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32
             STATS_HILOGD(COMP_SVC,
                 "Got flashlight on power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No flashlight on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -110,7 +110,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int
             return timer;
         }
     } else {
-        STATS_HILOGW(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

@@ -41,7 +41,7 @@ double UserEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got user power consumption: %{public}lfmAh for user id: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No user power consumption related with user id: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -55,7 +55,7 @@ void UserEntity::AggregateUserPowerMah(int32_t userId, double power)
         STATS_HILOGD(COMP_SVC, "Add user power consumption: %{public}lfmAh for user id: %{public}d",
             power, userId);
     } else {
-        STATS_HILOGI(COMP_SVC, "Create user power consumption: %{public}lfmAh for user id: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Create user power consumption: %{public}lfmAh for user id: %{public}d",
             power, userId);
         userPowerMap_.insert(std::pair<int32_t, double>(userId, power));
     }

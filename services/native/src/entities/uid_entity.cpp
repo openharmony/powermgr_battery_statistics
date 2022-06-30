@@ -40,9 +40,9 @@ void UidEntity::UpdateUidMap(int32_t uid)
     if (uid > StatsUtils::INVALID_VALUE) {
         auto iter = uidPowerMap_.find(uid);
         if (iter != uidPowerMap_.end()) {
-            STATS_HILOGE(COMP_SVC, "Uid has already been added, ignore");
+            STATS_HILOGD(COMP_SVC, "Uid has already been added, ignore");
         } else {
-            STATS_HILOGI(COMP_SVC, "Update %{public}d to uid power map", uid);
+            STATS_HILOGD(COMP_SVC, "Update %{public}d to uid power map", uid);
             uidPowerMap_.insert(std::pair<int32_t, long>(uid, StatsUtils::DEFAULT_VALUE));
         }
     }
@@ -159,7 +159,7 @@ double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app uid power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app uid power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -261,7 +261,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             power = GetPowerForCommon(statsType, uid);
             break;
         default:
-            STATS_HILOGE(COMP_SVC, "Invalid or illegal type got, return 0");
+            STATS_HILOGD(COMP_SVC, "Invalid or illegal type got, return 0");
             break;
     }
 
@@ -421,15 +421,15 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()
                 ->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
         if (bundleObj == nullptr) {
-            STATS_HILOGW(COMP_SVC, "failed to get bundle manager service");
+            STATS_HILOGD(COMP_SVC, "failed to get bundle manager service");
         } else {
             sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
             if (bmgr == nullptr) {
-                STATS_HILOGW(COMP_SVC, "failed to get bundle manager proxy");
+                STATS_HILOGD(COMP_SVC, "failed to get bundle manager proxy");
             } else {
                 bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
                 if (!res) {
-                    STATS_HILOGW(COMP_SVC, "failed to get bundle name for uid: %{public}d", iter.first);
+                    STATS_HILOGD(COMP_SVC, "failed to get bundle name for uid: %{public}d", iter.first);
                 }
             }
         }

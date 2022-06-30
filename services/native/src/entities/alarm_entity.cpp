@@ -38,7 +38,7 @@ long AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
             count = almIter->second->GetCount();
             STATS_HILOGD(COMP_SVC, "Got alarm count: %{public}ld for uid: %{public}d", count, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No alarm count related with uid: %{public}d found, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "No alarm count related with uid: %{public}d found, return 0", uid);
         }
     }
     return count;
@@ -70,7 +70,7 @@ double AlarmEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app alarm power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app alarm power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -86,7 +86,7 @@ double AlarmEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
             STATS_HILOGD(COMP_SVC, "Got alarm on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No alarm on power alarm related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -111,7 +111,7 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
             break;
         }
         default:
-            STATS_HILOGW(COMP_SVC, "Create active conuter failed");
+            STATS_HILOGD(COMP_SVC, "Create active conuter failed");
             break;
     }
     return counter;

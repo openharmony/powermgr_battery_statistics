@@ -39,7 +39,7 @@ long WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTyp
             STATS_HILOGD(COMP_SVC, "Got wakelock on time: %{public}ldms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     }
     return activeTimeMs;
@@ -72,7 +72,7 @@ double WakelockEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app wakelock power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app wakelock power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -88,7 +88,7 @@ double WakelockEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t
             STATS_HILOGD(COMP_SVC, "Got wakelock on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No wakelock on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -101,16 +101,16 @@ std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32
     if (statsType == StatsUtils::STATS_TYPE_WAKELOCK_HOLD) {
         auto wakelockOnIter = wakelockTimerMap_.find(uid);
         if (wakelockOnIter != wakelockTimerMap_.end()) {
-            STATS_HILOGI(COMP_SVC, "Got wakelock on timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Got wakelock on timer for uid: %{public}d", uid);
             return wakelockOnIter->second;
         } else {
-            STATS_HILOGI(COMP_SVC, "Create wakelock on timer for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create wakelock on timer for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
             wakelockTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
             return timer;
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

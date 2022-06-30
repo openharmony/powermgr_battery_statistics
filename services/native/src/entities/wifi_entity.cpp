@@ -118,7 +118,7 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
             time = scanIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got wifi scan time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No wifi scan timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No wifi scan timer related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
@@ -127,7 +127,7 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
             time = rxIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got wifi RX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No wifi RX timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No wifi RX timer related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
@@ -136,7 +136,7 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
             time = txIter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got wifi TX time: %{public}ldms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No wifi TX timer related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No wifi TX timer related with uid: %{public}d found, return 0",
                 uid);
         }
     }
@@ -151,7 +151,7 @@ long WifiEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
             time = wifiOnTimer_->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got wifi on time: %{public}ldms", time);
         } else {
-            STATS_HILOGE(COMP_SVC, "Wifi has not been turned on yet, return 0");
+            STATS_HILOGD(COMP_SVC, "Wifi has not been turned on yet, return 0");
         }
     }
     return time;
@@ -168,7 +168,7 @@ double WifiEntity::GetEntityPowerMah(int32_t uidOrUserId)
             STATS_HILOGD(COMP_SVC, "Got app wifi power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uidOrUserId);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No app wifi power consumption related with uid: %{public}d found, return 0", uidOrUserId);
         }
     } else {
@@ -191,7 +191,7 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
             STATS_HILOGD(COMP_SVC, "Got wifi scan power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No wifi scan power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
@@ -201,7 +201,7 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
             STATS_HILOGD(COMP_SVC, "Got wifi RX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No wifi RX power consumption related with uid: %{public}d found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
@@ -211,7 +211,7 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
             STATS_HILOGD(COMP_SVC, "Got wifi TX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No wifi TX power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -291,7 +291,7 @@ long WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got wifi RX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No wifi RX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No wifi RX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
@@ -301,7 +301,7 @@ long WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got wifi TX traffic: %{public}ldbytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "No wifi TX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No wifi TX traffic related with uid: %{public}d found, return 0",
                 uid);
         }
     }
@@ -345,7 +345,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> WifiEntity::GetOrCreateTimer(int32_t u
             return timer;
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
@@ -354,14 +354,14 @@ std::shared_ptr<StatsHelper::ActiveTimer> WifiEntity::GetOrCreateTimer(StatsUtil
 {
     if (statsType == StatsUtils::STATS_TYPE_WIFI_ON) {
         if (wifiOnTimer_ != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Got wifi on timer");
+            STATS_HILOGD(COMP_SVC, "Got wifi on timer");
         } else {
             STATS_HILOGD(COMP_SVC, "Create wifi on timer");
             wifiOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
         }
         return wifiOnTimer_;
     } else {
-        STATS_HILOGI(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
@@ -374,7 +374,7 @@ std::shared_ptr<StatsHelper::Counter> WifiEntity::GetOrCreateCounter(StatsUtils:
             STATS_HILOGD(COMP_SVC, "Got wifi RX counter for uid: %{public}d", uid);
             return rxIter->second;
         } else {
-            STATS_HILOGE(COMP_SVC, "Create wifi RX counter for uid: %{public}d", uid);
+            STATS_HILOGD(COMP_SVC, "Create wifi RX counter for uid: %{public}d", uid);
             std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
             appWifiRxCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, counter));
             return counter;
@@ -391,7 +391,7 @@ std::shared_ptr<StatsHelper::Counter> WifiEntity::GetOrCreateCounter(StatsUtils:
             return counter;
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Create counter failed");
+        STATS_HILOGD(COMP_SVC, "Create counter failed");
         return nullptr;
     }
 }
@@ -402,12 +402,12 @@ double WifiEntity::GetWifiUidPower()
     auto bundleObj =
         DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     if (bundleObj == nullptr) {
-        STATS_HILOGE(COMP_SVC, "failed to get bundle manager service, return default power");
+        STATS_HILOGD(COMP_SVC, "failed to get bundle manager service, return default power");
         return wifiUidPower;
     }
     sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
     if (bmgr == nullptr) {
-        STATS_HILOGE(COMP_SVC, "failed to get bundle manager proxy, return 0");
+        STATS_HILOGD(COMP_SVC, "failed to get bundle manager proxy, return 0");
         return wifiUidPower;
     }
 

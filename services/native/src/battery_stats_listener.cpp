@@ -39,7 +39,7 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
     if (parseFromStream(reader, is, &root, &errors)) {
         processHiSysEvent(root);
     } else {
-        STATS_HILOGE(COMP_SVC, "Parse hisysevent data failed");
+        STATS_HILOGD(COMP_SVC, "Parse hisysevent data failed");
     }
 }
 
@@ -505,7 +505,7 @@ void BatteryStatsListener::processAlarmEvent(StatsUtils::StatsData& data, const 
 
 void BatteryStatsListener::OnServiceDied()
 {
-    STATS_HILOGE(COMP_SVC, "Service disconnected");
+    STATS_HILOGD(COMP_SVC, "Service disconnected");
     exit(0);
 }
 } // namespace PowerMgr

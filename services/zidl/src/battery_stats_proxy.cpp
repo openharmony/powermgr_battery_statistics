@@ -36,14 +36,14 @@ BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return infoList;
     }
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GET),
         data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "SendRequest is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "SendRequest is failed, error code: %{public}d", ret);
         return infoList;
     }
     int32_t size = reply.ReadInt32();
@@ -66,7 +66,7 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& stat
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -76,7 +76,7 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& stat
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETTIME), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
@@ -94,7 +94,7 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& stats
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -104,7 +104,7 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& stats
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETDATA), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
@@ -122,7 +122,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -130,7 +130,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPMAH), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     double appStatsMah = StatsUtils::DEFAULT_VALUE;
@@ -150,7 +150,7 @@ void BatteryStatsProxy::SetOnBattery(bool isOnBattery)
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return;
     }
 
@@ -158,7 +158,7 @@ void BatteryStatsProxy::SetOnBattery(bool isOnBattery)
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 }
 
@@ -173,7 +173,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -181,7 +181,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPPER), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     double appStatsPercent = StatsUtils::DEFAULT_VALUE;
@@ -201,7 +201,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -209,7 +209,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTMAH), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     double partStatsMah = StatsUtils::DEFAULT_VALUE;
@@ -229,7 +229,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return StatsUtils::DEFAULT_VALUE;
     }
 
@@ -237,7 +237,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTPER), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
     double partStatsPercent = StatsUtils::DEFAULT_VALUE;
@@ -257,13 +257,13 @@ void BatteryStatsProxy::Reset()
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return;
     }
 
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_RESET), data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 }
 
@@ -278,7 +278,7 @@ std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, u
     MessageOption option;
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(COMP_FWK, "Write descriptor failed");
+        STATS_HILOGD(COMP_FWK, "Write descriptor failed");
         return 0;
     }
 
@@ -289,7 +289,7 @@ std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, u
     int ret = remote->SendRequest(static_cast<int>(IBatteryStats::BATTERY_STATS_DUMP),
         data, reply, option);
     if (ret != ERR_OK) {
-        STATS_HILOGE(COMP_FWK, "SendRequest is failed, error code: %{public}d", ret);
+        STATS_HILOGD(COMP_FWK, "SendRequest is failed, error code: %{public}d", ret);
         return result;
     }
     result = reply.ReadString();

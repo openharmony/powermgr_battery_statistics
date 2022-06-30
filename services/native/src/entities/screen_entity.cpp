@@ -36,7 +36,7 @@ long ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t leve
             activeTimeMs = screenOnTimer_->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC, "Got screen on time: %{public}ldms", activeTimeMs);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer, return 0");
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
         auto iter = screenBrightnessTimerMap_.find(level);
@@ -45,7 +45,7 @@ long ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t leve
             STATS_HILOGD(COMP_SVC,
                 "Got screen brightness time: %{public}ldms of brightness level: %{public}d", activeTimeMs, level);
         } else {
-            STATS_HILOGE(COMP_SVC, "No screen brightness timer found, return 0");
+            STATS_HILOGD(COMP_SVC, "No screen brightness timer found, return 0");
         }
     }
     return activeTimeMs;
@@ -100,7 +100,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
         if (level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
-            STATS_HILOGE(COMP_SVC, "Illegal brightness");
+            STATS_HILOGD(COMP_SVC, "Illegal brightness");
             return nullptr;
         }
         auto iter = screenBrightnessTimerMap_.find(level);
@@ -115,7 +115,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
             return timer;
         }
     } else {
-        STATS_HILOGI(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

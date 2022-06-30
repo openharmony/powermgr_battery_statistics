@@ -30,25 +30,25 @@ public:
         bool StartRunning()
         {
             if (isRunning_) {
-                STATS_HILOGI(COMP_SVC, "Active timer was already started");
+                STATS_HILOGD(COMP_SVC, "Active timer was already started");
                 return false;
             }
             startTimeMs_ = GetOnBatteryBootTimeMs();
             isRunning_ = true;
-            STATS_HILOGI(COMP_SVC, "Active timer is started");
+            STATS_HILOGD(COMP_SVC, "Active timer is started");
             return true;
         }
 
         bool StopRunning()
         {
             if (!isRunning_) {
-                STATS_HILOGI(COMP_SVC, "No related active timer is running");
+                STATS_HILOGD(COMP_SVC, "No related active timer is running");
                 return false;
             }
             auto stopTimeMs = GetOnBatteryBootTimeMs();
             totalTimeMs_ += stopTimeMs - startTimeMs_;
             isRunning_ = false;
-            STATS_HILOGI(COMP_SVC, "Active timer is stopped");
+            STATS_HILOGD(COMP_SVC, "Active timer is stopped");
             return true;
         }
 
@@ -68,7 +68,7 @@ public:
                 totalTimeMs_ += avtiveTime;
                 STATS_HILOGD(COMP_SVC, "Add on active Time: %{public}ld", avtiveTime);
             } else {
-                STATS_HILOGE(COMP_SVC, "Invalid active time, ignore");
+                STATS_HILOGD(COMP_SVC, "Invalid active time, ignore");
             }
         }
 
@@ -95,7 +95,7 @@ public:
                 STATS_HILOGD(COMP_SVC, "Add data bytes: %{public}ld, total data bytes is: %{public}ld",
                     count, totalCount_);
             } else {
-                STATS_HILOGE(COMP_SVC, "Invalid data counts");
+                STATS_HILOGD(COMP_SVC, "Invalid data counts");
             }
         }
 

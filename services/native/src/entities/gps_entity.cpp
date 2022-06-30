@@ -39,7 +39,7 @@ long GpsEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, in
             STATS_HILOGD(COMP_SVC, "Got gps on time: %{public}ldms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
-            STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
         }
     }
     return activeTimeMs;
@@ -71,7 +71,7 @@ double GpsEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app gps power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app gps power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -87,7 +87,7 @@ double GpsEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             STATS_HILOGD(COMP_SVC, "Got gps on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No gps on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -109,7 +109,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> GpsEntity::GetOrCreateTimer(int32_t ui
             return timer;
         }
     } else {
-        STATS_HILOGW(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }

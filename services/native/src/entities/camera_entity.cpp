@@ -38,7 +38,7 @@ long CameraEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
             if (uidIter != cameraIter.second.end()) {
                 activeTimeMs += uidIter->second->GetRunningTimeMs();
             } else {
-                STATS_HILOGE(COMP_SVC, "Didn't find related timer for uid: %{public}d in camera id: %{public}s",
+                STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d in camera id: %{public}s",
                     uid, cameraIter.first.c_str());
             }
         }
@@ -72,7 +72,7 @@ double CameraEntity::GetEntityPowerMah(int32_t uidOrUserId)
         STATS_HILOGD(COMP_SVC, "Got app camera power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
-        STATS_HILOGE(COMP_SVC,
+        STATS_HILOGD(COMP_SVC,
             "No app camera power consumption related with uid: %{public}d found, return 0", uidOrUserId);
     }
     return power;
@@ -88,7 +88,7 @@ double CameraEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
             STATS_HILOGD(COMP_SVC, "Got camera on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
-            STATS_HILOGE(COMP_SVC,
+            STATS_HILOGD(COMP_SVC,
                 "No camera on power consumption related with uid: %{public}d found, return 0", uid);
         }
     }
@@ -118,7 +118,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const s
             return timer;
         }
     } else {
-        STATS_HILOGW(COMP_SVC, "Create active timer failed");
+        STATS_HILOGD(COMP_SVC, "Create active timer failed");
         return nullptr;
     }
 }
