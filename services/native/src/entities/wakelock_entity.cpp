@@ -15,6 +15,8 @@
 
 #include "entities/wakelock_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -29,14 +31,14 @@ WakelockEntity::WakelockEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK;
 }
 
-long WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_WAKELOCK_HOLD) {
         auto iter = wakelockTimerMap_.find(uid);
         if (iter != wakelockTimerMap_.end()) {
             activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wakelock on time: %{public}ldms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Got wakelock on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);

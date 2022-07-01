@@ -128,8 +128,8 @@ public:
         int32_t eventDataType = INVALID_VALUE;
         int32_t eventDataExtra = INVALID_VALUE;
         int16_t level = INVALID_VALUE;
-        long time = DEFAULT_VALUE;
-        long traffic = DEFAULT_VALUE;
+        int64_t time = DEFAULT_VALUE;
+        int64_t traffic = DEFAULT_VALUE;
         std::string deviceId = "";
     };
 

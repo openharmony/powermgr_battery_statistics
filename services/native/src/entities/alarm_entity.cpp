@@ -15,6 +15,8 @@
 
 #include "entities/alarm_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -29,14 +31,14 @@ AlarmEntity::AlarmEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_ALARM;
 }
 
-long AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
-    long count = StatsUtils::DEFAULT_VALUE;
+    int64_t count = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_ALARM) {
         auto almIter = alarmCounterMap_.find(uid);
         if (almIter != alarmCounterMap_.end()) {
             count = almIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got alarm count: %{public}ld for uid: %{public}d", count, uid);
+            STATS_HILOGD(COMP_SVC, "Got alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No alarm count related with uid: %{public}d found, return 0", uid);
         }

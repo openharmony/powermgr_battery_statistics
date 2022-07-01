@@ -15,6 +15,8 @@
 
 #include "entities/phone_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -30,13 +32,13 @@ PhoneEntity::PhoneEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_PHONE;
 }
 
-long PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_PHONE_ACTIVE) {
         if (phoneTimer_ != nullptr) {
             activeTimeMs = phoneTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got phone active time: %{public}ldms", activeTimeMs);
+            STATS_HILOGD(COMP_SVC, "Got phone active time: %{public}" PRId64 "ms", activeTimeMs);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
@@ -105,7 +107,7 @@ void PhoneEntity::Reset()
 
 void PhoneEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+    int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
     result.append("Phone dump:\n")
         .append("Phone active time: ")
         .append(ToString(time))

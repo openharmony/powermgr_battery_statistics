@@ -15,6 +15,8 @@
 
 #include "entities/screen_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -28,13 +30,13 @@ ScreenEntity::ScreenEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN;
 }
 
-long ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_SCREEN_ON) {
         if (screenOnTimer_ != nullptr) {
             activeTimeMs = screenOnTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got screen on time: %{public}ldms", activeTimeMs);
+            STATS_HILOGD(COMP_SVC, "Got screen on time: %{public}" PRId64 "ms", activeTimeMs);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
@@ -43,7 +45,8 @@ long ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t leve
         if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
             activeTimeMs = iter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC,
-                "Got screen brightness time: %{public}ldms of brightness level: %{public}d", activeTimeMs, level);
+                "Got screen brightness time: %{public}" PRId64 "ms of brightness level: %{public}d",
+                activeTimeMs, level);
         } else {
             STATS_HILOGD(COMP_SVC, "No screen brightness timer found, return 0");
         }
@@ -64,7 +67,8 @@ void ScreenEntity::Calculate(int32_t uid)
             auto averageMa = screenBrightnessAverageMa * iter.first + screenOnAverageMa;
             auto timeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, iter.first);
             screenPowerMah += averageMa * timeMs / StatsUtils::MS_IN_HOUR;
-            STATS_HILOGD(COMP_SVC, "screen average power: %{public}lfma, time: %{public}ldms, level: %{public}d",
+            STATS_HILOGD(COMP_SVC,
+                "screen average power: %{public}lfma, time: %{public}" PRId64 "ms, level: %{public}d",
                 averageMa, timeMs, iter.first);
         }
     }
@@ -148,7 +152,7 @@ void ScreenEntity::Reset()
 
 void ScreenEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long onTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON);
+    int64_t onTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON);
     result.append("Screen dump:\n")
         .append("Screen on time: ")
         .append(ToString(onTime))

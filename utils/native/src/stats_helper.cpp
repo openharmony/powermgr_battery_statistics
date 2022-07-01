@@ -20,38 +20,39 @@
 
 namespace OHOS {
 namespace PowerMgr {
-long StatsHelper::latestUnplugBootTimeMs_ = StatsUtils::DEFAULT_VALUE;
-long StatsHelper::latestUnplugUpTimeMs_ = StatsUtils::DEFAULT_VALUE;
-long StatsHelper::onBatteryBootTimeMs_ = StatsUtils::DEFAULT_VALUE;
-long StatsHelper::onBatteryUpTimeMs_ = StatsUtils::DEFAULT_VALUE;
+int64_t StatsHelper::latestUnplugBootTimeMs_ = StatsUtils::DEFAULT_VALUE;
+int64_t StatsHelper::latestUnplugUpTimeMs_ = StatsUtils::DEFAULT_VALUE;
+int64_t StatsHelper::onBatteryBootTimeMs_ = StatsUtils::DEFAULT_VALUE;
+int64_t StatsHelper::onBatteryUpTimeMs_ = StatsUtils::DEFAULT_VALUE;
 bool StatsHelper::onBattery_ = false;
 bool StatsHelper::screenOff_ = false;
 
-long StatsHelper::GetBootTimeMs()
+int64_t StatsHelper::GetBootTimeMs()
 {
-    long bootTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t bootTimeMs = StatsUtils::DEFAULT_VALUE;
     struct timespec rawBootTime;
     int errCode = clock_gettime(CLOCK_BOOTTIME, &rawBootTime);
     if (errCode != 0) {
         STATS_HILOGD(COMP_SVC, "Get boot time failed, return default time");
     } else {
-        bootTimeMs =
-            (long) (rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND + rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGD(COMP_SVC, "Got boot time: %{public}ld", bootTimeMs);
+        bootTimeMs = static_cast<int64_t>(rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND +
+            rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
+        STATS_HILOGD(COMP_SVC, "Got boot time: %{public}" PRId64 "", bootTimeMs);
     }
     return bootTimeMs;
 }
 
-long StatsHelper::GetUpTimeMs()
+int64_t StatsHelper::GetUpTimeMs()
 {
-    long upTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t upTimeMs = StatsUtils::DEFAULT_VALUE;
     struct timespec rawUpTime;
     int errCode = clock_gettime(CLOCK_MONOTONIC, &rawUpTime);
     if (errCode != 0) {
         STATS_HILOGD(COMP_SVC, "Get up time failed, return default time");
     } else {
-        upTimeMs = (long) (rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND + rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGD(COMP_SVC, "Got up time: %{public}ld", upTimeMs);
+        upTimeMs = static_cast<int64_t>(rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND +
+            rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
+        STATS_HILOGD(COMP_SVC, "Got up time: %{public}" PRId64 "", upTimeMs);
     }
     return upTimeMs;
 }
@@ -61,8 +62,8 @@ void StatsHelper::SetOnBattery(bool onBattery)
     if (onBattery_ != onBattery) {
         onBattery_ = onBattery;
         // when onBattery is ture, status is unplugin.
-        long currentBootTimeMs = GetBootTimeMs();
-        long currentUpTimeMs = GetUpTimeMs();
+        int64_t currentBootTimeMs = GetBootTimeMs();
+        int64_t currentUpTimeMs = GetUpTimeMs();
         if (onBattery) {
             STATS_HILOGD(COMP_SVC, "Power supply is disconnected");
             latestUnplugBootTimeMs_ = currentBootTimeMs;
@@ -93,27 +94,27 @@ bool StatsHelper::IsOnBatteryScreenOff()
     return onBattery_ && screenOff_;
 }
 
-long StatsHelper::GetOnBatteryBootTimeMs()
+int64_t StatsHelper::GetOnBatteryBootTimeMs()
 {
-    long onBatteryBootTimeMs = onBatteryBootTimeMs_;
-    long currentBootTimeMs = GetBootTimeMs();
+    int64_t onBatteryBootTimeMs = onBatteryBootTimeMs_;
+    int64_t currentBootTimeMs = GetBootTimeMs();
     if (IsOnBattery()) {
         onBatteryBootTimeMs += currentBootTimeMs - latestUnplugBootTimeMs_;
     }
-    STATS_HILOGD(COMP_SVC, "Got on battery boot time: %{public}ld, currentBootTimeMs: %{public}ld," \
-        "latestUnplugBootTimeMs_: %{public}ld",
+    STATS_HILOGD(COMP_SVC, "Got on battery boot time: %{public}" PRId64 ", currentBootTimeMs: %{public}" PRId64 "," \
+        "latestUnplugBootTimeMs_: %{public}" PRId64 "",
         onBatteryBootTimeMs, currentBootTimeMs, latestUnplugBootTimeMs_);
     return onBatteryBootTimeMs;
 }
 
-long StatsHelper::GetOnBatteryUpTimeMs()
+int64_t StatsHelper::GetOnBatteryUpTimeMs()
 {
-    long onBatteryUpTimeMs = onBatteryUpTimeMs_;
-    long currentUpTimeMs = GetUpTimeMs();
+    int64_t onBatteryUpTimeMs = onBatteryUpTimeMs_;
+    int64_t currentUpTimeMs = GetUpTimeMs();
     if (IsOnBattery()) {
         onBatteryUpTimeMs += currentUpTimeMs - latestUnplugUpTimeMs_;
     }
-    STATS_HILOGD(COMP_SVC, "Got on battery up time: %{public}ld", onBatteryUpTimeMs);
+    STATS_HILOGD(COMP_SVC, "Got on battery up time: %{public}" PRId64 "", onBatteryUpTimeMs);
     return onBatteryUpTimeMs;
 }
 } // namespace PowerMgr

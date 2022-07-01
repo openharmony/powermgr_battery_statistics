@@ -43,7 +43,7 @@ void UidEntity::UpdateUidMap(int32_t uid)
             STATS_HILOGD(COMP_SVC, "Uid has already been added, ignore");
         } else {
             STATS_HILOGD(COMP_SVC, "Update %{public}d to uid power map", uid);
-            uidPowerMap_.insert(std::pair<int32_t, long>(uid, StatsUtils::DEFAULT_VALUE));
+            uidPowerMap_.insert(std::pair<int32_t, double>(uid, StatsUtils::DEFAULT_VALUE));
         }
     }
 }
@@ -286,8 +286,8 @@ void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
     int64_t bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
     int64_t bluetoothRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
     int64_t bluetoothTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
-    long bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
-    long bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
+    int64_t bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
+    int64_t bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
 
     result.append("Bluetooth scan time: ")
         .append(ToString(bluetoothScanTime))
@@ -316,8 +316,8 @@ void UidEntity::DumpForWifi(int32_t uid, std::string& result)
     int64_t wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
     int64_t wifiRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
     int64_t wifiTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
-    long wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
-    long wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
+    int64_t wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
+    int64_t wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
 
     result.append("Wifi scan time: ")
         .append(ToString(wifiScanTime))
@@ -342,8 +342,8 @@ void UidEntity::DumpForRadio(int32_t uid, std::string& result)
     auto core = g_statsService->GetBatteryStatsCore();
     int64_t radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
     int64_t radioTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
-    long radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
-    long radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
+    int64_t radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
+    int64_t radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
 
     result.append("Radio RX time: ")
         .append(ToString(radioRxTime))

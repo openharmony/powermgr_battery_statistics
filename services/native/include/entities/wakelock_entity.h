@@ -28,7 +28,7 @@ public:
     WakelockEntity();
     ~WakelockEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
-    long GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
+    int64_t GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;

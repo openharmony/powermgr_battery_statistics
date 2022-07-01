@@ -15,6 +15,8 @@
 
 #include "entities/audio_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -29,14 +31,14 @@ AudioEntity::AudioEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO;
 }
 
-long AudioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t AudioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_AUDIO_ON) {
         auto iter = audioTimerMap_.find(uid);
         if (iter != audioTimerMap_.end()) {
             activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got audio on time: %{public}ldms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Got audio on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
