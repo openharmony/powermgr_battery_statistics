@@ -71,19 +71,24 @@ double PhoneEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 
 std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_PHONE_ACTIVE) {
-        if (phoneTimer_ != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got phone active timer");
-            return phoneTimer_;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
+            if (phoneTimer_ != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got phone active timer");
+                timer = phoneTimer_;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create phone active timer");
             phoneTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
-            return phoneTimer_;
+            timer = phoneTimer_;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void PhoneEntity::Reset()

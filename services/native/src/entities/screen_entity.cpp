@@ -89,35 +89,42 @@ double ScreenEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
 
 std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_SCREEN_ON) {
-        if (screenOnTimer_ != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got screen on timer");
-            return screenOnTimer_;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_SCREEN_ON: {
+            if (screenOnTimer_ != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got screen on timer");
+                timer = screenOnTimer_;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create screen on timer");
             screenOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
-            return screenOnTimer_;
+            timer = screenOnTimer_;
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
-        if (level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
-            STATS_HILOGD(COMP_SVC, "Illegal brightness");
-            return nullptr;
-        }
-        auto iter = screenBrightnessTimerMap_.find(level);
-        if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
-            STATS_HILOGD(COMP_SVC, "Got screen brightness timer of brightness level: %{public}d", level);
-            return iter->second;
-        } else {
+        case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS: {
+            if (level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
+                STATS_HILOGD(COMP_SVC, "Illegal brightness");
+                break;
+            }
+            auto iter = screenBrightnessTimerMap_.find(level);
+            if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
+                STATS_HILOGD(COMP_SVC, "Got screen brightness timer of brightness level: %{public}d", level);
+                timer = iter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create screen brightness timer of brightness level: %{public}d", level);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            screenBrightnessTimerMap_.
-                insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> brightTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            screenBrightnessTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, brightTimer));
+            timer = brightTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void ScreenEntity::Reset()

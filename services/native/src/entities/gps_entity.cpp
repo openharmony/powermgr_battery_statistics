@@ -97,21 +97,26 @@ double GpsEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 std::shared_ptr<StatsHelper::ActiveTimer> GpsEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    if (statsType == StatsUtils::STATS_TYPE_GPS_ON) {
-        auto gpsOnIter = gpsTimerMap_.find(uid);
-        if (gpsOnIter != gpsTimerMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Got gps on timer for uid: %{public}d", uid);
-            return gpsOnIter->second;
-        } else {
+    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_GPS_ON: {
+            auto gpsOnIter = gpsTimerMap_.find(uid);
+            if (gpsOnIter != gpsTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Got gps on timer for uid: %{public}d", uid);
+                timer = gpsOnIter->second;
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Create gps on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
-            gpsTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, timer));
-            return timer;
+            std::shared_ptr<StatsHelper::ActiveTimer> gpsTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            gpsTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, gpsTimer));
+            timer = gpsTimer;
+            break;
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Create active timer failed");
-        return nullptr;
+        default:
+            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            break;
     }
+    return timer;
 }
 
 void GpsEntity::Reset()
