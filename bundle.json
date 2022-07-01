@@ -12,7 +12,7 @@
         "destPath": "base/powermgr/battery_statistics"
     },
     "component": {
-        "name": "battery_statistics_native",
+        "name": "battery_statistics",
         "subsystem": "powermgr",
         "syscap": [ "SystemCapability.PowerManager.BatteryStatistics" ],
         "features": [],
