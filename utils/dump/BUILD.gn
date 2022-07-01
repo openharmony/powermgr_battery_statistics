@@ -35,7 +35,7 @@ ohos_executable("statistics") {
 
   configs = [
     "//foundation/ability/ability_runtime/tools/aa:ability_command_config",
-    "${aafwk_services_path}/common:common_config",
+    "${ability_runtime_services_path}/common:common_config",
     "${batterystats_utils_path}:batterystats_utils_config",
   ]
 
