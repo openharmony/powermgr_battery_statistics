@@ -47,28 +47,27 @@ static std::vector<std::string> dumpArgs;
 
 void BatteryStatsClientTest::SetUpTestCase(void)
 {
-    GTEST_LOG_(INFO) << __func__;
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.SetOnBattery(true);
     dumpArgs.push_back("-batterystats");
+    system("hidumper -s 3302 -a -u");
 }
 
 void BatteryStatsClientTest::TearDownTestCase(void)
 {
-    GTEST_LOG_(INFO) << __func__;
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.SetOnBattery(false);
+    system("hidumper -s 3302 -a -r");
 }
 
 void BatteryStatsClientTest::SetUp(void)
 {
-    GTEST_LOG_(INFO) << __func__;
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.SetOnBattery(true);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(WAIT_TIME);
 }
 
 void BatteryStatsClientTest::TearDown(void)
 {
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.SetOnBattery(false);
     GTEST_LOG_(INFO) << __func__;
 }
 
