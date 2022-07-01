@@ -26,7 +26,7 @@ public:
     IdleEntity();
     ~IdleEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
-    long GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE) override;
+    int64_t GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     void Reset() override;

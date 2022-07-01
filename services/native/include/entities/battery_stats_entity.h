@@ -30,10 +30,10 @@ public:
     virtual double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) = 0;
     virtual void Reset() = 0;
     virtual void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) = 0;
-    virtual long GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
-    virtual long GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
+    virtual int64_t GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
+    virtual int64_t GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
-    virtual long GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
+    virtual int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     virtual double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     virtual std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);

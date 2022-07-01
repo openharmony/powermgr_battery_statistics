@@ -15,6 +15,8 @@
 
 #include "entities/sensor_entity.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -29,14 +31,14 @@ SensorEntity::SensorEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR;
 }
 
-long SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON) {
         auto gravityIter = gravityTimerMap_.find(uid);
         if (gravityIter != gravityTimerMap_.end()) {
             activeTimeMs = gravityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got gravity on time: %{public}ldms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Got gravity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
@@ -45,7 +47,7 @@ long SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         auto proximityIter = proximityTimerMap_.find(uid);
         if (proximityIter != proximityTimerMap_.end()) {
             activeTimeMs = proximityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got proximity on time: %{public}ldms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Got proximity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);

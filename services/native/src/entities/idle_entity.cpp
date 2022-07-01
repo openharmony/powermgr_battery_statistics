@@ -30,9 +30,9 @@ IdleEntity::IdleEntity()
     Reset();
 }
 
-long IdleEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t IdleEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_PHONE_IDLE) {
         activeTimeMs = StatsHelper::GetOnBatteryUpTimeMs();
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_SUSPEND) {
@@ -110,8 +110,8 @@ void IdleEntity::Reset()
 
 void IdleEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long upTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE);
-    long bootTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND);
+    int64_t upTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE);
+    int64_t bootTime = GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND);
     result.append("Idle dump:\n")
         .append("Phone boot time: ")
         .append(ToString(bootTime))

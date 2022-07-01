@@ -15,6 +15,8 @@
 
 #include "entities/wifi_entity.h"
 
+#include <cinttypes>
+
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
 #include "system_ability_definition.h"
@@ -109,14 +111,14 @@ void WifiEntity::CalculateWifiPowerForApp(int32_t uid)
     }
 }
 
-long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_WIFI_SCAN) {
         auto scanIter = appWifiScanTimerMap_.find(uid);
         if (scanIter != appWifiScanTimerMap_.end()) {
             time = scanIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wifi scan time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got wifi scan time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No wifi scan timer related with uid: %{public}d found, return 0",
                 uid);
@@ -125,7 +127,7 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
         auto rxIter = appWifiRxTimerMap_.find(uid);
         if (rxIter != appWifiRxTimerMap_.end()) {
             time = rxIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wifi RX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got wifi RX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No wifi RX timer related with uid: %{public}d found, return 0",
                 uid);
@@ -134,7 +136,7 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
         auto txIter = appWifiTxTimerMap_.find(uid);
         if (txIter != appWifiTxTimerMap_.end()) {
             time = txIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wifi TX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got wifi TX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No wifi TX timer related with uid: %{public}d found, return 0",
                 uid);
@@ -143,13 +145,13 @@ long WifiEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, i
     return time;
 }
 
-long WifiEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t WifiEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_WIFI_ON) {
         if (wifiOnTimer_) {
             time = wifiOnTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wifi on time: %{public}ldms", time);
+            STATS_HILOGD(COMP_SVC, "Got wifi on time: %{public}" PRId64 "ms", time);
         } else {
             STATS_HILOGD(COMP_SVC, "Wifi has not been turned on yet, return 0");
         }
@@ -281,14 +283,14 @@ void WifiEntity::Reset()
     }
 }
 
-long WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
-    long count = StatsUtils::DEFAULT_VALUE;
+    int64_t count = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
         auto rxIter = appWifiRxCounterMap_.find(uid);
         if (rxIter != appWifiRxCounterMap_.end()) {
             count = rxIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got wifi RX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got wifi RX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No wifi RX traffic related with uid: %{public}d found, return 0",
@@ -298,7 +300,7 @@ long WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
         auto txIter = appWifiTxCounterMap_.find(uid);
         if (txIter != appWifiTxCounterMap_.end()) {
             count = txIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got wifi TX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got wifi TX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No wifi TX traffic related with uid: %{public}d found, return 0",
@@ -425,7 +427,7 @@ double WifiEntity::GetWifiUidPower()
 
 void WifiEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
+    int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
     result.append("Wifi dump:\n")
         .append("Wifi on time: ")
         .append(ToString(time))

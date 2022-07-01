@@ -31,7 +31,7 @@ void BatteryStatsEntity::Calculate(int32_t uid)
     STATS_HILOGD(COMP_SVC, "No need to calculate");
 }
 
-long BatteryStatsEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t BatteryStatsEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC, "No need to get traffic");
     return StatsUtils::DEFAULT_VALUE;
@@ -47,13 +47,13 @@ void BatteryStatsEntity::UpdateStatsInfoList(std::shared_ptr<BatteryStatsInfo> i
     statsInfoList_.push_back(info);
 }
 
-long BatteryStatsEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t BatteryStatsEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     STATS_HILOGD(COMP_SVC, "No need to get active time, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
-long BatteryStatsEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t BatteryStatsEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     STATS_HILOGD(COMP_SVC, "No need to get active time, return 0");
     return StatsUtils::DEFAULT_VALUE;

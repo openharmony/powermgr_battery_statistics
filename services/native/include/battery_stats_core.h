@@ -47,11 +47,12 @@ public:
     int64_t GetTotalTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE);
     int64_t GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
-    long GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
+    int64_t GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
         int16_t level = StatsUtils::INVALID_VALUE, int32_t uid = StatsUtils::INVALID_VALUE,
         const std::string& deviceId = "");
-    void UpdateStats(StatsUtils::StatsType statsType, long time, long data, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateStats(StatsUtils::StatsType statsType, int64_t time, int64_t data,
+        int32_t uid = StatsUtils::INVALID_VALUE);
     std::shared_ptr<BatteryStatsEntity> GetEntity(const BatteryStatsInfo::ConsumptionType& type);
     bool SaveBatteryStatsData();
     bool LoadBatteryStatsData();
@@ -87,9 +88,9 @@ private:
         StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateCameraTimer(StatsUtils::StatsState state, int32_t uid, const std::string& deviceId);
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
-        long time, int32_t uid = StatsUtils::INVALID_VALUE);
+        int64_t time, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
-        long data, int32_t uid = StatsUtils::INVALID_VALUE);
+        int64_t data, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
     void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
     void UpdateCameraStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid,

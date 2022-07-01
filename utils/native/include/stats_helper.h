@@ -16,6 +16,8 @@
 #ifndef STATS_HELPER_H
 #define STATS_HELPER_H
 
+#include <cinttypes>
+
 #include "stats_log.h"
 #include "stats_utils.h"
 
@@ -52,7 +54,7 @@ public:
             return true;
         }
 
-        long GetRunningTimeMs()
+        int64_t GetRunningTimeMs()
         {
             if (isRunning_) {
                 auto tmpStopTimeMs = GetOnBatteryBootTimeMs();
@@ -62,11 +64,11 @@ public:
             return totalTimeMs_;
         }
 
-        void AddRunningTimeMs(long avtiveTime)
+        void AddRunningTimeMs(int64_t avtiveTime)
         {
             if (avtiveTime > StatsUtils::DEFAULT_VALUE) {
                 totalTimeMs_ += avtiveTime;
-                STATS_HILOGD(COMP_SVC, "Add on active Time: %{public}ld", avtiveTime);
+                STATS_HILOGD(COMP_SVC, "Add on active Time: %{public}" PRId64 "", avtiveTime);
             } else {
                 STATS_HILOGD(COMP_SVC, "Invalid active time, ignore");
             }
@@ -80,26 +82,26 @@ public:
         }
     private:
         bool isRunning_ = false;
-        long startTimeMs_ = StatsUtils::DEFAULT_VALUE;
-        long totalTimeMs_ = StatsUtils::DEFAULT_VALUE;
+        int64_t startTimeMs_ = StatsUtils::DEFAULT_VALUE;
+        int64_t totalTimeMs_ = StatsUtils::DEFAULT_VALUE;
     };
 
     class Counter {
     public:
         Counter() = default;
         ~Counter() = default;
-        void AddCount(long count)
+        void AddCount(int64_t count)
         {
             if (count > StatsUtils::DEFAULT_VALUE) {
                 totalCount_ += count;
-                STATS_HILOGD(COMP_SVC, "Add data bytes: %{public}ld, total data bytes is: %{public}ld",
+                STATS_HILOGD(COMP_SVC, "Add data bytes: %{public}" PRId64 ", total data bytes is: %{public}" PRId64 "",
                     count, totalCount_);
             } else {
                 STATS_HILOGD(COMP_SVC, "Invalid data counts");
             }
         }
 
-        long GetCount()
+        int64_t GetCount()
         {
             return totalCount_;
         }
@@ -109,21 +111,21 @@ public:
             totalCount_ = StatsUtils::DEFAULT_VALUE;
         }
     private:
-        long totalCount_ = StatsUtils::DEFAULT_VALUE;
+        int64_t totalCount_ = StatsUtils::DEFAULT_VALUE;
     };
     static void SetOnBattery(bool onBattery);
     static void SetScreenOff(bool screenOff);
-    static long GetOnBatteryBootTimeMs();
-    static long GetOnBatteryUpTimeMs();
+    static int64_t GetOnBatteryBootTimeMs();
+    static int64_t GetOnBatteryUpTimeMs();
     static bool IsOnBattery();
     static bool IsOnBatteryScreenOff();
-    static long GetBootTimeMs();
-    static long GetUpTimeMs();
+    static int64_t GetBootTimeMs();
+    static int64_t GetUpTimeMs();
 private:
-    static long latestUnplugBootTimeMs_;
-    static long latestUnplugUpTimeMs_;
-    static long onBatteryBootTimeMs_;
-    static long onBatteryUpTimeMs_;
+    static int64_t latestUnplugBootTimeMs_;
+    static int64_t latestUnplugUpTimeMs_;
+    static int64_t onBatteryBootTimeMs_;
+    static int64_t onBatteryUpTimeMs_;
     static bool onBattery_;
     static bool screenOff_;
 };

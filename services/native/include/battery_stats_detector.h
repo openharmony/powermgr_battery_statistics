@@ -39,14 +39,14 @@ private:
     bool isStateRelated(StatsUtils::StatsType type);
     bool isDebugInfoRelated(StatsUtils::StatsType type);
     void handleDebugInfo(StatsUtils::StatsData data);
-    void handleThermalInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleBatteryInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleWakelockInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
-    void handleDistributedSchedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo);
+    void handleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void handleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
 };
 } // namespace PowerMgr
 } // namespace OHOS

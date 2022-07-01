@@ -29,16 +29,16 @@ CameraEntity::CameraEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA;
 }
 
-long CameraEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t CameraEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long activeTimeMs = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_CAMERA_ON) {
         for (auto& cameraIter : cameraTimerMap_) {
             auto uidIter = cameraIter.second.find(uid);
             if (uidIter != cameraIter.second.end()) {
                 activeTimeMs += uidIter->second->GetRunningTimeMs();
             } else {
-                STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d in camera id: %{public}s",
+                STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d in camera id: %{private}s",
                     uid, cameraIter.first.c_str());
             }
         }

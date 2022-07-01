@@ -15,6 +15,8 @@
 
 #include "entities/bluetooth_entity.h"
 
+#include <cinttypes>
+
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
 #include "system_ability_definition.h"
@@ -63,7 +65,7 @@ void BluetoothEntity::CalculateBtPower()
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     statsInfo->SetPower(bluetoothPowerMah);
     statsInfoList_.push_back(statsInfo);
-    STATS_HILOGD(COMP_SVC, "Calculate bluetooth time: %{public}ldms, power average: %{public}lfma," \
+    STATS_HILOGD(COMP_SVC, "Calculate bluetooth time: %{public}" PRId64 "ms, power average: %{public}lfma," \
         "power consumption: %{public}lfmAh, uid power consumption: %{public}lfmAh,"                 \
         "total power consumption: %{public}lfmAh",
         bluetoothOnTimeMs,
@@ -96,13 +98,13 @@ void BluetoothEntity::CalculateBtPowerForApp(int32_t uid)
 
     auto bluetoothUidPowerMah =
         (bluetoothScanPowerMams + bluetoothRxPowerMams + bluetoothTxPowerMams) / StatsUtils::MS_IN_HOUR;
-    STATS_HILOGD(COMP_SVC,"Calculate bluetooth scan time: %{public}ldms, scan power average: %{public}lfma,"    \
+    STATS_HILOGD(COMP_SVC,"Calculate bluetooth scan time: %{public}" PRId64 "ms, scan power average: %{public}lfma," \
         "scan power consumption: %{public}lfmAh",
         bluetoothScanTimeMs, bluetoothScanAverageMa, bluetoothScanPowerMams / StatsUtils::MS_IN_HOUR);
-    STATS_HILOGD(COMP_SVC, "Calculate bluetooth RX time: %{public}ldms, RX power average: %{public}lfma"        \
+    STATS_HILOGD(COMP_SVC, "Calculate bluetooth RX time: %{public}" PRId64 "ms, RX power average: %{public}lfma"     \
         "RX power consumption: %{public}lfmAh",
         bluetoothRxTimeMs, bluetoothRxAverageMa, bluetoothRxPowerMams / StatsUtils::MS_IN_HOUR);
-    STATS_HILOGD(COMP_SVC, "Calculate bluetooth TX time: %{public}ldms, TX power average: %{public}lfma"        \
+    STATS_HILOGD(COMP_SVC, "Calculate bluetooth TX time: %{public}" PRId64 "ms, TX power average: %{public}lfma"     \
         "TX power consumption: %{public}lfmAh",
         bluetoothTxTimeMs, bluetoothTxAverageMa, bluetoothTxPowerMams / StatsUtils::MS_IN_HOUR);
     auto iter = appBluetoothPowerMap_.find(uid);
@@ -117,14 +119,14 @@ void BluetoothEntity::CalculateBtPowerForApp(int32_t uid)
     }
 }
 
-long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
+int64_t BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_SCAN) {
         auto scanIter = appBluetoothScanTimerMap_.find(uid);
         if (scanIter != appBluetoothScanTimerMap_.end()) {
             time = scanIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got blueooth scan time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got blueooth scan time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No bluetooth scan timer related with uid: %{public}d found, return 0",
                 uid);
@@ -133,7 +135,7 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
         auto rxIter = appBluetoothRxTimerMap_.find(uid);
         if (rxIter != appBluetoothRxTimerMap_.end()) {
             time = rxIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got blueooth RX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got blueooth RX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No bluetooth RX timer related with uid: %{public}d found, return 0",
                 uid);
@@ -142,7 +144,7 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
         auto txIter = appBluetoothTxTimerMap_.find(uid);
         if (txIter != appBluetoothTxTimerMap_.end()) {
             time = txIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got blueooth TX time: %{public}ldms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Got blueooth TX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No bluetooth TX timer related with uid: %{public}d found, return 0",
                 uid);
@@ -151,13 +153,13 @@ long BluetoothEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
     return time;
 }
 
-long BluetoothEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
+int64_t BluetoothEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    long time = StatsUtils::DEFAULT_VALUE;
+    int64_t time = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_ON) {
         if (bluetoothOnTimer_) {
             time = bluetoothOnTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got blueooth on time: %{public}ldms", time);
+            STATS_HILOGD(COMP_SVC, "Got blueooth on time: %{public}" PRId64 "ms", time);
         } else {
             STATS_HILOGD(COMP_SVC, "Bluetooth has not been turned on yet, return 0");
         }
@@ -290,14 +292,14 @@ void BluetoothEntity::Reset()
     }
 }
 
-long BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
 {
-    long count = StatsUtils::DEFAULT_VALUE;
+    int64_t count = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
         auto rxIter = appBluetoothRxCounterMap_.find(uid);
         if (rxIter != appBluetoothRxCounterMap_.end()) {
             count = rxIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got blueooth RX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got blueooth RX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No bluetooth RX traffic related with uid: %{public}d found, return 0",
@@ -307,7 +309,7 @@ long BluetoothEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t ui
         auto txIter = appBluetoothTxCounterMap_.find(uid);
         if (txIter != appBluetoothTxCounterMap_.end()) {
             count = txIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got blueooth TX traffic: %{public}ldbytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Got blueooth TX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "No bluetooth TX traffic related with uid: %{public}d found, return 0",
@@ -437,7 +439,7 @@ double BluetoothEntity::GetBluetoothUidPower()
 
 void BluetoothEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    long time = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON);
+    int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON);
     result.append("Bluetooth dump:\n")
         .append("Bluetooth on time: ")
         .append(ToString(time))

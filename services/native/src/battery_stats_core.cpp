@@ -14,6 +14,7 @@
  */
 #include "battery_stats_core.h"
 
+#include <cinttypes>
 #include <fstream>
 #include <map>
 
@@ -207,10 +208,11 @@ std::shared_ptr<BatteryStatsEntity> BatteryStatsCore::GetEntity(const BatterySta
     }
 }
 
-void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, long time, long data, int32_t uid)
+void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, int64_t time, int64_t data, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC,
-        "Update for duration, statsType: %{public}s, uid: %{public}d, time: %{public}ld, data: %{public}ld",
+        "Update for duration, statsType: %{public}s, uid: %{public}d, time: %{public}" PRId64 ", "  \
+        "data: %{public}" PRId64 "",
         StatsUtils::ConvertStatsType(statsType).c_str(), uid, time, data);
     if (uid > StatsUtils::INVALID_VALUE) {
         uidEntity_->UpdateUidMap(uid);
@@ -534,10 +536,10 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
 }
 
 void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
-    long time, int32_t uid)
+    int64_t time, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC,
-        "entity: %{public}s, statsType: %{public}s, time: %{public}ld, uid: %{public}d",
+        "entity: %{public}s, statsType: %{public}s, time: %{public}" PRId64 ", uid: %{public}d",
         BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
         StatsUtils::ConvertStatsType(statsType).c_str(),
         time,
@@ -557,10 +559,10 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
 }
 
 void BatteryStatsCore::UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
-    long data, int32_t uid)
+    int64_t data, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC,
-        "entity: %{public}s, statsType: %{public}s, data: %{public}ld, uid: %{public}d",
+        "entity: %{public}s, statsType: %{public}s, data: %{public}" PRId64 ", uid: %{public}d",
         BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
         StatsUtils::ConvertStatsType(statsType).c_str(),
         data,
@@ -710,9 +712,9 @@ int64_t BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType stat
     return time;
 }
 
-long BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid)
+int64_t BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid)
 {
-    long data = StatsUtils::DEFAULT_VALUE;
+    int64_t data = StatsUtils::DEFAULT_VALUE;
 
     switch (statsType) {
         case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
@@ -733,8 +735,8 @@ long BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int32_
         default:
             break;
     }
-    STATS_HILOGD(COMP_SVC, "Get traffic data bytes: %{public}ld of %{public}s for uid: %{public}d", data,
-        StatsUtils::ConvertStatsType(statsType).c_str(), uid);
+    STATS_HILOGD(COMP_SVC, "Get traffic data bytes: %{public}" PRId64 " of %{public}s for uid: %{public}d",
+        data, StatsUtils::ConvertStatsType(statsType).c_str(), uid);
     return data;
 }
 

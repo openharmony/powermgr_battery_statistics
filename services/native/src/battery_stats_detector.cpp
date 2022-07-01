@@ -15,6 +15,8 @@
 
 #include "battery_stats_detector.h"
 
+#include <cinttypes>
+
 #include "battery_stats_service.h"
 
 namespace OHOS {
@@ -22,9 +24,9 @@ namespace PowerMgr {
 void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
 {
     STATS_HILOGD(COMP_SVC,
-        "Handle type: %{public}s, state: %{public}d, level: %{public}d, uid: %{public}d, pid: %{public}d,"      \
-        "eventDataName: %{public}s, eventDataType: %{public}d, eventDataExtra: %{public}d, time: %{public}ld,"  \
-        "traffic: %{public}ld, deviceId: %{private}s",
+        "Handle type: %{public}s, state: %{public}d, level: %{public}d, uid: %{public}d, pid: %{public}d, "    \
+        "eventDataName: %{public}s, eventDataType: %{public}d, eventDataExtra: %{public}d, "                   \
+        "time: %{public}" PRId64 ", traffic: %{public}" PRId64 ", deviceId: %{private}s",
         StatsUtils::ConvertStatsType(data.type).c_str(),
         data.state,
         data.level,
@@ -112,7 +114,7 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
     return isMatch;
 }
 
-void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Thermal event: Part name = ")
         .append(data.eventDataName)
@@ -127,7 +129,7 @@ void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, long bo
     }
 }
 
-void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Battery event: Battery level = ")
         .append(ToString(data.level))
@@ -142,7 +144,7 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, long bo
     }
 }
 
-void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Dislpay event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
@@ -154,7 +156,7 @@ void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, long bo
     }
 }
 
-void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -182,7 +184,8 @@ void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, long b
     }
 }
 
-void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
+    std::string& debugInfo)
 {
     debugInfo.append("WorkScheduler event: UID = ")
         .append(ToString(data.uid))
@@ -203,7 +206,7 @@ void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, l
     }
 }
 
-void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -218,7 +221,7 @@ void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, long boot
         .append("ms\n");
 }
 
-void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -237,7 +240,7 @@ void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, long
         .append("ms\n");
 }
 
-void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData data, long bootTimeMs,
+void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
     std::string& debugInfo)
 {
     debugInfo.append("Distributed schedule event")
@@ -253,7 +256,7 @@ void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData 
 
 void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
 {
-    long bootTimeMs = StatsHelper::GetBootTimeMs();
+    int64_t bootTimeMs = StatsHelper::GetBootTimeMs();
     auto core = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance()->GetBatteryStatsCore();
     std::string debugInfo;
     switch (data.type) {
