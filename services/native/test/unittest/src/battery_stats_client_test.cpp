@@ -209,7 +209,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_004, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_005
- * @tc.desc: Test Reset function
+ * @tc.desc: Test Reset function(Audio)
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_005, TestSize.Level0)
@@ -222,15 +222,15 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_005, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -933,7 +933,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_027, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_028
- * @tc.desc: Test GetAppStatsMah function
+ * @tc.desc: Test GetAppStatsMah function(Audio)
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_028, TestSize.Level0)
@@ -947,16 +947,16 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_028, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
     double deviation = 0.01;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
@@ -1111,7 +1111,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_032, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_033
- * @tc.desc: Test GetAppStatsPercent function
+ * @tc.desc: Test GetAppStatsPercent function(Audio)
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_033, TestSize.Level0)
@@ -1124,17 +1124,17 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_033, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
     double fullPercent = 1;
     double zeroPercent = 0;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -2241,7 +2241,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_059, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_060
- * @tc.desc: Test GetAppStatsMah and GetAppStatsPercent function
+ * @tc.desc: Test GetAppStatsMah(Camera) and GetAppStatsPercent(Audio) function
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_060, TestSize.Level0)
@@ -2256,8 +2256,6 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_060, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string deviceId = "Camera0";
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
     double deviation = 0.01;
 
     HiSysEvent::Write("CAMERA", "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
@@ -2277,17 +2275,17 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_060, TestSize.Level0)
 
     uid = 10004;
     pid = 3459;
-    stateOn = 1;
-    stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
     double fullPercent = 1;
     double zeroPercent = 0;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -2298,7 +2296,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_060, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_061
- * @tc.desc: Test GetAppStatsMah and GetAppStatsPercent function
+ * @tc.desc: Test GetAppStatsMah(Audio) and GetAppStatsPercent(Sensor) function
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_061, TestSize.Level0)
@@ -2312,16 +2310,16 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_061, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = 1;
-    int32_t stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
     double deviation = 0.01;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
@@ -2333,8 +2331,8 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_061, TestSize.Level0)
 
     uid = 10004;
     pid = 3459;
-    stateOn = 1;
-    stateOff = 0;
+    int32_t stateOn = 1;
+    int32_t stateOff = 0;
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -2466,7 +2464,7 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_063, TestSize.Level0)
 
 /**
  * @tc.name: BatteryStatsClientTest_064
- * @tc.desc: Test GetPartStatsMah and GetAppStatsMah function
+ * @tc.desc: Test GetPartStatsMah(Phone) and GetAppStatsMah(Audio) function
  * @tc.type: FUNC
  */
 HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_064, TestSize.Level0)
@@ -2500,15 +2498,15 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_064, TestSize.Level0)
     double audioOnAverageMa = 85;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    stateOn = 1;
-    stateOff = 0;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+        "UID", uid, "STATE", stateRunning);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+        "UID", uid, "STATE", stateStopped);
     sleep(testWaitTimeSec);
 
     expectedPower = testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
@@ -3127,4 +3125,106 @@ HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_080, TestSize.Level0)
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
         <<" BatteryStatsClientTest_080 fail due to percent mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsClientTest_080: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_081
+ * @tc.desc: Test GetAppStatsMah function, Audio state composite test
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_081, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_081: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double audioOnAverageMa = 85;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
+    int32_t stateReleased = 4;
+    int32_t statePaused = 5;
+    double deviation = 0.01;
+
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateRunning);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateStopped);
+    sleep(testWaitTimeSec);
+
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateRunning);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateReleased);
+    sleep(testWaitTimeSec);
+
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateRunning);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", statePaused);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = 3 * testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_081 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_081: test end";
+}
+
+/**
+ * @tc.name: BatteryStatsClientTest_082
+ * @tc.desc: Test GetAppStatsMah function, Audio abnormal state test
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatteryStatsClientTest, BatteryStatsClientTest_082, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_081: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double audioOnAverageMa = 85;
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int32_t stateRunning = 2;
+    int32_t stateStopped = 3;
+    int32_t stateInvalid = -1;
+    int32_t stateAbnormal = 101;
+    double deviation = 0.01;
+
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateInvalid);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateRunning);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateAbnormal);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        "UID", uid, "STATE", stateStopped);
+    sleep(testWaitTimeSec);
+
+    double expectedPower = 2 * testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_LE(abs(expectedPower - actualPower), deviation)
+        <<" BatteryStatsClientTest_082 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " BatteryStatsClientTest_082: test end";
 }
