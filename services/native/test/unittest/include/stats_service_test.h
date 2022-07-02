@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,16 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef BATTERY_STATS_CLIENT_TEST_H
-#define BATTERY_STATS_CLIENT_TEST_H
+#ifndef BATTERY_STATS_SERVICE_TEST_H
+#define BATTERY_STATS_SERVICE_TEST_H
 
 #include <gtest/gtest.h>
 
-class BatteryStatsClientTest : public testing::Test {
+namespace OHOS {
+namespace PowerMgr {
+class StatsServiceTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
     static void TearDownTestCase(void);
     void SetUp();
     void TearDown();
 };
-#endif // BATTERY_STATS_CLIENT_TEST_H
+} // namespace PowerMgr
+} // namespace OHOS
+#endif // BATTERY_STATS_SERVICE_TEST_H

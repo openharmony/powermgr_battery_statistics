@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,57 +13,49 @@
  * limitations under the License.
  */
 
-#include "battery_stats_service_test.h"
-
-#include <csignal>
-#include <iostream>
+#include "stats_service_test.h"
 
 #include <if_system_ability_manager.h>
-#include <ipc_skeleton.h>
 #include <iservice_registry.h>
-#include <string_ex.h>
 #include <system_ability_definition.h>
-
-#include "battery_stats_client.h"
-#include "battery_stats_service.h"
-#include "stats_common.h"
 
 using namespace testing::ext;
 using namespace OHOS::PowerMgr;
 using namespace OHOS;
-using namespace std;
 
-void BatteryStatsServiceTest::SetUpTestCase(void)
+void StatsServiceTest::SetUpTestCase(void)
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void BatteryStatsServiceTest::TearDownTestCase(void)
+void StatsServiceTest::TearDownTestCase(void)
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void BatteryStatsServiceTest::SetUp(void)
+void StatsServiceTest::SetUp(void)
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void BatteryStatsServiceTest::TearDown(void)
+void StatsServiceTest::TearDown(void)
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
+namespace {
 /**
- * @tc.name: BatteryStatsServiceTest_001
- * @tc.desc: Test BatteryStatsService service ready.
+ * @tc.name: StatsServiceTest_001
+ * @tc.desc: test BatteryStatsService service ready.
  * @tc.type: FUNC
  */
-HWTEST_F (BatteryStatsServiceTest, BatteryStatsServiceTest_001, TestSize.Level0)
+HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " BatteryStatsServiceTest_001: test start";
+    GTEST_LOG_(INFO) << " StatsServiceTest_001: test start";
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    ASSERT_TRUE(sam != nullptr) << "BatteryStatsServiceTest_001 fail to get GetSystemAbilityManager";
+    ASSERT_TRUE(sam != nullptr) << "StatsServiceTest_001 fail to get GetSystemAbilityManager";
     sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     ASSERT_TRUE(remoteObject_ != nullptr) << "GetSystemAbility failed.";
-    GTEST_LOG_(INFO) << " BatteryStatsServiceTest_001: test end";
+    GTEST_LOG_(INFO) << " StatsServiceTest_001: test end";
+}
 }
