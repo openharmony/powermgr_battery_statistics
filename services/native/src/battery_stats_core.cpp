@@ -516,8 +516,8 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
             if (timer->StartRunning()) {
                 isCameraOn_ = true;
                 lastCameraUid_ = uid;
-                break;
             }
+            break;
         }
         case StatsUtils::STATS_STATE_DEACTIVATED: {
             if (timer->StopRunning()) {
@@ -527,8 +527,8 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
                             lastCameraUid_);
                 isCameraOn_ = false;
                 lastCameraUid_ = StatsUtils::INVALID_VALUE;
-                break;
             }
+            break;
         }
         default:
             break;
