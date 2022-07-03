@@ -35,18 +35,17 @@ public:
     ~BatteryStatsDetector() = default;
     void HandleStatsChangedEvent(StatsUtils::StatsData data);
 private:
-    bool isDurationRelated(StatsUtils::StatsType type);
-    bool isStateRelated(StatsUtils::StatsType type);
-    bool isDebugInfoRelated(StatsUtils::StatsType type);
-    void handleDebugInfo(StatsUtils::StatsData data);
-    void handleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void handleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    bool IsDurationRelated(StatsUtils::StatsType type);
+    bool IsStateRelated(StatsUtils::StatsType type);
+    void HandleDebugInfo(StatsUtils::StatsData data);
+    void HandleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
 };
 } // namespace PowerMgr
 } // namespace OHOS

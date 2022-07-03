@@ -38,13 +38,13 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
     std::string errors;
     std::istrstream is(eventDetail.c_str());
     if (parseFromStream(reader, is, &root, &errors)) {
-        processHiSysEvent(root);
+        ProcessHiSysEvent(root);
     } else {
         STATS_HILOGD(COMP_SVC, "Parse hisysevent data failed");
     }
 }
 
-void BatteryStatsListener::processHiSysEvent(const Json::Value& root)
+void BatteryStatsListener::ProcessHiSysEvent(const Json::Value& root)
 {
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     auto detector = statsService->GetBatteryStatsDetector();
@@ -52,45 +52,45 @@ void BatteryStatsListener::processHiSysEvent(const Json::Value& root)
     data.eventDebugInfo.clear();
     std::string eventName = root["name_"].asString();
     if (eventName == "POWER_RUNNINGLOCK") {
-        processWakelockEvent(data, root);
+        ProcessWakelockEvent(data, root);
     } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||
         eventName == "BACKLIGHT_DISCOUNT" || eventName == "AMBIENT_LIGHT") {
-        processDispalyEvent(data, root);
+        ProcessDispalyEvent(data, root);
     } else if (eventName == "BATTERY_CHANGED") {
-        processBatteryEvent(data, root);
+        ProcessBatteryEvent(data, root);
     } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED") {
-        processThermalEvent(data, root);
+        ProcessThermalEvent(data, root);
     } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
         eventName == "WORK_START" || eventName == "WORK_STOP") {
-        processWorkschedulerEvent(data, root);
+        ProcessWorkschedulerEvent(data, root);
     } else if (eventName == "POWER_PHONE") {
-        processPhoneEvent(data, root);
+        ProcessPhoneEvent(data, root);
     } else if (eventName == "TORCH_STATE") {
-        processFlashlightEvent(data, root);
+        ProcessFlashlightEvent(data, root);
     } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
         eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
-        processCameraEvent(data, root);
+        ProcessCameraEvent(data, root);
     } else if (eventName == "AUDIO_STREAM_CHANGE") {
-        processAudioEvent(data, root);
+        ProcessAudioEvent(data, root);
     } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
-        processSensorEvent(data, root);
+        ProcessSensorEvent(data, root);
     } else if (eventName == "POWER_RADIO") {
-        processRadioEvent(data, root);
+        ProcessRadioEvent(data, root);
     } else if (eventName == "GNSS_STATE") {
-        processGpsEvent(data, root);
+        ProcessGpsEvent(data, root);
     } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
-        processBluetoothEvent(data, root);
+        ProcessBluetoothEvent(data, root);
     } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
-        processWifiEvent(data, root);
+        ProcessWifiEvent(data, root);
     } else if (eventName == "START_REMOTE_ABILITY") {
-        processDistributedSchedulerEvent(data, root);
+        ProcessDistributedSchedulerEvent(data, root);
     } else if (eventName == "ALARM_TRIGGER") {
-        processAlarmEvent(data, root);
+        ProcessAlarmEvent(data, root);
     }
     detector->HandleStatsChangedEvent(data);
 }
 
-void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     std::string eventName = root["name_"].asString();
     if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT") {
@@ -119,7 +119,7 @@ void BatteryStatsListener::processCameraEvent(StatsUtils::StatsData& data, const
     }
 }
 
-void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_AUDIO_ON;
     if (!root["UID"].asString().empty()) {
@@ -145,7 +145,7 @@ void BatteryStatsListener::processAudioEvent(StatsUtils::StatsData& data, const 
     }
 }
 
-void BatteryStatsListener::processSensorEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     if (root["name_"].asString() == "POWER_SENSOR_GRAVITY") {
         data.type = StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON;
@@ -168,7 +168,7 @@ void BatteryStatsListener::processSensorEvent(StatsUtils::StatsData& data, const
     }
 }
 
-void BatteryStatsListener::processRadioEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessRadioEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_RADIO_ON;
     if (!root["STATE"].asString().empty()) {
@@ -198,7 +198,7 @@ void BatteryStatsListener::processRadioEvent(StatsUtils::StatsData& data, const 
     }
 }
 
-void BatteryStatsListener::processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_GPS_ON;
     if (!root["UID"].asString().empty()) {
@@ -216,7 +216,7 @@ void BatteryStatsListener::processGpsEvent(StatsUtils::StatsData& data, const Js
     }
 }
 
-void BatteryStatsListener::processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     if (root["name_"].asString() == "BLUETOOTH_BR_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_ON;
@@ -245,7 +245,7 @@ void BatteryStatsListener::processBluetoothEvent(StatsUtils::StatsData& data, co
     }
 }
 
-void BatteryStatsListener::processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_WIFI_ON;
     int32_t wifiEnable = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
@@ -259,7 +259,7 @@ void BatteryStatsListener::processWifiEvent(StatsUtils::StatsData& data, const J
     }
 }
 
-void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
     if (!root["STATE"].asString().empty()) {
@@ -271,7 +271,7 @@ void BatteryStatsListener::processPhoneEvent(StatsUtils::StatsData& data, const 
     }
 }
 
-void BatteryStatsListener::processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_FLASHLIGHT_ON;
     if (!root["UID"].asString().empty()) {
@@ -289,7 +289,7 @@ void BatteryStatsListener::processFlashlightEvent(StatsUtils::StatsData& data, c
     }
 }
 
-void BatteryStatsListener::processWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_WAKELOCK_HOLD;
     if (!root["UID"].asString().empty()) {
@@ -322,7 +322,7 @@ void BatteryStatsListener::processWakelockEvent(StatsUtils::StatsData& data, con
     }
 }
 
-void BatteryStatsListener::processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
 {
     if (!root["name_"].asString().empty()) {
         data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
@@ -350,7 +350,7 @@ void BatteryStatsListener::processDispalyDebugInfo(StatsUtils::StatsData& data, 
     }
 }
 
-void BatteryStatsListener::processDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
     if (root["name_"].asString() == "POWER_SCREEN") {
@@ -380,10 +380,10 @@ void BatteryStatsListener::processDispalyEvent(StatsUtils::StatsData& data, cons
             data.level = stoi(root["BRIGHTNESS"].asString());
         }
     }
-    processDispalyDebugInfo(data, root);
+    ProcessDispalyDebugInfo(data, root);
 }
 
-void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_BATTERY;
     if (!root["LEVEL"].asString().empty()) {
@@ -403,7 +403,7 @@ void BatteryStatsListener::processBatteryEvent(StatsUtils::StatsData& data, cons
     }
 }
 
-void BatteryStatsListener::processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_THERMAL;
     if (!root["NAME"].asString().empty()) {
@@ -417,7 +417,7 @@ void BatteryStatsListener::processThermalEvent(StatsUtils::StatsData& data, cons
     }
 }
 
-void BatteryStatsListener::processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
     if (root["name_"].asString() == "POWER_WORKSCHEDULER") {
@@ -464,7 +464,7 @@ void BatteryStatsListener::processWorkschedulerEvent(StatsUtils::StatsData& data
     }
 }
 
-void BatteryStatsListener::processDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER;
     if (!root["name_"].asString().empty()) {
@@ -493,7 +493,7 @@ void BatteryStatsListener::processDistributedSchedulerEvent(StatsUtils::StatsDat
     }
 }
 
-void BatteryStatsListener::processAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_ALARM;
     data.traffic = 1;
