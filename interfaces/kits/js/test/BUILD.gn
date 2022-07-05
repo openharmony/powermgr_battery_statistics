@@ -14,7 +14,7 @@
 import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/test.gni")
 
-module_output_path = "${batterystats_part_name}/batterystats_native"
+module_output_path = "${batterystats_part_name}/batterystats"
 
 ohos_js_unittest("batterystats_js_interface_test") {
   module_out_path = module_output_path

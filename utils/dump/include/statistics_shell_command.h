@@ -18,8 +18,6 @@
 
 #include "shell_command.h"
 
-#include "battery_stats_service.h"
-
 namespace OHOS {
 namespace PowerMgr {
 class StatisticsShellCommand : public OHOS::AAFwk::ShellCommand {
