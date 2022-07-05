@@ -40,7 +40,7 @@ public:
     uint16_t GetSpeedNum(uint16_t cluster);
     bool Init();
 private:
-    bool LoadAveragePowerFromFile();
+    bool LoadAveragePowerFromFile(const std::string& path);
     std::map<std::string, double> averageMap_;
     std::map<std::string, std::vector<double>> averageVecMap_;
     uint16_t clusterNum_ = 0;

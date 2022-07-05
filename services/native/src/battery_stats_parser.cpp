@@ -24,15 +24,18 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-static const std::string POWER_AVERAGE_FILE = "/system/etc/profile/power_average.json";
+static const std::string VENDOR_POWER_AVERAGE_FILE = "/vendor/etc/profile/power_average.json";
+static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/profile/power_average.json";
 } // namespace
 bool BatteryStatsParser::Init()
 {
-    if (!LoadAveragePowerFromFile()) {
-        STATS_HILOGD(COMP_SVC, "Initialization failed: loading average power file failure");
-        return false;
+    if (!LoadAveragePowerFromFile(VENDOR_POWER_AVERAGE_FILE)) {
+        STATS_HILOGD(COMP_SVC, "Fail to load vendor average power file");
+        if (!LoadAveragePowerFromFile(SYSTEM_POWER_AVERAGE_FILE)) {
+            STATS_HILOGD(COMP_SVC, "Fail to load system average power file");
+            return false;
+        }
     }
-    STATS_HILOGD(COMP_SVC, "Initialization succeeded");
     return true;
 }
 
@@ -49,12 +52,12 @@ uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
     return StatsUtils::DEFAULT_VALUE;
 }
 
-bool BatteryStatsParser::LoadAveragePowerFromFile()
+bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
 {
     Json::CharReaderBuilder reader;
     Json::Value root;
     std::string errors;
-    std::ifstream ifs(POWER_AVERAGE_FILE, std::ios::binary);
+    std::ifstream ifs(path, std::ios::binary);
     if (!ifs.is_open()) {
         STATS_HILOGD(COMP_SVC, "Json file doesn't exist");
         return false;
