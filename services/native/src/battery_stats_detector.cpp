@@ -45,20 +45,20 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         return;
     }
     auto core = bss->GetBatteryStatsCore();
-    if (isDurationRelated(data.type)) {
+    if (IsDurationRelated(data.type)) {
         // Update related timer with reported time
         // The traffic won't participate the power consumption calculation, just for dump info
         core->UpdateStats(data.type, data.time, data.traffic, data.uid);
-    } else if (isStateRelated(data.type)) {
+    } else if (IsStateRelated(data.type)) {
         // Update related timer based on state or level
         core->UpdateStats(data.type, data.state, data.level, data.uid, data.deviceId);
     } else {
         STATS_HILOGD(COMP_SVC, "Got invalid type");
     }
-    handleDebugInfo(data);
+    HandleDebugInfo(data);
 }
 
-bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
+bool BatteryStatsDetector::IsDurationRelated(StatsUtils::StatsType type)
 {
     bool isMatch = false;
     switch (type) {
@@ -81,7 +81,7 @@ bool BatteryStatsDetector::isDurationRelated(StatsUtils::StatsType type)
     return isMatch;
 }
 
-bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
+bool BatteryStatsDetector::IsStateRelated(StatsUtils::StatsType type)
 {
     bool isMatch = false;
     switch (type) {
@@ -114,7 +114,7 @@ bool BatteryStatsDetector::isStateRelated(StatsUtils::StatsType type)
     return isMatch;
 }
 
-void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Thermal event: Part name = ")
         .append(data.eventDataName)
@@ -129,7 +129,7 @@ void BatteryStatsDetector::handleThermalInfo(StatsUtils::StatsData data, int64_t
     }
 }
 
-void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Battery event: Battery level = ")
         .append(ToString(data.level))
@@ -144,7 +144,7 @@ void BatteryStatsDetector::handleBatteryInfo(StatsUtils::StatsData data, int64_t
     }
 }
 
-void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Dislpay event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
@@ -156,7 +156,7 @@ void BatteryStatsDetector::handleDispalyInfo(StatsUtils::StatsData data, int64_t
     }
 }
 
-void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -184,7 +184,7 @@ void BatteryStatsDetector::handleWakelockInfo(StatsUtils::StatsData data, int64_
     }
 }
 
-void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
+void BatteryStatsDetector::HandleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
     std::string& debugInfo)
 {
     debugInfo.append("WorkScheduler event: UID = ")
@@ -206,7 +206,7 @@ void BatteryStatsDetector::handleWorkschedulerInfo(StatsUtils::StatsData data, i
     }
 }
 
-void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -221,7 +221,7 @@ void BatteryStatsDetector::handlePhoneInfo(StatsUtils::StatsData data, int64_t b
         .append("ms\n");
 }
 
-void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     std::string eventState;
     if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
@@ -240,7 +240,7 @@ void BatteryStatsDetector::handleFlashlightInfo(StatsUtils::StatsData data, int6
         .append("ms\n");
 }
 
-void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
+void BatteryStatsDetector::HandleDistributedSchedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs,
     std::string& debugInfo)
 {
     debugInfo.append("Distributed schedule event")
@@ -254,35 +254,35 @@ void BatteryStatsDetector::handleDistributedSchedulerInfo(StatsUtils::StatsData 
     }
 }
 
-void BatteryStatsDetector::handleDebugInfo(StatsUtils::StatsData data)
+void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
 {
     int64_t bootTimeMs = StatsHelper::GetBootTimeMs();
     auto core = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance()->GetBatteryStatsCore();
     std::string debugInfo;
     switch (data.type) {
         case StatsUtils::STATS_TYPE_THERMAL:
-            handleThermalInfo(data, bootTimeMs, debugInfo);
+            HandleThermalInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_BATTERY:
-            handleBatteryInfo(data, bootTimeMs, debugInfo);
+            HandleBatteryInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_WORKSCHEDULER:
-            handleWorkschedulerInfo(data, bootTimeMs, debugInfo);
+            HandleWorkschedulerInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
-            handleWakelockInfo(data, bootTimeMs, debugInfo);
+            HandleWakelockInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_SCREEN_ON:
-            handleDispalyInfo(data, bootTimeMs, debugInfo);
+            HandleDispalyInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
-            handlePhoneInfo(data, bootTimeMs, debugInfo);
+            HandlePhoneInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
-            handleFlashlightInfo(data, bootTimeMs, debugInfo);
+            HandleFlashlightInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER:
-            handleDistributedSchedulerInfo(data, bootTimeMs, debugInfo);
+            HandleDistributedSchedulerInfo(data, bootTimeMs, debugInfo);
             break;
         default:
             STATS_HILOGD(COMP_SVC, "Got invalid type");

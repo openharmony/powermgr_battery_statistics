@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,24 +31,24 @@ public:
             const std::string& eventDetail) override;
     void OnServiceDied() override;
 private:
-    void processHiSysEvent(const Json::Value& root);
-    void processPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processCameraEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processSensorEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processRadioEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void processDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessHiSysEvent(const Json::Value& root);
+    void ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessRadioEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS
