@@ -29,7 +29,7 @@ namespace PowerMgr {
 #define STATS_RETURN_IF_WITH_LOG(loglabel, cond, loginfo)                                   \
     do {                                                                                    \
         if (cond) {                                                                         \
-            STATS_HILOGD(loglabel, ""#loginfo"");                                           \
+            STATS_HILOGE(loglabel, ""#loginfo"");                                           \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -37,7 +37,7 @@ namespace PowerMgr {
 #define STATS_READ_PARCEL_NO_RET(loglabel, parcel, type, out)                               \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGD(loglabel, "Read "#out" failed");                                   \
+            STATS_HILOGE(loglabel, "Read "#out" failed");                                   \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -45,7 +45,7 @@ namespace PowerMgr {
 #define STATS_WRITE_PARCEL_NO_RET(loglabel, parcel, type, data)                             \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGD(loglabel, "Write "#data" failed");                                 \
+            STATS_HILOGE(loglabel, "Write "#data" failed");                                 \
             return;                                                                         \
         }                                                                                   \
     } while (0)                                                                             \
@@ -53,7 +53,7 @@ namespace PowerMgr {
 #define STATS_READ_PARCEL_WITH_RET(loglabel, parcel, type, out, retval)                     \
     do {                                                                                    \
         if (!(parcel).Read##type(out)) {                                                    \
-            STATS_HILOGD(loglabel, "Read "#out" failed");                                   \
+            STATS_HILOGE(loglabel, "Read "#out" failed");                                   \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)                                                                             \
@@ -61,7 +61,7 @@ namespace PowerMgr {
 #define STATS_WRITE_PARCEL_WITH_RET(loglabel, parcel, type, data, retval)                   \
     do {                                                                                    \
         if (!(parcel).Write##type(data)) {                                                  \
-            STATS_HILOGD(loglabel, "Write "#data" failed");                                 \
+            STATS_HILOGE(loglabel, "Write "#data" failed");                                 \
             return (retval);                                                                \
         }                                                                                   \
     } while (0)

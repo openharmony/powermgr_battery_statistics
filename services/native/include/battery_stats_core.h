@@ -35,7 +35,7 @@ class BatteryStatsCore {
 public:
     explicit BatteryStatsCore()
     {
-        STATS_HILOGD(COMP_SVC, "BatteryStatsCore instance is created");
+        STATS_HILOGI(COMP_SVC, "BatteryStatsCore instance is created");
     }
     ~BatteryStatsCore() = default;
     void ComputePower();
@@ -80,7 +80,6 @@ private:
     std::shared_ptr<BatteryStatsEntity> alarmEntity_;
     int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
-    bool isScanning_ = false;
     bool isCameraOn_ = false;
     int32_t lastCameraUid_ = StatsUtils::INVALID_VALUE;
     std::string debugInfo_;

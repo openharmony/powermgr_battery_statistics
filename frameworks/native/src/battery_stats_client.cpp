@@ -38,12 +38,12 @@ ErrCode BatteryStatsClient::Connect()
     }
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (sam == nullptr) {
-        STATS_HILOGD(COMP_FWK, "Fail to get Registry");
+        STATS_HILOGE(COMP_FWK, "Fail to get registry");
         return E_STATS_GET_SYSTEM_ABILITY_MANAGER_FAILED;
     }
     sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     if (remoteObject_ == nullptr) {
-        STATS_HILOGD(COMP_FWK, "Get SystemAbility failed");
+        STATS_HILOGE(COMP_FWK, "Get batterystats service failed");
         return E_STATS_GET_SERVICE_FAILED;
     }
     proxy_ = iface_cast<IBatteryStats>(remoteObject_);
@@ -64,16 +64,16 @@ void BatteryStatsClient::ResetProxy(const wptr<IRemoteObject>& remote)
 void BatteryStatsClient::BatteryStatsDeathRecipient::OnRemoteDied(const wptr<IRemoteObject>& remote)
 {
     if (remote == nullptr) {
-        STATS_HILOGD(COMP_FWK, "OnRemoteDied failed, remote is nullptr");
+        STATS_HILOGE(COMP_FWK, "OnRemoteDied failed, remote is nullptr");
         return;
     }
     BatteryStatsClient::GetInstance().ResetProxy(remote);
-    STATS_HILOGD(COMP_FWK, "Recv death notice");
+    STATS_HILOGI(COMP_FWK, "Receive death notification");
 }
 
 BatteryStatsInfoList BatteryStatsClient::GetBatteryStats()
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetBatteryStats");
+    STATS_HILOGD(COMP_FWK, "Call GetBatteryStats");
     BatteryStatsInfoList entityList;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, entityList);
     entityList = proxy_->GetBatteryStats();
@@ -82,7 +82,7 @@ BatteryStatsInfoList BatteryStatsClient::GetBatteryStats()
 
 double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetAppStatsMah");
+    STATS_HILOGD(COMP_FWK, "Call GetAppStatsMah");
     double appStatsMah = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, appStatsMah);
     appStatsMah = proxy_->GetAppStatsMah(uid);
@@ -91,14 +91,14 @@ double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
 
 void BatteryStatsClient::SetOnBattery(bool isOnBattery)
 {
-    STATS_HILOGD(COMP_FWK, "Calling SetOnBattery");
+    STATS_HILOGD(COMP_FWK, "Call SetOnBattery");
     STATS_RETURN_IF(Connect() != ERR_OK);
     proxy_->SetOnBattery(isOnBattery);
 }
 
 double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetAppStatsPercent");
+    STATS_HILOGD(COMP_FWK, "Call GetAppStatsPercent");
     double appStatsPercent = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, appStatsPercent);
     appStatsPercent = proxy_->GetAppStatsPercent(uid);
@@ -107,7 +107,7 @@ double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
 
 double BatteryStatsClient::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetPartStatsMah");
+    STATS_HILOGD(COMP_FWK, "Call GetPartStatsMah");
     double partStatsMah = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, partStatsMah);
     partStatsMah = proxy_->GetPartStatsMah(type);
@@ -116,7 +116,7 @@ double BatteryStatsClient::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTy
 
 double BatteryStatsClient::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetPartStatsPercent");
+    STATS_HILOGD(COMP_FWK, "Call GetPartStatsPercent");
     double partStatsPercent = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, partStatsPercent);
     partStatsPercent = proxy_->GetPartStatsPercent(type);
@@ -125,14 +125,14 @@ double BatteryStatsClient::GetPartStatsPercent(const BatteryStatsInfo::Consumpti
 
 void BatteryStatsClient::Reset()
 {
-    STATS_HILOGD(COMP_FWK, "Calling Reset");
+    STATS_HILOGD(COMP_FWK, "Call Reset");
     STATS_RETURN_IF(Connect() != ERR_OK);
     proxy_->Reset();
 }
 
 uint64_t BatteryStatsClient::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetTotalTimeSecond");
+    STATS_HILOGD(COMP_FWK, "Call GetTotalTimeSecond");
     uint64_t time = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, time);
     time = proxy_->GetTotalTimeSecond(statsType, uid);
@@ -141,7 +141,7 @@ uint64_t BatteryStatsClient::GetTotalTimeSecond(const StatsUtils::StatsType& sta
 
 uint64_t BatteryStatsClient::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
-    STATS_HILOGD(COMP_FWK, "Calling GetTotalDataBytes");
+    STATS_HILOGD(COMP_FWK, "Call GetTotalDataBytes");
     uint64_t count = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, count);
     count = proxy_->GetTotalDataBytes(statsType, uid);
@@ -150,7 +150,7 @@ uint64_t BatteryStatsClient::GetTotalDataBytes(const StatsUtils::StatsType& stat
 
 std::string BatteryStatsClient::Dump(const std::vector<std::string>& args)
 {
-    STATS_HILOGD(COMP_FWK, "Calling Dump");
+    STATS_HILOGD(COMP_FWK, "Call Dump");
     std::string error = "can't connect service";
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, error);
     return proxy_->ShellDump(args, args.size());

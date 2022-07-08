@@ -38,9 +38,9 @@ int64_t AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid
         auto almIter = alarmCounterMap_.find(uid);
         if (almIter != alarmCounterMap_.end()) {
             count = almIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
+            STATS_HILOGD(COMP_SVC, "Get alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
         } else {
-            STATS_HILOGD(COMP_SVC, "No alarm count related with uid: %{public}d found, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "No alarm count related to uid: %{public}d was found, return 0", uid);
         }
     }
     return count;
@@ -69,11 +69,11 @@ double AlarmEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = alarmPowerMap_.find(uidOrUserId);
     if (iter != alarmPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app alarm power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app alarm power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app alarm power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app alarm power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -85,11 +85,11 @@ double AlarmEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
         auto alarmOnIter = alarmPowerMap_.find(uid);
         if (alarmOnIter != alarmPowerMap_.end()) {
             power = alarmOnIter->second;
-            STATS_HILOGD(COMP_SVC, "Got alarm on power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get alarm on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No alarm on power alarm related with uid: %{public}d found, return 0", uid);
+                "No alarm on power alarm related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -102,7 +102,7 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
         case StatsUtils::STATS_TYPE_ALARM: {
             auto alarmOnIter = alarmCounterMap_.find(uid);
             if (alarmOnIter != alarmCounterMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got alarm on counter for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get alarm on counter for uid: %{public}d", uid);
                 counter = alarmOnIter->second;
                 break;
             }
@@ -113,7 +113,7 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active conuter failed");
+            STATS_HILOGW(COMP_SVC, "Create active conuter failed");
             break;
     }
     return counter;
@@ -121,7 +121,7 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
 
 void AlarmEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Alarm on total power consumption
     for (auto& iter : alarmPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

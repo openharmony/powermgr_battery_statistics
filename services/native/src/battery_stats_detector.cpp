@@ -41,7 +41,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
 
     auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     if (bss == nullptr) {
-        STATS_HILOGD(COMP_SVC, "Got Battery stats service failed");
+        STATS_HILOGE(COMP_SVC, "Get battery stats service failed");
         return;
     }
     auto core = bss->GetBatteryStatsCore();
@@ -52,8 +52,6 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
     } else if (IsStateRelated(data.type)) {
         // Update related timer based on state or level
         core->UpdateStats(data.type, data.state, data.level, data.uid, data.deviceId);
-    } else {
-        STATS_HILOGD(COMP_SVC, "Got invalid type");
     }
     HandleDebugInfo(data);
 }
@@ -71,11 +69,9 @@ bool BatteryStatsDetector::IsDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_ALARM:
             // Realated with duration
             isMatch = true;
-            STATS_HILOGD(COMP_SVC, "Type: %{public}s is duration related",
-                StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGD(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "No duration related type=%{public}d", static_cast<int32_t>(type));
             break;
     }
     return isMatch;
@@ -104,11 +100,9 @@ bool BatteryStatsDetector::IsStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
             // Related with state
             isMatch = true;
-            STATS_HILOGD(COMP_SVC, "Type: %{public}s is state related",
-                StatsUtils::ConvertStatsType(type).c_str());
             break;
         default:
-            STATS_HILOGD(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "No state related type=%{public}d", static_cast<int32_t>(type));
             break;
     }
     return isMatch;
@@ -285,7 +279,7 @@ void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
             HandleDistributedSchedulerInfo(data, bootTimeMs, debugInfo);
             break;
         default:
-            STATS_HILOGD(COMP_SVC, "Got invalid type");
+            STATS_HILOGD(COMP_SVC, "Invalid type");
             break;
     }
     core->UpdateDebugInfo(debugInfo);

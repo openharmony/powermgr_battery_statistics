@@ -35,7 +35,7 @@ auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance(
 bool CpuTimeReader::Init()
 {
     if (!UpdateCpuTime()) {
-        STATS_HILOGD(COMP_SVC, "Update cpu time failed");
+        STATS_HILOGW(COMP_SVC, "Update cpu time failed");
     }
     return true;
 }
@@ -46,7 +46,7 @@ int64_t CpuTimeReader::GetUidCpuActiveTimeMs(int32_t uid)
     auto iter = activeTimeMap_.find(uid);
     if (iter != activeTimeMap_.end()) {
         cpuActiveTime = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got cpu active time: %{public}s for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get cpu active time: %{public}s for uid: %{public}d",
             std::to_string(cpuActiveTime).c_str(), uid);
     } else {
         STATS_HILOGD(COMP_SVC, "No cpu active time found for uid: %{public}d, return 0", uid);
@@ -58,7 +58,7 @@ void CpuTimeReader::DumpInfo(std::string& result, int32_t uid)
 {
     auto uidIter = lastUidTimeMap_.find(uid);
     if (uidIter == lastUidTimeMap_.end()) {
-        STATS_HILOGD(COMP_SVC, "No related CPU info for uid: %{public}d", uid);
+        STATS_HILOGE(COMP_SVC, "No related CPU info for uid: %{public}d", uid);
         return;
     }
     std::string freqTime = "";
@@ -87,11 +87,9 @@ int64_t CpuTimeReader::GetUidCpuClusterTimeMs(int32_t uid, uint32_t cluster)
     auto iter = clusterTimeMap_.find(uid);
     if (iter != clusterTimeMap_.end()) {
         auto cpuClusterTimeVector = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got cpu cluster time vector for uid: %{public}d, size: %{public}d", uid,
-            (int)cpuClusterTimeVector.size());
         if (cluster < cpuClusterTimeVector.size()) {
             cpuClusterTime = cpuClusterTimeVector[cluster];
-            STATS_HILOGD(COMP_SVC, "Got cpu cluster time: %{public}s of cluster: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get cpu cluster time: %{public}s of cluster: %{public}d",
                 std::to_string(cpuClusterTime).c_str(), cluster);
         } else {
             STATS_HILOGD(COMP_SVC, "No cpu cluster time of cluster: %{public}d found, return 0", cluster);
@@ -108,16 +106,12 @@ int64_t CpuTimeReader::GetUidCpuFreqTimeMs(int32_t uid, uint32_t cluster, uint32
     auto uidIter = freqTimeMap_.find(uid);
     if (uidIter != freqTimeMap_.end()) {
         auto cpuFreqTimeMap = uidIter->second;
-        STATS_HILOGD(COMP_SVC, "Got uid cpu freq time map for uid: %{public}d, size: %{public}d", uid,
-            (int)cpuFreqTimeMap.size());
         auto clusterIter = cpuFreqTimeMap.find(cluster);
         if (clusterIter != cpuFreqTimeMap.end()) {
             auto cpuFreqTimeVector = clusterIter->second;
-            STATS_HILOGD(COMP_SVC, "Got cpu freq time vector of cluster: %{public}d, size: %{public}d",
-                cluster, (int)cpuFreqTimeVector.size());
             if (speed < cpuFreqTimeVector.size()) {
                 cpuFreqTime = cpuFreqTimeVector[speed];
-                STATS_HILOGD(COMP_SVC, "Got cpu freq time: %{public}s of speed: %{public}d",
+                STATS_HILOGD(COMP_SVC, "Get cpu freq time: %{public}s of speed: %{public}d",
                     std::to_string(cpuFreqTime).c_str(), speed);
             } else {
                 STATS_HILOGD(COMP_SVC, "No cpu freq time of speed: %{public}d found, return 0", speed);
@@ -138,7 +132,7 @@ std::vector<int64_t> CpuTimeReader::GetUidCpuTimeMs(int32_t uid)
     auto iter = uidTimeMap_.find(uid);
     if (iter != uidTimeMap_.end()) {
         cpuTimeVec = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got uid cpu time vector for uid: %{public}d, size: %{public}d", uid,
+        STATS_HILOGD(COMP_SVC, "Get uid cpu time vector for uid: %{public}d, size: %{public}d", uid,
             (int)cpuTimeVec.size());
     } else {
         STATS_HILOGD(COMP_SVC, "No uid cpu time vector found for uid: %{public}d, return null", uid);
@@ -149,32 +143,24 @@ std::vector<int64_t> CpuTimeReader::GetUidCpuTimeMs(int32_t uid)
 bool CpuTimeReader::UpdateCpuTime()
 {
     bool result = true;
-    if (ReadUidCpuClusterTime()) {
-        STATS_HILOGD(COMP_SVC, "Read uid cpu cluster time successfully");
-    } else {
+    if (!ReadUidCpuClusterTime()) {
+        STATS_HILOGW(COMP_SVC, "Read uid cpu cluster time failed");
         result = false;
-        STATS_HILOGD(COMP_SVC, "Read uid cpu cluster time failed");
     }
 
-    if (ReadUidCpuTime()) {
-        STATS_HILOGD(COMP_SVC, "Read uid cpu time successfully");
-    } else {
+    if (!ReadUidCpuTime()) {
+        STATS_HILOGW(COMP_SVC, "Read uid cpu time failed");
         result = false;
-        STATS_HILOGD(COMP_SVC, "Read uid cpu time failed");
     }
 
-    if (ReadUidCpuActiveTime()) {
-        STATS_HILOGD(COMP_SVC, "Read uid cpu active time successfully");
-    } else {
+    if (!ReadUidCpuActiveTime()) {
+        STATS_HILOGW(COMP_SVC, "Read uid cpu active time failed");
         result = false;
-        STATS_HILOGD(COMP_SVC, "Read uid cpu active time failed");
     }
 
-    if (ReadUidCpuFreqTime()) {
-        STATS_HILOGD(COMP_SVC, "Read uid cpu freq time successfully");
-    } else {
+    if (!ReadUidCpuFreqTime()) {
+        STATS_HILOGW(COMP_SVC, "Read uid cpu freq time failed");
         result = false;
-        STATS_HILOGD(COMP_SVC, "Read uid cpu freq time failed");
     }
     return result;
 }
@@ -192,38 +178,29 @@ bool CpuTimeReader::ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid)
     if (timeMs > 0) {
         auto iterLast = lastActiveTimeMap_.find(uid);
         if (iterLast != lastActiveTimeMap_.end()) {
-            STATS_HILOGD(COMP_SVC, "Cpu last active time: %{public}s ms",
-                std::to_string(iterLast->second).c_str());
             increment = timeMs - iterLast->second;
             if (increment >= 0) {
                 iterLast->second = timeMs;
             } else {
-                STATS_HILOGD(COMP_SVC, "Negative cpu active time increment got");
+                STATS_HILOGI(COMP_SVC, "Negative cpu active time increment");
                 return false;
             }
         } else {
             lastActiveTimeMap_.insert(std::pair<int32_t, int64_t>(uid, timeMs));
             increment = timeMs;
         }
-        STATS_HILOGD(COMP_SVC, "Got cpu active time increment: %{public}s ms",
-            std::to_string(increment).c_str());
-        STATS_HILOGD(COMP_SVC, "Update last cpu active time: %{public}s ms, uid: %{public}d",
-            std::to_string(timeMs).c_str(), uid);
     }
 
     if (StatsHelper::IsOnBattery()) {
+        STATS_HILOGD(COMP_SVC, "Power supply is not connected. Add the increment");
         auto iter = activeTimeMap_.find(uid);
         if (iter != activeTimeMap_.end()) {
             iter->second += increment;
-            STATS_HILOGD(COMP_SVC, "Update active time: %{public}sms, uid: %{public}d",
-                std::to_string(iter->second).c_str(), uid);
         } else {
             activeTimeMap_.insert(std::pair<int32_t, int64_t>(uid, increment));
-            STATS_HILOGD(COMP_SVC, "Add active time: %{public}sms, uid: %{public}d",
+            STATS_HILOGI(COMP_SVC, "Add active time: %{public}sms, uid: %{public}d",
                 std::to_string(increment).c_str(), uid);
         }
-    } else {
-        STATS_HILOGD(COMP_SVC, "Power supply is connected, don't add the increment");
     }
     return true;
 }
@@ -232,13 +209,12 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
 {
     std::ifstream input(UID_CPU_ACTIVE_TIME_FILE);
     if (!input) {
-        STATS_HILOGD(COMP_SVC, "Opening file: %{public}s failed", UID_CPU_ACTIVE_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_ACTIVE_TIME_FILE.c_str());
         return false;
     }
 
     std::string line;
     while (getline(input, line)) {
-        STATS_HILOGD(COMP_SVC, "Got line: %{public}s", line.c_str());
         int32_t uid = StatsUtils::INVALID_VALUE;
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
@@ -274,7 +250,6 @@ void CpuTimeReader::ReadPolicy(std::vector<uint16_t>& clusters, std::string& lin
         uint16_t coreNum = static_cast<uint16_t>(stoi(splitedPolicy[i + 1]));
         clusters.push_back(coreNum);
         clustersMap_.insert(std::pair<uint16_t, uint16_t>(i, coreNum));
-        STATS_HILOGD(COMP_SVC, "Got cpu core num: %{public}d", coreNum);
     }
 }
 
@@ -289,32 +264,25 @@ bool CpuTimeReader::ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, 
         for (uint16_t j = 0; j < clusters[i]; j++) {
             tempTimeMs += stoll(splitedTime[count++]) * 10; // Unit is 10ms
         }
-        STATS_HILOGD(COMP_SVC, "Got cpu cluster time: %{public}s", std::to_string(tempTimeMs).c_str());
         clusterTime.push_back(tempTimeMs);
     }
 
     auto iterLast = lastClusterTimeMap_.find(uid);
     if (iterLast != lastClusterTimeMap_.end()) {
-        STATS_HILOGD(COMP_SVC, "Cpu last cluster time vec size: %{public}zu", iterLast->second.size());
         for (uint16_t i = 0; i < clusters.size(); i++) {
             int64_t increment = clusterTime[i] - iterLast->second[i];
-            STATS_HILOGD(COMP_SVC,
-                "Cpu cluster time increment: %{public}s ms, last cluster time increment: %{public}s ms",
-                std::to_string(increment).c_str(), std::to_string(iterLast->second[i]).c_str());
             if (increment >= 0) {
                 iterLast->second[i] = clusterTime[i];
                 increments.push_back(increment);
-                STATS_HILOGD(COMP_SVC, "Update last cpu cluster time to: %{public}s ms, uid: %{public}d",
-                    std::to_string(clusterTime[i]).c_str(), uid);
             } else {
-                STATS_HILOGD(COMP_SVC, "Negative cpu cluster time increment got");
+                STATS_HILOGD(COMP_SVC, "Negative cpu cluster time increment");
                 return false;
             }
         }
     } else {
         lastClusterTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, clusterTime));
         increments = clusterTime;
-        STATS_HILOGD(COMP_SVC, "Add last cpu cluster time for uid: %{public}d", uid);
+        STATS_HILOGI(COMP_SVC, "Add last cpu cluster time for uid: %{public}d", uid);
     }
     return true;
 }
@@ -323,7 +291,7 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
 {
     std::ifstream input(UID_CPU_CLUSTER_TIME_FILE);
     if (!input) {
-        STATS_HILOGD(COMP_SVC, "Opening file: %{public}s failed", UID_CPU_CLUSTER_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_CLUSTER_TIME_FILE.c_str());
         return false;
     }
     std::string line;
@@ -331,7 +299,6 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
     std::vector<uint16_t> clusters;
     std::vector<int64_t> clusterTime;
     while (getline(input, line)) {
-        STATS_HILOGD(COMP_SVC, "Got line: %{public}s", line.c_str());
         clusterTime.clear();
         if (line.find("policy") != line.npos) {
             ReadPolicy(clusters, line);
@@ -354,19 +321,16 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
         }
 
         if (StatsHelper::IsOnBattery()) {
+            STATS_HILOGD(COMP_SVC, "Power supply is not connected. Add the increment");
             auto iter = clusterTimeMap_.find(uid);
             if (iter != clusterTimeMap_.end()) {
                 for (uint16_t i = 0; i < clusters.size(); i++) {
                     iter->second[i] += increments[i];
-                    STATS_HILOGD(COMP_SVC, "Update cpu cluster time to: %{public}s ms for uid: %{public}d",
-                        std::to_string(iter->second[i]).c_str(), uid);
                 }
             } else {
                 clusterTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, increments));
-                STATS_HILOGD(COMP_SVC, "Add cpu cluster time for uid: %{public}d", uid);
+                STATS_HILOGI(COMP_SVC, "Add cpu cluster time for uid: %{public}d", uid);
             }
-        } else {
-            STATS_HILOGD(COMP_SVC, "Power supply is connected, don't add the increment");
         }
     }
     return true;
@@ -377,26 +341,20 @@ bool CpuTimeReader::ProcessFreqTime(std::map<uint32_t, std::vector<int64_t>>& ma
 {
     auto iterLastTemp = map.find(index);
     if (iterLastTemp != map.end()) {
-        STATS_HILOGD(COMP_SVC, "Cpu last freq time vec size: %{public}zu", iterLastTemp->second.size());
         std::vector<int64_t> lastSpeedTimes = iterLastTemp->second;
         std::vector<int64_t> newIncrementTimes;
         newIncrementTimes.clear();
         for (uint16_t j = 0; j < lastSpeedTimes.size(); j++) {
-            STATS_HILOGD(COMP_SVC, "Cpu last freq time: %{public}s ms",
-                std::to_string(lastSpeedTimes[j]).c_str());
             int64_t increment = speedTime.at(index)[j] - lastSpeedTimes[j];
             if (increment >= 0) {
                 newIncrementTimes.push_back(increment);
                 increments.insert(std::pair<uint32_t, std::vector<int64_t>>(index, newIncrementTimes));
-                STATS_HILOGD(COMP_SVC, "Got cpu freq time increment: %{public}s ms, uid: %{public}d",
-                    std::to_string(increment).c_str(), uid);
             } else {
-                STATS_HILOGD(COMP_SVC, "Negative cpu freq time increment got");
+                STATS_HILOGI(COMP_SVC, "Negative cpu freq time increment");
                 return false;
             }
         }
         iterLastTemp->second = speedTime.at(index);
-        STATS_HILOGD(COMP_SVC, "Update last cpu freq time for uid: %{public}d", uid);
     }
     return true;
 }
@@ -413,7 +371,6 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
         for (uint16_t j = 0; j < parser->GetSpeedNum(i); j++) {
             int64_t tempTimeMs = stoll(splitedTime[count++]) * 10; // Unit is 10ms
             tempSpeedTimes.push_back(tempTimeMs);
-            STATS_HILOGD(COMP_SVC, "Got cpu freq time: %{public}s", std::to_string(tempTimeMs).c_str());
         }
         speedTime.insert(std::pair<uint32_t, std::vector<int64_t>>(i, tempSpeedTimes));
     }
@@ -422,7 +379,7 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
     if (iterLast == lastFreqTimeMap_.end()) {
         lastFreqTimeMap_.insert(std::pair<int32_t, std::map<uint32_t, std::vector<int64_t>>>(uid, speedTime));
         increments = speedTime;
-        STATS_HILOGD(COMP_SVC, "Add last cpu freq time for uid: %{public}d", uid);
+        STATS_HILOGI(COMP_SVC, "Add last cpu freq time for uid: %{public}d", uid);
         return true;
     }
     for (uint16_t i = 0; i < lastFreqTimeMap_.size(); i++) {
@@ -460,19 +417,11 @@ void CpuTimeReader::AddFreqTimeToUid(std::map<uint32_t, std::vector<int64_t>>& u
             uint16_t speedNum = parser->GetSpeedNum(i);
             for (uint16_t j = 0; j < speedNum; j++) {
                 iter->second.at(i)[j] += uidIncrements.at(i)[j];
-                STATS_HILOGD(COMP_SVC, "Update cpu freq time to: %{public}s ms for uid: %{public}d",
-                    std::to_string(iter->second.at(i)[j]).c_str(), uid);
             }
         }
     } else {
         freqTimeMap_.insert(std::pair<int32_t, std::map<uint32_t, std::vector<int64_t>>>(uid, uidIncrements));
-        STATS_HILOGD(COMP_SVC, "Add cpu freq time for uid: %{public}d", uid);
-        for (auto iter : uidIncrements) {
-            STATS_HILOGD(COMP_SVC, "uidIncrements cluster = %{public}u", iter.first);
-            for (auto time : iter.second) {
-                STATS_HILOGD(COMP_SVC, "uidIncrements time = %{public}s", std::to_string(time).c_str());
-            }
-        }
+        STATS_HILOGI(COMP_SVC, "Add cpu freq time for uid: %{public}d", uid);
     }
 }
 
@@ -480,14 +429,13 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
 {
     std::ifstream input(UID_CPU_FREQ_TIME_FILE);
     if (!input) {
-        STATS_HILOGD(COMP_SVC, "Opening file: %{public}s failed", UID_CPU_CLUSTER_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_FREQ_TIME_FILE.c_str());
         return false;
     }
     std::string line;
     int32_t uid = -1;
     std::map<uint32_t, std::vector<int64_t>> speedTime;
     while (getline(input, line)) {
-        STATS_HILOGD(COMP_SVC, "Got line: %{public}s", line.c_str());
         speedTime.clear();
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
@@ -534,34 +482,26 @@ bool CpuTimeReader::ReadUidTimeIncrement(std::vector<int64_t>& cpuTime, std::vec
         int64_t tempTime = 0;
         tempTime = stoll(splitedTime[i]);
         cpuTime.push_back(tempTime);
-        STATS_HILOGD(COMP_SVC, "Got cpu time: %{public}s", std::to_string(tempTime).c_str());
     }
 
     std::vector<int64_t> increments;
     auto iterLast = lastUidTimeMap_.find(uid);
     if (iterLast != lastUidTimeMap_.end()) {
-        STATS_HILOGD(COMP_SVC, "Cpu last time vec size: %{public}zu", iterLast->second.size());
         for (uint16_t i = 0; i < splitedTime.size(); i++) {
             int64_t increment = 0;
             increment = cpuTime[i] - iterLast->second[i];
-            STATS_HILOGD(COMP_SVC, "Cpu last time: %{public}s ms",
-                std::to_string(iterLast->second[i]).c_str());
-            STATS_HILOGD(COMP_SVC, "Cpu time increment: %{public}s ms, uid: %{public}d",
-                std::to_string(increment).c_str(), uid);
             if (increment >= 0) {
                 iterLast->second[i] = cpuTime[i];
                 increments.push_back(increment);
-                STATS_HILOGD(COMP_SVC, "Update last cpu time to: %{public}s ms, uid: %{public}d",
-                    std::to_string(cpuTime[i]).c_str(), uid);
             } else {
-                STATS_HILOGD(COMP_SVC, "Negative cpu time increment got");
+                STATS_HILOGI(COMP_SVC, "Negative cpu time increment");
                 return false;
             }
         }
     } else {
         lastUidTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, cpuTime));
         increments = cpuTime;
-        STATS_HILOGD(COMP_SVC, "Add last cpu time for uid: %{public}d", uid);
+        STATS_HILOGI(COMP_SVC, "Add last cpu time for uid: %{public}d", uid);
     }
 
     uidIncrements = increments;
@@ -579,14 +519,13 @@ bool CpuTimeReader::ReadUidCpuTime()
 {
     std::ifstream input(UID_CPU_TIME_FILE);
     if (!input) {
-        STATS_HILOGD(COMP_SVC, "Opening file: %{public}s failed", UID_CPU_CLUSTER_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_TIME_FILE.c_str());
         return false;
     }
     std::string line;
     int32_t uid = -1;
     std::vector<int64_t> cpuTime;
     while (getline(input, line)) {
-        STATS_HILOGD(COMP_SVC, "Got line: %{public}s", line.c_str());
         cpuTime.clear();
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
@@ -605,19 +544,16 @@ bool CpuTimeReader::ReadUidCpuTime()
         }
 
         if (StatsHelper::IsOnBattery()) {
+            STATS_HILOGD(COMP_SVC, "Power supply is not connected. Add the increment");
             auto iter = uidTimeMap_.find(uid);
             if (iter != uidTimeMap_.end()) {
                 for (uint16_t i = 0; i < uidIncrements.size(); i++) {
                     iter->second[i] = uidIncrements[i];
-                    STATS_HILOGD(COMP_SVC, "Update cpu time to: %{public}s ms for uid: %{public}d",
-                        std::to_string(iter->second[i]).c_str(), uid);
                 }
             } else {
                 uidTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, uidIncrements));
-                STATS_HILOGD(COMP_SVC, "Add cpu time for uid: %{public}d", uid);
+                STATS_HILOGI(COMP_SVC, "Add cpu time for uid: %{public}d", uid);
             }
-        } else {
-            STATS_HILOGD(COMP_SVC, "Power supply is connected, don't add the increment");
         }
     }
     return true;

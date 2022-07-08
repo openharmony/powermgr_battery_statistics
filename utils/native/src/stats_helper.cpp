@@ -33,11 +33,11 @@ int64_t StatsHelper::GetBootTimeMs()
     struct timespec rawBootTime;
     int errCode = clock_gettime(CLOCK_BOOTTIME, &rawBootTime);
     if (errCode != 0) {
-        STATS_HILOGD(COMP_SVC, "Get boot time failed, return default time");
+        STATS_HILOGE(COMP_SVC, "Get boot time failed, return default time");
     } else {
         bootTimeMs = static_cast<int64_t>(rawBootTime.tv_sec * StatsUtils::MS_IN_SECOND +
             rawBootTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGD(COMP_SVC, "Got boot time: %{public}" PRId64 "", bootTimeMs);
+        STATS_HILOGD(COMP_SVC, "Get boot time: %{public}" PRId64 "", bootTimeMs);
     }
     return bootTimeMs;
 }
@@ -48,11 +48,11 @@ int64_t StatsHelper::GetUpTimeMs()
     struct timespec rawUpTime;
     int errCode = clock_gettime(CLOCK_MONOTONIC, &rawUpTime);
     if (errCode != 0) {
-        STATS_HILOGD(COMP_SVC, "Get up time failed, return default time");
+        STATS_HILOGE(COMP_SVC, "Get up time failed, return default time");
     } else {
         upTimeMs = static_cast<int64_t>(rawUpTime.tv_sec * StatsUtils::MS_IN_SECOND +
             rawUpTime.tv_nsec / StatsUtils::NS_IN_MS);
-        STATS_HILOGD(COMP_SVC, "Got up time: %{public}" PRId64 "", upTimeMs);
+        STATS_HILOGD(COMP_SVC, "Get up time: %{public}" PRId64 "", upTimeMs);
     }
     return upTimeMs;
 }
@@ -65,14 +65,13 @@ void StatsHelper::SetOnBattery(bool onBattery)
         int64_t currentBootTimeMs = GetBootTimeMs();
         int64_t currentUpTimeMs = GetUpTimeMs();
         if (onBattery) {
-            STATS_HILOGD(COMP_SVC, "Power supply is disconnected");
             latestUnplugBootTimeMs_ = currentBootTimeMs;
             latestUnplugUpTimeMs_ = currentUpTimeMs;
         } else {
-            STATS_HILOGD(COMP_SVC, "Power supply is connected");
             onBatteryBootTimeMs_ += currentBootTimeMs - latestUnplugBootTimeMs_;
             onBatteryUpTimeMs_ += currentUpTimeMs - latestUnplugUpTimeMs_;
         }
+        STATS_HILOGI(COMP_SVC, "Update battery state:  %{public}d", onBattery);
     }
 }
 
@@ -101,7 +100,7 @@ int64_t StatsHelper::GetOnBatteryBootTimeMs()
     if (IsOnBattery()) {
         onBatteryBootTimeMs += currentBootTimeMs - latestUnplugBootTimeMs_;
     }
-    STATS_HILOGD(COMP_SVC, "Got on battery boot time: %{public}" PRId64 ", currentBootTimeMs: %{public}" PRId64 "," \
+    STATS_HILOGD(COMP_SVC, "Get on battery boot time: %{public}" PRId64 ", currentBootTimeMs: %{public}" PRId64 "," \
         "latestUnplugBootTimeMs_: %{public}" PRId64 "",
         onBatteryBootTimeMs, currentBootTimeMs, latestUnplugBootTimeMs_);
     return onBatteryBootTimeMs;
@@ -114,7 +113,7 @@ int64_t StatsHelper::GetOnBatteryUpTimeMs()
     if (IsOnBattery()) {
         onBatteryUpTimeMs += currentUpTimeMs - latestUnplugUpTimeMs_;
     }
-    STATS_HILOGD(COMP_SVC, "Got on battery up time: %{public}" PRId64 "", onBatteryUpTimeMs);
+    STATS_HILOGD(COMP_SVC, "Get on battery up time: %{public}" PRId64 "", onBatteryUpTimeMs);
     return onBatteryUpTimeMs;
 }
 } // namespace PowerMgr

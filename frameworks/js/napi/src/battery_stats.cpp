@@ -56,7 +56,7 @@ static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatterySta
 
     napi_status status = napi_set_element(env, arrayResult, idx, result);
     if (status != napi_ok) {
-        STATS_HILOGD(COMP_FWK, "BatteryStats js napi set element error: %{public}d", status);
+        STATS_HILOGE(COMP_FWK, "Napi sets element error: %{public}d", status);
     }
 }
 
@@ -77,7 +77,7 @@ static bool GetBatteryStatsInfoList(std::vector<BatteryStats>& vecStatsInfo)
 {
     BatteryStatsInfoList vecCppStatsInfos = BatteryStatsClient::GetInstance().GetBatteryStats();
     if (vecCppStatsInfos.size() <= 0) {
-        STATS_HILOGD(COMP_FWK, "Get Stats info failed");
+        STATS_HILOGW(COMP_FWK, "Get battery stats info failed");
         return false;
     }
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecStatsInfo);
@@ -90,7 +90,7 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
 {
     napi_status status = napi_create_array_with_length(env, vecStatsInfo.size(), &result);
     if (status != napi_ok) {
-        STATS_HILOGD(COMP_FWK, "BatteryStats napi_create_array_with_length error: %{public}d", status);
+        STATS_HILOGE(COMP_FWK, "Napi creates array error: %{public}d", status);
         return;
     }
     for (size_t i = 0; i < vecStatsInfo.size(); ++i) {
@@ -132,7 +132,6 @@ static napi_value StatsInfoToPromise(const napi_env& env, std::unique_ptr<AsyncC
         &asCallbackInfoPtr->asyncWork);
     NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
     asCallbackInfoPtr.release();
-    STATS_HILOGD(COMP_FWK, "Exit");
     return NULL;
 }
 
@@ -170,7 +169,7 @@ static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<Async
                     napi_get_reference_value(env, asCallbackInfo->callback[1], &callback);
                     napi_call_function(env, nullptr, callback, 1, &result, &undefine);
                 } else {
-                    STATS_HILOGD(COMP_FWK, "StatsInfoList callback func is null");
+                    STATS_HILOGW(COMP_FWK, "StatsInfoList callback func is null");
                     napi_throw_error(env, "error", "StatsInfoList callback func is null");
                 }
             }
@@ -188,7 +187,6 @@ static napi_value StatsInfoToCallBack(const napi_env& env, std::unique_ptr<Async
         &asCallbackInfoPtr->asyncWork);
     NAPI_CALL(env, napi_queue_async_work(env, asCallbackInfoPtr->asyncWork));
     asCallbackInfoPtr.release();
-    STATS_HILOGD(COMP_FWK, "Exit");
     return NULL;
 }
 
@@ -207,12 +205,12 @@ static napi_value GetBatteryStats(napi_env env, napi_callback_info info)
 
     if (argc >= 1) {
         StatsInfoToCallBack(env, asCallbackInfoPtr, argc, argv);
-        STATS_HILOGD(COMP_FWK, "Exit_callback");
+        STATS_HILOGI(COMP_FWK, "Exit with callback");
         return NULL;
     } else {
         napi_value promise;
         StatsInfoToPromise(env, asCallbackInfoPtr, promise);
-        STATS_HILOGD(COMP_FWK, "Exit_promise");
+        STATS_HILOGI(COMP_FWK, "Exit with promise");
         return promise;
     }
 }
@@ -236,7 +234,7 @@ static napi_value GetAppStatsMah(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, appStatsMah, &result);
-    STATS_HILOGD(COMP_FWK, "Got stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
+    STATS_HILOGI(COMP_FWK, "Get battery stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return result;
 }
 
@@ -259,7 +257,7 @@ static napi_value GetAppStatsPercent(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, appStatsPercent, &result);
-    STATS_HILOGD(COMP_FWK, "Got stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
+    STATS_HILOGI(COMP_FWK, "Get battery stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return result;
 }
 
@@ -283,7 +281,7 @@ static napi_value GetPartStatsMah(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, partStatsMah, &result);
-    STATS_HILOGD(COMP_FWK, "Got stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
+    STATS_HILOGI(COMP_FWK, "Get battery stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return result;
 }
 
@@ -307,7 +305,7 @@ static napi_value GetPartStatsPercent(napi_env env, napi_callback_info info)
 
     napi_value result;
     napi_create_double(env, partStatsPercent, &result);
-    STATS_HILOGD(COMP_FWK, "Got stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
+    STATS_HILOGI(COMP_FWK, "Get battery stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return result;
 }
 

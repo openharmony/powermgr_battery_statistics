@@ -38,7 +38,7 @@ double UserEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = userPowerMap_.find(uidOrUserId);
     if (iter != userPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got user power consumption: %{public}lfmAh for user id: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get user power consumption: %{public}lfmAh for user id: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
@@ -74,7 +74,7 @@ void UserEntity::Calculate(int32_t uid)
 
 void UserEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app user total power consumption
     for (auto& iter : userPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

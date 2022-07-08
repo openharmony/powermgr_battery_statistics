@@ -69,11 +69,11 @@ double CameraEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = cameraPowerMap_.find(uidOrUserId);
     if (iter != cameraPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app camera power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app camera power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app camera power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app camera power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -85,11 +85,11 @@ double CameraEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
         auto cameraOnIter = cameraPowerMap_.find(uid);
         if (cameraOnIter != cameraPowerMap_.end()) {
             power = cameraOnIter->second;
-            STATS_HILOGD(COMP_SVC, "Got camera on power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get camera on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No camera on power consumption related with uid: %{public}d found, return 0", uid);
+                "No camera on power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -123,7 +123,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const s
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -131,7 +131,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const s
 
 void CameraEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Camera on total power consumption
     for (auto& iter : cameraPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
