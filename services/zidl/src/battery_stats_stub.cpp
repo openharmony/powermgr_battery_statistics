@@ -25,7 +25,7 @@ namespace OHOS {
 namespace PowerMgr {
 int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    STATS_HILOGD(COMP_SVC, "BatteryStatsStub::OnRemoteRequest, cmd = %{public}d, flags = %{public}d",
+    STATS_HILOGD(COMP_SVC, "Remote request, cmd = %{public}d, flags = %{public}d",
         code, option.GetFlags());
     const int DFX_DELAY_MS = 10000;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_MS, nullptr, nullptr,
@@ -34,7 +34,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
     std::u16string descriptor = BatteryStatsStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
-        STATS_HILOGD(COMP_SVC, "BatteryStatsStub::OnRemoteRequest failed, descriptor is not matched");
+        STATS_HILOGE(COMP_SVC, "Remote request failed, descriptor is not matched");
         return E_STATS_GET_SERVICE_FAILED;
     }
     ChooseCodeStub(code, data, reply, option);
@@ -102,7 +102,7 @@ int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
 
     uint32_t size = static_cast<uint32_t>(ret.size());
     if (!reply.WriteUint32(size)) {
-        STATS_HILOGD(COMP_SVC, "Write size failed");
+        STATS_HILOGE(COMP_SVC, "Write size failed");
         return false;
     }
     STATS_HILOGD(COMP_SVC, "Write size: %{public}u", size);
@@ -123,7 +123,7 @@ int32_t BatteryStatsStub::GetTotalTimeSecondStub(MessageParcel &data, MessagePar
     int32_t uid = data.ReadInt32();
     uint64_t ret = GetTotalTimeSecond(statsType, uid);
     if (!reply.WriteUint64(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -137,7 +137,7 @@ int32_t BatteryStatsStub::GetTotalDataBytesStub(MessageParcel &data, MessageParc
     int32_t uid = data.ReadInt32();
     uint64_t ret = GetTotalDataBytes(statsType, uid);
     if (!reply.WriteUint64(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -149,7 +149,7 @@ int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel&
     int32_t uid = data.ReadInt32();
     double ret = GetAppStatsMah(uid);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -161,7 +161,7 @@ int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessagePar
     int32_t uid = data.ReadInt32();
     double ret = GetAppStatsPercent(uid);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -174,7 +174,7 @@ int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel
     BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsMah(type);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -187,7 +187,7 @@ int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessagePa
     BatteryStatsInfo::ConsumptionType type = BatteryStatsInfo::ConsumptionType(typeProxy);
     double ret = GetPartStatsPercent(type);
     if (!reply.WriteDouble(ret)) {
-        STATS_HILOGD(COMP_SVC, "Write ret failed");
+        STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
     return ERR_OK;
@@ -214,7 +214,7 @@ int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& repl
     std::vector<std::string> args;
 
     if (!data.ReadUint32(argc)) {
-        STATS_HILOGD(COMP_SVC, "Readback fail");
+        STATS_HILOGE(COMP_SVC, "Readback fail");
         return E_STATS_READ_PARCEL_ERROR;
     }
 
@@ -223,13 +223,13 @@ int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& repl
         if (!arg.empty()) {
             args.push_back(arg);
         } else {
-            STATS_HILOGD(COMP_SVC, "read value fail: %{public}d", i);
+            STATS_HILOGW(COMP_SVC, "read value fail: %{public}d", i);
         }
     }
 
     std::string ret = ShellDump(args, argc);
     if (!reply.WriteString(ret)) {
-        STATS_HILOGD(COMP_SVC, "Dump Writeback Fail");
+        STATS_HILOGE(COMP_SVC, "Dump Writeback Fail");
         return E_STATS_WRITE_PARCEL_ERROR;
     }
     return ERR_OK;

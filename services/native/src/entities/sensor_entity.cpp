@@ -38,7 +38,7 @@ int64_t SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
         auto gravityIter = gravityTimerMap_.find(uid);
         if (gravityIter != gravityTimerMap_.end()) {
             activeTimeMs = gravityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got gravity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Get gravity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
@@ -47,7 +47,7 @@ int64_t SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
         auto proximityIter = proximityTimerMap_.find(uid);
         if (proximityIter != proximityTimerMap_.end()) {
             activeTimeMs = proximityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got proximity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Get proximity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
@@ -118,11 +118,11 @@ double SensorEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = sensorTotalPowerMap_.find(uidOrUserId);
     if (iter != sensorTotalPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app sensor power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app sensor power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app sensor power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app sensor power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -134,21 +134,21 @@ double SensorEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
         auto gravityOnIter = gravityPowerMap_.find(uid);
         if (gravityOnIter != gravityPowerMap_.end()) {
             power = gravityOnIter->second;
-            STATS_HILOGD(COMP_SVC, "Got gravity on power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get gravity on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No gravity on power consumption related with uid: %{public}d found, return 0", uid);
+                "No gravity on power consumption related to uid: %{public}d was found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
         auto proximityOnIter = proximityPowerMap_.find(uid);
         if (proximityOnIter != proximityPowerMap_.end()) {
             power = proximityOnIter->second;
-            STATS_HILOGD(COMP_SVC, "Got proximity on power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get proximity on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No proximity on power consumption related with uid: %{public}d found, return 0", uid);
+                "No proximity on power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -162,7 +162,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON: {
             auto gravityOnIter = gravityTimerMap_.find(uid);
             if (gravityOnIter != gravityTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got gravity on timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get gravity on timer for uid: %{public}d", uid);
                 timer = gravityOnIter->second;
                 break;
             }
@@ -176,7 +176,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
         case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON: {
             auto proximityOnIter = proximityTimerMap_.find(uid);
             if (proximityOnIter != proximityTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got proximity on timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get proximity on timer for uid: %{public}d", uid);
                 timer = proximityOnIter->second;
                 break;
             }
@@ -188,7 +188,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -196,7 +196,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
 
 void SensorEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app sensor total power consumption
     for (auto& iter : sensorTotalPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
@@ -225,7 +225,6 @@ void SensorEntity::Reset()
             iter.second->Reset();
         }
     }
-    STATS_HILOGD(COMP_SVC, "Exit");
 }
 } // namespace PowerMgr
 } // namespace OHOS

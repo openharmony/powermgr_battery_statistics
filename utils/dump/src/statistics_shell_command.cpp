@@ -46,7 +46,7 @@ static const std::string HELP_ERROR_OPTION_WRONG_MSG = "error: wrong option\n";
 StatisticsShellCommand::StatisticsShellCommand(int argc, char *argv[]) : ShellCommand(argc, argv, "Statistics")
 {
     for (int i = 0; i < argc_; i++) {
-        STATS_HILOGD(COMP_FWK, "argv_[%{public}d]: %{public}s", i, argv_[i]);
+        STATS_HILOGI(COMP_FWK, "argv_[%{public}d]: %{public}s", i, argv_[i]);
     }
 }
 
@@ -77,7 +77,7 @@ ErrCode StatisticsShellCommand::CheckParameter(void)
             resultReceiver_.clear();
             resultReceiver_.append(HELP_ERROR_OPTION_NEED_MSG);
             OptionHelp();
-            STATS_HILOGD(COMP_FWK, "No option parameter");
+            STATS_HILOGE(COMP_FWK, "No option parameter");
             return ERR_INVALID_VALUE;
         case ARG_SIZE_THREE: {
             if ((strcmp(argv_[ARG_INDEX_TWO], "-batterystats") == 0)) {
@@ -86,7 +86,7 @@ ErrCode StatisticsShellCommand::CheckParameter(void)
                 resultReceiver_.clear();
                 resultReceiver_.append(HELP_ERROR_OPTION_WRONG_MSG);
                 OptionHelp();
-                STATS_HILOGD(COMP_FWK, "Wrong option parameter");
+                STATS_HILOGE(COMP_FWK, "Wrong option parameter");
                 return ERR_INVALID_VALUE;
             }
         }
@@ -94,7 +94,7 @@ ErrCode StatisticsShellCommand::CheckParameter(void)
             resultReceiver_.clear();
             resultReceiver_.append(HELP_ERROR_OPTION_WRONG_MSG);
             OptionHelp();
-            STATS_HILOGD(COMP_FWK, "Wrong option parameter");
+            STATS_HILOGE(COMP_FWK, "Wrong option parameter");
             return ERR_INVALID_VALUE;
     }
     return ERR_OK;

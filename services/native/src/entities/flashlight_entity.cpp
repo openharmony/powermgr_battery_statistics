@@ -38,7 +38,7 @@ int64_t FlashlightEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType sta
         auto iter = flashlightTimerMap_.find(uid);
         if (iter != flashlightTimerMap_.end()) {
             activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got flashlight on time: %{public}" PRId64 "ms for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get flashlight on time: %{public}" PRId64 "ms for uid: %{public}d",
                 activeTimeMs, uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
@@ -71,11 +71,11 @@ double FlashlightEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = flashlightPowerMap_.find(uidOrUserId);
     if (iter != flashlightPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app flashlight power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app flashlight power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app flashlight power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app flashlight power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -88,10 +88,10 @@ double FlashlightEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32
         if (flashlightOnIter != flashlightPowerMap_.end()) {
             power = flashlightOnIter->second;
             STATS_HILOGD(COMP_SVC,
-                "Got flashlight on power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
+                "Get flashlight on power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No flashlight on power consumption related with uid: %{public}d found, return 0", uid);
+                "No flashlight on power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -105,7 +105,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON: {
             auto flashlightOnIter = flashlightTimerMap_.find(uid);
             if (flashlightOnIter != flashlightTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got flashlight on timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get flashlight on timer for uid: %{public}d", uid);
                 timer = flashlightOnIter->second;
                 break;
             }
@@ -117,7 +117,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -125,7 +125,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int
 
 void FlashlightEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Flashlight on total power consumption
     for (auto& iter : flashlightPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

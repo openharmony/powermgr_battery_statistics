@@ -39,11 +39,11 @@ int64_t CpuEntity::GetCpuTimeMs(int32_t uid)
     int64_t cpuTimeMs = StatsUtils::DEFAULT_VALUE;
     auto iter = cpuTimeMap_.find(uid);
     if (iter != cpuTimeMap_.end()) {
-        STATS_HILOGD(COMP_SVC, "Got cpu time: %{public}sms for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get cpu time: %{public}sms for uid: %{public}d",
             std::to_string(cpuTimeMs).c_str(), uid);
         cpuTimeMs = iter->second;
     } else {
-        STATS_HILOGD(COMP_SVC, "No cpu time realted with uid: %{public}d found, return 0", uid);
+        STATS_HILOGD(COMP_SVC, "No cpu time realted to uid: %{public}d was found, return 0", uid);
     }
     return cpuTimeMs;
 }
@@ -52,12 +52,10 @@ void CpuEntity::UpdateCpuTime()
 {
     if (cpuReader_) {
         if (!cpuReader_->UpdateCpuTime()) {
-            STATS_HILOGD(COMP_SVC, "Update CPU time failed");
-        } else {
-            STATS_HILOGD(COMP_SVC, "Update CPU time successfully");
+            STATS_HILOGE(COMP_SVC, "Update CPU time failed");
         }
     } else {
-        STATS_HILOGD(COMP_SVC, "Can't find CPU reader");
+        STATS_HILOGW(COMP_SVC, "CPU reader is nullptr");
     }
 }
 
@@ -176,11 +174,11 @@ double CpuEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = cpuTotalPowerMap_.find(uidOrUserId);
     if (iter != cpuTotalPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app cpu total power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app cpu total power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app cpu total power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app cpu total power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -193,31 +191,31 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
         auto cpuActiveIter = cpuActivePowerMap_.find(uid);
         if (cpuActiveIter != cpuActivePowerMap_.end()) {
             power = cpuActiveIter->second;
-            STATS_HILOGD(COMP_SVC, "Got cpu active power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get cpu active power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No cpu active power consumption related with uid: %{public}d found, return 0", uid);
+                "No cpu active power consumption related to uid: %{public}d was found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_CLUSTER) {
         auto cpuClusterIter = cpuClusterPowerMap_.find(uid);
         if (cpuClusterIter != cpuClusterPowerMap_.end()) {
             power = cpuClusterIter->second;
-            STATS_HILOGD(COMP_SVC, "Got cpu cluster power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get cpu cluster power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No cpu cluster power consumption related with uid: %{public}d found, return 0", uid);
+                "No cpu cluster power consumption related to uid: %{public}d was found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_SPEED) {
         auto cpuSpeedIter = cpuSpeedPowerMap_.find(uid);
         if (cpuSpeedIter != cpuSpeedPowerMap_.end()) {
             power = cpuSpeedIter->second;
-            STATS_HILOGD(COMP_SVC, "Got cpu speed power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get cpu speed power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No cpu speed power consumption related with uid: %{public}d found, return 0", uid);
+                "No cpu speed power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -225,7 +223,7 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 
 void CpuEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Cpu time
     for (auto& iter : cpuTimeMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

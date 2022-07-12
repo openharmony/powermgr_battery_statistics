@@ -49,7 +49,6 @@ void RadioEntity::Calculate(int32_t uid)
 
 void RadioEntity::CalculateRadioPower()
 {
-    STATS_HILOGD(COMP_SVC, "Enter");
     // Calculate Radio scan power
     auto radioScanAverageMa =
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_SCAN);
@@ -65,8 +64,6 @@ void RadioEntity::CalculateRadioPower()
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
         auto radioOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, i);
         radioOnLevelPowerMah = radioOnAverageMa * radioOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
-        STATS_HILOGD(COMP_SVC, "Calculate radio on power consumption: %{public}lfmAh for level: %{public}d",
-            radioOnLevelPowerMah, i);
         radioOnPowerMah += radioOnLevelPowerMah;
         radioOnTime += radioOnLevelTimeMs;
     }
@@ -122,17 +119,17 @@ int64_t RadioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTyp
         auto rxIter = appRadioRxTimerMap_.find(uid);
         if (rxIter != appRadioRxTimerMap_.end()) {
             time = rxIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got radio RX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Get radio RX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGD(COMP_SVC, "No radio RX timer related with uid: %{public}d found, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "No radio RX timer related to uid: %{public}d was found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxTimerMap_.find(uid);
         if (txIter != appRadioTxTimerMap_.end()) {
             time = txIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got radio TX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
+            STATS_HILOGD(COMP_SVC, "Get radio TX time: %{public}" PRId64 "ms for uid: %{public}d", time, uid);
         } else {
-            STATS_HILOGD(COMP_SVC, "No radio TX timer related with uid: %{public}d found, return 0", uid);
+            STATS_HILOGD(COMP_SVC, "No radio TX timer related to uid: %{public}d was found, return 0", uid);
         }
     }
     return time;
@@ -144,7 +141,7 @@ int64_t RadioEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t le
     if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
         if (radioScanTimer_ != nullptr) {
             time = radioScanTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got radio scan time: %{public}" PRId64 "ms", time);
+            STATS_HILOGD(COMP_SVC, "Get radio scan time: %{public}" PRId64 "ms", time);
         } else {
             STATS_HILOGD(COMP_SVC, "No radio scan timer found, return 0");
         }
@@ -152,7 +149,7 @@ int64_t RadioEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t le
         auto iter = radioOnTimerMap_.find(level);
         if (iter != radioOnTimerMap_.end() && iter->second != nullptr) {
             time = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got radio on time: %{public}" PRId64 "ms of signal level: %{public}d", time,
+            STATS_HILOGD(COMP_SVC, "Get radio on time: %{public}" PRId64 "ms of signal level: %{public}d", time,
                 level);
         } else {
             STATS_HILOGD(COMP_SVC, "No radio on timer found, return 0");
@@ -169,15 +166,15 @@ double RadioEntity::GetEntityPowerMah(int32_t uidOrUserId)
         auto iter = appRadioPowerMap_.find(uidOrUserId);
         if (iter != appRadioPowerMap_.end()) {
             power = iter->second;
-            STATS_HILOGD(COMP_SVC, "Got app radio power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get app radio power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uidOrUserId);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No app radio power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+                "No app radio power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
         }
     } else {
         power = radioPowerMah_;
-        STATS_HILOGD(COMP_SVC, "Got radio power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Get radio power consumption: %{public}lfmAh", power);
     }
     return power;
 }
@@ -187,29 +184,29 @@ double RadioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
     double power = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_RADIO_SCAN) {
         power = radioScanPowerMah_;
-        STATS_HILOGD(COMP_SVC, "Got radio scan power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Get radio scan power consumption: %{public}lfmAh", power);
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_ON) {
         power = radioOnPowerMah_;
-        STATS_HILOGD(COMP_SVC, "Got radio on power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Get radio on power consumption: %{public}lfmAh", power);
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
         auto rxIter = appRadioRxPowerMap_.find(uid);
         if (rxIter != appRadioRxPowerMap_.end()) {
             power = rxIter->second;
-            STATS_HILOGD(COMP_SVC, "Got radio RX power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get radio RX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No radio RX power consumption related with uid: %{public}d found, return 0", uid);
+                "No radio RX power consumption related to uid: %{public}d was found, return 0", uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxPowerMap_.find(uid);
         if (txIter != appRadioTxPowerMap_.end()) {
             power = txIter->second;
-            STATS_HILOGD(COMP_SVC, "Got radio TX power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get radio TX power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No radio TX power consumption related with uid: %{public}d found, return 0", uid);
+                "No radio TX power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -217,7 +214,7 @@ double RadioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 
 void RadioEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Radio total power consumption
     radioPowerMah_ = StatsUtils::DEFAULT_VALUE;
 
@@ -284,20 +281,20 @@ int64_t RadioEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid
         auto rxIter = appRadioRxCounterMap_.find(uid);
         if (rxIter != appRadioRxCounterMap_.end()) {
             count = rxIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got radio RX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Get radio RX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGD(COMP_SVC, "No radio RX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No radio RX traffic related to uid: %{public}d was found, return 0",
                 uid);
         }
     } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
         auto txIter = appRadioTxCounterMap_.find(uid);
         if (txIter != appRadioTxCounterMap_.end()) {
             count = txIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Got radio TX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
+            STATS_HILOGD(COMP_SVC, "Get radio TX traffic: %{public}" PRId64 "bytes for uid: %{public}d", count,
                 uid);
         } else {
-            STATS_HILOGD(COMP_SVC, "No radio TX traffic related with uid: %{public}d found, return 0",
+            STATS_HILOGD(COMP_SVC, "No radio TX traffic related to uid: %{public}d was found, return 0",
                 uid);
         }
     }
@@ -312,7 +309,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(int32_t 
         case StatsUtils::STATS_TYPE_RADIO_RX: {
             auto rxIter = appRadioRxTimerMap_.find(uid);
             if (rxIter != appRadioRxTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got radio RX timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get radio RX timer for uid: %{public}d", uid);
                 timer = rxIter->second;
                 break;
             }
@@ -325,7 +322,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(int32_t 
         case StatsUtils::STATS_TYPE_RADIO_TX: {
             auto txIter = appRadioTxTimerMap_.find(uid);
             if (txIter != appRadioTxTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got radio TX timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get radio TX timer for uid: %{public}d", uid);
                 timer = txIter->second;
                 break;
             }
@@ -336,7 +333,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(int32_t 
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -348,7 +345,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(StatsUti
     switch (statsType) {
         case StatsUtils::STATS_TYPE_RADIO_SCAN: {
             if (radioScanTimer_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Got radio scan timer");
+                STATS_HILOGD(COMP_SVC, "Get radio scan timer");
                 timer = radioScanTimer_;
                 break;
             }
@@ -360,7 +357,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(StatsUti
         case StatsUtils::STATS_TYPE_RADIO_ON: {
             auto onIter = radioOnTimerMap_.find(level);
             if (onIter != radioOnTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got radio on timer for level: %{public}d", level);
+                STATS_HILOGD(COMP_SVC, "Get radio on timer for level: %{public}d", level);
                 timer = onIter->second;
                 break;
             }
@@ -372,7 +369,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> RadioEntity::GetOrCreateTimer(StatsUti
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -385,7 +382,7 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
         case StatsUtils::STATS_TYPE_RADIO_RX: {
             auto rxIter = appRadioRxCounterMap_.find(uid);
             if (rxIter != appRadioRxCounterMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got radio RX counter for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get radio RX counter for uid: %{public}d", uid);
                 counter = rxIter->second;
                 break;
             }
@@ -398,7 +395,7 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
         case StatsUtils::STATS_TYPE_RADIO_TX: {
             auto txIter = appRadioTxCounterMap_.find(uid);
             if (txIter != appRadioTxCounterMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got radio TX counter for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get radio TX counter for uid: %{public}d", uid);
                 counter = txIter->second;
                 break;
             }
@@ -409,7 +406,7 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create counter failed");
+            STATS_HILOGW(COMP_SVC, "Create counter failed");
             break;
     }
     return counter;
@@ -417,8 +414,6 @@ std::shared_ptr<StatsHelper::Counter> RadioEntity::GetOrCreateCounter(StatsUtils
 
 void RadioEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
-
     int64_t onTime = StatsUtils::DEFAULT_VALUE;
     for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, i);

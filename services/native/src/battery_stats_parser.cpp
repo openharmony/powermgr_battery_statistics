@@ -30,9 +30,9 @@ static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/profile/power_
 bool BatteryStatsParser::Init()
 {
     if (!LoadAveragePowerFromFile(VENDOR_POWER_AVERAGE_FILE)) {
-        STATS_HILOGD(COMP_SVC, "Fail to load vendor average power file");
+        STATS_HILOGE(COMP_SVC, "Failed to load vendor average power file");
         if (!LoadAveragePowerFromFile(SYSTEM_POWER_AVERAGE_FILE)) {
-            STATS_HILOGD(COMP_SVC, "Fail to load system average power file");
+            STATS_HILOGE(COMP_SVC, "Failed to load system average power file");
             return false;
         }
     }
@@ -43,12 +43,12 @@ uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
 {
     for (uint16_t i = 0; i < speedNum_.size(); i++) {
         if (cluster == i) {
-            STATS_HILOGD(COMP_SVC, "Got speed num: %{public}d, for cluster: %{public}d", speedNum_[i],
+            STATS_HILOGD(COMP_SVC, "Get speed num: %{public}d, for cluster: %{public}d", speedNum_[i],
                 cluster);
             return speedNum_[i];
         }
     }
-    STATS_HILOGD(COMP_SVC, "No related speed number, return 0");
+    STATS_HILOGW(COMP_SVC, "No related speed number, return 0");
     return StatsUtils::DEFAULT_VALUE;
 }
 
@@ -59,11 +59,11 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
     std::string errors;
     std::ifstream ifs(path, std::ios::binary);
     if (!ifs.is_open()) {
-        STATS_HILOGD(COMP_SVC, "Json file doesn't exist");
+        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
         return false;
     }
     if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGD(COMP_SVC, "Parsing json file failed");
+        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
         return false;
     }
     ifs.close();
@@ -98,7 +98,6 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
                 type.c_str());
         }
     }
-    STATS_HILOGD(COMP_SVC, "Load power average json file complete");
     return true;
 }
 
@@ -108,10 +107,8 @@ double BatteryStatsParser::GetAveragePowerMa(std::string type)
     auto iter = averageMap_.find(type);
     if (iter != averageMap_.end()) {
         average = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got average power: %{public}lfma of %{public}s", average, type.c_str());
-    } else {
-        STATS_HILOGD(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
+    STATS_HILOGD(COMP_SVC, "Get average power: %{public}lfma of %{public}s", average, type.c_str());
     return average;
 }
 
@@ -123,10 +120,9 @@ double BatteryStatsParser::GetAveragePowerMa(std::string type, uint16_t level)
         if (level < iter->second.size()) {
             average = iter->second[level];
         }
-        STATS_HILOGD(COMP_SVC, "Got average power: %{public}lf of %{public}s", average, type.c_str());
-    } else {
-        STATS_HILOGD(COMP_SVC, "No average power of %{public}s found, return 0", type.c_str());
     }
+    STATS_HILOGD(COMP_SVC, "Get average power: %{public}lf of %{public}s, level: %{public}d",
+        average, type.c_str(), level);
     return average;
 }
 

@@ -31,7 +31,7 @@ class BatteryStatsParser {
 public:
     explicit BatteryStatsParser()
     {
-        STATS_HILOGD(COMP_SVC, "BatteryStatsParser instance is created");
+        STATS_HILOGI(COMP_SVC, "BatteryStatsParser instance is created");
     }
     ~BatteryStatsParser() = default;
     double GetAveragePowerMa(std::string type);

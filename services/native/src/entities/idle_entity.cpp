@@ -87,17 +87,17 @@ double IdleEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
     double power = StatsUtils::DEFAULT_VALUE;
     if (statsType == StatsUtils::STATS_TYPE_PHONE_IDLE) {
         power = cpuIdlePowerMah_;
-        STATS_HILOGD(COMP_SVC, "Got cpu idle power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Get cpu idle power consumption: %{public}lfmAh", power);
     } else if (statsType == StatsUtils::STATS_TYPE_CPU_SUSPEND) {
         power = cpuSuspendPowerMah_;
-        STATS_HILOGD(COMP_SVC, "Got cpu suspend power consumption: %{public}lfmAh", power);
+        STATS_HILOGD(COMP_SVC, "Get cpu suspend power consumption: %{public}lfmAh", power);
     }
     return power;
 }
 
 void IdleEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Idle total power consumption
     idleTotalPowerMah_ = StatsUtils::DEFAULT_VALUE;
 

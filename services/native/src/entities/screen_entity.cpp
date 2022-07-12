@@ -36,7 +36,7 @@ int64_t ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t l
     if (statsType == StatsUtils::STATS_TYPE_SCREEN_ON) {
         if (screenOnTimer_ != nullptr) {
             activeTimeMs = screenOnTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got screen on time: %{public}" PRId64 "ms", activeTimeMs);
+            STATS_HILOGD(COMP_SVC, "Get screen on time: %{public}" PRId64 "ms", activeTimeMs);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
@@ -45,7 +45,7 @@ int64_t ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t l
         if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
             activeTimeMs = iter->second->GetRunningTimeMs();
             STATS_HILOGD(COMP_SVC,
-                "Got screen brightness time: %{public}" PRId64 "ms of brightness level: %{public}d",
+                "Get screen brightness time: %{public}" PRId64 "ms of brightness level: %{public}d",
                 activeTimeMs, level);
         } else {
             STATS_HILOGD(COMP_SVC, "No screen brightness timer found, return 0");
@@ -67,9 +67,6 @@ void ScreenEntity::Calculate(int32_t uid)
             auto averageMa = screenBrightnessAverageMa * iter.first + screenOnAverageMa;
             auto timeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, iter.first);
             screenPowerMah += averageMa * timeMs / StatsUtils::MS_IN_HOUR;
-            STATS_HILOGD(COMP_SVC,
-                "screen average power: %{public}lfma, time: %{public}" PRId64 "ms, level: %{public}d",
-                averageMa, timeMs, iter.first);
         }
     }
     screenPowerMah_ = screenPowerMah;
@@ -97,7 +94,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
     switch (statsType) {
         case StatsUtils::STATS_TYPE_SCREEN_ON: {
             if (screenOnTimer_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Got screen on timer");
+                STATS_HILOGD(COMP_SVC, "Get screen on timer");
                 timer = screenOnTimer_;
                 break;
             }
@@ -113,7 +110,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
             }
             auto iter = screenBrightnessTimerMap_.find(level);
             if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Got screen brightness timer of brightness level: %{public}d", level);
+                STATS_HILOGD(COMP_SVC, "Get screen brightness timer of brightness level: %{public}d", level);
                 timer = iter->second;
                 break;
             }
@@ -125,7 +122,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -133,7 +130,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
 
 void ScreenEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Screen total power consumption
     screenPowerMah_ = StatsUtils::DEFAULT_VALUE;
 

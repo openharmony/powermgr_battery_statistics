@@ -131,8 +131,6 @@ void UidEntity::Calculate(int32_t uid)
         iter.second = power;
         totalPowerMah_ += power;
         AddtoStatsList(iter.first, power);
-        STATS_HILOGD(COMP_SVC, "Calculate uid power consumption: %{public}lfmAh for uid: %{public}d",
-            power, iter.first);
         int32_t uid = iter.first;
         int32_t userId = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(uid);
         if (userEntity != nullptr) {
@@ -156,11 +154,11 @@ double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = uidPowerMap_.find(uidOrUserId);
     if (iter != uidPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app uid power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app uid power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app uid power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app uid power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -261,7 +259,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
             power = GetPowerForCommon(statsType, uid);
             break;
         default:
-            STATS_HILOGD(COMP_SVC, "Invalid or illegal type got, return 0");
+            STATS_HILOGW(COMP_SVC, "Invalid or illegal type got, return 0");
             break;
     }
 
@@ -272,7 +270,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 
 void UidEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Uid total power consumption
     for (auto& iter : uidPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
@@ -421,15 +419,15 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()
                 ->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
         if (bundleObj == nullptr) {
-            STATS_HILOGD(COMP_SVC, "failed to get bundle manager service");
+            STATS_HILOGE(COMP_SVC, "Failed to get bundle manager service");
         } else {
             sptr<AppExecFwk::IBundleMgr> bmgr = iface_cast<AppExecFwk::IBundleMgr>(bundleObj);
             if (bmgr == nullptr) {
-                STATS_HILOGD(COMP_SVC, "failed to get bundle manager proxy");
+                STATS_HILOGE(COMP_SVC, "Failed to get bundle manager proxy");
             } else {
                 bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
                 if (!res) {
-                    STATS_HILOGD(COMP_SVC, "failed to get bundle name for uid: %{public}d", iter.first);
+                    STATS_HILOGE(COMP_SVC, "Failed to get bundle name for uid: %{public}d", iter.first);
                 }
             }
         }

@@ -38,7 +38,7 @@ int64_t WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType stats
         auto iter = wakelockTimerMap_.find(uid);
         if (iter != wakelockTimerMap_.end()) {
             activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got wakelock on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
+            STATS_HILOGD(COMP_SVC, "Get wakelock on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
                 uid);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
@@ -71,11 +71,11 @@ double WakelockEntity::GetEntityPowerMah(int32_t uidOrUserId)
     auto iter = wakelockPowerMap_.find(uidOrUserId);
     if (iter != wakelockPowerMap_.end()) {
         power = iter->second;
-        STATS_HILOGD(COMP_SVC, "Got app wakelock power consumption: %{public}lfmAh for uid: %{public}d",
+        STATS_HILOGD(COMP_SVC, "Get app wakelock power consumption: %{public}lfmAh for uid: %{public}d",
             power, uidOrUserId);
     } else {
         STATS_HILOGD(COMP_SVC,
-            "No app wakelock power consumption related with uid: %{public}d found, return 0", uidOrUserId);
+            "No app wakelock power consumption related to uid: %{public}d was found, return 0", uidOrUserId);
     }
     return power;
 }
@@ -87,11 +87,11 @@ double WakelockEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t
         auto wakelockOnIter = wakelockPowerMap_.find(uid);
         if (wakelockOnIter != wakelockPowerMap_.end()) {
             power = wakelockOnIter->second;
-            STATS_HILOGD(COMP_SVC, "Got wakelock on power consumption: %{public}lfmAh for uid: %{public}d",
+            STATS_HILOGD(COMP_SVC, "Get wakelock on power consumption: %{public}lfmAh for uid: %{public}d",
                 power, uid);
         } else {
             STATS_HILOGD(COMP_SVC,
-                "No wakelock on power consumption related with uid: %{public}d found, return 0", uid);
+                "No wakelock on power consumption related to uid: %{public}d was found, return 0", uid);
         }
     }
     return power;
@@ -105,7 +105,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD: {
             auto wakelockOnIter = wakelockTimerMap_.find(uid);
             if (wakelockOnIter != wakelockTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Got wakelock on timer for uid: %{public}d", uid);
+                STATS_HILOGD(COMP_SVC, "Get wakelock on timer for uid: %{public}d", uid);
                 timer = wakelockOnIter->second;
                 break;
             }
@@ -117,7 +117,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -125,7 +125,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32
 
 void WakelockEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Wakelock on total power consumption
     for (auto& iter : wakelockPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

@@ -38,7 +38,7 @@ int64_t PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t le
     if (statsType == StatsUtils::STATS_TYPE_PHONE_ACTIVE) {
         if (phoneTimer_ != nullptr) {
             activeTimeMs = phoneTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Got phone active time: %{public}" PRId64 "ms", activeTimeMs);
+            STATS_HILOGD(COMP_SVC, "Get phone active time: %{public}" PRId64 "ms", activeTimeMs);
         } else {
             STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
         }
@@ -77,7 +77,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUti
     switch (statsType) {
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
             if (phoneTimer_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Got phone active timer");
+                STATS_HILOGD(COMP_SVC, "Get phone active timer");
                 timer = phoneTimer_;
                 break;
             }
@@ -87,7 +87,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUti
             break;
         }
         default:
-            STATS_HILOGD(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create active timer failed");
             break;
     }
     return timer;
@@ -95,7 +95,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUti
 
 void PhoneEntity::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
+    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Phone total power consumption
     phonePowerMah_ = StatsUtils::DEFAULT_VALUE;
 

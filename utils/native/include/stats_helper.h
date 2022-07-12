@@ -70,7 +70,7 @@ public:
                 totalTimeMs_ += avtiveTime;
                 STATS_HILOGD(COMP_SVC, "Add on active Time: %{public}" PRId64 "", avtiveTime);
             } else {
-                STATS_HILOGD(COMP_SVC, "Invalid active time, ignore");
+                STATS_HILOGW(COMP_SVC, "Invalid active time, ignore");
             }
         }
 
@@ -97,7 +97,7 @@ public:
                 STATS_HILOGD(COMP_SVC, "Add data bytes: %{public}" PRId64 ", total data bytes is: %{public}" PRId64 "",
                     count, totalCount_);
             } else {
-                STATS_HILOGD(COMP_SVC, "Invalid data counts");
+                STATS_HILOGW(COMP_SVC, "Invalid data counts");
             }
         }
 
