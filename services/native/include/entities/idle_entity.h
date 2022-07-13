@@ -32,9 +32,9 @@ public:
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
-    double idleTotalPowerMah_;
-    double cpuSuspendPowerMah_;
-    double cpuIdlePowerMah_;
+    double idleTotalPowerMah_ = StatsUtils::DEFAULT_VALUE;
+    double cpuSuspendPowerMah_ = StatsUtils::DEFAULT_VALUE;
+    double cpuIdlePowerMah_  = StatsUtils::DEFAULT_VALUE;
     double CalculateCpuSuspendPower();
     double CalculateCpuIdlePower();
 };
