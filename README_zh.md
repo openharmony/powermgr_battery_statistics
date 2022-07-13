@@ -30,8 +30,10 @@
 ├── services                    # 服务层
 │   ├── native                  # Native 层
 │   ├── profile                 # 平均耗电配置文件
-│   └── zidl                    # zidl 接口层
+│   └── zidl                    # Zidl 接口层
 ├── test                        # 测试用例
+│   ├── batterystats_fuzzer     # Fuzz测试
+│   └── systemtest              # 系统测试
 └── utils                       # 工具和通用层
 ```
 

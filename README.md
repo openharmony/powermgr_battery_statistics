@@ -18,10 +18,10 @@ The battery statistics module provides the following functions:
 
 ```
 /base/powermgr/battery_statistics
-├── etc                  		# etc profile
-├── figures                  	# Architecture figures
+├── etc                         # Etc profile
+├── figures                     # Architecture figures
 ├── frameworks                  # FrameWork Layer
-│   ├── js                  	# NAPI code
+│   ├── js                      # NAPI code
 │   └── native                  # Native code
 ├── interfaces                  # APIs
 │   ├── innerkits               # Internal APIs
@@ -30,8 +30,10 @@ The battery statistics module provides the following functions:
 ├── services                    # Services
 │   ├── native                  # Native services
 │   ├── profile                 # Average Power Consumption Profile
-│   └── zidl                    # zidl APIs
+│   └── zidl                    # Zidl APIs
 ├── test                        # Test code
+│   ├── batterystats_fuzzer     # Fuzz test
+│   └── systemtest              # System test
 └── utils                       # Utilities and common code
 ```
 
