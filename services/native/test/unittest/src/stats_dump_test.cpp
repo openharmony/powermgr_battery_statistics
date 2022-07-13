@@ -245,7 +245,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsClientTest, StatsDumpTest_005, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_004: test start";
+    GTEST_LOG_(INFO) << " StatsDumpTest_005: test start";
 
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
@@ -259,11 +259,10 @@ HWTEST_F (StatsClientTest, StatsDumpTest_005, TestSize.Level0)
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
-    expectedDebugInfo.append("Part name = ")
-        .append(partName)
-        .append(", temperature = ")
-        .append(ToString(temperature))
-        .append("degrees Celsius");
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = POWER_TEMPERATURE")
+        .append(" Name = ")
+        .append(partName);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -318,5 +317,45 @@ HWTEST_F (StatsClientTest, StatsDumpTest_006, TestSize.Level0)
 
     EXPECT_TRUE(index != string::npos) << " StatsDumpTest_006 fail due to not found related debug info";
     GTEST_LOG_(INFO) << " StatsDumpTest_006: test end";
+}
+
+/**
+ *
+ * @tc.name: StatsDumpTest_007
+ * @tc.desc: test Dump function(THERMAL_ACTION_TRIGGERED)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsDumpTest_007: test start";
+
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    std::string actionName = "thermallevel";
+    int32_t value = 3;
+
+    HiviewDFX::HiSysEvent::Write("THERMAL", "THERMAL_ACTION_TRIGGERED",
+        HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value);
+    sleep(testWaitTimeSec);
+
+    std::string expectedDebugInfo;
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = THERMAL_ACTION_TRIGGERED")
+        .append(" Action name = ")
+        .append(actionName)
+        .append(" Value = ")
+        .append(ToString(value));
+
+    std::string actualDebugInfo = statsClient.Dump(dumpArgs);
+
+    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
+    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
+
+    auto index = actualDebugInfo.find(expectedDebugInfo);
+
+    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_007 fail due to not found related debug info";
+    GTEST_LOG_(INFO) << " StatsDumpTest_007: test end";
 }
 }

@@ -58,7 +58,8 @@ void BatteryStatsListener::ProcessHiSysEvent(const Json::Value& root)
         ProcessDispalyEvent(data, root);
     } else if (eventName == "BATTERY_CHANGED") {
         ProcessBatteryEvent(data, root);
-    } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED") {
+    } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED" ||
+        eventName == "THERMAL_ACTION_TRIGGERED") {
         ProcessThermalEvent(data, root);
     } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
         eventName == "WORK_START" || eventName == "WORK_STOP") {
@@ -406,14 +407,23 @@ void BatteryStatsListener::ProcessBatteryEvent(StatsUtils::StatsData& data, cons
 void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_THERMAL;
+    if (!root["name_"].asString().empty()) {
+        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+    }
     if (!root["NAME"].asString().empty()) {
-        data.eventDataName = root["NAME"].asString();
+        data.eventDebugInfo.append(" Name = ").append(root["NAME"].asString());
     }
     if (!root["TEMPERATURE"].asString().empty()) {
-        data.eventDataExtra = stoi(root["TEMPERATURE"].asString());
+        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
     }
     if (!root["LEVEL"].asString().empty()) {
         data.eventDebugInfo.append(" Temperature level = ").append(root["LEVEL"].asString());
+    }
+    if (!root["ACTION"].asString().empty()) {
+        data.eventDebugInfo.append(" Action name = ").append(root["ACTION"].asString());
+    }
+    if (!root["VALUE"].asString().empty()) {
+        data.eventDebugInfo.append(" Value = ").append(root["VALUE"].asString());
     }
 }
 

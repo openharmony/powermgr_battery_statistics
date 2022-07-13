@@ -110,16 +110,13 @@ bool BatteryStatsDetector::IsStateRelated(StatsUtils::StatsType type)
 
 void BatteryStatsDetector::HandleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
-    debugInfo.append("Thermal event: Part name = ")
-        .append(data.eventDataName)
-        .append(", temperature = ")
-        .append(ToString(data.eventDataExtra))
-        .append("degrees Celsius, boot time after boot = ")
+    debugInfo.append("Thermal event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
     if (!data.eventDebugInfo.empty()) {
         debugInfo.append("Additional debug info: ")
-            .append(data.eventDebugInfo);
+            .append(data.eventDebugInfo)
+            .append("\n");
     }
 }
 
