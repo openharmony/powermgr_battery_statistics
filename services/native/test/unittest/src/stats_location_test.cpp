@@ -53,7 +53,6 @@ void StatsClientTest::TearDown(void)
 }
 
 namespace {
-#if GNSS_STATE
 /**
  * @tc.name: StatsLocationTest_001
  * @tc.desc: test GetTotalTimeSecond function(GNSS)
@@ -127,5 +126,4 @@ HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
         <<" StatsLocationTest_002 fail due to time mismatch";
     GTEST_LOG_(INFO) << " StatsLocationTest_002: test end";
 }
-#endif
 }
