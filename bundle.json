@@ -39,7 +39,7 @@
                 "jsoncpp",
                 "napi",
                 "os_account",
-                "power_manager_native",
+                "power_manager",
                 "safwk",
                 "samgr_standard",
                 "utils_base"
