@@ -31,7 +31,7 @@ public:
             const std::string& eventDetail) override;
     void OnServiceDied() override;
 private:
-    void ProcessHiSysEvent(const Json::Value& root);
+    void ProcessHiSysEvent(const std::string& eventName, const Json::Value& root);
     void ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root);

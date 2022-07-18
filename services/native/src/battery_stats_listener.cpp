@@ -24,6 +24,7 @@
 #include "wifi_hisysevent.h"
 
 #include "battery_stats_service.h"
+#include "stats_hisysevent.h"
 #include "stats_log.h"
 #include "stats_types.h"
 
@@ -33,24 +34,26 @@ void BatteryStatsListener::OnHandle(const std::string& domain, const std::string
     const int eventType, const std::string& eventDetail)
 {
     STATS_HILOGD(COMP_SVC, "EventDetail: %{public}s", eventDetail.c_str());
+    if (!StatsHiSysEvent::CheckHiSysEvent(eventName)) {
+        return;
+    }
     Json::Value root;
     Json::CharReaderBuilder reader;
     std::string errors;
     std::istrstream is(eventDetail.c_str());
     if (parseFromStream(reader, is, &root, &errors)) {
-        ProcessHiSysEvent(root);
+        ProcessHiSysEvent(eventName, root);
     } else {
         STATS_HILOGW(COMP_SVC, "Parse hisysevent data failed");
     }
 }
 
-void BatteryStatsListener::ProcessHiSysEvent(const Json::Value& root)
+void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const Json::Value& root)
 {
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     auto detector = statsService->GetBatteryStatsDetector();
     StatsUtils::StatsData data;
     data.eventDebugInfo.clear();
-    std::string eventName = root["name_"].asString();
     if (eventName == "POWER_RUNNINGLOCK") {
         ProcessWakelockEvent(data, root);
     } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||

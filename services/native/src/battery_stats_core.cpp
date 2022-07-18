@@ -983,7 +983,6 @@ bool BatteryStatsCore::LoadBatteryStatsData()
 
 void BatteryStatsCore::Reset()
 {
-    STATS_HILOGD(COMP_SVC, "Reset");
     audioEntity_->Reset();
     bluetoothEntity_->Reset();
     cameraEntity_->Reset();

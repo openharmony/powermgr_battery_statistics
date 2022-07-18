@@ -95,7 +95,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUti
 
 void PhoneEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Phone total power consumption
     phonePowerMah_ = StatsUtils::DEFAULT_VALUE;
 

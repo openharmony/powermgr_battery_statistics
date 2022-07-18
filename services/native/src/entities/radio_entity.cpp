@@ -214,7 +214,6 @@ double RadioEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 
 void RadioEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Radio total power consumption
     radioPowerMah_ = StatsUtils::DEFAULT_VALUE;
 

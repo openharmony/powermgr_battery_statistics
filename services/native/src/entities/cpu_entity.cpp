@@ -223,7 +223,6 @@ double CpuEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 
 void CpuEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Cpu time
     for (auto& iter : cpuTimeMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
