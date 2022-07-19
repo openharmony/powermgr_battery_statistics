@@ -270,7 +270,6 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 
 void UidEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Uid total power consumption
     for (auto& iter : uidPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

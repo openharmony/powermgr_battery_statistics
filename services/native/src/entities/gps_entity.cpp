@@ -123,7 +123,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> GpsEntity::GetOrCreateTimer(int32_t ui
 
 void GpsEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Gps on total power consumption
     for (auto& iter : gpsPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

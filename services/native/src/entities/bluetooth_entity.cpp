@@ -229,7 +229,6 @@ double BluetoothEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_
 
 void BluetoothEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Bluetooth on timer and power consumption
     bluetoothPowerMah_ = StatsUtils::DEFAULT_VALUE;
     if (bluetoothOnTimer_) {
