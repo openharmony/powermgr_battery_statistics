@@ -47,10 +47,22 @@ namespace {
 static const int32_t SECOND_PER_HOUR = 3600;
 static const int32_t WAIT_TIME = 1;
 static std::vector<std::string> dumpArgs;
+static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
+}
+
+static void ParserAveragePowerFile()
+{
+    if (g_statsParser == nullptr) {
+        g_statsParser = std::make_shared<BatteryStatsParser>();
+        if (!g_statsParser->Init()) {
+            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
+        }
+    }
 }
 
 void BatterystatsSysTest::SetUpTestCase(void)
 {
+    ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
@@ -389,7 +401,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = 1;
+    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -427,7 +439,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double wifiOnAverageMa = 83;
+    double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
@@ -463,7 +475,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -538,7 +550,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -576,7 +588,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double gpsOnAverageMa = 80;
+    double gpsOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -614,7 +626,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double sensorGravityOnAverageMa = 15;
+    double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -652,7 +664,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -689,7 +701,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double flashlightOnAverageMa = 320;
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -727,7 +739,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = 1;
+    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -751,7 +763,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
 
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_018 fail due to power mismatch";
 
-    double wifiOnAverageMa = 83;
+    double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
     stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
     HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
@@ -784,7 +796,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double flashlightOnAverageMa = 320;
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -808,7 +820,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_019 fail due to power mismatch";
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     uid = 10004;
     pid = 3459;
     std::string deviceId = "Camera0";
@@ -842,7 +854,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -864,7 +876,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     double actualPower = statsClient.GetAppStatsMah(uid);
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
 
-    double gpsOnAverageMa = 80;
+    double gpsOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
     uid = 10004;
     pid = 3459;
     std::string gpsStateOn = "start";
@@ -880,7 +892,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     expectedPower = testTimeSec * gpsOnAverageMa / SECOND_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
-    double sensorGravityOnAverageMa = 15;
+    double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     uid = 10005;
     pid = 3457;
 
@@ -909,7 +921,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -931,7 +943,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
 
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_021 fail due to power mismatch";
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateRunning = 2;
@@ -996,8 +1008,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
-    double flashlightOnAverageMa = 320;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;

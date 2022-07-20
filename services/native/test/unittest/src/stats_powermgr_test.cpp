@@ -22,6 +22,7 @@
 #include <wifi_hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -29,10 +30,22 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
+static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
 static std::vector<std::string> dumpArgs;
+
+static void ParserAveragePowerFile()
+{
+    if (g_statsParser == nullptr) {
+        g_statsParser = std::make_shared<BatteryStatsParser>();
+        if (!g_statsParser->Init()) {
+            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
+        }
+    }
+}
 
 void StatsClientTest::SetUpTestCase(void)
 {
+    ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
@@ -133,7 +146,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_003, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -199,7 +212,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_005, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -274,7 +287,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_007, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -327,7 +340,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_008, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double phoneOnAverageMa = 50;
+    double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 1;
@@ -349,7 +362,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_008, TestSize.Level0)
     EXPECT_LE(abs(expectedPower - actualPower), deviation)
         <<" StatsPowerMgrTest_008 fail due to power mismatch";
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateRunning = 2;
@@ -418,7 +431,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_010, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double sensorGravityOnAverageMa = 15;
+    double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -489,7 +502,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_012, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double sensorGravityOnAverageMa = 15;
+    double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -580,7 +593,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_014, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double sensorProximityOnAverageMa = 18;
+    double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -651,7 +664,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_016, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double sensorProximityOnAverageMa = 18;
+    double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -1046,7 +1059,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_029, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = 1;
+    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -1118,7 +1131,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_031, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = 1;
+    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -1268,7 +1281,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_036, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = 1;
+    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -1355,7 +1368,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_038, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double alarmOnAverageMa = 2;
+    double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;

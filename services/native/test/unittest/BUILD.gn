@@ -27,6 +27,7 @@ config("module_private_config") {
     "//foundation/communication/bluetooth/services/bluetooth/common",
     "//foundation/communication/wifi/wifi/utils/inc",
     "//utils/system/safwk/native/include",
+    "${batterystats_service_path}/native/include",
   ]
 }
 
@@ -36,6 +37,7 @@ deps_ex = [
   "common_event_service:cesfwk_innerkits",
   "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",
+  "hiviewdfx_hilog_native:libhilog",
   "ipc:ipc_core",
   "safwk:system_ability_fwk",
   "samgr_standard:samgr_proxy",
@@ -61,7 +63,10 @@ ohos_unittest("stats_service_test") {
 ohos_unittest("stats_communication_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_communication_test.cpp" ]
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_communication_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -73,6 +78,7 @@ ohos_unittest("stats_communication_test") {
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 
@@ -83,7 +89,10 @@ ohos_unittest("stats_communication_test") {
 ohos_unittest("stats_camera_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_camera_test.cpp" ]
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_camera_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -95,6 +104,7 @@ ohos_unittest("stats_camera_test") {
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 
@@ -105,7 +115,10 @@ ohos_unittest("stats_camera_test") {
 ohos_unittest("stats_audio_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_audio_test.cpp" ]
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_audio_test.cpp",
+  ]
 
   configs = [ ":module_private_config" ]
 
@@ -114,6 +127,7 @@ ohos_unittest("stats_audio_test") {
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 
@@ -124,7 +138,10 @@ ohos_unittest("stats_audio_test") {
 ohos_unittest("stats_powermgr_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_powermgr_test.cpp" ]
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_powermgr_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -136,6 +153,7 @@ ohos_unittest("stats_powermgr_test") {
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
 

@@ -20,6 +20,7 @@
 #include <wifi_hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -27,10 +28,22 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
+static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
 static std::vector<std::string> dumpArgs;
+
+static void ParserAveragePowerFile()
+{
+    if (g_statsParser == nullptr) {
+        g_statsParser = std::make_shared<BatteryStatsParser>();
+        if (!g_statsParser->Init()) {
+            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
+        }
+    }
+}
 
 void StatsClientTest::SetUpTestCase(void)
 {
+    ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
@@ -132,7 +145,7 @@ HWTEST_F (StatsClientTest, StatsCommunicationTest_003, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double wifiOnAverageMa = 83;
+    double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
@@ -235,7 +248,7 @@ HWTEST_F (StatsClientTest, StatsCommunicationTest_006, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double wifiOnAverageMa = 83;
+    double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
@@ -424,7 +437,7 @@ HWTEST_F (StatsClientTest, StatsCommunicationTest_012, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double wifiOnAverageMa = 83;
+    double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
