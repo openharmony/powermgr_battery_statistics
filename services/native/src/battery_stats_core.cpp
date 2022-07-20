@@ -819,69 +819,71 @@ void BatteryStatsCore::SaveForSoftware(Json::Value& root)
 void BatteryStatsCore::SaveForSoftwareCommon(Json::Value& root, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC, "Save software common battery stats, uid: %{public}d", uid);
+    std::string strUid = std::to_string(uid);
     // Save for camera related
-    root["Software"][uid]["camera_on"] =
+    root["Software"][strUid]["camera_on"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON));
 
     // Save for flashlight related
-    root["Software"][uid]["flashlight_on"] =
+    root["Software"][strUid]["flashlight_on"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
 
     // Save for gps related
-    root["Software"][uid]["gps_on"] =
+    root["Software"][strUid]["gps_on"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON));
 
     // Save for audio related
-    root["Software"][uid]["audio_on"] =
+    root["Software"][strUid]["audio_on"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON));
 
     // Save for wakelock related
-    root["Software"][uid]["cpu_awake"] =
+    root["Software"][strUid]["cpu_awake"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD));
 
     // Save for sensor related
-    root["Software"][uid]["sensor_gravity"] =
+    root["Software"][strUid]["sensor_gravity"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
-    root["Software"][uid]["sensor_proximity"] =
+    root["Software"][strUid]["sensor_proximity"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
 
     // Save for cpu related
-    root["Software"][uid]["cpu_time"] = Json::Value(cpuEntity_->GetCpuTimeMs(uid));
+    root["Software"][strUid]["cpu_time"] = Json::Value(cpuEntity_->GetCpuTimeMs(uid));
 }
 
 void BatteryStatsCore::SaveForSoftwareConnectivity(Json::Value& root, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC, "Save software connectivity battery stats, uid: %{public}d", uid);
+    std::string strUid = std::to_string(uid);
     // Save for Bluetooth related
-    root["Software"][uid]["bluetooth_scan"] =
+    root["Software"][strUid]["bluetooth_scan"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN));
-    root["Software"][uid]["bluetooth_rx"] =
+    root["Software"][strUid]["bluetooth_rx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX));
-    root["Software"][uid]["bluetooth_tx"] =
+    root["Software"][strUid]["bluetooth_tx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX));
     int32_t bluetoothTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
     int32_t bluetoothRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
-    root["Software"][uid]["bluetooth_byte"] = Json::Value(bluetoothTxBytes + bluetoothRxBytes);
+    root["Software"][strUid]["bluetooth_byte"] = Json::Value(bluetoothTxBytes + bluetoothRxBytes);
 
     // Save for wifi related
-    root["Software"][uid]["wifi_scan"] =
+    root["Software"][strUid]["wifi_scan"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN));
-    root["Software"][uid]["wifi_rx"] =
+    root["Software"][strUid]["wifi_rx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX));
-    root["Software"][uid]["wifi_tx"] =
+    root["Software"][strUid]["wifi_tx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX));
     int32_t wifiTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
     int32_t wifiRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
-    root["Software"][uid]["wifi_byte"] = Json::Value(wifiTxBytes + wifiRxBytes);
+    root["Software"][strUid]["wifi_byte"] = Json::Value(wifiTxBytes + wifiRxBytes);
 
     // Save for radio related
-    root["Software"][uid]["radio_tx"] =
+    root["Software"][strUid]["radio_tx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX));
-    root["Software"][uid]["radio_rx"] =
+    root["Software"][strUid]["radio_rx"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX));
     int32_t radioTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
     int32_t radioRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
-    root["Software"][uid]["radio_byte"] = Json::Value(radioTxBytes + radioRxBytes);
+    root["Software"][strUid]["radio_byte"] = Json::Value(radioTxBytes + radioRxBytes);
 }
 
 void BatteryStatsCore::SaveForPower(Json::Value& root)
