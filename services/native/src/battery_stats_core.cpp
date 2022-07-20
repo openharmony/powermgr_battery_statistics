@@ -17,12 +17,18 @@
 #include <cinttypes>
 #include <fstream>
 #include <map>
+#include <functional>
+#include <list>
+#include <utility>
+#include <vector>
 
-#include <ohos_account_kits_impl.h>
+#include "ios"
+#include "json/reader.h"
+#include "json/writer.h"
+#include "ohos_account_kits.h"
 
 #include "battery_info.h"
 #include "battery_srv_client.h"
-#include "battery_stats_info.h"
 #include "entities/audio_entity.h"
 #include "entities/bluetooth_entity.h"
 #include "entities/camera_entity.h"
@@ -39,9 +45,10 @@
 #include "entities/wifi_entity.h"
 #include "entities/wakelock_entity.h"
 #include "entities/alarm_entity.h"
-#include "stats_log.h"
+#include "stats_helper.h"
 
 #include "xcollie.h"
+#include "xcollie_define.h"
 
 namespace OHOS {
 namespace PowerMgr {

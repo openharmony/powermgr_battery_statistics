@@ -16,10 +16,13 @@
 #ifndef BATTERY_BATTERY_STATS_ENTITY_H
 #define BATTERY_BATTERY_STATS_ENTITY_H
 
-#include <string>
-
-#include "battery_stats_info.h"
+#include <cstdint>
+#include <iosfwd>
+#include <memory>
+#include <vector>
+#include "stats_utils.h"
 #include "stats_helper.h"
+#include "battery_stats_info.h"
 
 namespace OHOS {
 namespace PowerMgr {
