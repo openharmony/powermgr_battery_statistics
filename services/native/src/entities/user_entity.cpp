@@ -74,7 +74,6 @@ void UserEntity::Calculate(int32_t uid)
 
 void UserEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app user total power consumption
     for (auto& iter : userPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

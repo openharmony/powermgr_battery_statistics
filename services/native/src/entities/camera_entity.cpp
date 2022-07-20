@@ -131,7 +131,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const s
 
 void CameraEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Camera on total power consumption
     for (auto& iter : cameraPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

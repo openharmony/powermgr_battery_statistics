@@ -24,6 +24,7 @@ config("batterystats_utils_config") {
 ohos_source_set("batterystats_utils") {
   sources = [
     "native/src/stats_helper.cpp",
+    "native/src/stats_hisysevent.cpp",
     "native/src/stats_utils.cpp",
   ]
 

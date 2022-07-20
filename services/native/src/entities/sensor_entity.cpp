@@ -196,7 +196,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> SensorEntity::GetOrCreateTimer(int32_t
 
 void SensorEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app sensor total power consumption
     for (auto& iter : sensorTotalPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

@@ -125,7 +125,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32
 
 void WakelockEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Wakelock on total power consumption
     for (auto& iter : wakelockPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

@@ -97,7 +97,6 @@ double IdleEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
 
 void IdleEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Idle total power consumption
     idleTotalPowerMah_ = StatsUtils::DEFAULT_VALUE;
 

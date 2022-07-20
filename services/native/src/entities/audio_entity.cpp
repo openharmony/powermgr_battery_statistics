@@ -123,7 +123,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> AudioEntity::GetOrCreateTimer(int32_t 
 
 void AudioEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Audio on total power consumption
     for (auto& iter : audioPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

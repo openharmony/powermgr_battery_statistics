@@ -125,7 +125,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int
 
 void FlashlightEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Flashlight on total power consumption
     for (auto& iter : flashlightPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

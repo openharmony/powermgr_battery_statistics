@@ -222,7 +222,6 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
 
 void WifiEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset Wifi on timer and power consumption
     wifiPowerMah_ = StatsUtils::DEFAULT_VALUE;
     if (wifiOnTimer_) {
