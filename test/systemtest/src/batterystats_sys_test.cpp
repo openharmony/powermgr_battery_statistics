@@ -51,29 +51,26 @@ static std::vector<std::string> dumpArgs;
 
 void BatterystatsSysTest::SetUpTestCase(void)
 {
-    GTEST_LOG_(INFO) << __func__;
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.SetOnBattery(true);
     dumpArgs.push_back("-batterystats");
+    system("hidumper -s 3302 -a -u");
 }
 
 void BatterystatsSysTest::TearDownTestCase(void)
 {
-    GTEST_LOG_(INFO) << __func__;
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.SetOnBattery(false);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(WAIT_TIME);
 }
 
 void BatterystatsSysTest::SetUp(void)
 {
-    GTEST_LOG_(INFO) << __func__;
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.SetOnBattery(true);
 }
 
 void BatterystatsSysTest::TearDown(void)
 {
-    GTEST_LOG_(INFO) << __func__;
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.SetOnBattery(false);
 }
 
 /**
@@ -126,9 +123,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
         .append("UNLOCK");
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
-    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
-    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
 
     auto index = actualDebugInfo.find(expectedDebugInfo);
 
@@ -189,9 +183,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
-    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
-    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
 
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPowerMah << " mAh";
@@ -236,9 +227,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
-    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
-    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
 
     EXPECT_TRUE(index != string::npos) << " BatteryStatsSysTest_003 fail due to not found battery related debug info";
@@ -275,9 +263,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
         .append("degrees Celsius");
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
-    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
-    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
 
     auto index = actualDebugInfo.find(expectedDebugInfo);
 
@@ -323,9 +308,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
         .append(ToString(state));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
-    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
-    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
 
     auto index = actualDebugInfo.find(expectedDebugInfo);
 
@@ -588,8 +570,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
  * @tc.desc: test Gps consumption
  * @tc.type: FUNC
  */
-
-#if GNSS_STATE
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_014: test start";
@@ -621,7 +601,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_014 fail due to power mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_014: test end";
 }
-#endif
 
 /**
  *
@@ -900,9 +879,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
 
     expectedPower = testTimeSec * gpsOnAverageMa / SECOND_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
-#if GNSS_STATE
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
-#endif
     double sensorGravityOnAverageMa = 15;
     uid = 10005;
     pid = 3457;
