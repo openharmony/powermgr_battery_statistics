@@ -16,12 +16,10 @@
 #include "battery_stats.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <memory>
 #include <string>
-#include <vector>
-
-#include "napi/native_api.h"
+#include <iosfwd>
+#include "new"
 
 #include "battery_stats_client.h"
 #include "stats_log.h"

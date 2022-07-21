@@ -16,16 +16,14 @@
 #ifndef BATTERY_STATS_CORE_H
 #define BATTERY_STATS_CORE_H
 
-#include <json/json.h>
 #include <memory>
 #include <string>
-
-#include "refbase.h"
+#include <cstdint>
+#include <iosfwd>
+#include "json/value.h"
 
 #include "battery_stats_info.h"
-#include "cpu_time_reader.h"
 #include "entities/battery_stats_entity.h"
-#include "stats_helper.h"
 #include "stats_log.h"
 #include "stats_utils.h"
 

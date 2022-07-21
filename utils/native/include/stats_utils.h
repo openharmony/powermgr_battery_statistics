@@ -17,6 +17,7 @@
 #define STATS_UTILS_H
 
 #include <string>
+#include <iosfwd>
 
 namespace OHOS {
 namespace PowerMgr {

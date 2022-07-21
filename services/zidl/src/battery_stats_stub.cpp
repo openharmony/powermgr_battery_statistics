@@ -15,11 +15,14 @@
 
 #include "battery_stats_stub.h"
 
-#include <string_ex.h>
-
+#include "errors.h"
 #include "battery_stats_info.h"
-#include "stats_common.h"
+#include "ipc_object_stub.h"
+#include "stats_errors.h"
+#include "stats_log.h"
+#include "stats_utils.h"
 #include "xcollie.h"
+#include "xcollie_define.h"
 
 namespace OHOS {
 namespace PowerMgr {

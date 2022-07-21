@@ -16,11 +16,17 @@
 #ifndef BATTERY_STATS_PROXY_H
 #define BATTERY_STATS_PROXY_H
 
+#include <cstdint>
+#include <functional>
+#include <iosfwd>
+#include <vector>
 #include <iremote_proxy.h>
 #include <nocopyable.h>
-
-#include "battery_stats_info.h"
+#include "iremote_broker.h"
+#include "iremote_object.h"
+#include "refbase.h"
 #include "ibattery_stats.h"
+#include "battery_stats_info.h"
 
 namespace OHOS {
 namespace PowerMgr {

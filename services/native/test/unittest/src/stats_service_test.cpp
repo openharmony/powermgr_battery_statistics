@@ -18,6 +18,14 @@
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
 #include <system_ability_definition.h>
+#include "gtest/gtest-message.h"
+#include "gtest/gtest-test-part.h"
+#include "gtest/gtest.h"
+#include "gtest/hwext/gtest-ext.h"
+#include "gtest/hwext/gtest-tag.h"
+#include "iremote_object.h"
+#include "ostream"
+#include "refbase.h"
 
 using namespace testing::ext;
 using namespace OHOS::PowerMgr;

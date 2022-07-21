@@ -15,9 +15,6 @@
 
 #include "battery_stats_info.h"
 
-#include <parcel.h>
-#include <string_ex.h>
-
 #include "stats_common.h"
 #include "stats_log.h"
 
