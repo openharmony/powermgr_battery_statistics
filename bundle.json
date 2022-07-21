@@ -30,6 +30,7 @@
                 "bundle_framework",
                 "common_event_service",
                 "core_service",
+                "c_utils",
                 "display_manager_native",
                 "eventhandler",
                 "hicollie_native",
@@ -41,8 +42,7 @@
                 "os_account",
                 "power_manager",
                 "safwk",
-                "samgr_standard",
-                "utils_base"
+                "samgr_standard"
             ],
             "third_party": [
                 "googletest",
