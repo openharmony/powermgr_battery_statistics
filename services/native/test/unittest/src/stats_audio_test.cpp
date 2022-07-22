@@ -18,16 +18,29 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
 using namespace std;
 
+static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
 static std::vector<std::string> dumpArgs;
+
+static void ParserAveragePowerFile()
+{
+    if (g_statsParser == nullptr) {
+        g_statsParser = std::make_shared<BatteryStatsParser>();
+        if (!g_statsParser->Init()) {
+            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
+        }
+    }
+}
 
 void StatsClientTest::SetUpTestCase(void)
 {
+    ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
@@ -100,7 +113,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_002, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -171,7 +184,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_004, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -226,7 +239,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_005, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -273,7 +286,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_006, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double audioOnAverageMa = 85;
+    double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
