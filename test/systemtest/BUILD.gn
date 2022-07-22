@@ -64,7 +64,7 @@ ohos_systemtest("batterystats_sys_test") {
     "ipc:ipc_core",
     "os_account:libaccountkits",
     "safwk:system_ability_fwk",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 }
 
