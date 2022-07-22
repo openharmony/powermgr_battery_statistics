@@ -55,6 +55,7 @@ public:
         HISYSEVENT_TYPE_WIFI_SCAN,
         HISYSEVENT_TYPE_START_REMOTE_ABILITY,
         HISYSEVENT_TYPE_ALARM_TRIGGER,
+        HISYSEVENT_TYPE_THERMAL_ACTION_TRIGGERED,
         HISYSEVENT_TYPE_END
     };
 
@@ -89,7 +90,8 @@ public:
         "WIFI_STATE",
         "WIFI_SCAN",
         "START_REMOTE_ABILITY",
-        "ALARM_TRIGGER"
+        "ALARM_TRIGGER",
+        "THERMAL_ACTION_TRIGGERED"
     };
 
     static bool CheckHiSysEvent(const std::string& eventName);
