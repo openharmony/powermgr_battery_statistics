@@ -104,7 +104,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
     int32_t pid = 3456;
     int32_t stateLock = 1;
     int32_t stateUnlock = 0;
-    double wakelockAverage = 15;
+    double wakelockAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
     int32_t type = static_cast<int>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " BatteryStatsSysTest_001";
     double deviation = 0.01;
@@ -167,22 +167,20 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_OFF);
-    int32_t brightnessBefore = 150;
-    int32_t brightnessAfter = 100;
-    double screenOnAverage = 90;
-    double screenBrightnessAverage = 2;
+    int32_t brightness = 150;
+    double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
+    double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
     double deviation = 0.1;
 
-    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
-        "BRIGHTNESS", brightnessBefore);
+    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT",
+        HiviewDFX::HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
-        "BRIGHTNESS", brightnessAfter);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
-    double average = screenBrightnessAverage * brightnessBefore + screenOnAverage;
+    double average = screenBrightnessAverage * brightness + screenOnAverage;
 
     double expectedPowerMah = average * testTimeSec / SECOND_PER_HOUR;
     double actualPowerMah = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
@@ -191,7 +189,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("POWER_SCREEN");
+        .append("SCREEN_STATE");
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -268,11 +266,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
-    expectedDebugInfo.append("Part name = ")
-        .append(partName)
-        .append(", temperature = ")
-        .append(ToString(temperature))
-        .append("degrees Celsius");
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = POWER_TEMPERATURE")
+        .append(" Name = ")
+        .append(partName);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -363,9 +360,9 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_007, TestSize.Level0)
     int32_t stateInService = static_cast<int>(Telephony::RegServiceState::REG_STATE_IN_SERVICE);
     int32_t signalBefore = 4;
     int32_t signalAfter = 0;
-    double radioLevel4OnAverage = 470;
-    double radioLevel0OnAverage = 160;
-    double radioScanAverage = 30;
+    double radioLevel4OnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, 4);
+    double radioLevel0OnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, 0);
+    double radioScanAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_SCAN);
     double deviation = 0.1;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_RADIO", HiSysEvent::EventType::STATISTIC, "STATE", stateScan,
