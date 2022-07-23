@@ -121,7 +121,6 @@ std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils
 
 void AlarmEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Alarm on total power consumption
     for (auto& iter : alarmPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;

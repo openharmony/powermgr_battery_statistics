@@ -130,7 +130,6 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
 
 void ScreenEntity::Reset()
 {
-    STATS_HILOGI(COMP_SVC, "Reset");
     // Reset app Screen total power consumption
     screenPowerMah_ = StatsUtils::DEFAULT_VALUE;
 
