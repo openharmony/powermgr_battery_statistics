@@ -126,7 +126,7 @@ bool BatteryStatsService::Init()
             STATS_HILOGE(COMP_SVC, "Create EventHandler failed");
             return false;
         }
-        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_, WATCH_DOG_DELAY_S);
+        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_);
     }
 
     return true;
