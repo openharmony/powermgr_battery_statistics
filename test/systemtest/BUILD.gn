@@ -53,13 +53,13 @@ ohos_systemtest("batterystats_sys_test") {
     "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:base",
     "ability_base:want",
     "battery_manager:batterysrv_client",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
