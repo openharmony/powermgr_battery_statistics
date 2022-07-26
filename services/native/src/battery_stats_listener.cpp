@@ -56,9 +56,9 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     data.eventDebugInfo.clear();
     if (eventName == "POWER_RUNNINGLOCK") {
         ProcessWakelockEvent(data, root);
-    } else if (eventName == "POWER_SCREEN" || eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||
-        eventName == "BACKLIGHT_DISCOUNT" || eventName == "AMBIENT_LIGHT") {
-        ProcessDispalyEvent(data, root);
+    } else if (eventName == "SCREEN_STATE" || eventName == "BRIGHTNESS_NIT" ||  eventName == "BACKLIGHT_DISCOUNT"
+        || eventName == "AMBIENT_LIGHT") {
+        ProcessDispalyEvent(data, root, eventName);
     } else if (eventName == "BATTERY_CHANGED") {
         ProcessBatteryEvent(data, root);
     } else if (eventName == "POWER_TEMPERATURE" || eventName == "THERMAL_LEVEL_CHANGED" ||
@@ -73,17 +73,17 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
         ProcessFlashlightEvent(data, root);
     } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
         eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
-        ProcessCameraEvent(data, root);
+        ProcessCameraEvent(data, root, eventName);
     } else if (eventName == "AUDIO_STREAM_CHANGE") {
         ProcessAudioEvent(data, root);
     } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
-        ProcessSensorEvent(data, root);
+        ProcessSensorEvent(data, root, eventName);
     } else if (eventName == "POWER_RADIO") {
         ProcessRadioEvent(data, root);
     } else if (eventName == "GNSS_STATE") {
         ProcessGpsEvent(data, root);
     } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
-        ProcessBluetoothEvent(data, root);
+        ProcessBluetoothEvent(data, root, eventName);
     } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
         ProcessWifiEvent(data, root);
     } else if (eventName == "START_REMOTE_ABILITY") {
@@ -94,9 +94,9 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     detector->HandleStatsChangedEvent(data);
 }
 
-void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
 {
-    std::string eventName = root["name_"].asString();
     if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT") {
         data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
         if (!root["UID"].asString().empty()) {
@@ -149,11 +149,12 @@ void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const 
     }
 }
 
-void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
 {
-    if (root["name_"].asString() == "POWER_SENSOR_GRAVITY") {
+    if (eventName == "POWER_SENSOR_GRAVITY") {
         data.type = StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON;
-    } else if (root["name_"].asString() == "POWER_SENSOR_PROXIMITY") {
+    } else if (eventName == "POWER_SENSOR_PROXIMITY") {
         data.type = StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON;
     }
 
@@ -220,9 +221,10 @@ void BatteryStatsListener::ProcessGpsEvent(StatsUtils::StatsData& data, const Js
     }
 }
 
-void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
 {
-    if (root["name_"].asString() == "BLUETOOTH_BR_STATE") {
+    if (eventName == "BLUETOOTH_BR_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_ON;
         if (!root["BR_STATE"].asString().empty()) {
             if (stoi(root["BR_STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
@@ -231,7 +233,7 @@ void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, co
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
-    } else if (root["name_"].asString() == "BLUETOOTH_SCAN_STATE") {
+    } else if (eventName == "BLUETOOTH_SCAN_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_SCAN;
         if (!root["BR_SCAN_STATE"].asString().empty()) {
             if (stoi(root["BR_SCAN_STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
@@ -354,32 +356,27 @@ void BatteryStatsListener::ProcessDispalyDebugInfo(StatsUtils::StatsData& data, 
     }
 }
 
-void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
 {
-    data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
-    if (root["name_"].asString() == "POWER_SCREEN") {
+    data.type = StatsUtils::STATS_TYPE_DISPLAY;
+    if (eventName == "SCREEN_STATE") {
+        data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
         if (!root["STATE"].asString().empty()) {
             DisplayPowerMgr::DisplayState displayState = DisplayPowerMgr::DisplayState(stoi(root["STATE"].asString()));
             switch (displayState) {
                 case DisplayPowerMgr::DisplayState::DISPLAY_OFF:
-                    data.state = StatsUtils::STATS_STATE_DISPLAY_OFF;
+                    data.state = StatsUtils::STATS_STATE_DEACTIVATED;
                     break;
                 case DisplayPowerMgr::DisplayState::DISPLAY_ON:
-                    data.state = StatsUtils::STATS_STATE_DISPLAY_ON;
-                    break;
-                case DisplayPowerMgr::DisplayState::DISPLAY_DIM:
-                    data.state = StatsUtils::STATS_STATE_DISPLAY_DIM;
-                    break;
-                case DisplayPowerMgr::DisplayState::DISPLAY_SUSPEND:
-                    data.state = StatsUtils::STATS_STATE_DISPLAY_SUSPEND;
-                    break;
-                case DisplayPowerMgr::DisplayState::DISPLAY_UNKNOWN:
-                    data.state = StatsUtils::STATS_STATE_DISPLAY_UNKNOWN;
+                    data.state = StatsUtils::STATS_STATE_ACTIVATED;
                     break;
                 default:
                     break;
             }
         }
+    } else if (eventName == "BRIGHTNESS_NIT") {
+        data.type = StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS;
         if (!root["BRIGHTNESS"].asString().empty()) {
             data.level = stoi(root["BRIGHTNESS"].asString());
         }

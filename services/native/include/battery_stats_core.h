@@ -76,19 +76,22 @@ private:
     std::shared_ptr<BatteryStatsEntity> wifiEntity_;
     std::shared_ptr<BatteryStatsEntity> wakelockEntity_;
     std::shared_ptr<BatteryStatsEntity> alarmEntity_;
+    bool isCameraOn_ = false;
+    bool isScreenOn_ = false;
     int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
-    bool isCameraOn_ = false;
     int32_t lastCameraUid_ = StatsUtils::INVALID_VALUE;
     std::string debugInfo_;
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
-    void UpdateCameraTimer(StatsUtils::StatsState state, int32_t uid, const std::string& deviceId);
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         int64_t time, int32_t uid = StatsUtils::INVALID_VALUE);
+    void UpdateCameraTimer(StatsUtils::StatsState state, int32_t uid, const std::string& deviceId);
+    void UpdateScreenTimer(StatsUtils::StatsState state);
+    void UpdateBrightnessTimer(StatsUtils::StatsState state, int16_t level);
     void UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         int64_t data, int32_t uid = StatsUtils::INVALID_VALUE);
-    void UpdateScreenStats(StatsUtils::StatsState state, int16_t level);
+    void UpdateScreenStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level);
     void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
     void UpdateCameraStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid,
         const std::string& deviceId);

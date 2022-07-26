@@ -58,24 +58,27 @@ void ScreenEntity::Calculate(int32_t uid)
 {
     auto screenOnAverageMa =
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
-    auto screenBrightnessAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
+    auto screenOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON);
+    double screenOnPowerMah = screenOnAverageMa * screenOnTimeMs;
 
-    double screenPowerMah = StatsUtils::DEFAULT_VALUE;
+    auto brightnessAverageMa =
+        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
+    double brightnessPowerMah = StatsUtils::DEFAULT_VALUE;
     for (auto& iter : screenBrightnessTimerMap_) {
         if (iter.second != nullptr) {
-            auto averageMa = screenBrightnessAverageMa * iter.first + screenOnAverageMa;
+            auto averageMa = brightnessAverageMa * iter.first;
             auto timeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, iter.first);
-            screenPowerMah += averageMa * timeMs / StatsUtils::MS_IN_HOUR;
+            brightnessPowerMah += averageMa * timeMs;
         }
     }
-    screenPowerMah_ = screenPowerMah;
+
+    screenPowerMah_ = (screenOnPowerMah + brightnessPowerMah) / StatsUtils::MS_IN_HOUR;
     totalPowerMah_ += screenPowerMah_;
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     statsInfo->SetPower(screenPowerMah_);
     statsInfoList_.push_back(statsInfo);
-    STATS_HILOGD(COMP_SVC, "Calculate screen active power consumption: %{public}lfmAh", screenPowerMah);
+    STATS_HILOGD(COMP_SVC, "Calculate screen active power consumption: %{public}lfmAh", screenPowerMah_);
 }
 
 double ScreenEntity::GetEntityPowerMah(int32_t uidOrUserId)
@@ -104,7 +107,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
             break;
         }
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS: {
-            if (level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
+            if (level <= StatsUtils::INVALID_VALUE || level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
                 STATS_HILOGD(COMP_SVC, "Illegal brightness");
                 break;
             }
@@ -115,10 +118,10 @@ std::shared_ptr<StatsHelper::ActiveTimer> ScreenEntity::GetOrCreateTimer(StatsUt
                 break;
             }
             STATS_HILOGD(COMP_SVC, "Create screen brightness timer of brightness level: %{public}d", level);
-            std::shared_ptr<StatsHelper::ActiveTimer> brightTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            std::shared_ptr<StatsHelper::ActiveTimer> brightnessTimer = std::make_shared<StatsHelper::ActiveTimer>();
             screenBrightnessTimerMap_.insert(
-                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, brightTimer));
-            timer = brightTimer;
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, brightnessTimer));
+            timer = brightnessTimer;
             break;
         }
         default:

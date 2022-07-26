@@ -85,6 +85,7 @@ public:
         STATS_TYPE_SENSOR_GRAVITY_ON,
         STATS_TYPE_SENSOR_PROXIMITY_ON,
         STATS_TYPE_AUDIO_ON,
+        STATS_TYPE_DISPLAY,
         STATS_TYPE_SCREEN_ON,
         STATS_TYPE_SCREEN_BRIGHTNESS,
         STATS_TYPE_WAKELOCK_HOLD,
@@ -104,11 +105,6 @@ public:
         STATS_STATE_INVALID = -1, // Indicates an invalid state
         STATS_STATE_ACTIVATED, // Indicates subsystem is activated
         STATS_STATE_DEACTIVATED, // Indicates subsystem is deactivated
-        STATS_STATE_DISPLAY_OFF, // Indicates screen is in off state
-        STATS_STATE_DISPLAY_DIM, // Indicates screen is in dim state
-        STATS_STATE_DISPLAY_ON, // Indicates screen is in on state
-        STATS_STATE_DISPLAY_SUSPEND, // Indicates screen is in suspend state
-        STATS_STATE_DISPLAY_UNKNOWN, // Indicates screen is in unknown state
         STATS_STATE_NETWORK_UNKNOWN, // Indicates mobile network is in unknown state
         STATS_STATE_NETWORK_IN_SERVICE, // Indicates mobile network is in in-service state
         STATS_STATE_NETWORK_NO_SERVICE, // Indicates mobile network is in no-service state
