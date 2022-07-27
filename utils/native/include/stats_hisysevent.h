@@ -25,7 +25,6 @@ public:
     enum HiSysEventType {
         HISYSEVENT_TYPE_INVALID = -1,
         HISYSEVENT_TYPE_POWER_RUNNINGLOCK,
-        HISYSEVENT_TYPE_POWER_SCREEN,
         HISYSEVENT_TYPE_SCREEN_STATE,
         HISYSEVENT_TYPE_BRIGHTNESS_NIT,
         HISYSEVENT_TYPE_BACKLIGHT_DISCOUNT,
@@ -55,12 +54,12 @@ public:
         HISYSEVENT_TYPE_WIFI_SCAN,
         HISYSEVENT_TYPE_START_REMOTE_ABILITY,
         HISYSEVENT_TYPE_ALARM_TRIGGER,
+        HISYSEVENT_TYPE_THERMAL_ACTION_TRIGGERED,
         HISYSEVENT_TYPE_END
     };
 
     static constexpr const char* HISYSEVENT_LIST[HISYSEVENT_TYPE_END] = {
         "POWER_RUNNINGLOCK",
-        "POWER_SCREEN",
         "SCREEN_STATE",
         "BRIGHTNESS_NIT",
         "BACKLIGHT_DISCOUNT",
@@ -89,7 +88,8 @@ public:
         "WIFI_STATE",
         "WIFI_SCAN",
         "START_REMOTE_ABILITY",
-        "ALARM_TRIGGER"
+        "ALARM_TRIGGER",
+        "THERMAL_ACTION_TRIGGERED"
     };
 
     static bool CheckHiSysEvent(const std::string& eventName);

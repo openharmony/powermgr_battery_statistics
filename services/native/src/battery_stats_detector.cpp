@@ -263,7 +263,9 @@ void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
         case StatsUtils::STATS_TYPE_WAKELOCK_HOLD:
             HandleWakelockInfo(data, bootTimeMs, debugInfo);
             break;
+        case StatsUtils::STATS_TYPE_DISPLAY:
         case StatsUtils::STATS_TYPE_SCREEN_ON:
+        case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
             HandleDispalyInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:

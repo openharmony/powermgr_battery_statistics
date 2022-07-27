@@ -21,8 +21,8 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-const std::string ARGS_HELP = "-h";
-const std::string ARGS_STATS = "-batterystats";
+constexpr const char* ARGS_HELP = "-h";
+constexpr const char* ARGS_STATS = "-batterystats";
 }
 
 bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string& result)

@@ -18,16 +18,29 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
 using namespace std;
 
+static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
 static std::vector<std::string> dumpArgs;
+
+static void ParserAveragePowerFile()
+{
+    if (g_statsParser == nullptr) {
+        g_statsParser = std::make_shared<BatteryStatsParser>();
+        if (!g_statsParser->Init()) {
+            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
+        }
+    }
+}
 
 void StatsClientTest::SetUpTestCase(void)
 {
+    ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
@@ -99,7 +112,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_002, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -210,8 +223,8 @@ HWTEST_F (StatsClientTest, StatsCameraTest_005, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
-    double flashlightOnAverageMa = 320;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -337,7 +350,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_008, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -423,7 +436,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_010, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -468,7 +481,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_011, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid1 = 10003;
@@ -542,8 +555,8 @@ HWTEST_F (StatsClientTest, StatsCameraTest_013, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
-    double flashlightOnAverageMa = 320;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -619,7 +632,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_015, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double flashlightOnAverageMa = 320;
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -690,7 +703,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_017, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double flashlightOnAverageMa = 320;
+    double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -745,7 +758,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_018, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double cameraOnAverageMa = 810;
+    double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;

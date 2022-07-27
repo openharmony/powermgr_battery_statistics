@@ -25,13 +25,17 @@ config("module_private_config") {
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
     "//utils/system/safwk/native/include",
+    "${batterystats_service_path}/native/include",
   ]
 }
 
 ohos_systemtest("batterystats_sys_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/batterystats_sys_test.cpp" ]
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/batterystats_sys_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -48,14 +52,14 @@ ohos_systemtest("batterystats_sys_test") {
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
     "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp",
-    "//utils/native/base:utils",
+    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = [
     "ability_base:base",
     "ability_base:want",
     "battery_manager:batterysrv_client",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",

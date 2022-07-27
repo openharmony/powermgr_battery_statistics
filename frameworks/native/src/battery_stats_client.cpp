@@ -15,15 +15,16 @@
 
 #include "battery_stats_client.h"
 
-#include "datetime_ex.h"
+#include "errors.h"
+#include "refbase.h"
 #include "if_system_ability_manager.h"
-#include "ipc_skeleton.h"
+#include "iremote_broker.h"
 #include "iservice_registry.h"
-#include "string_ex.h"
-#include "system_ability_definition.h"
 
-#include "battery_stats_proxy.h"
 #include "stats_common.h"
+#include "stats_errors.h"
+#include "stats_log.h"
+#include "system_ability_definition.h"
 
 namespace OHOS {
 namespace PowerMgr {

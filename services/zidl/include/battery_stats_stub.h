@@ -16,6 +16,10 @@
 #ifndef BATTERY_STATS_STUB_H
 #define BATTERY_STATS_STUB_H
 
+#include <cstdint>
+#include "message_option.h"
+#include "message_parcel.h"
+#include "refbase.h"
 #include "iremote_stub.h"
 #include "nocopyable.h"
 

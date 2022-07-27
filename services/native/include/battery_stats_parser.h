@@ -19,11 +19,12 @@
 #include <map>
 #include <string>
 #include <vector>
-
-#include "refbase.h"
+#include <cstdint>
+#include <functional>
+#include <cstdint>
+#include <iosfwd>
 
 #include "stats_log.h"
-#include "stats_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {

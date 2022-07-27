@@ -16,9 +16,10 @@
 #include "battery_stats_parser.h"
 
 #include <fstream>
-#include "json/json.h"
+#include "ios"
+#include "json/reader.h"
+#include "json/value.h"
 
-#include "stats_log.h"
 #include "stats_utils.h"
 
 namespace OHOS {

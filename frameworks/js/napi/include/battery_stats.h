@@ -16,6 +16,8 @@
 #ifndef BATTERY_STATS_H
 #define BATTERY_STATS_H
 
+#include <cstdint>
+#include <vector>
 #include "napi/native_api.h"
 #include "napi/native_common.h"
 #include "napi/native_node_api.h"

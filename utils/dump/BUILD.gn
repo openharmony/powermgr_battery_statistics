@@ -30,7 +30,6 @@ ohos_executable("statistics") {
   deps = [
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "//base/powermgr/battery_statistics/services:batterystats_service",
-    "//utils/native/base:utils",
   ]
 
   configs = [
@@ -44,6 +43,7 @@ ohos_executable("statistics") {
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",

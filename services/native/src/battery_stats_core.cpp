@@ -17,12 +17,18 @@
 #include <cinttypes>
 #include <fstream>
 #include <map>
+#include <functional>
+#include <list>
+#include <utility>
+#include <vector>
 
-#include <ohos_account_kits_impl.h>
+#include "ios"
+#include "json/reader.h"
+#include "json/writer.h"
+#include "ohos_account_kits.h"
 
 #include "battery_info.h"
 #include "battery_srv_client.h"
-#include "battery_stats_info.h"
 #include "entities/audio_entity.h"
 #include "entities/bluetooth_entity.h"
 #include "entities/camera_entity.h"
@@ -39,9 +45,10 @@
 #include "entities/wifi_entity.h"
 #include "entities/wakelock_entity.h"
 #include "entities/alarm_entity.h"
-#include "stats_log.h"
+#include "stats_helper.h"
 
 #include "xcollie.h"
+#include "xcollie_define.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -311,7 +318,7 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
             break;
         case StatsUtils::STATS_TYPE_SCREEN_ON:
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
-            UpdateScreenStats(state, level);
+            UpdateScreenStats(statsType, state, level);
             break;
         case StatsUtils::STATS_TYPE_CAMERA_ON:
         case StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON:
@@ -369,41 +376,20 @@ void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t le
     lastSignalLevel_ = level;
 }
 
-void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsState state, int16_t level)
+void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level)
 {
-    STATS_HILOGD(COMP_SVC, "StatsState: %{public}d, Level: %{public}d, Last brightness level: %{public}d",
-        state, level, lastBrightnessLevel_);
-    auto onTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_ON);
-    if (state == StatsUtils::STATS_STATE_DISPLAY_OFF) {
-        onTimer->StopRunning();
-        if (lastBrightnessLevel_ > StatsUtils::INVALID_VALUE) {
-            auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
-                lastBrightnessLevel_);
-            brightnessTimer->StopRunning();
+    STATS_HILOGD(COMP_SVC,
+        "statsType: %{public}s, state: %{public}d, level: %{public}d, last brightness level: %{public}d",
+        StatsUtils::ConvertStatsType(statsType).c_str(), state, level, lastBrightnessLevel_);
+    if (statsType == StatsUtils::STATS_TYPE_SCREEN_ON) {
+        UpdateScreenTimer(state);
+    } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
+        if (!isScreenOn_) {
+            STATS_HILOGW(COMP_SVC, "Screen is off, return");
+            return;
         }
-    } else {
-        onTimer->StartRunning();
-        if (lastBrightnessLevel_ <= StatsUtils::INVALID_VALUE ||
-            (level > StatsUtils::INVALID_VALUE && level == lastBrightnessLevel_)) {
-            auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
-                level);
-            brightnessTimer->StartRunning();
-        } else if (lastBrightnessLevel_ != level) {
-            auto oldTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
-                lastBrightnessLevel_);
-            auto newTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, level);
-            if (oldTimer != nullptr) {
-                STATS_HILOGI(COMP_SVC, "Stop screen brightness timer for last level: %{public}d",
-                    lastBrightnessLevel_);
-                oldTimer->StopRunning();
-            }
-            if (newTimer != nullptr) {
-                STATS_HILOGI(COMP_SVC, "Start screen brightness timer for latest level: %{public}d", level);
-                newTimer->StartRunning();
-            }
-        }
+        UpdateBrightnessTimer(state, level);
     }
-    lastBrightnessLevel_ = level;
 }
 
 void BatteryStatsCore::UpdateCameraStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
@@ -466,6 +452,29 @@ void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, S
     }
 }
 
+void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
+    int64_t time, int32_t uid)
+{
+    STATS_HILOGD(COMP_SVC,
+        "entity: %{public}s, statsType: %{public}s, time: %{public}" PRId64 ", uid: %{public}d",
+        BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
+        StatsUtils::ConvertStatsType(statsType).c_str(),
+        time,
+        uid);
+    std::shared_ptr<StatsHelper::ActiveTimer> timer;
+    if (uid > StatsUtils::INVALID_VALUE) {
+        timer = entity->GetOrCreateTimer(uid, statsType);
+    } else {
+        timer = entity->GetOrCreateTimer(statsType);
+    }
+
+    if (timer == nullptr) {
+        STATS_HILOGW(COMP_SVC, "Timer is null, return");
+        return;
+    }
+    timer->AddRunningTimeMs(time);
+}
+
 void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t uid, const std::string& deviceId)
 {
     STATS_HILOGD(COMP_SVC, "Camera status: %{public}d, uid: %{public}d, deviceId: %{private}s",
@@ -506,27 +515,57 @@ void BatteryStatsCore::UpdateCameraTimer(StatsUtils::StatsState state, int32_t u
     }
 }
 
-void BatteryStatsCore::UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
-    int64_t time, int32_t uid)
+void BatteryStatsCore::UpdateScreenTimer(StatsUtils::StatsState state)
 {
-    STATS_HILOGD(COMP_SVC,
-        "entity: %{public}s, statsType: %{public}s, time: %{public}" PRId64 ", uid: %{public}d",
-        BatteryStatsInfo::ConvertConsumptionType(entity->GetConsumptionType()).c_str(),
-        StatsUtils::ConvertStatsType(statsType).c_str(),
-        time,
-        uid);
-    std::shared_ptr<StatsHelper::ActiveTimer> timer;
-    if (uid > StatsUtils::INVALID_VALUE) {
-        timer = entity->GetOrCreateTimer(uid, statsType);
-    } else {
-        timer = entity->GetOrCreateTimer(statsType);
+    std::shared_ptr<StatsHelper::ActiveTimer> screenOnTimer = nullptr;
+    std::shared_ptr<StatsHelper::ActiveTimer> brightnessTimer = nullptr;
+    screenOnTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_ON);
+    if (lastBrightnessLevel_ > StatsUtils::INVALID_VALUE) {
+        brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
+            lastBrightnessLevel_);
     }
+    if (state == StatsUtils::STATS_STATE_ACTIVATED) {
+        screenOnTimer->StartRunning();
+        if (brightnessTimer != nullptr) {
+            brightnessTimer->StartRunning();
+        }
+        isScreenOn_ = true;
+    } else if (state == StatsUtils::STATS_STATE_DEACTIVATED) {
+        screenOnTimer->StopRunning();
+        if (brightnessTimer != nullptr) {
+            brightnessTimer->StopRunning();
+        }
+        isScreenOn_ = false;
+    }
+}
 
-    if (timer == nullptr) {
-        STATS_HILOGW(COMP_SVC, "Timer is null, return");
+void BatteryStatsCore::UpdateBrightnessTimer(StatsUtils::StatsState state, int16_t level)
+{
+    if (level <= StatsUtils::INVALID_VALUE || level > StatsUtils::SCREEN_BRIGHTNESS_BIN) {
+        STATS_HILOGW(COMP_SVC, "Screen brightness level is out of range");
         return;
     }
-    timer->AddRunningTimeMs(time);
+
+    if (lastBrightnessLevel_ <= StatsUtils::INVALID_VALUE ||
+        (level > StatsUtils::INVALID_VALUE && level == lastBrightnessLevel_)) {
+        auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
+            level);
+        brightnessTimer->StartRunning();
+    } else if (level != lastBrightnessLevel_) {
+        auto oldBrightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
+            lastBrightnessLevel_);
+        auto newBrightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, level);
+        if (oldBrightnessTimer != nullptr) {
+            STATS_HILOGI(COMP_SVC, "Stop screen brightness timer for last level: %{public}d",
+                lastBrightnessLevel_);
+            oldBrightnessTimer->StopRunning();
+        }
+        if (newBrightnessTimer != nullptr) {
+            STATS_HILOGI(COMP_SVC, "Start screen brightness timer for latest level: %{public}d", level);
+            newBrightnessTimer->StartRunning();
+        }
+    }
+    lastBrightnessLevel_ = level;
 }
 
 void BatteryStatsCore::UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,

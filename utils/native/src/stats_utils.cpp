@@ -19,36 +19,6 @@
 
 namespace OHOS {
 namespace PowerMgr {
-const std::string StatsUtils::CURRENT_INVALID = "invalid";
-const std::string StatsUtils::CURRENT_BLUETOOTH_ON = "bluetooth_on";
-const std::string StatsUtils::CURRENT_BLUETOOTH_SCAN = "bluetooth_scan";
-const std::string StatsUtils::CURRENT_BLUETOOTH_RX = "bluetooth_rx";
-const std::string StatsUtils::CURRENT_BLUETOOTH_TX = "bluetooth_tx";
-const std::string StatsUtils::CURRENT_WIFI_ON = "wifi_on";
-const std::string StatsUtils::CURRENT_WIFI_SCAN = "wifi_scan";
-const std::string StatsUtils::CURRENT_WIFI_RX = "wifi_rx";
-const std::string StatsUtils::CURRENT_WIFI_TX = "wifi_tx";
-const std::string StatsUtils::CURRENT_RADIO_ON = "radio_on";
-const std::string StatsUtils::CURRENT_RADIO_SCAN = "radio_scan";
-const std::string StatsUtils::CURRENT_RADIO_ACTIVE = "radio_active";
-const std::string StatsUtils::CURRENT_RADIO_RX = "radio_rx";
-const std::string StatsUtils::CURRENT_RADIO_TX = "radio_tx";
-const std::string StatsUtils::CURRENT_CAMERA_ON = "camera_on";
-const std::string StatsUtils::CURRENT_FLASHLIGHT_ON = "flashlight_on";
-const std::string StatsUtils::CURRENT_GPS_ON = "gps_on";
-const std::string StatsUtils::CURRENT_SENSOR_GRAVITY = "sensor_gravity_on";
-const std::string StatsUtils::CURRENT_SENSOR_PROXIMITY = "sensor_proximity_on";
-const std::string StatsUtils::CURRENT_AUDIO_ON = "audio_on";
-const std::string StatsUtils::CURRENT_SCREEN_ON = "screen_on";
-const std::string StatsUtils::CURRENT_SCREEN_BRIGHTNESS = "screen_brightness";
-const std::string StatsUtils::CURRENT_CPU_AWAKE = "cpu_awake";
-const std::string StatsUtils::CURRENT_CPU_IDLE = "cpu_idle";
-const std::string StatsUtils::CURRENT_CPU_CLUSTER = "cpu_clusters";
-const std::string StatsUtils::CURRENT_CPU_SPEED = "cpu_speed_cluster";
-const std::string StatsUtils::CURRENT_CPU_ACTIVE = "cpu_active";
-const std::string StatsUtils::CURRENT_CPU_SUSPEND = "cpu_suspend";
-const std::string StatsUtils::CURRENT_ALARM_ON = "alarm_on";
-
 std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
 {
     std::string result = "";

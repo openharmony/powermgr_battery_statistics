@@ -150,7 +150,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_002, TestSize.Level0)
 /**
  *
  * @tc.name: StatsDumpTest_003
- * @tc.desc: test Dump function(POWER_SCREEN)
+ * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
  * @tc.type: FUNC
  */
 HWTEST_F (StatsClientTest, StatsDumpTest_003, TestSize.Level0)
@@ -160,25 +160,18 @@ HWTEST_F (StatsClientTest, StatsDumpTest_003, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_OFF);
-    int32_t brightnessBefore = 130;
-    int32_t brightnessAfter = 140;
+    int32_t ratio = 100;
 
-    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOn,
-        "BRIGHTNESS", brightnessBefore);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write("POWER", "POWER_SCREEN", HiSysEvent::EventType::STATISTIC, "STATE", stateOff,
-        "BRIGHTNESS", brightnessAfter);
+    HiSysEvent::Write("DISPLAY", "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("POWER_SCREEN");
+        .append("BACKLIGHT_DISCOUNT")
+        .append(" Ratio = ")
+        .append(ToString(ratio));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -357,5 +350,45 @@ HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
 
     EXPECT_TRUE(index != string::npos) << " StatsDumpTest_007 fail due to not found related debug info";
     GTEST_LOG_(INFO) << " StatsDumpTest_007: test end";
+}
+
+/**
+ *
+ * @tc.name: StatsDumpTest_008
+ * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsDumpTest_008, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsDumpTest_008: test start";
+
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testWaitTimeSec = 1;
+    int32_t type = 100;
+    int32_t level = 101;
+
+    HiSysEvent::Write("DISPLAY", "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
+    sleep(testWaitTimeSec);
+
+    std::string expectedDebugInfo;
+    expectedDebugInfo.append("Additional debug info: ")
+        .append("Event name = ")
+        .append("AMBIENT_LIGHT")
+        .append(" Ambient type = ")
+        .append(ToString(type))
+        .append(" Ambient brightness = ")
+        .append(ToString(level));
+
+    std::string actualDebugInfo = statsClient.Dump(dumpArgs);
+
+    GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
+    GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
+
+    auto index = actualDebugInfo.find(expectedDebugInfo);
+
+    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_008 fail due to not found related debug info";
+    GTEST_LOG_(INFO) << " StatsDumpTest_008: test end";
 }
 }

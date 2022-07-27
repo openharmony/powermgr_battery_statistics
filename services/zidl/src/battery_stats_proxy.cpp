@@ -15,11 +15,11 @@
 
 #include "battery_stats_proxy.h"
 
-#include <ipc_types.h>
 #include <message_parcel.h>
-#include <string_ex.h>
-
+#include "errors.h"
+#include "message_option.h"
 #include "stats_common.h"
+#include "stats_log.h"
 #include "stats_utils.h"
 
 namespace OHOS {

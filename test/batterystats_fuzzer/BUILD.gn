@@ -34,12 +34,12 @@ ohos_fuzztest("BatteryStatsFuzzTest") {
     "-fno-omit-frame-pointer",
   ]
   sources = [ "./batterystats_fuzzer.cpp" ]
-  deps = [
-    "${batterystats_interfaces_path}/innerkits:batterystats_client",
-    "//utils/native/base:utils",
-  ]
+  deps = [ "${batterystats_interfaces_path}/innerkits:batterystats_client" ]
 
-  external_deps = [ "ipc:ipc_core" ]
+  external_deps = [
+    "c_utils:utils",
+    "ipc:ipc_core",
+  ]
 }
 
 ###############################################################################
