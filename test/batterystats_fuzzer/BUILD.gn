@@ -14,7 +14,7 @@
 import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/test.gni")
 
-module_output_path = "${batterystats_part_name}/batterystats_native"
+module_output_path = "${batterystats_part_name}/batterystats"
 
 ##############################fuzztest##########################################
 ohos_fuzztest("BatteryStatsFuzzTest") {
@@ -34,7 +34,7 @@ ohos_fuzztest("BatteryStatsFuzzTest") {
     "-fno-omit-frame-pointer",
   ]
   sources = [ "./batterystats_fuzzer.cpp" ]
-  deps = [ "${batterystats_interfaces_path}/innerkits:batterystats_client" ]
+  deps = [ "${batterystats_innerkits}:batterystats_client" ]
 
   external_deps = [
     "c_utils:utils",

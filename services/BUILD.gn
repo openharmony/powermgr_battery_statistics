@@ -18,23 +18,19 @@ config("batterystats_private_config") {
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
-    "//utils/system/safwk/native/include",
   ]
 }
 
 config("batterystats_public_config") {
   include_dirs = [
     "native/include",
-    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager/include",
     "${ability_runtime_path}/interfaces/kits/native/appkit/app",
-    "${batterystats_interfaces_path}/include",
-    "${batterystats_service_path}/zidl/include",
+    "${batterystats_service_zidl}/include",
   ]
 }
 
 ohos_shared_library("batterystats_service") {
   sources = [
-    "${batterystats_service_path}/zidl/src/battery_stats_stub.cpp",
     "native/src/battery_stats_core.cpp",
     "native/src/battery_stats_detector.cpp",
     "native/src/battery_stats_dumper.cpp",
@@ -70,28 +66,28 @@ ohos_shared_library("batterystats_service") {
   public_configs = [ ":batterystats_public_config" ]
 
   deps = [
-    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
+    ":batterystats_stub",
     "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
-    "${batterystats_interfaces_path}/innerkits:batterystats_client",
+    "${batterystats_innerkits}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
-    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
-    "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
-    "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
-    "//base/telephony/core_service/interfaces/innerkits:tel_core_service_api",
     "//third_party/jsoncpp",
   ]
 
   external_deps = [
     "ability_base:base",
     "ability_base:want",
+    "ability_runtime:abilitykit_native",
     "battery_manager:batterysrv_client",
     "bundle_framework:appexecfwk_base",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "core_service:tel_core_service_api",
+    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
     "hisysevent_native:libhisysevent",
+    "hisysevent_native:libhisyseventmanager",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "os_account:libaccountkits",
@@ -100,4 +96,34 @@ ohos_shared_library("batterystats_service") {
   ]
 
   part_name = "${batterystats_part_name}"
+}
+
+ohos_shared_library("batterystats_stub") {
+  sources = [ "${batterystats_service_zidl}/src/battery_stats_stub.cpp" ]
+
+  configs = [
+    "${batterystats_utils_path}:batterystats_utils_config",
+    ":batterystats_private_config",
+  ]
+
+  public_configs = [ ":batterystats_public_config" ]
+
+  deps = [ "${batterystats_innerkits}:batterystats_client" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hicollie_native:libhicollie",
+    "hiviewdfx_hilog_native:libhilog",
+    "ipc:ipc_core",
+  ]
+
+  part_name = "${batterystats_part_name}"
+}
+
+group("service") {
+  deps = [
+    ":batterystats_service",
+    ":batterystats_stub",
+    "profile:power_average.json",
+  ]
 }

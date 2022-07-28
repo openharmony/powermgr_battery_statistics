@@ -18,7 +18,6 @@ ohos_executable("statistics") {
   include_dirs = [
     "include",
     "//foundation/ability/ability_runtime/tools/aa/include",
-    "${batterystats_interfaces_path}/include",
   ]
 
   sources = [
@@ -27,10 +26,7 @@ ohos_executable("statistics") {
     "src/statistics_shell_command.cpp",
   ]
 
-  deps = [
-    "${batterystats_interfaces_path}/innerkits:batterystats_client",
-    "//base/powermgr/battery_statistics/services:batterystats_service",
-  ]
+  deps = [ "${batterystats_innerkits}:batterystats_client" ]
 
   configs = [
     "//foundation/ability/ability_runtime/tools/aa:ability_command_config",

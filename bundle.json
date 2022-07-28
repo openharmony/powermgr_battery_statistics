@@ -31,7 +31,7 @@
                 "common_event_service",
                 "core_service",
                 "c_utils",
-                "display_manager_native",
+                "display_manager",
                 "eventhandler",
                 "hicollie_native",
                 "hisysevent_native",
@@ -50,15 +50,20 @@
             ]
         },
         "build": {
-            "sub_component": [
-                "//base/powermgr/battery_statistics/etc/init:batterystats.rc",
-                "//base/powermgr/battery_statistics/frameworks/js/napi:batterystatistics",
-                "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
-                "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
-                "//base/powermgr/battery_statistics/services:batterystats_service",
-                "//base/powermgr/battery_statistics/services/profile:power_average.json",
-                "//base/powermgr/battery_statistics/utils:batterystat_dump"
-            ],
+            "group_type": {
+                "base_group": [
+                    "//base/powermgr/battery_statistics/utils:batterystat_dump"
+                ],
+                "fwk_group": [
+                    "//base/powermgr/battery_statistics/frameworks/js/napi:batterystatistics",
+                    "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client"
+                ],
+                "service_group": [
+                    "//base/powermgr/battery_statistics/etc/init:batterystats.cfg",
+                    "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
+                    "//base/powermgr/battery_statistics/services:service"
+                ]
+            },
             "inner_kits": [
                 {
                     "name": "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",

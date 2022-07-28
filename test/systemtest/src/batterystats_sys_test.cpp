@@ -32,9 +32,8 @@
 #include <system_ability_definition.h>
 #include <wifi_hisysevent.h>
 
-
 #include "battery_stats_client.h"
-#include "battery_stats_service.h"
+#include "battery_stats_parser.h"
 #include "stats_common.h"
 
 using namespace std;
