@@ -47,20 +47,11 @@ std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
         case STATS_TYPE_WIFI_TX:
             result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_TX);
             break;
-        case STATS_TYPE_RADIO_ON:
-            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_ON);
-            break;
-        case STATS_TYPE_RADIO_SCAN:
-            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_SCAN);
-            break;
         case STATS_TYPE_PHONE_ACTIVE:
             result = GET_VARIABLE_NAME(STATS_TYPE_PHONE_ACTIVE);
             break;
-        case STATS_TYPE_RADIO_RX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_RX);
-            break;
-        case STATS_TYPE_RADIO_TX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_RADIO_TX);
+        case STATS_TYPE_PHONE_DATA:
+            result = GET_VARIABLE_NAME(STATS_TYPE_PHONE_DATA);
             break;
         default:
             break;
@@ -174,11 +165,8 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
         case STATS_TYPE_WIFI_SCAN:
         case STATS_TYPE_WIFI_RX:
         case STATS_TYPE_WIFI_TX:
-        case STATS_TYPE_RADIO_ON:
-        case STATS_TYPE_RADIO_SCAN:
         case STATS_TYPE_PHONE_ACTIVE:
-        case STATS_TYPE_RADIO_RX:
-        case STATS_TYPE_RADIO_TX:
+        case STATS_TYPE_PHONE_DATA:
             result = ConvertTypeForConn(statsType);
             break;
         case STATS_TYPE_CAMERA_ON:

@@ -23,10 +23,9 @@ var ConsumptionType = {
     CONSUMPTION_TYPE_BLUETOOTH : -15,
     CONSUMPTION_TYPE_IDLE : -14,
     CONSUMPTION_TYPE_PHONE : -13,
-    CONSUMPTION_TYPE_RADIO : -12,
-    CONSUMPTION_TYPE_SCREEN : -11,
-    CONSUMPTION_TYPE_USER : -10,
-    CONSUMPTION_TYPE_WIFI : -9,
+    CONSUMPTION_TYPE_SCREEN : -12,
+    CONSUMPTION_TYPE_USER : -11,
+    CONSUMPTION_TYPE_WIFI : -10,
 }
 
 describe('appInfoTest', function () {
@@ -106,33 +105,6 @@ describe('appInfoTest', function () {
             if (infoList[i].type == ConsumptionType.CONSUMPTION_TYPE_PHONE) {
                 expect(infoList[i].uid).assertEqual(-1);
                 console.info("Found Phone consumption");
-                found = true;
-            }
-        }
-        done();
-        expect(found).assertTrue();
-    })
-
-    /**
-    /* @tc.number batteryStats_js_004
-     * @tc.name batteryStats_004
-     * @tc.desc batteryStats getBatteryStats Interface Test type = ConsumptionType.CONSUMPTION_TYPE_RADIO
-     */
-    it('batteryStats_004', 0, async function (done) {
-        var infoList;
-        let promise = batteryStats.getBatteryStats().then(function (value) {
-            infoList = value;
-            console.info("Executing");
-        }, function (msg) {
-            console.info("Promise error：" + msg);
-        });
-        await promise;
-        console.info("Waiting");
-        var found = false;
-        for (let i = 0; i < infoList.length; i++) {
-            if (infoList[i].type == ConsumptionType.CONSUMPTION_TYPE_RADIO) {
-                expect(infoList[i].uid).assertEqual(-1);
-                console.info("Found Radio consumption");
                 found = true;
             }
         }

@@ -125,9 +125,6 @@ std::string BatteryStatsInfo::ConvertTypeForPart(ConsumptionType type)
         case CONSUMPTION_TYPE_PHONE:
             result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_PHONE);
             break;
-        case CONSUMPTION_TYPE_RADIO:
-            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_RADIO);
-            break;
         case CONSUMPTION_TYPE_SCREEN:
             result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_SCREEN);
             break;
@@ -189,7 +186,6 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
         case CONSUMPTION_TYPE_BLUETOOTH:
         case CONSUMPTION_TYPE_IDLE:
         case CONSUMPTION_TYPE_PHONE:
-        case CONSUMPTION_TYPE_RADIO:
         case CONSUMPTION_TYPE_SCREEN:
         case CONSUMPTION_TYPE_WIFI:
             result = ConvertTypeForPart(type);
