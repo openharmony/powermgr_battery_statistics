@@ -67,7 +67,7 @@ void PhoneEntity::Calculate(int32_t uid)
 {
     // Calculate phone on power
     double phoneOnPowerMah = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+    for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         double phoneOnLevelPowerMah = StatsUtils::DEFAULT_VALUE;
         auto phoneOnAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
@@ -78,7 +78,7 @@ void PhoneEntity::Calculate(int32_t uid)
 
     // Calculate phone data power
     double phoneDataPowerMah = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+    for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         double phoneDataLevelPowerMah = StatsUtils::DEFAULT_VALUE;
         auto phoneDataAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, i);
@@ -173,7 +173,7 @@ void PhoneEntity::DumpInfo(std::string& result, int32_t uid)
 {
     int64_t phoneOnTime = StatsUtils::DEFAULT_VALUE;
     int64_t phoneDataTime = StatsUtils::DEFAULT_VALUE;
-    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+    for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         phoneOnTime += GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, i);
         phoneDataTime += GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, i);
     }

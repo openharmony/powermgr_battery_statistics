@@ -33,18 +33,6 @@ POWER_SENSOR_PROXIMITY:
   UID: {type: INT32, desc: application uid}
   STATE: {type: INT32, desc: proximity sensor on or off}
 
-BLUETOOTH_BR_STATE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: bluetooth br message}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  BR_STATE: {type: INT32, desc: br state}
-
-BLUETOOTH_SCAN_STATE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: bluetooth scan message}
-  PID: {type: INT32, desc: application pid}
-  UID: {type: INT32, desc: application uid}
-  BR_SCAN_STATE: {type: INT32, desc: br scan state}
-
 ALARM_TRIGGER:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: alarm trigger}
   PID: {type: INT32, desc: thread pid}

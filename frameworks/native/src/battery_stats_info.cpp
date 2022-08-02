@@ -160,8 +160,8 @@ std::string BatteryStatsInfo::ConvertTypeForApp(ConsumptionType type)
         case CONSUMPTION_TYPE_SENSOR:
             result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_SENSOR);
             break;
-        case CONSUMPTION_TYPE_GPS:
-            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_GPS);
+        case CONSUMPTION_TYPE_GNSS:
+            result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_GNSS);
             break;
         case CONSUMPTION_TYPE_CPU:
             result = GET_VARIABLE_NAME(CONSUMPTION_TYPE_CPU);
@@ -196,7 +196,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
         case CONSUMPTION_TYPE_FLASHLIGHT:
         case CONSUMPTION_TYPE_AUDIO:
         case CONSUMPTION_TYPE_SENSOR:
-        case CONSUMPTION_TYPE_GPS:
+        case CONSUMPTION_TYPE_GNSS:
         case CONSUMPTION_TYPE_CPU:
         case CONSUMPTION_TYPE_WAKELOCK:
         case CONSUMPTION_TYPE_ALARM:

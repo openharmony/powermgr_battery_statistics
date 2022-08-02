@@ -47,7 +47,7 @@ ohos_shared_library("batterystats_service") {
     "native/src/entities/camera_entity.cpp",
     "native/src/entities/cpu_entity.cpp",
     "native/src/entities/flashlight_entity.cpp",
-    "native/src/entities/gps_entity.cpp",
+    "native/src/entities/gnss_entity.cpp",
     "native/src/entities/idle_entity.cpp",
     "native/src/entities/phone_entity.cpp",
     "native/src/entities/screen_entity.cpp",

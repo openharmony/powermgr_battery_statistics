@@ -93,7 +93,9 @@ public:
         void AddCount(int64_t count)
         {
             if (count > StatsUtils::DEFAULT_VALUE) {
-                totalCount_ += count;
+                if (IsOnBattery()) {
+                    totalCount_ += count;
+                }
                 STATS_HILOGD(COMP_SVC, "Add data bytes: %{public}" PRId64 ", total data bytes is: %{public}" PRId64 "",
                     count, totalCount_);
             } else {

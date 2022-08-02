@@ -8,7 +8,7 @@
 
 The battery statistics module provides the following functions:
 
-1.  Software power consumption statistics: collects statistics on power consumption of each application or software. The power consumption is measured by Uid. Software power consumption includes but is not limited to the following items: CPU power consumption, running lock power consumption, mobile wireless power consumption, Wi-Fi power consumption, GPS power consumption, sensor power consumption, camera power consumption, flashlight power consumption, etc.
+1.  Software power consumption statistics: collects statistics on power consumption of each application or software. The power consumption is measured by Uid. Software power consumption includes but is not limited to the following items: CPU power consumption, running lock power consumption, mobile wireless power consumption, Wi-Fi power consumption, GNSS power consumption, sensor power consumption, camera power consumption, flashlight power consumption, etc.
 2.   Hardware power consumption statistics: collects statistics on power consumption of the hardware. Power consumption beyond software power consumption belongs to hardware power consumption. It includes but is not limited to the following items: user power consumption, call power consumption, screen power consumption, Wi-Fi power consumption, and Bluetooth power consumption.
 
 **Figure 1**  Architecture of the battery statistics module<a name="fig106301571239"></a>

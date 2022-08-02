@@ -24,6 +24,11 @@ namespace OHOS {
 namespace PowerMgr {
 class BluetoothEntity : public BatteryStatsEntity {
 public:
+    enum PowerType {
+        POWER_TYPE_BR = 0,
+        POWER_TYPE_BLE,
+        POWER_TYPE_ALL,
+    };
     BluetoothEntity();
     ~BluetoothEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
@@ -34,30 +39,26 @@ public:
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
-    int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
-    std::shared_ptr<StatsHelper::Counter> GetOrCreateCounter(StatsUtils::StatsType statsType,
-        int32_t uid = StatsUtils::INVALID_VALUE) override;
-protected:
 
 private:
     double GetBluetoothUidPower();
     void CalculateBtPower();
     void CalculateBtPowerForApp(int32_t uid);
+    void UpdateAppBluetoothBlePower(PowerType type, int32_t uid, double powerMah);
+    double bluetoothBrPowerMah_ = StatsUtils::DEFAULT_VALUE;
+    double bluetoothBlePowerMah_ = StatsUtils::DEFAULT_VALUE;
     double bluetoothPowerMah_ = StatsUtils::DEFAULT_VALUE;
+    std::map<int32_t, double> appBluetoothBrPowerMap_;
+    std::map<int32_t, double> appBluetoothBlePowerMap_;
     std::map<int32_t, double> appBluetoothPowerMap_;
-    std::map<int32_t, double> appBluetoothScanPowerMap_;
-    std::map<int32_t, double> appBluetoothRxPowerMap_;
-    std::map<int32_t, double> appBluetoothTxPowerMap_;
-    std::shared_ptr<StatsHelper::ActiveTimer> bluetoothOnTimer_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appBluetoothScanTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appBluetoothRxTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appBluetoothTxTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::Counter>> appBluetoothRxCounterMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::Counter>> appBluetoothTxCounterMap_;
+    std::shared_ptr<StatsHelper::ActiveTimer> bluetoothBrOnTimer_;
+    std::shared_ptr<StatsHelper::ActiveTimer> bluetoothBleOnTimer_;
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appBluetoothBrScanTimerMap_;
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appBluetoothBleScanTimerMap_;
 };
 } // namespace PowerMgr
 } // namespace OHOS

@@ -23,29 +23,23 @@ std::string StatsUtils::ConvertTypeForConn(StatsType statsType)
 {
     std::string result = "";
     switch (statsType) {
-        case STATS_TYPE_BLUETOOTH_ON:
-            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_ON);
+        case STATS_TYPE_BLUETOOTH_BR_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_BR_ON);
             break;
-        case STATS_TYPE_BLUETOOTH_SCAN:
-            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_SCAN);
+        case STATS_TYPE_BLUETOOTH_BR_SCAN:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_BR_SCAN);
             break;
-        case STATS_TYPE_BLUETOOTH_RX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_RX);
+        case STATS_TYPE_BLUETOOTH_BLE_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_BLE_ON);
             break;
-        case STATS_TYPE_BLUETOOTH_TX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_TX);
+        case STATS_TYPE_BLUETOOTH_BLE_SCAN:
+            result = GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_BLE_SCAN);
             break;
         case STATS_TYPE_WIFI_ON:
             result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_ON);
             break;
         case STATS_TYPE_WIFI_SCAN:
             result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_SCAN);
-            break;
-        case STATS_TYPE_WIFI_RX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_RX);
-            break;
-        case STATS_TYPE_WIFI_TX:
-            result = GET_VARIABLE_NAME(STATS_TYPE_WIFI_TX);
             break;
         case STATS_TYPE_PHONE_ACTIVE:
             result = GET_VARIABLE_NAME(STATS_TYPE_PHONE_ACTIVE);
@@ -102,8 +96,8 @@ std::string StatsUtils::ConvertTypeForCommon(StatsType statsType)
         case STATS_TYPE_FLASHLIGHT_ON:
             result = GET_VARIABLE_NAME(STATS_TYPE_FLASHLIGHT_ON);
             break;
-        case STATS_TYPE_GPS_ON:
-            result = GET_VARIABLE_NAME(STATS_TYPE_GPS_ON);
+        case STATS_TYPE_GNSS_ON:
+            result = GET_VARIABLE_NAME(STATS_TYPE_GNSS_ON);
             break;
         case STATS_TYPE_SENSOR_GRAVITY_ON:
             result = GET_VARIABLE_NAME(STATS_TYPE_SENSOR_GRAVITY_ON);
@@ -157,14 +151,12 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
 {
     std::string result = "";
     switch (statsType) {
-        case STATS_TYPE_BLUETOOTH_ON:
-        case STATS_TYPE_BLUETOOTH_SCAN:
-        case STATS_TYPE_BLUETOOTH_RX:
-        case STATS_TYPE_BLUETOOTH_TX:
+        case STATS_TYPE_BLUETOOTH_BR_ON:
+        case STATS_TYPE_BLUETOOTH_BR_SCAN:
+        case STATS_TYPE_BLUETOOTH_BLE_ON:
+        case STATS_TYPE_BLUETOOTH_BLE_SCAN:
         case STATS_TYPE_WIFI_ON:
         case STATS_TYPE_WIFI_SCAN:
-        case STATS_TYPE_WIFI_RX:
-        case STATS_TYPE_WIFI_TX:
         case STATS_TYPE_PHONE_ACTIVE:
         case STATS_TYPE_PHONE_DATA:
             result = ConvertTypeForConn(statsType);
@@ -172,7 +164,7 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
         case STATS_TYPE_CAMERA_ON:
         case STATS_TYPE_CAMERA_FLASHLIGHT_ON:
         case STATS_TYPE_FLASHLIGHT_ON:
-        case STATS_TYPE_GPS_ON:
+        case STATS_TYPE_GNSS_ON:
         case STATS_TYPE_SENSOR_GRAVITY_ON:
         case STATS_TYPE_SENSOR_PROXIMITY_ON:
         case STATS_TYPE_AUDIO_ON:

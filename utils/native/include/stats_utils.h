@@ -34,19 +34,17 @@ public:
     static constexpr uint32_t US_IN_MS = 1000;
 
     static constexpr const char* CURRENT_INVALID = "invalid";
-    static constexpr const char* CURRENT_BLUETOOTH_ON = "bluetooth_on";
-    static constexpr const char* CURRENT_BLUETOOTH_SCAN = "bluetooth_scan";
-    static constexpr const char* CURRENT_BLUETOOTH_RX = "bluetooth_rx";
-    static constexpr const char* CURRENT_BLUETOOTH_TX = "bluetooth_tx";
+    static constexpr const char* CURRENT_BLUETOOTH_BR_ON = "bluetooth_br_on";
+    static constexpr const char* CURRENT_BLUETOOTH_BR_SCAN = "bluetooth_br_scan";
+    static constexpr const char* CURRENT_BLUETOOTH_BLE_ON = "bluetooth_ble_on";
+    static constexpr const char* CURRENT_BLUETOOTH_BLE_SCAN = "bluetooth_ble_scan";
     static constexpr const char* CURRENT_WIFI_ON = "wifi_on";
     static constexpr const char* CURRENT_WIFI_SCAN = "wifi_scan";
-    static constexpr const char* CURRENT_WIFI_RX = "wifi_rx";
-    static constexpr const char* CURRENT_WIFI_TX = "wifi_tx";
     static constexpr const char* CURRENT_RADIO_ON = "radio_on";
     static constexpr const char* CURRENT_RADIO_DATA = "radio_data";
     static constexpr const char* CURRENT_CAMERA_ON = "camera_on";
     static constexpr const char* CURRENT_FLASHLIGHT_ON = "flashlight_on";
-    static constexpr const char* CURRENT_GPS_ON = "gps_on";
+    static constexpr const char* CURRENT_GNSS_ON = "gnss_on";
     static constexpr const char* CURRENT_SENSOR_GRAVITY = "sensor_gravity_on";
     static constexpr const char* CURRENT_SENSOR_PROXIMITY = "sensor_proximity_on";
     static constexpr const char* CURRENT_AUDIO_ON = "audio_on";
@@ -62,20 +60,18 @@ public:
 
     enum StatsType {
         STATS_TYPE_INVALID = -1,
-        STATS_TYPE_BLUETOOTH_ON,
-        STATS_TYPE_BLUETOOTH_SCAN,
-        STATS_TYPE_BLUETOOTH_RX,
-        STATS_TYPE_BLUETOOTH_TX,
+        STATS_TYPE_BLUETOOTH_BR_ON,
+        STATS_TYPE_BLUETOOTH_BR_SCAN,
+        STATS_TYPE_BLUETOOTH_BLE_ON,
+        STATS_TYPE_BLUETOOTH_BLE_SCAN,
         STATS_TYPE_WIFI_ON,
         STATS_TYPE_WIFI_SCAN,
-        STATS_TYPE_WIFI_RX,
-        STATS_TYPE_WIFI_TX,
         STATS_TYPE_PHONE_ACTIVE,
         STATS_TYPE_PHONE_DATA,
         STATS_TYPE_CAMERA_ON,
         STATS_TYPE_CAMERA_FLASHLIGHT_ON,
         STATS_TYPE_FLASHLIGHT_ON,
-        STATS_TYPE_GPS_ON,
+        STATS_TYPE_GNSS_ON,
         STATS_TYPE_SENSOR_GRAVITY_ON,
         STATS_TYPE_SENSOR_PROXIMITY_ON,
         STATS_TYPE_AUDIO_ON,

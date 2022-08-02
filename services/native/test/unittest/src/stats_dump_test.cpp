@@ -95,7 +95,6 @@ HWTEST_F (StatsClientTest, StatsDumpTest_001, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: StatsDumpTest_002
  * @tc.desc: test Dump function(POWER_RUNNINGLOCK)
  * @tc.type: FUNC
@@ -148,7 +147,6 @@ HWTEST_F (StatsClientTest, StatsDumpTest_002, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: StatsDumpTest_003
  * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
  * @tc.type: FUNC
@@ -231,7 +229,6 @@ HWTEST_F (StatsClientTest, StatsDumpTest_004, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: StatsDumpTest_005
  * @tc.desc: test Dump function(POWER_TEMPERATURE)
  * @tc.type: FUNC
@@ -313,7 +310,6 @@ HWTEST_F (StatsClientTest, StatsDumpTest_006, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: StatsDumpTest_007
  * @tc.desc: test Dump function(THERMAL_ACTION_TRIGGERED)
  * @tc.type: FUNC
@@ -353,7 +349,6 @@ HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
 }
 
 /**
- *
  * @tc.name: StatsDumpTest_008
  * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
  * @tc.type: FUNC

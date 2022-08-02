@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef GPS_ENTITY_H
-#define GPS_ENTITY_H
+#ifndef GNSS_ENTITY_H
+#define GNSS_ENTITY_H
 
 #include <map>
 
@@ -23,10 +23,10 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class GpsEntity : public BatteryStatsEntity {
+class GnssEntity : public BatteryStatsEntity {
 public:
-    GpsEntity();
-    ~GpsEntity() = default;
+    GnssEntity();
+    ~GnssEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
     int64_t GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
@@ -36,9 +36,9 @@ public:
         int16_t level = StatsUtils::INVALID_VALUE) override;
     void Reset() override;
 private:
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> gpsTimerMap_;
-    std::map<int32_t, double> gpsPowerMap_;
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> gnssTimerMap_;
+    std::map<int32_t, double> gnssPowerMap_;
 };
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // GPS_ENTITY_H
+#endif // GNSS_ENTITY_H

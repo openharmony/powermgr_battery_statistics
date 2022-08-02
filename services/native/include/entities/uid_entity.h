@@ -41,7 +41,6 @@ private:
     double GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid);
     double GetPowerForConnectivity(StatsUtils::StatsType statsType, int32_t uid);
     void DumpForBluetooth(int32_t uid, std::string& result);
-    void DumpForWifi(int32_t uid, std::string& result);
     void DumpForCommon(int32_t uid, std::string& result);
     double CalculateForConnectivity(int32_t uid);
     double CalculateForCommon(int32_t uid);

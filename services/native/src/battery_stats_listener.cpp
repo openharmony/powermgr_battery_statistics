@@ -79,11 +79,13 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
         ProcessSensorEvent(data, root, eventName);
     } else if (eventName == "GNSS_STATE") {
-        ProcessGpsEvent(data, root);
-    } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
+        ProcessGnssEvent(data, root);
+    } else if (eventName == "BLUETOOTH_BR_SWITCH_STATE" || eventName == "BLUETOOTH_DISCOVERY_STATE" ||
+        eventName == "BLUETOOTH_BLE_STATE" || eventName == "BLUETOOTH_BLE_SCAN_START" ||
+        eventName == "BLUETOOTH_BLE_SCAN_STOP") {
         ProcessBluetoothEvent(data, root, eventName);
-    } else if (eventName == "WIFI_STATE" || eventName == "WIFI_SCAN") {
-        ProcessWifiEvent(data, root);
+    } else if (eventName == "WIFI_CONNECTION" || eventName == "WIFI_SCAN") {
+        ProcessWifiEvent(data, root, eventName);
     } else if (eventName == "START_REMOTE_ABILITY") {
         ProcessDistributedSchedulerEvent(data, root);
     } else if (eventName == "ALARM_TRIGGER") {
@@ -171,9 +173,9 @@ void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const
     }
 }
 
-void BatteryStatsListener::ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessGnssEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    data.type = StatsUtils::STATS_TYPE_GPS_ON;
+    data.type = StatsUtils::STATS_TYPE_GNSS_ON;
     if (!root["UID"].asString().empty()) {
         data.uid = stoi(root["UID"].asString());
     }
@@ -189,24 +191,24 @@ void BatteryStatsListener::ProcessGpsEvent(StatsUtils::StatsData& data, const Js
     }
 }
 
-void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const Json::Value& root,
     const std::string& eventName)
 {
-    if (eventName == "BLUETOOTH_BR_STATE") {
-        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_ON;
-        if (!root["BR_STATE"].asString().empty()) {
-            if (stoi(root["BR_STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
+    if (eventName == "BLUETOOTH_BR_SWITCH_STATE") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
+        if (!root["STATE"].asString().empty()) {
+            if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["BR_STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
-    } else if (eventName == "BLUETOOTH_SCAN_STATE") {
-        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_SCAN;
-        if (!root["BR_SCAN_STATE"].asString().empty()) {
-            if (stoi(root["BR_SCAN_STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
+    } else if (eventName == "BLUETOOTH_DISCOVERY_STATE") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
+        if (!root["STATE"].asString().empty()) {
+            if (stoi(root["STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["BR_SCAN_STATE"].asString()) == bluetooth::DISCOVERY_STOPED) {
+            } else if (stoi(root["STATE"].asString()) == bluetooth::DISCOVERY_STOPED) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -219,17 +221,66 @@ void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, co
     }
 }
 
-void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
 {
-    data.type = StatsUtils::STATS_TYPE_WIFI_ON;
-    int32_t wifiEnable = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
-    int32_t wifiDisable = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
-    if (!root["OPER_TYPE"].asString().empty()) {
-        if (stoi(root["OPER_TYPE"].asString()) == wifiEnable) {
+    if (eventName == "BLUETOOTH_BLE_STATE") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
+        if (!root["STATE"].asString().empty()) {
+            if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+            } else if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+            }
+        }
+    } else if (eventName == "BLUETOOTH_BLE_SCAN_START" || eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+        data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN;
+        if (eventName == "BLUETOOTH_BLE_SCAN_START") {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (stoi(root["OPER_TYPE"].asString()) == wifiDisable) {
+        } else if (eventName == "BLUETOOTH_BLE_SCAN_STOP") {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
+        if (!root["UID"].asString().empty()) {
+            data.uid = stoi(root["UID"].asString());
+        }
+        if (!root["PID"].asString().empty()) {
+            data.pid = stoi(root["PID"].asString());
+        }
+    }
+}
+
+void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
+{
+    if (eventName == "BLUETOOTH_BR_SWITCH_STATE" || eventName == "BLUETOOTH_DISCOVERY_STATE") {
+        ProcessBluetoothBrEvent(data, root, eventName);
+    } else if (eventName == "BLUETOOTH_BLE_STATE" ||eventName == "BLUETOOTH_BLE_SCAN_START" ||
+        eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+        ProcessBluetoothBleEvent(data, root, eventName);
+    }
+}
+
+void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
+{
+    if (eventName == "WIFI_CONNECTION") {
+        data.type = StatsUtils::STATS_TYPE_WIFI_ON;
+        if (!root["TYPE"].asString().empty()) {
+            Wifi::WifiConnectionType connectionType = Wifi::WifiConnectionType(stoi(root["TYPE"].asString()));
+            switch (connectionType) {
+                case Wifi::WifiConnectionType::CONNECT:
+                    data.state = StatsUtils::STATS_STATE_ACTIVATED;
+                    break;
+                case Wifi::WifiConnectionType::DISCONNECT:
+                    data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+                    break;
+                default:
+                    break;
+            }
+        }
+    } else if (eventName == "WIFI_SCAN") {
+        data.type = StatsUtils::STATS_TYPE_WIFI_SCAN;
+        data.traffic = 1;
     }
 }
 
@@ -278,10 +329,10 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
         }
     }
 
-    /*
-    * The average power consumption of phone call and phone data is divided by level
-    * However, the Telephony event has no input level information, so use level 0
-    */
+    /**
+     * The average power consumption of phone call and phone data is divided by level
+     * However, the Telephony event has no input level information, so use level 0
+     */
     data.level = 0;
     ProcessPhoneDebugInfo(data, root);
 }

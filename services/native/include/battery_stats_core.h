@@ -65,7 +65,7 @@ private:
     std::shared_ptr<BatteryStatsEntity> cameraEntity_;
     std::shared_ptr<BatteryStatsEntity> cpuEntity_;
     std::shared_ptr<BatteryStatsEntity> flashlightEntity_;
-    std::shared_ptr<BatteryStatsEntity> gpsEntity_;
+    std::shared_ptr<BatteryStatsEntity> gnssEntity_;
     std::shared_ptr<BatteryStatsEntity> idleEntity_;
     std::shared_ptr<BatteryStatsEntity> phoneEntity_;
     std::shared_ptr<BatteryStatsEntity> screenEntity_;
