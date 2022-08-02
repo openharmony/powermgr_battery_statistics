@@ -56,13 +56,13 @@ ohos_unittest("stats_service_test") {
   external_deps = deps_ex
 }
 
-############################communication_test#############################
-ohos_unittest("stats_communication_test") {
+############################wifi_test#############################
+ohos_unittest("stats_wifi_test") {
   module_out_path = module_output_path
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_communication_test.cpp",
+    "src/stats_wifi_test.cpp",
   ]
 
   configs = [
@@ -156,7 +156,11 @@ ohos_unittest("stats_powermgr_test") {
 ############################location_test#############################
 ohos_unittest("stats_location_test") {
   module_out_path = module_output_path
-  sources = [ "src/stats_location_test.cpp" ]
+
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_location_test.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -168,6 +172,7 @@ ohos_unittest("stats_location_test") {
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
@@ -238,17 +243,40 @@ ohos_unittest("stats_phone_test") {
   external_deps = deps_ex
 }
 
+############################bluetooth_test#############################
+ohos_unittest("stats_bluetooth_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_bluetooth_test.cpp",
+  ]
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
+  ]
+
+  external_deps = deps_ex
+}
+
 group("unittest") {
   testonly = true
   deps = [
     ":stats_audio_test",
+    ":stats_bluetooth_test",
     ":stats_camera_test",
-    ":stats_communication_test",
     ":stats_display_test",
     ":stats_dump_test",
     ":stats_location_test",
     ":stats_phone_test",
     ":stats_powermgr_test",
     ":stats_service_test",
+    ":stats_wifi_test",
   ]
 }

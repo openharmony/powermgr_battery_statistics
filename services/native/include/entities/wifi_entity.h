@@ -28,36 +28,19 @@ public:
     ~WifiEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
     int64_t GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE) override;
-    int64_t GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
-        int16_t level = StatsUtils::INVALID_VALUE) override;
+    int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
-    void Reset() override;
-    void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
-    int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
-        int16_t level = StatsUtils::INVALID_VALUE) override;
-    std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
     std::shared_ptr<StatsHelper::Counter> GetOrCreateCounter(StatsUtils::StatsType statsType,
         int32_t uid = StatsUtils::INVALID_VALUE) override;
-protected:
-
+    void Reset() override;
+    void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
-    double GetWifiUidPower();
-    void CalculateWifiPower();
-    void CalculateWifiPowerForApp(int32_t uid);
     double wifiPowerMah_ = StatsUtils::DEFAULT_VALUE;
-    std::map<int32_t, double> appWifiPowerMap_;
-    std::map<int32_t, double> appWifiScanPowerMap_;
-    std::map<int32_t, double> appWifiRxPowerMap_;
-    std::map<int32_t, double> appWifiTxPowerMap_;
     std::shared_ptr<StatsHelper::ActiveTimer> wifiOnTimer_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appWifiScanTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appWifiRxTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> appWifiTxTimerMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::Counter>> appWifiRxCounterMap_;
-    std::map<int32_t, std::shared_ptr<StatsHelper::Counter>> appWifiTxCounterMap_;
+    std::shared_ptr<StatsHelper::Counter> wifiScanCounter_;
 };
 } // namespace PowerMgr
 } // namespace OHOS

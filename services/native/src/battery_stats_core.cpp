@@ -34,7 +34,7 @@
 #include "entities/camera_entity.h"
 #include "entities/cpu_entity.h"
 #include "entities/flashlight_entity.h"
-#include "entities/gps_entity.h"
+#include "entities/gnss_entity.h"
 #include "entities/idle_entity.h"
 #include "entities/phone_entity.h"
 #include "entities/screen_entity.h"
@@ -92,9 +92,9 @@ void BatteryStatsCore::CreateAppEntity()
         STATS_HILOGD(COMP_SVC, "Create flashlight entity");
         flashlightEntity_ = std::make_shared<FlashlightEntity>();
     }
-    if (gpsEntity_ == nullptr) {
-        STATS_HILOGD(COMP_SVC, "Create gps entity");
-        gpsEntity_ = std::make_shared<GpsEntity>();
+    if (gnssEntity_ == nullptr) {
+        STATS_HILOGD(COMP_SVC, "Create gnss entity");
+        gnssEntity_ = std::make_shared<GnssEntity>();
     }
     if (sensorEntity_ == nullptr) {
         STATS_HILOGD(COMP_SVC, "Create sensor entity");
@@ -191,8 +191,8 @@ std::shared_ptr<BatteryStatsEntity> BatteryStatsCore::GetEntity(const BatterySta
             return audioEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR:
             return sensorEntity_;
-        case BatteryStatsInfo::CONSUMPTION_TYPE_GPS:
-            return gpsEntity_;
+        case BatteryStatsInfo::CONSUMPTION_TYPE_GNSS:
+            return gnssEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_CPU:
             return cpuEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK:
@@ -216,18 +216,9 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, int64_t time
     }
 
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_TX: {
-            UpdateTimer(bluetoothEntity_, statsType, time, uid);
-            UpdateCounter(bluetoothEntity_, statsType, data, uid);
-            break;
-        }
-        case StatsUtils::STATS_TYPE_WIFI_RX:
-        case StatsUtils::STATS_TYPE_WIFI_TX: {
-            UpdateTimer(wifiEntity_, statsType, time, uid);
+        case StatsUtils::STATS_TYPE_WIFI_SCAN:
             UpdateCounter(wifiEntity_, statsType, data, uid);
             break;
-        }
         case StatsUtils::STATS_TYPE_ALARM:
             UpdateCounter(alarmEntity_, statsType, data, uid);
             break;
@@ -240,17 +231,16 @@ void BatteryStatsCore::UpdateConnectivityStats(StatsUtils::StatsType statsType, 
     int32_t uid)
 {
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_BLUETOOTH_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON:
             UpdateTimer(bluetoothEntity_, statsType, state);
             break;
         case StatsUtils::STATS_TYPE_WIFI_ON:
             UpdateTimer(wifiEntity_, statsType, state);
             break;
-        case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN:
             UpdateTimer(bluetoothEntity_, statsType, state, uid);
-            break;
-        case StatsUtils::STATS_TYPE_WIFI_SCAN:
-            UpdateTimer(wifiEntity_, statsType, state, uid);
             break;
         default:
             break;
@@ -263,8 +253,8 @@ void BatteryStatsCore::UpdateCommonStats(StatsUtils::StatsType statsType, StatsU
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
             UpdateTimer(flashlightEntity_, statsType, state, uid);
             break;
-        case StatsUtils::STATS_TYPE_GPS_ON:
-            UpdateTimer(gpsEntity_, statsType, state, uid);
+        case StatsUtils::STATS_TYPE_GNSS_ON:
+            UpdateTimer(gnssEntity_, statsType, state, uid);
             break;
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
             UpdateTimer(sensorEntity_, statsType, state, uid);
@@ -307,14 +297,15 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         case StatsUtils::STATS_TYPE_PHONE_DATA:
             UpdatePhoneStats(statsType, state, level);
             break;
-        case StatsUtils::STATS_TYPE_BLUETOOTH_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON:
         case StatsUtils::STATS_TYPE_WIFI_ON:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
-        case StatsUtils::STATS_TYPE_WIFI_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN:
             UpdateConnectivityStats(statsType, state, uid);
             break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
-        case StatsUtils::STATS_TYPE_GPS_ON:
+        case StatsUtils::STATS_TYPE_GNSS_ON:
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
         case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON:
         case StatsUtils::STATS_TYPE_AUDIO_ON:
@@ -576,7 +567,8 @@ int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_
         case StatsUtils::STATS_TYPE_SCREEN_ON:
             time = screenEntity_->GetActiveTimeMs(statsType);
             break;
-        case StatsUtils::STATS_TYPE_BLUETOOTH_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON:
             time = bluetoothEntity_->GetActiveTimeMs(statsType);
             break;
         case StatsUtils::STATS_TYPE_WIFI_ON:
@@ -648,14 +640,18 @@ int64_t BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType stat
         StatsUtils::ConvertStatsType(statsType).c_str(), uid, level);
     int64_t time = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN:
+            time = bluetoothEntity_->GetActiveTimeMs(uid, statsType);
+            break;
         case StatsUtils::STATS_TYPE_CAMERA_ON:
             time = cameraEntity_->GetActiveTimeMs(uid, statsType);
             break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
             time = flashlightEntity_->GetActiveTimeMs(uid, statsType);
             break;
-        case StatsUtils::STATS_TYPE_GPS_ON:
-            time = gpsEntity_->GetActiveTimeMs(uid, statsType);
+        case StatsUtils::STATS_TYPE_GNSS_ON:
+            time = gnssEntity_->GetActiveTimeMs(uid, statsType);
             break;
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
             time = sensorEntity_->GetActiveTimeMs(uid, statsType);
@@ -686,13 +682,8 @@ int64_t BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int
 {
     int64_t data = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_TX:
-            data = bluetoothEntity_->GetTrafficByte(statsType, uid);
-            break;
-        case StatsUtils::STATS_TYPE_WIFI_RX:
-        case StatsUtils::STATS_TYPE_WIFI_TX:
-            data = bluetoothEntity_->GetTrafficByte(statsType, uid);
+        case StatsUtils::STATS_TYPE_WIFI_SCAN:
+            data = wifiEntity_->GetTrafficByte(statsType, uid);
             break;
         case StatsUtils::STATS_TYPE_ALARM:
             data = alarmEntity_->GetTrafficByte(statsType, uid);
@@ -775,8 +766,10 @@ void BatteryStatsCore::SaveForHardware(Json::Value& root)
 {
     STATS_HILOGD(COMP_SVC, "Save hardware battery stats");
     // Save for Bluetooth
-    root["Hardware"]["bluetooth_on"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_ON));
+    root["Hardware"]["bluetooth_br_on"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON));
+    root["Hardware"]["bluetooth_ble_on"] =
+        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON));
 
     // Save for Screen
     root["Hardware"]["screen_on"] =
@@ -789,6 +782,8 @@ void BatteryStatsCore::SaveForHardware(Json::Value& root)
     // Save for Wifi
     root["Hardware"]["wifi_on"] =
         Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_WIFI_ON));
+    root["Hardware"]["wifi_scan"] =
+        Json::Value(GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_SCAN));
 
     // Save for CPU idle
     root["Hardware"]["cpu_idle"] =
@@ -825,9 +820,9 @@ void BatteryStatsCore::SaveForSoftwareCommon(Json::Value& root, int32_t uid)
     root["Software"][strUid]["flashlight_on"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
 
-    // Save for gps related
-    root["Software"][strUid]["gps_on"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON));
+    // Save for gnss related
+    root["Software"][strUid]["gnss_on"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GNSS_ON));
 
     // Save for audio related
     root["Software"][strUid]["audio_on"] =
@@ -852,26 +847,10 @@ void BatteryStatsCore::SaveForSoftwareConnectivity(Json::Value& root, int32_t ui
     STATS_HILOGD(COMP_SVC, "Save software connectivity battery stats, uid: %{public}d", uid);
     std::string strUid = std::to_string(uid);
     // Save for Bluetooth related
-    root["Software"][strUid]["bluetooth_scan"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN));
-    root["Software"][strUid]["bluetooth_rx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX));
-    root["Software"][strUid]["bluetooth_tx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX));
-    int32_t bluetoothTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
-    int32_t bluetoothRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
-    root["Software"][strUid]["bluetooth_byte"] = Json::Value(bluetoothTxBytes + bluetoothRxBytes);
-
-    // Save for wifi related
-    root["Software"][strUid]["wifi_scan"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN));
-    root["Software"][strUid]["wifi_rx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX));
-    root["Software"][strUid]["wifi_tx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX));
-    int32_t wifiTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
-    int32_t wifiRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
-    root["Software"][strUid]["wifi_byte"] = Json::Value(wifiTxBytes + wifiRxBytes);
+    root["Software"][strUid]["bluetooth_br_scan"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN));
+    root["Software"][strUid]["bluetooth_ble_scan"] =
+        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN));
 }
 
 void BatteryStatsCore::SaveForPower(Json::Value& root)
@@ -978,7 +957,7 @@ void BatteryStatsCore::Reset()
     cameraEntity_->Reset();
     cpuEntity_->Reset();
     flashlightEntity_->Reset();
-    gpsEntity_->Reset();
+    gnssEntity_->Reset();
     idleEntity_->Reset();
     phoneEntity_->Reset();
     screenEntity_->Reset();

@@ -396,245 +396,6 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_016, TestSize.Level0)
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_022
- * @tc.desc: test GetPartStatsMah function(BlueTooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_022, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_022: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double expectedPower = testTimeSec * bluetoothOnAverageMa / SECOND_PER_HOUR;
-    double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_022 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_022: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_023
- * @tc.desc: test GetPartStatsPercent function(Bluetooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_023, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_023: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    double fullPercent = 1;
-    double zeroPercent = 0;
-
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_023 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_023: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_024
- * @tc.desc: test GetBatteryStats function(Bluetooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_024, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_024: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double expectedPower = testTimeSec * bluetoothOnAverageMa / SECOND_PER_HOUR;
-    double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = statsClient.GetBatteryStats();
-    for (auto it : list) {
-        if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH) {
-            actualPower = (*it).GetPower();
-        }
-    }
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_024 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_024: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_025
- * @tc.desc: test GetTotalDataBytes function(Bluetooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_025, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_025: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long data = StatsUtils::INVALID_VALUE;
-    data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_BLUETOOTH_RX);
-    EXPECT_EQ(data, StatsUtils::DEFAULT_VALUE) << " StatsPowerMgrTest_025 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_025: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_026
- * @tc.desc: test GetTotalDataBytes function(Bluetooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_026, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_026: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long data = StatsUtils::INVALID_VALUE;
-    data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_BLUETOOTH_TX);
-    EXPECT_EQ(data, StatsUtils::DEFAULT_VALUE) << " StatsPowerMgrTest_026 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_026: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_027
- * @tc.desc: test SetOnBattery function(Bluetooth)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_027, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_027: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-    statsClient.SetOnBattery(false);
-
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsPowerMgrTest_027 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_027: test end";
-    statsClient.SetOnBattery(true);
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_029
- * @tc.desc: test GetPartStatsMah(Bluetooth) and GetPartStatsPercent(Phone) function
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_029, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_029: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double expectedPower = testTimeSec * bluetoothOnAverageMa / SECOND_PER_HOUR;
-    double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_029 fail due to power mismatch";
-
-    stateOn = 1;
-    stateOff = 0;
-    double fullPercent = 1;
-    double zeroPercent = 0;
-    
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
-    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_029 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_029: test end";
-}
-
-/**
  * @tc.name: StatsPowerMgrTest_030
  * @tc.desc: test Reset function(Alarm)
  * @tc.type: FUNC
@@ -670,7 +431,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_030, TestSize.Level0)
 
 /**
  * @tc.name: StatsPowerMgrTest_031
- * @tc.desc: test Reset function(Alarm)
+ * @tc.desc: test GetPartStatsMah function(Alarm)
  * @tc.type: FUNC
  */
 HWTEST_F (StatsClientTest, StatsPowerMgrTest_031, TestSize.Level0)
@@ -733,5 +494,40 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_032, TestSize.Level0)
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
         <<" StatsPowerMgrTest_032 fail due to percent mismatch";
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_032: test end";
+}
+
+/**
+ * @tc.name: StatsPowerMgrTest_033
+ * @tc.desc: test SetOnBattery function(Alarm)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsPowerMgrTest_033, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsPowerMgrTest_033: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+    statsClient.SetOnBattery(false);
+
+    long testWaitTimeSec = 1;
+    int32_t uid = 10003;
+    int32_t pid = 3458;
+    int16_t count = 10;
+
+    for (int16_t i = 0; i < count; i++) {
+        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        "UID", uid);
+        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+        sleep(testWaitTimeSec);
+    }
+    sleep(testWaitTimeSec);
+
+    double expectedPower = StatsUtils::DEFAULT_VALUE;
+    double actualPower = statsClient.GetAppStatsMah(uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+
+    EXPECT_EQ(expectedPower, actualPower) <<" StatsPowerMgrTest_033 fail due to power mismatch";
+    GTEST_LOG_(INFO) << " StatsPowerMgrTest_033: test end";
+    statsClient.SetOnBattery(true);
 }
 }

@@ -354,7 +354,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
+    double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -362,16 +362,15 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
+    HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+    HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * bluetoothOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = testTimeSec * bluetoothBrOnAverageMa / SECOND_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -395,16 +394,13 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
+    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
+    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
-        stateOn);
+    HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
-        stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+    HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * wifiOnAverageMa / SECOND_PER_HOUR;
@@ -531,7 +527,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
 /**
  *
  * @tc.name: BatteryStatsSysTest_014
- * @tc.desc: test Gps consumption
+ * @tc.desc: test GNSS consumption
  * @tc.type: FUNC
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
@@ -540,7 +536,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double gpsOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
+    double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
@@ -549,16 +545,16 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     std::string stateOff = "stop";
     double deviation = 0.01;
 
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
+        "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
+        "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
     sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * gpsOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -691,7 +687,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    double bluetoothOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_ON);
+    double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
@@ -699,16 +695,15 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOn);
+    HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "BLUETOOTH_BR_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "BR_STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+    HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * bluetoothOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = testTimeSec * bluetoothBleOnAverageMa / SECOND_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -716,15 +711,12 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_018 fail due to power mismatch";
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    stateOn = static_cast<int32_t>(Wifi::WifiOperType::ENABLE);
-    stateOff = static_cast<int32_t>(Wifi::WifiOperType::DISABLE);
-    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
-        stateOn);
+    stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
+    stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::COMMUNICATION, "WIFI_STATE", HiSysEvent::EventType::STATISTIC, "OPER_TYPE",
-        stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
+    HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
     sleep(testWaitTimeSec);
 
     expectedPower = testTimeSec * wifiOnAverageMa / SECOND_PER_HOUR;
@@ -797,7 +789,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
 /**
  *
  * @tc.name: BatteryStatsSysTest_020
- * @tc.desc: test Audio, Sensor and Gps consumption
+ * @tc.desc: test Audio, Sensor and Gnss consumption
  * @tc.type: FUNC
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
@@ -828,20 +820,20 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     double actualPower = statsClient.GetAppStatsMah(uid);
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
 
-    double gpsOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GPS_ON);
+    double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     uid = 10004;
     pid = 3459;
-    std::string gpsStateOn = "start";
-    std::string gpsStateOff = "stop";
+    std::string gnssStateOn = "start";
+    std::string gnssStateOff = "stop";
 
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", gpsStateOn);
+    HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
+        "STATE", gnssStateOn);
     sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", gpsStateOff);
+    HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
+        "STATE", gnssStateOff);
     sleep(testWaitTimeSec);
 
-    expectedPower = testTimeSec * gpsOnAverageMa / SECOND_PER_HOUR;
+    expectedPower = testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
     EXPECT_LE(abs(expectedPower - actualPower), deviation) << " BatteryStatsSysTest_020 fail due to power mismatch";
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);

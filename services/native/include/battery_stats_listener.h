@@ -42,9 +42,11 @@ private:
     void ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessGnssEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
+    void ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);

@@ -62,14 +62,10 @@ double UidEntity::CalculateForConnectivity(int32_t uid)
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
 
     // Calculate bluetooth power consumption
     bluetoothEntity->Calculate(uid);
     power += bluetoothEntity->GetEntityPowerMah(uid);
-    // Calculate wifi power consumption
-    wifiEntity->Calculate(uid);
-    power += wifiEntity->GetEntityPowerMah(uid);
     STATS_HILOGD(COMP_SVC, "Connectivity power consumption: %{public}lfmAh for uid: %{public}d", power, uid);
     return power;
 }
@@ -82,7 +78,7 @@ double UidEntity::CalculateForCommon(int32_t uid)
     auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
     auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
     auto sensorEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR);
-    auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
+    auto gnssEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GNSS);
     auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
     auto alarmEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM);
@@ -99,9 +95,9 @@ double UidEntity::CalculateForCommon(int32_t uid)
     // Calculate sensor power consumption
     sensorEntity->Calculate(uid);
     power += sensorEntity->GetEntityPowerMah(uid);
-    // Calculate gps power consumption
-    gpsEntity->Calculate(uid);
-    power += gpsEntity->GetEntityPowerMah(uid);
+    // Calculate gnss power consumption
+    gnssEntity->Calculate(uid);
+    power += gnssEntity->GetEntityPowerMah(uid);
     // Calculate cpu power consumption
     cpuEntity->Calculate(uid);
     power += cpuEntity->GetEntityPowerMah(uid);
@@ -164,20 +160,11 @@ double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
 
-    if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_SCAN) {
-        power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_SCAN, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_RX) {
-        power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_TX) {
-        power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_SCAN) {
-        power = wifiEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WIFI_SCAN, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_RX) {
-        power = wifiEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WIFI_RX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
-        power = wifiEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WIFI_TX, uid);
+    if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN) {
+        power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN, uid);
+    } else if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN) {
+        power = bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN, uid);
     }
     return power;
 }
@@ -190,7 +177,7 @@ double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid
     auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
     auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
     auto sensorEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_SENSOR);
-    auto gpsEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GPS);
+    auto gnssEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GNSS);
     auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto wakelockEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK);
     auto alarmEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM);
@@ -199,8 +186,8 @@ double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid
         power = cameraEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CAMERA_ON, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_FLASHLIGHT_ON) {
         power = flashlightEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_FLASHLIGHT_ON, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_GPS_ON) {
-        power = gpsEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_GPS_ON, uid);
+    } else if (statsType == StatsUtils::STATS_TYPE_GNSS_ON) {
+        power = gnssEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_GNSS_ON, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON) {
         power = sensorEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
@@ -226,17 +213,13 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
     double power = StatsUtils::DEFAULT_VALUE;
 
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_RX:
-        case StatsUtils::STATS_TYPE_BLUETOOTH_TX:
-        case StatsUtils::STATS_TYPE_WIFI_SCAN:
-        case StatsUtils::STATS_TYPE_WIFI_RX:
-        case StatsUtils::STATS_TYPE_WIFI_TX:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN:
+        case StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN:
             power = GetPowerForConnectivity(statsType, uid);
             break;
         case StatsUtils::STATS_TYPE_CAMERA_ON:
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
-        case StatsUtils::STATS_TYPE_GPS_ON:
+        case StatsUtils::STATS_TYPE_GNSS_ON:
         case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON:
         case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON:
         case StatsUtils::STATS_TYPE_AUDIO_ON:
@@ -269,57 +252,15 @@ void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
 {
     // Dump for bluetooth realted info
     auto core = g_statsService->GetBatteryStatsCore();
-    int64_t bluetoothScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_SCAN);
-    int64_t bluetoothRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_RX);
-    int64_t bluetoothTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_TX);
-    int64_t bluetoothRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_RX, uid);
-    int64_t bluetoothTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_BLUETOOTH_TX, uid);
+    int64_t bluetoothBrScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN);
+    int64_t bluetoothBleScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN);
 
-    result.append("Bluetooth scan time: ")
-        .append(ToString(bluetoothScanTime))
+    result.append("Bluetooth Br scan time: ")
+        .append(ToString(bluetoothBrScanTime))
         .append("ms\n")
-        .append("Bluetooth RX time: ")
-        .append(ToString(bluetoothRxTime))
-        .append("ms\n")
-        .append("Bluetooth TX time: ")
-        .append(ToString(bluetoothTxTime))
-        .append("ms\n")
-        .append("Bluetooth RX data: ")
-        .append(ToString(bluetoothRxData))
-        .append("bytes\n")
-        .append("Bluetooth TX data: ")
-        .append(ToString(bluetoothTxData))
-        .append("bytes\n")
-        .append("Bluetooth scan time: ")
-        .append(ToString(bluetoothScanTime))
+        .append("Bluetooth Ble scan time: ")
+        .append(ToString(bluetoothBleScanTime))
         .append("ms\n");
-}
-
-void UidEntity::DumpForWifi(int32_t uid, std::string& result)
-{
-    // Dump for wifi realted info
-    auto core = g_statsService->GetBatteryStatsCore();
-    int64_t wifiScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_SCAN);
-    int64_t wifiRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_RX);
-    int64_t wifiTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WIFI_TX);
-    int64_t wifiRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
-    int64_t wifiTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
-
-    result.append("Wifi scan time: ")
-        .append(ToString(wifiScanTime))
-        .append("ms\n")
-        .append("Wifi RX time: ")
-        .append(ToString(wifiRxTime))
-        .append("ms\n")
-        .append("Wifi TX time: ")
-        .append(ToString(wifiTxTime))
-        .append("ms\n")
-        .append("Wifi RX data: ")
-        .append(ToString(wifiRxData))
-        .append("bytes\n")
-        .append("Wifi TX data: ")
-        .append(ToString(wifiTxData))
-        .append("bytes\n");
 }
 
 void UidEntity::DumpForCommon(int32_t uid, std::string& result)
@@ -331,8 +272,8 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
     // Dump for flashlight related info
     int64_t flashlightTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
 
-    // Dump for gps related info
-    int64_t gpsTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GPS_ON);
+    // Dump for gnss related info
+    int64_t gnssTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GNSS_ON);
 
     // Dump for gravity sensor related info
     int64_t gravityTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
@@ -355,8 +296,8 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
         .append("Flashlight scan time: ")
         .append(ToString(flashlightTime))
         .append("ms\n")
-        .append("GPS scan time: ")
-        .append(ToString(gpsTime))
+        .append("GNSS scan time: ")
+        .append(ToString(gnssTime))
         .append("ms\n")
         .append("Gravity sensor on time: ")
         .append(ToString(gravityTime))
@@ -404,7 +345,6 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             .append(":")
             .append("\n");
         DumpForBluetooth(iter.first, result);
-        DumpForWifi(iter.first, result);
         DumpForCommon(iter.first, result);
         auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
         if (cpuEntity) {
