@@ -37,7 +37,6 @@
 #include "entities/gps_entity.h"
 #include "entities/idle_entity.h"
 #include "entities/phone_entity.h"
-#include "entities/radio_entity.h"
 #include "entities/screen_entity.h"
 #include "entities/sensor_entity.h"
 #include "entities/uid_entity.h"
@@ -68,10 +67,6 @@ void BatteryStatsCore::CreatePartEntity()
     if (phoneEntity_ == nullptr) {
         STATS_HILOGD(COMP_SVC, "Create phone entity");
         phoneEntity_ = std::make_shared<PhoneEntity>();
-    }
-    if (radioEntity_ == nullptr) {
-        STATS_HILOGD(COMP_SVC, "Create radio entity");
-        radioEntity_ = std::make_shared<RadioEntity>();
     }
     if (screenEntity_ == nullptr) {
         STATS_HILOGD(COMP_SVC, "Create screen entity");
@@ -158,7 +153,6 @@ void BatteryStatsCore::ComputePower()
     bluetoothEntity_->Calculate();
     idleEntity_->Calculate();
     phoneEntity_->Calculate();
-    radioEntity_->Calculate();
     screenEntity_->Calculate();
     wifiEntity_->Calculate();
     userEntity_->Calculate();
@@ -183,8 +177,6 @@ std::shared_ptr<BatteryStatsEntity> BatteryStatsCore::GetEntity(const BatterySta
             return idleEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_PHONE:
             return phoneEntity_;
-        case BatteryStatsInfo::CONSUMPTION_TYPE_RADIO:
-            return radioEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN:
             return screenEntity_;
         case BatteryStatsInfo::CONSUMPTION_TYPE_USER:
@@ -236,12 +228,6 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, int64_t time
             UpdateCounter(wifiEntity_, statsType, data, uid);
             break;
         }
-        case StatsUtils::STATS_TYPE_RADIO_RX:
-        case StatsUtils::STATS_TYPE_RADIO_TX: {
-            UpdateTimer(radioEntity_, statsType, time, uid);
-            UpdateCounter(radioEntity_, statsType, data, uid);
-            break;
-        }
         case StatsUtils::STATS_TYPE_ALARM:
             UpdateCounter(alarmEntity_, statsType, data, uid);
             break;
@@ -259,9 +245,6 @@ void BatteryStatsCore::UpdateConnectivityStats(StatsUtils::StatsType statsType, 
             break;
         case StatsUtils::STATS_TYPE_WIFI_ON:
             UpdateTimer(wifiEntity_, statsType, state);
-            break;
-        case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
-            UpdateTimer(phoneEntity_, statsType, state);
             break;
         case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
             UpdateTimer(bluetoothEntity_, statsType, state, uid);
@@ -312,10 +295,6 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
     }
 
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_RADIO_ON:
-        case StatsUtils::STATS_TYPE_RADIO_SCAN:
-            UpdateRadioStats(state, level);
-            break;
         case StatsUtils::STATS_TYPE_SCREEN_ON:
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
             UpdateScreenStats(statsType, state, level);
@@ -324,9 +303,12 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         case StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON:
             UpdateCameraStats(statsType, state, uid, deviceId);
             break;
+        case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
+        case StatsUtils::STATS_TYPE_PHONE_DATA:
+            UpdatePhoneStats(statsType, state, level);
+            break;
         case StatsUtils::STATS_TYPE_BLUETOOTH_ON:
         case StatsUtils::STATS_TYPE_WIFI_ON:
-        case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
         case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
             UpdateConnectivityStats(statsType, state, uid);
@@ -342,38 +324,6 @@ void BatteryStatsCore::UpdateStats(StatsUtils::StatsType statsType, StatsUtils::
         default:
             break;
     }
-}
-
-void BatteryStatsCore::UpdateRadioStats(StatsUtils::StatsState state, int16_t level)
-{
-    STATS_HILOGD(COMP_SVC, "StatsState: %{public}d, Level: %{public}d, Last signal level: %{public}d",
-        state, level, lastSignalLevel_);
-    auto scanTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_SCAN);
-    if (state == StatsUtils::STATS_STATE_NETWORK_SEARCH) {
-        scanTimer->StartRunning();
-    } else {
-        scanTimer->StopRunning();
-    }
-
-    if (lastSignalLevel_ <= StatsUtils::INVALID_VALUE ||
-        (level > StatsUtils::INVALID_VALUE && level == lastSignalLevel_)) {
-        auto signalTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
-        signalTimer->StartRunning();
-    } else if (lastSignalLevel_ != level) {
-        auto oldTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, lastSignalLevel_);
-        if (oldTimer != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Stop %{public}s timer for last level: %{public}d",
-                StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), lastSignalLevel_);
-            oldTimer->StopRunning();
-        }
-        auto newTimer = radioEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_RADIO_ON, level);
-        if (newTimer != nullptr) {
-            STATS_HILOGI(COMP_SVC, "Start %{public}s timer for latest level: %{public}d",
-                StatsUtils::ConvertStatsType(StatsUtils::STATS_TYPE_RADIO_ON).c_str(), level);
-            newTimer->StartRunning();
-        }
-    }
-    lastSignalLevel_ = level;
 }
 
 void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level)
@@ -416,6 +366,29 @@ void BatteryStatsCore::UpdateCameraStats(StatsUtils::StatsType statsType, StatsU
             return;
         }
         UpdateTimer(flashlightEntity_, StatsUtils::STATS_TYPE_FLASHLIGHT_ON, state, lastCameraUid_);
+    }
+}
+
+void BatteryStatsCore::UpdatePhoneStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level)
+{
+    STATS_HILOGD(COMP_SVC, "statsType: %{public}s, state: %{public}d, level: %{public}d",
+        StatsUtils::ConvertStatsType(statsType).c_str(), state, level);
+    std::shared_ptr<StatsHelper::ActiveTimer> timer;
+    timer = phoneEntity_->GetOrCreateTimer(statsType, level);
+    if (timer == nullptr) {
+        STATS_HILOGW(COMP_SVC, "Timer is null, return");
+        return;
+    }
+
+    switch (state) {
+        case StatsUtils::STATS_STATE_ACTIVATED:
+            timer->StartRunning();
+            break;
+        case StatsUtils::STATS_STATE_DEACTIVATED:
+            timer->StopRunning();
+            break;
+        default:
+            break;
     }
 }
 
@@ -597,14 +570,8 @@ int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_
         StatsUtils::ConvertStatsType(statsType).c_str(), level);
     int64_t time = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
-        case StatsUtils::STATS_TYPE_RADIO_ON:
-            time = radioEntity_->GetActiveTimeMs(statsType, level);
-            break;
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
             time = screenEntity_->GetActiveTimeMs(statsType, level);
-            break;
-        case StatsUtils::STATS_TYPE_RADIO_SCAN:
-            time = radioEntity_->GetActiveTimeMs(statsType);
             break;
         case StatsUtils::STATS_TYPE_SCREEN_ON:
             time = screenEntity_->GetActiveTimeMs(statsType);
@@ -616,7 +583,8 @@ int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_
             time = wifiEntity_->GetActiveTimeMs(statsType);
             break;
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
-            time = phoneEntity_->GetActiveTimeMs(statsType);
+        case StatsUtils::STATS_TYPE_PHONE_DATA:
+            time = phoneEntity_->GetActiveTimeMs(statsType, level);
             break;
         case StatsUtils::STATS_TYPE_PHONE_IDLE:
         case StatsUtils::STATS_TYPE_CPU_SUSPEND:
@@ -644,10 +612,6 @@ void BatteryStatsCore::DumpInfo(std::string& result)
     }
     if (phoneEntity_) {
         phoneEntity_->DumpInfo(result);
-        result.append("\n");
-    }
-    if (radioEntity_) {
-        radioEntity_->DumpInfo(result);
         result.append("\n");
     }
     if (screenEntity_) {
@@ -728,10 +692,6 @@ int64_t BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int
             break;
         case StatsUtils::STATS_TYPE_WIFI_RX:
         case StatsUtils::STATS_TYPE_WIFI_TX:
-            data = bluetoothEntity_->GetTrafficByte(statsType, uid);
-            break;
-        case StatsUtils::STATS_TYPE_RADIO_RX:
-        case StatsUtils::STATS_TYPE_RADIO_TX:
             data = bluetoothEntity_->GetTrafficByte(statsType, uid);
             break;
         case StatsUtils::STATS_TYPE_ALARM:
@@ -835,15 +795,13 @@ void BatteryStatsCore::SaveForHardware(Json::Value& root)
         Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE));
 
     // Save for Phone
-    root["Hardware"]["radio_active"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE));
-
-    // Save for Radio
-    root["Hardware"]["radio_scan"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_RADIO_SCAN));
-    for (uint16_t signal = 0; signal <= StatsUtils::RADIO_SIGNAL_BIN; signal++) {
-        root["Hardware"]["radio_on"][signal] =
-            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_RADIO_ON, signal));
+    for (uint16_t signalOn = 0; signalOn < StatsUtils::RADIO_SIGNAL_BIN; signalOn++) {
+        root["Hardware"]["radio_on"][signalOn] =
+            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, signalOn));
+    }
+    for (uint16_t signalData = 0; signalData < StatsUtils::RADIO_SIGNAL_BIN; signalData++) {
+        root["Hardware"]["radio_data"][signalData] =
+            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, signalData));
     }
 }
 
@@ -914,15 +872,6 @@ void BatteryStatsCore::SaveForSoftwareConnectivity(Json::Value& root, int32_t ui
     int32_t wifiTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_TX, uid);
     int32_t wifiRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_RX, uid);
     root["Software"][strUid]["wifi_byte"] = Json::Value(wifiTxBytes + wifiRxBytes);
-
-    // Save for radio related
-    root["Software"][strUid]["radio_tx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX));
-    root["Software"][strUid]["radio_rx"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX));
-    int32_t radioTxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
-    int32_t radioRxBytes = GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
-    root["Software"][strUid]["radio_byte"] = Json::Value(radioTxBytes + radioRxBytes);
 }
 
 void BatteryStatsCore::SaveForPower(Json::Value& root)
@@ -1032,7 +981,6 @@ void BatteryStatsCore::Reset()
     gpsEntity_->Reset();
     idleEntity_->Reset();
     phoneEntity_->Reset();
-    radioEntity_->Reset();
     screenEntity_->Reset();
     sensorEntity_->Reset();
     uidEntity_->Reset();

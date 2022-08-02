@@ -87,43 +87,4 @@ HWTEST_F (StatsClientTest, StatsLocationTest_001, TestSize.Level0)
         <<" StatsLocationTest_001 fail due to time mismatch";
     GTEST_LOG_(INFO) << " StatsLocationTest_001: test end";
 }
-
-/**
- * @tc.name: StatsLocationTest_002
- * @tc.desc: test GetTotalDataBytes and GetTotalTimeSecond function(GNSS)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsLocationTest_002: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long data = StatsUtils::INVALID_VALUE;
-    data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_RADIO_RX);
-    EXPECT_EQ(data, StatsUtils::DEFAULT_VALUE) << " StatsLocationTest_002 fail due to reset failed";
-
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
-    std::string stateOn = "start";
-    std::string stateOff = "stop";
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    double deviation = 0.01;
-
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
-        uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
-    HiSysEvent::Write(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID",
-        uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
-
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_GPS_ON, uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation)
-        <<" StatsLocationTest_002 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_002: test end";
-}
 }

@@ -43,10 +43,7 @@ public:
     static constexpr const char* CURRENT_WIFI_RX = "wifi_rx";
     static constexpr const char* CURRENT_WIFI_TX = "wifi_tx";
     static constexpr const char* CURRENT_RADIO_ON = "radio_on";
-    static constexpr const char* CURRENT_RADIO_SCAN = "radio_scan";
-    static constexpr const char* CURRENT_RADIO_ACTIVE = "radio_active";
-    static constexpr const char* CURRENT_RADIO_RX = "radio_rx";
-    static constexpr const char* CURRENT_RADIO_TX = "radio_tx";
+    static constexpr const char* CURRENT_RADIO_DATA = "radio_data";
     static constexpr const char* CURRENT_CAMERA_ON = "camera_on";
     static constexpr const char* CURRENT_FLASHLIGHT_ON = "flashlight_on";
     static constexpr const char* CURRENT_GPS_ON = "gps_on";
@@ -73,11 +70,8 @@ public:
         STATS_TYPE_WIFI_SCAN,
         STATS_TYPE_WIFI_RX,
         STATS_TYPE_WIFI_TX,
-        STATS_TYPE_RADIO_ON,
-        STATS_TYPE_RADIO_SCAN,
         STATS_TYPE_PHONE_ACTIVE,
-        STATS_TYPE_RADIO_RX,
-        STATS_TYPE_RADIO_TX,
+        STATS_TYPE_PHONE_DATA,
         STATS_TYPE_CAMERA_ON,
         STATS_TYPE_CAMERA_FLASHLIGHT_ON,
         STATS_TYPE_FLASHLIGHT_ON,
@@ -105,12 +99,6 @@ public:
         STATS_STATE_INVALID = -1, // Indicates an invalid state
         STATS_STATE_ACTIVATED, // Indicates subsystem is activated
         STATS_STATE_DEACTIVATED, // Indicates subsystem is deactivated
-        STATS_STATE_NETWORK_UNKNOWN, // Indicates mobile network is in unknown state
-        STATS_STATE_NETWORK_IN_SERVICE, // Indicates mobile network is in in-service state
-        STATS_STATE_NETWORK_NO_SERVICE, // Indicates mobile network is in no-service state
-        STATS_STATE_NETWORK_EMERGENCY_ONLY, // Indicates mobile network is in emergency-only state
-        STATS_STATE_NETWORK_SEARCH, // Indicates mobile network is in searching state
-        STATS_STATE_NETWORK_POWER_OFF, // Indicates radio of telephony is explicitly powered off
         STATS_STATE_WORKSCHEDULER_SCHEDULED, // Indicates work is scheduled
         STATS_STATE_WORKSCHEDULER_EXECUTED, // Indicates work is executed
     };

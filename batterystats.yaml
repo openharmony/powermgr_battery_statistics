@@ -21,10 +21,6 @@ POWER_WORKSCHEDULER:
   INTERVAL: {type: INT32, desc: workscheduler interval}
   STATE: {type: INT32, desc: workscheduler state}
 
-POWER_PHONE:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: phone call message}
-  STATE: {type: INT32, desc: phone call state}
-
 POWER_SENSOR_GRAVITY:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: gravity sensor message}
   PID: {type: INT32, desc: application pid}
@@ -36,11 +32,6 @@ POWER_SENSOR_PROXIMITY:
   PID: {type: INT32, desc: application pid}
   UID: {type: INT32, desc: application uid}
   STATE: {type: INT32, desc: proximity sensor on or off}
-
-POWER_RADIO:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: radio message}
-  STATE: {type: INT32, desc: radio state}
-  SIGNAL: {type: INT32, desc: signal level}
 
 BLUETOOTH_BR_STATE:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: bluetooth br message}

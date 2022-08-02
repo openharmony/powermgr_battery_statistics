@@ -23,6 +23,7 @@ config("module_private_config") {
     "include",
     "${batterystats_service_native}/include",
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
+    "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
   ]

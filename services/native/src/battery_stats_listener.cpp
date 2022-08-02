@@ -19,8 +19,8 @@
 #include <strstream>
 
 #include "bt_def.h"
+#include "call_manager_inner_type.h"
 #include "display_power_info.h"
-#include "network_search_types.h"
 #include "wifi_hisysevent.h"
 
 #include "battery_stats_service.h"
@@ -67,8 +67,8 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     } else if (eventName == "POWER_WORKSCHEDULER" || eventName == "WORK_ADD" || eventName == "WORK_REMOVE" ||
         eventName == "WORK_START" || eventName == "WORK_STOP") {
         ProcessWorkschedulerEvent(data, root);
-    } else if (eventName == "POWER_PHONE") {
-        ProcessPhoneEvent(data, root);
+    } else if (eventName == "CALL_STATE" || eventName == "DATA_CONNECTION_STATE") {
+        ProcessPhoneEvent(data, root, eventName);
     } else if (eventName == "TORCH_STATE") {
         ProcessFlashlightEvent(data, root);
     } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
@@ -78,8 +78,6 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
         ProcessAudioEvent(data, root);
     } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
         ProcessSensorEvent(data, root, eventName);
-    } else if (eventName == "POWER_RADIO") {
-        ProcessRadioEvent(data, root);
     } else if (eventName == "GNSS_STATE") {
         ProcessGpsEvent(data, root);
     } else if (eventName == "BLUETOOTH_BR_STATE" || eventName == "BLUETOOTH_SCAN_STATE") {
@@ -173,36 +171,6 @@ void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const
     }
 }
 
-void BatteryStatsListener::ProcessRadioEvent(StatsUtils::StatsData& data, const Json::Value& root)
-{
-    data.type = StatsUtils::STATS_TYPE_RADIO_ON;
-    if (!root["STATE"].asString().empty()) {
-        Telephony::RegServiceState radioState = Telephony::RegServiceState(stoi(root["STATE"].asString()));
-        switch (radioState) {
-            case Telephony::RegServiceState::REG_STATE_UNKNOWN:
-                data.state = StatsUtils::STATS_STATE_NETWORK_UNKNOWN;
-                break;
-            case Telephony::RegServiceState::REG_STATE_IN_SERVICE:
-                data.state = StatsUtils::STATS_STATE_NETWORK_IN_SERVICE;
-                break;
-            case Telephony::RegServiceState::REG_STATE_NO_SERVICE:
-                data.state = StatsUtils::STATS_STATE_NETWORK_NO_SERVICE;
-                break;
-            case Telephony::RegServiceState::REG_STATE_EMERGENCY_ONLY:
-                data.state = StatsUtils::STATS_STATE_NETWORK_EMERGENCY_ONLY;
-                break;
-            case Telephony::RegServiceState::REG_STATE_SEARCH:
-                data.state = StatsUtils::STATS_STATE_NETWORK_SEARCH;
-                break;
-            default:
-                break;
-        }
-    }
-    if (!root["SIGNAL"].asString().empty()) {
-        data.level = stoi(root["SIGNAL"].asString());
-    }
-}
-
 void BatteryStatsListener::ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_GPS_ON;
@@ -265,16 +233,57 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
     }
 }
 
-void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
+    if (!root["name_"].asString().empty()) {
+        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+    }
     if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
-            data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
-            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        data.eventDebugInfo.append(" State = ").append(root["STATE"].asString());
+    }
+    if (!root["SLOT_ID"].asString().empty()) {
+        data.eventDebugInfo.append(" Slot ID = ").append(root["SLOT_ID"].asString());
+    }
+    if (!root["INDEX_ID"].asString().empty()) {
+        data.eventDebugInfo.append(" Index ID = ").append(root["INDEX_ID"].asString());
+    }
+}
+
+void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root,
+    const std::string& eventName)
+{
+    if (eventName == "CALL_STATE") {
+        data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
+        if (!root["STATE"].asString().empty()) {
+            Telephony::TelCallState callState = Telephony::TelCallState(stoi(root["STATE"].asString()));
+            switch (callState) {
+                case Telephony::TelCallState::CALL_STATUS_ACTIVE:
+                    data.state = StatsUtils::STATS_STATE_ACTIVATED;
+                    break;
+                case Telephony::TelCallState::CALL_STATUS_DISCONNECTED:
+                    data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+                    break;
+                default:
+                    break;
+            }
+        }
+    } else if (eventName == "DATA_CONNECTION_STATE") {
+        data.type = StatsUtils::STATS_TYPE_PHONE_DATA;
+        if (!root["STATE"].asString().empty()) {
+            if (root["STATE"].asString() == "1") {
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+            } else if (root["STATE"].asString() == "0") {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+            }
         }
     }
+
+    /*
+    * The average power consumption of phone call and phone data is divided by level
+    * However, the Telephony event has no input level information, so use level 0
+    */
+    data.level = 0;
+    ProcessPhoneDebugInfo(data, root);
 }
 
 void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)

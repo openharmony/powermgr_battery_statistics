@@ -62,15 +62,11 @@ double UidEntity::CalculateForConnectivity(int32_t uid)
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    auto radioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
 
     // Calculate bluetooth power consumption
     bluetoothEntity->Calculate(uid);
     power += bluetoothEntity->GetEntityPowerMah(uid);
-    // Calculate radio power consumption
-    radioEntity->Calculate(uid);
-    power += radioEntity->GetEntityPowerMah(uid);
     // Calculate wifi power consumption
     wifiEntity->Calculate(uid);
     power += wifiEntity->GetEntityPowerMah(uid);
@@ -168,7 +164,6 @@ double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32
     double power = StatsUtils::DEFAULT_VALUE;
     auto core = g_statsService->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    auto radioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     auto wifiEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
 
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_SCAN) {
@@ -183,10 +178,6 @@ double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32
         power = wifiEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WIFI_RX, uid);
     } else if (statsType == StatsUtils::STATS_TYPE_WIFI_TX) {
         power = wifiEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WIFI_TX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_RADIO_RX) {
-        power = radioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_RADIO_RX, uid);
-    } else if (statsType == StatsUtils::STATS_TYPE_RADIO_TX) {
-        power = radioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_RADIO_TX, uid);
     }
     return power;
 }
@@ -241,8 +232,6 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
         case StatsUtils::STATS_TYPE_WIFI_RX:
         case StatsUtils::STATS_TYPE_WIFI_TX:
-        case StatsUtils::STATS_TYPE_RADIO_RX:
-        case StatsUtils::STATS_TYPE_RADIO_TX:
             power = GetPowerForConnectivity(statsType, uid);
             break;
         case StatsUtils::STATS_TYPE_CAMERA_ON:
@@ -333,29 +322,6 @@ void UidEntity::DumpForWifi(int32_t uid, std::string& result)
         .append("bytes\n");
 }
 
-void UidEntity::DumpForRadio(int32_t uid, std::string& result)
-{
-    // Dump for radio realted info
-    auto core = g_statsService->GetBatteryStatsCore();
-    int64_t radioRxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_RX);
-    int64_t radioTxTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_RADIO_TX);
-    int64_t radioRxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_RX, uid);
-    int64_t radioTxData = core->GetTotalDataCount(StatsUtils::STATS_TYPE_RADIO_TX, uid);
-
-    result.append("Radio RX time: ")
-        .append(ToString(radioRxTime))
-        .append("ms\n")
-        .append("Radio TX time: ")
-        .append(ToString(radioTxTime))
-        .append("ms\n")
-        .append("Radio RX data: ")
-        .append(ToString(radioRxData))
-        .append("bytes\n")
-        .append("Radio TX data: ")
-        .append(ToString(radioTxData))
-        .append("ms\n");
-}
-
 void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 {
     auto core = g_statsService->GetBatteryStatsCore();
@@ -439,7 +405,6 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             .append("\n");
         DumpForBluetooth(iter.first, result);
         DumpForWifi(iter.first, result);
-        DumpForRadio(iter.first, result);
         DumpForCommon(iter.first, result);
         auto cpuEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
         if (cpuEntity) {

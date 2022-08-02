@@ -22,7 +22,7 @@ config("module_private_config") {
   include_dirs = [
     "include",
     "${batterystats_service_native}/include",
-    "//base/telephony/core_service/interfaces/innerkits/include",
+    "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common",
     "//foundation/communication/wifi/wifi/utils/inc",
   ]
@@ -39,7 +39,6 @@ deps_ex = [
   "ipc:ipc_core",
   "safwk:system_ability_fwk",
   "samgr_standard:samgr_proxy",
-  "c_utils:utils",
   "power_manager:powermgr_client",
   "display_manager:displaymgr",
 ]
@@ -212,7 +211,28 @@ ohos_unittest("stats_display_test") {
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
+  ]
+
+  external_deps = deps_ex
+}
+
+############################phone_test#############################
+ohos_unittest("stats_phone_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
+    "src/stats_phone_test.cpp",
+  ]
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
@@ -227,6 +247,7 @@ group("unittest") {
     ":stats_display_test",
     ":stats_dump_test",
     ":stats_location_test",
+    ":stats_phone_test",
     ":stats_powermgr_test",
     ":stats_service_test",
   ]
