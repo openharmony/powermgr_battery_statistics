@@ -16,6 +16,8 @@
 #ifndef PHONE_ENTITY_H
 #define PHONE_ENTITY_H
 
+#include <map>
+
 #include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
 
@@ -34,8 +36,9 @@ public:
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
-    std::shared_ptr<StatsHelper::ActiveTimer> phoneTimer_;
-    double phonePowerMah_;
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> phoneOnTimerMap_;
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> phoneDataTimerMap_;
+    double phonePowerMah_ = StatsUtils::DEFAULT_VALUE;
 };
 } // namespace PowerMgr
 } // namespace OHOS

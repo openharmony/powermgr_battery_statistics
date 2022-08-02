@@ -32,7 +32,7 @@ public:
     void OnServiceDied() override;
 private:
     void ProcessHiSysEvent(const std::string& eventName, const Json::Value& root);
-    void ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
@@ -42,13 +42,13 @@ private:
     void ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessRadioEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessGpsEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
 };
 } // namespace PowerMgr
 } // namespace OHOS

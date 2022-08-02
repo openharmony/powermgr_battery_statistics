@@ -64,8 +64,6 @@ bool BatteryStatsDetector::IsDurationRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_BLUETOOTH_TX:
         case StatsUtils::STATS_TYPE_WIFI_RX:
         case StatsUtils::STATS_TYPE_WIFI_TX:
-        case StatsUtils::STATS_TYPE_RADIO_RX:
-        case StatsUtils::STATS_TYPE_RADIO_TX:
         case StatsUtils::STATS_TYPE_ALARM:
             // Realated with duration
             isMatch = true;
@@ -89,9 +87,8 @@ bool BatteryStatsDetector::IsStateRelated(StatsUtils::StatsType type)
         case StatsUtils::STATS_TYPE_BLUETOOTH_SCAN:
         case StatsUtils::STATS_TYPE_WIFI_ON:
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
-        case StatsUtils::STATS_TYPE_RADIO_ON:
-        case StatsUtils::STATS_TYPE_RADIO_SCAN:
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
+        case StatsUtils::STATS_TYPE_PHONE_DATA:
         case StatsUtils::STATS_TYPE_CAMERA_ON:
         case StatsUtils::STATS_TYPE_CAMERA_FLASHLIGHT_ON:
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:
@@ -199,17 +196,14 @@ void BatteryStatsDetector::HandleWorkschedulerInfo(StatsUtils::StatsData data, i
 
 void BatteryStatsDetector::HandlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
-    std::string eventState;
-    if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
-        eventState = "Call active";
-    } else {
-        eventState = "Call terminated";
-    }
-    debugInfo.append("Phone event: phone state = ")
-        .append(eventState)
-        .append(", boot time after boot = ")
+    debugInfo.append("Phone event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");
+    if (!data.eventDebugInfo.empty()) {
+        debugInfo.append("Additional debug info: ")
+            .append(data.eventDebugInfo)
+            .append("\n");
+    }
 }
 
 void BatteryStatsDetector::HandleFlashlightInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
@@ -269,6 +263,7 @@ void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
             HandleDispalyInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
+        case StatsUtils::STATS_TYPE_PHONE_DATA:
             HandlePhoneInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_FLASHLIGHT_ON:

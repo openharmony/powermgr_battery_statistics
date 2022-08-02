@@ -9,16 +9,19 @@
     "wifi_rx": 123,
     "wifi_tx": 350,
     "radio_on": [
+        50,
+        70,
+        90,
+        120,
+        150
+    ],
+    "radio_data": [
         160,
         240,
         320,
         390,
         470
     ],
-    "radio_scan": 30,
-    "radio_active": 50,
-    "radio_rx": 150,
-    "radio_tx": 180,
     "camera_on": 810,
     "flashlight_on": 320,
     "gps_on": 80,

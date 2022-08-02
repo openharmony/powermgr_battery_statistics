@@ -27,38 +27,72 @@ namespace {
 }
 
 PhoneEntity::PhoneEntity()
-    : phoneTimer_(nullptr), phonePowerMah_(StatsUtils::DEFAULT_VALUE)
 {
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_PHONE;
 }
 
 int64_t PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_PHONE_ACTIVE) {
-        if (phoneTimer_ != nullptr) {
-            activeTimeMs = phoneTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Get phone active time: %{public}" PRId64 "ms", activeTimeMs);
-        } else {
-            STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
+    int64_t time = StatsUtils::DEFAULT_VALUE;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
+            auto iter = phoneOnTimerMap_.find(level);
+            if (iter != phoneOnTimerMap_.end() && iter->second != nullptr) {
+                time = iter->second->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get phone on time: %{public}" PRId64 "ms of signal level: %{public}d", time,
+                    level);
+                break;
+            }
+            STATS_HILOGD(COMP_SVC, "No phone on timer found, return 0");
+            break;
         }
+        case StatsUtils::STATS_TYPE_PHONE_DATA: {
+            auto iter = phoneDataTimerMap_.find(level);
+            if (iter != phoneDataTimerMap_.end() && iter->second != nullptr) {
+                time = iter->second->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get phone data time: %{public}" PRId64 "ms of signal level: %{public}d", time,
+                    level);
+                break;
+            }
+            STATS_HILOGD(COMP_SVC, "No phone data timer found, return 0");
+            break;
+        }
+        default:
+            break;
     }
-    return activeTimeMs;
+    return time;
 }
 
 void PhoneEntity::Calculate(int32_t uid)
 {
-    auto phoneOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ACTIVE);
-    auto phoneOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
-    auto phoneOnPowerMah = phoneOnAverageMa * phoneOnTimeMs / StatsUtils::MS_IN_HOUR;
-    phonePowerMah_ = phoneOnPowerMah;
+    // Calculate phone on power
+    double phoneOnPowerMah = StatsUtils::DEFAULT_VALUE;
+    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+        double phoneOnLevelPowerMah = StatsUtils::DEFAULT_VALUE;
+        auto phoneOnAverageMa =
+            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
+        auto phoneOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, i);
+        phoneOnLevelPowerMah = phoneOnAverageMa * phoneOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
+        phoneOnPowerMah += phoneOnLevelPowerMah;
+    }
+
+    // Calculate phone data power
+    double phoneDataPowerMah = StatsUtils::DEFAULT_VALUE;
+    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+        double phoneDataLevelPowerMah = StatsUtils::DEFAULT_VALUE;
+        auto phoneDataAverageMa =
+            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, i);
+        auto phoneDataLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, i);
+        phoneDataLevelPowerMah = phoneDataAverageMa * phoneDataLevelTimeMs / StatsUtils::MS_IN_HOUR;
+        phoneDataPowerMah += phoneDataLevelPowerMah;
+    }
+    phonePowerMah_ = phoneOnPowerMah + phoneDataPowerMah;
     totalPowerMah_ += phonePowerMah_;
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     statsInfo->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     statsInfo->SetPower(phonePowerMah_);
     statsInfoList_.push_back(statsInfo);
-    STATS_HILOGD(COMP_SVC, "Calculate phone active power consumption: %{public}lfmAh", phoneOnPowerMah);
+    STATS_HILOGD(COMP_SVC, "Calculate phone active power consumption: %{public}lfmAh", phonePowerMah_);
 }
 
 double PhoneEntity::GetEntityPowerMah(int32_t uidOrUserId)
@@ -74,20 +108,42 @@ double PhoneEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 std::shared_ptr<StatsHelper::ActiveTimer> PhoneEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
     std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
+    if (level <= StatsUtils::INVALID_VALUE || level > StatsUtils::RADIO_SIGNAL_BIN) {
+        STATS_HILOGD(COMP_SVC, "Illegal signal level");
+        return timer;
+    }
+
     switch (statsType) {
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
-            if (phoneTimer_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Get phone active timer");
-                timer = phoneTimer_;
+            auto onIter = phoneOnTimerMap_.find(level);
+            if (onIter != phoneOnTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Get phone on timer for level: %{public}d", level);
+                timer = onIter->second;
                 break;
             }
-            STATS_HILOGD(COMP_SVC, "Create phone active timer");
-            phoneTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
-            timer = phoneTimer_;
+            STATS_HILOGD(COMP_SVC, "Create phone on timer for level: %{public}d", level);
+            std::shared_ptr<StatsHelper::ActiveTimer> phoneOnTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            phoneOnTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, phoneOnTimer));
+            timer = phoneOnTimer;
+            break;
+        }
+        case StatsUtils::STATS_TYPE_PHONE_DATA: {
+            auto dataIter = phoneDataTimerMap_.find(level);
+            if (dataIter != phoneDataTimerMap_.end()) {
+                STATS_HILOGD(COMP_SVC, "Get phone data timer for level: %{public}d", level);
+                timer = dataIter->second;
+                break;
+            }
+            STATS_HILOGD(COMP_SVC, "Create phone data timer for level: %{public}d", level);
+            std::shared_ptr<StatsHelper::ActiveTimer> phoneDataTimer = std::make_shared<StatsHelper::ActiveTimer>();
+            phoneDataTimerMap_.insert(
+                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(level, phoneDataTimer));
+            timer = phoneDataTimer;
             break;
         }
         default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
+            STATS_HILOGW(COMP_SVC, "Create phone timer failed");
             break;
     }
     return timer;
@@ -98,18 +154,36 @@ void PhoneEntity::Reset()
     // Reset app Phone total power consumption
     phonePowerMah_ = StatsUtils::DEFAULT_VALUE;
 
-    // Reset Phone active timer
-    if (phoneTimer_) {
-        phoneTimer_->Reset();
+    // Reset Phone on timer
+    for (auto& iter : phoneOnTimerMap_) {
+        if (iter.second) {
+            iter.second->Reset();
+        }
+    }
+
+    // Reset Phone data timer
+    for (auto& iter : phoneDataTimerMap_) {
+        if (iter.second) {
+            iter.second->Reset();
+        }
     }
 }
 
 void PhoneEntity::DumpInfo(std::string& result, int32_t uid)
 {
-    int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+    int64_t phoneOnTime = StatsUtils::DEFAULT_VALUE;
+    int64_t phoneDataTime = StatsUtils::DEFAULT_VALUE;
+    for (int i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
+        phoneOnTime += GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, i);
+        phoneDataTime += GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, i);
+    }
+
     result.append("Phone dump:\n")
         .append("Phone active time: ")
-        .append(ToString(time))
+        .append(ToString(phoneOnTime))
+        .append("ms\n")
+        .append("Phone data time: ")
+        .append(ToString(phoneDataTime))
         .append("ms")
         .append("\n");
 }

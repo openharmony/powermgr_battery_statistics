@@ -68,7 +68,6 @@ private:
     std::shared_ptr<BatteryStatsEntity> gpsEntity_;
     std::shared_ptr<BatteryStatsEntity> idleEntity_;
     std::shared_ptr<BatteryStatsEntity> phoneEntity_;
-    std::shared_ptr<BatteryStatsEntity> radioEntity_;
     std::shared_ptr<BatteryStatsEntity> screenEntity_;
     std::shared_ptr<BatteryStatsEntity> sensorEntity_;
     std::shared_ptr<BatteryStatsEntity> uidEntity_;
@@ -78,7 +77,6 @@ private:
     std::shared_ptr<BatteryStatsEntity> alarmEntity_;
     bool isCameraOn_ = false;
     bool isScreenOn_ = false;
-    int32_t lastSignalLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastCameraUid_ = StatsUtils::INVALID_VALUE;
     std::string debugInfo_;
@@ -92,9 +90,9 @@ private:
     void UpdateCounter(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         int64_t data, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateScreenStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level);
-    void UpdateRadioStats(StatsUtils::StatsState state, int16_t level);
     void UpdateCameraStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid,
         const std::string& deviceId);
+    void UpdatePhoneStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int16_t level);
     void UpdateConnectivityStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void CreatePartEntity();

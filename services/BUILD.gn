@@ -16,6 +16,7 @@ import("//base/powermgr/battery_statistics/batterystats.gni")
 config("batterystats_private_config") {
   include_dirs = [
     "//base/hiviewdfx/hicollie/interfaces/native/innerkits/include/xcollie",
+    "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
   ]
@@ -49,7 +50,6 @@ ohos_shared_library("batterystats_service") {
     "native/src/entities/gps_entity.cpp",
     "native/src/entities/idle_entity.cpp",
     "native/src/entities/phone_entity.cpp",
-    "native/src/entities/radio_entity.cpp",
     "native/src/entities/screen_entity.cpp",
     "native/src/entities/sensor_entity.cpp",
     "native/src/entities/uid_entity.cpp",
