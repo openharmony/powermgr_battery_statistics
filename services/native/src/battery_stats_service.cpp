@@ -40,7 +40,6 @@ namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
-constexpr int32_t SA_ID_HISYSEVENT = 1203;
 }
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
@@ -57,7 +56,8 @@ void BatteryStatsService::OnStart()
         STATS_HILOGE(COMP_SVC, "Call init failed");
         return;
     }
-    AddSystemAbilityListener(SA_ID_HISYSEVENT);
+    AddSystemAbilityListener(DFX_SYS_EVENT_SERVICE_ABILITY_ID);
+    AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     if (!Publish(DelayedStatsSpSingleton<BatteryStatsService>::GetInstance())) {
         STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
@@ -74,7 +74,8 @@ void BatteryStatsService::OnStop()
         return;
     }
     ready_ = false;
-    RemoveSystemAbilityListener(SA_ID_HISYSEVENT);
+    RemoveSystemAbilityListener(DFX_SYS_EVENT_SERVICE_ABILITY_ID);
+    RemoveSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
     if (!OHOS::EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriberPtr_)) {
         STATS_HILOGE(COMP_SVC, "OnStart unregister to commonevent manager failed");
@@ -85,8 +86,11 @@ void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std:
 {
     STATS_HILOGI(COMP_SVC, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId,
                  deviceId.c_str());
-    if (systemAbilityId == SA_ID_HISYSEVENT) {
+    if (systemAbilityId == DFX_SYS_EVENT_SERVICE_ABILITY_ID) {
         AddHiSysEventListener();
+    }
+    if (systemAbilityId == COMMON_EVENT_SERVICE_ID) {
+        SubscribeCommonEvent();
     }
 }
 
