@@ -89,7 +89,7 @@ ohos_shared_library("batterystats_service") {
     "hisysevent_native:libhisysevent",
     "hisysevent_native:libhisyseventmanager",
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
     "os_account:libaccountkits",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
@@ -114,7 +114,7 @@ ohos_shared_library("batterystats_stub") {
     "c_utils:utils",
     "hicollie_native:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
   ]
 
   part_name = "${batterystats_part_name}"

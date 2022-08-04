@@ -38,7 +38,7 @@ ohos_fuzztest("BatteryStatsFuzzTest") {
 
   external_deps = [
     "c_utils:utils",
-    "ipc:ipc_core",
+    "ipc:ipc_single",
   ]
 }
 
