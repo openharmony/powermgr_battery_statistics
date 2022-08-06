@@ -92,7 +92,7 @@ ohos_shared_library("batterystats_service") {
     "ipc:ipc_core",
     "os_account:libaccountkits",
     "safwk:system_ability_fwk",
-    "samgr_standard:samgr_proxy",
+    "samgr:samgr_proxy",
   ]
 
   part_name = "${batterystats_part_name}"

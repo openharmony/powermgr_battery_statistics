@@ -42,7 +42,7 @@
                 "os_account",
                 "power_manager",
                 "safwk",
-                "samgr_standard"
+                "samgr"
             ],
             "third_party": [
                 "googletest",
