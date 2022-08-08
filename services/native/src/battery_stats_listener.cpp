@@ -30,6 +30,10 @@
 
 namespace OHOS {
 namespace PowerMgr {
+namespace {
+constexpr int32_t THERMAL_RATIO_BEGIN = 0;
+constexpr int32_t THERMAL_RATIO_LENGTH = 4;
+}
 void BatteryStatsListener::OnHandle(const std::string& domain, const std::string& eventName,
     const int eventType, const std::string& eventDetail)
 {
@@ -484,6 +488,10 @@ void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, cons
     }
     if (!root["VALUE"].asString().empty()) {
         data.eventDebugInfo.append(" Value = ").append(root["VALUE"].asString());
+    }
+    if (!root["RATIO"].asString().empty()) {
+        std::string ratio = std::to_string(root["RATIO"].asFloat()).substr(THERMAL_RATIO_BEGIN, THERMAL_RATIO_LENGTH);
+        data.eventDebugInfo.append(" Ratio = ").append(ratio);
     }
 }
 
