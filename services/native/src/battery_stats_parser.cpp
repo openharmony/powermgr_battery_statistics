@@ -65,6 +65,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
     }
     if (!parseFromStream(reader, ifs, &root, &errors)) {
         STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
+        ifs.close();
         return false;
     }
     ifs.close();
