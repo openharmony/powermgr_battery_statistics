@@ -54,8 +54,8 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
         if (capacity == BATTERY_LEVEL_FULL) {
             statsService->GetBatteryStatsCore()->Reset();
         }
-        if (pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_NONE ||
-            pluggedType == (int)BatteryPluggedType::PLUGGED_TYPE_BUTT) {
+        if (pluggedType == static_cast<int32_t>(BatteryPluggedType::PLUGGED_TYPE_NONE) ||
+            pluggedType == static_cast<int32_t>(BatteryPluggedType::PLUGGED_TYPE_BUTT)) {
             StatsHelper::SetOnBattery(true);
         } else {
             StatsHelper::SetOnBattery(false);

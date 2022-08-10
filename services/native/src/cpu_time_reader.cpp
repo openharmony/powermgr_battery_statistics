@@ -133,7 +133,7 @@ std::vector<int64_t> CpuTimeReader::GetUidCpuTimeMs(int32_t uid)
     if (iter != uidTimeMap_.end()) {
         cpuTimeVec = iter->second;
         STATS_HILOGD(COMP_SVC, "Get uid cpu time vector for uid: %{public}d, size: %{public}d", uid,
-            (int)cpuTimeVec.size());
+            static_cast<int32_t>(cpuTimeVec.size()));
     } else {
         STATS_HILOGD(COMP_SVC, "No uid cpu time vector found for uid: %{public}d, return null", uid);
     }

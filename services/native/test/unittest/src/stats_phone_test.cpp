@@ -81,8 +81,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -113,8 +113,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -148,8 +148,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -179,8 +179,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -219,8 +219,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -259,10 +259,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
-    int32_t stateHolding = static_cast<int>(TelCallState::CALL_STATUS_HOLDING);
-    int32_t stateDisconnecting = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTING);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateHolding = static_cast<int32_t>(TelCallState::CALL_STATUS_HOLDING);
+    int32_t stateDisconnecting = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTING);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -302,7 +302,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 10;
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -332,8 +332,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
     double deviation = 0.01;
@@ -627,8 +627,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
     double deviation = 0.01;
@@ -682,8 +682,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
     double deviation = 0.01;
@@ -744,8 +744,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
 
@@ -786,8 +786,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
