@@ -37,6 +37,7 @@ public:
     virtual int64_t GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
     virtual int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
+    virtual int64_t GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     virtual double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     virtual std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);

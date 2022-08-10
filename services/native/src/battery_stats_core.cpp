@@ -680,18 +680,25 @@ int64_t BatteryStatsCore::GetTotalTimeMs(int32_t uid, StatsUtils::StatsType stat
 
 int64_t BatteryStatsCore::GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid)
 {
+    STATS_HILOGD(COMP_SVC, "no traffic data bytes of %{public}s for uid: %{public}d",
+        StatsUtils::ConvertStatsType(statsType).c_str(), uid);
+    return StatsUtils::DEFAULT_VALUE;
+}
+
+int64_t BatteryStatsCore::GetTotalConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
+{
     int64_t data = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
         case StatsUtils::STATS_TYPE_WIFI_SCAN:
-            data = wifiEntity_->GetTrafficByte(statsType, uid);
+            data = wifiEntity_->GetConsumptionCount(statsType, uid);
             break;
         case StatsUtils::STATS_TYPE_ALARM:
-            data = alarmEntity_->GetTrafficByte(statsType, uid);
+            data = alarmEntity_->GetConsumptionCount(statsType, uid);
             break;
         default:
             break;
     }
-    STATS_HILOGD(COMP_SVC, "Get traffic data bytes: %{public}" PRId64 " of %{public}s for uid: %{public}d",
+    STATS_HILOGD(COMP_SVC, "Get consumption count: %{public}" PRId64 " of %{public}s for uid: %{public}d",
         data, StatsUtils::ConvertStatsType(statsType).c_str(), uid);
     return data;
 }
@@ -783,7 +790,7 @@ void BatteryStatsCore::SaveForHardware(Json::Value& root)
     root["Hardware"]["wifi_on"] =
         Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_WIFI_ON));
     root["Hardware"]["wifi_scan"] =
-        Json::Value(GetTotalDataCount(StatsUtils::STATS_TYPE_WIFI_SCAN));
+        Json::Value(GetTotalConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN));
 
     // Save for CPU idle
     root["Hardware"]["cpu_idle"] =
@@ -837,6 +844,10 @@ void BatteryStatsCore::SaveForSoftwareCommon(Json::Value& root, int32_t uid)
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
     root["Software"][strUid]["sensor_proximity"] =
         Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
+
+    // Save for alarm related
+    root["Software"][strUid]["alarm"] =
+        Json::Value(GetTotalConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid));
 
     // Save for cpu related
     root["Software"][strUid]["cpu_time"] = Json::Value(cpuEntity_->GetCpuTimeMs(uid));

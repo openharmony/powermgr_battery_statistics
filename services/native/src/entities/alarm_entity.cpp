@@ -31,17 +31,22 @@ AlarmEntity::AlarmEntity()
     consumptionType_ = BatteryStatsInfo::CONSUMPTION_TYPE_ALARM;
 }
 
-int64_t AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t AlarmEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
 {
     int64_t count = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_ALARM) {
-        auto almIter = alarmCounterMap_.find(uid);
-        if (almIter != alarmCounterMap_.end()) {
-            count = almIter->second->GetCount();
-            STATS_HILOGD(COMP_SVC, "Get alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
-        } else {
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_ALARM: {
+            auto almIter = alarmCounterMap_.find(uid);
+            if (almIter != alarmCounterMap_.end()) {
+                count = almIter->second->GetCount();
+                STATS_HILOGD(COMP_SVC, "Get alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "No alarm count related to uid: %{public}d was found, return 0", uid);
+            break;
         }
+        default:
+            break;
     }
     return count;
 }
@@ -49,7 +54,7 @@ int64_t AlarmEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid
 void AlarmEntity::Calculate(int32_t uid)
 {
     auto alarmOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
-    auto alarmOnCount = GetTrafficByte(StatsUtils::STATS_TYPE_ALARM, uid);
+    auto alarmOnCount = GetConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid);
     auto alarmOnPowerMah = alarmOnAverageMa * alarmOnCount;
     auto iter = alarmPowerMap_.find(uid);
     if (iter != alarmPowerMap_.end()) {

@@ -35,6 +35,7 @@ public:
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE) override;
 private:
+    int64_t GetBrightnessTotalTimeMs();
     double screenPowerMah_ = StatsUtils::DEFAULT_VALUE;
     std::shared_ptr<StatsHelper::ActiveTimer> screenOnTimer_;
     std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> screenBrightnessTimerMap_;

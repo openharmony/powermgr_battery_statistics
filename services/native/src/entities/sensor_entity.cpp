@@ -34,24 +34,31 @@ SensorEntity::SensorEntity()
 int64_t SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON) {
-        auto gravityIter = gravityTimerMap_.find(uid);
-        if (gravityIter != gravityTimerMap_.end()) {
-            activeTimeMs = gravityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Get gravity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
-                uid);
-        } else {
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON: {
+            auto gravityIter = gravityTimerMap_.find(uid);
+            if (gravityIter != gravityTimerMap_.end()) {
+                activeTimeMs = gravityIter->second->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get gravity on time: %{public}" PRId64 "ms for uid: %{public}d",
+                    activeTimeMs, uid);
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON) {
-        auto proximityIter = proximityTimerMap_.find(uid);
-        if (proximityIter != proximityTimerMap_.end()) {
-            activeTimeMs = proximityIter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Get proximity on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
-                uid);
-        } else {
+        case StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON: {
+            auto proximityIter = proximityTimerMap_.find(uid);
+            if (proximityIter != proximityTimerMap_.end()) {
+                activeTimeMs = proximityIter->second->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get proximity on time: %{public}" PRId64 "ms for uid: %{public}d",
+                    activeTimeMs, uid);
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            break;
         }
+        default:
+            break;
     }
     return activeTimeMs;
 }

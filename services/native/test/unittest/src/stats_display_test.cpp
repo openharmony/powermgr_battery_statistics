@@ -44,8 +44,8 @@ static void SetLastBrightness(int32_t lastBrightness)
 {
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
 
     GTEST_LOG_(INFO) << __func__ << ": Set last screen brightness value = " << lastBrightness;
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
@@ -103,8 +103,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_001, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
@@ -138,8 +138,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_002, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 120;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
@@ -172,8 +172,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_003, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
@@ -211,8 +211,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_004, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
     double fullPercent = 1;
     double zeroPercent = 0;
@@ -244,8 +244,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_005, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
@@ -289,8 +289,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_006, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
@@ -329,8 +329,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_007, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
@@ -402,8 +402,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_009, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     int32_t currentBrightness = 200;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
@@ -447,8 +447,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_010, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     int32_t currentBrightness = 200;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
@@ -493,8 +493,8 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_011, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     int32_t invalidBrightness1 = -1;
     int32_t invalidBrightness2 = 300;
@@ -526,5 +526,55 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_011, TestSize.Level0)
     EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
         <<" StatsDisplayTest_011 fail due to power mismatch";
     GTEST_LOG_(INFO) << " StatsDisplayTest_011: test end";
+}
+
+/**
+ * @tc.name: StatsDisplayTest_012
+ * @tc.desc: test GetTotalTimeSecond function(CURRENT_SCREEN_ON & CURRENT_SCREEN_BRIGHTNESS)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsDisplayTest_012, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsDisplayTest_012: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t lastBrightness = 100;
+    int32_t brightnessBegin = 0;
+    int32_t brightness = 0;
+    int32_t count = 50;
+    int32_t step = 3;
+    double deviation = 0.1;
+
+    SetLastBrightness(lastBrightness);
+    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    sleep(testTimeSec);
+    for (int32_t i = 0; i < count; i++) {
+        brightness = brightnessBegin + step * i;
+        HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+        GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+        sleep(testTimeSec);
+    }
+    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    sleep(testWaitTimeSec);
+
+    long screenOnTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_ON);
+    long expectScreenOnTime = testTimeSec * (count + 1);
+    GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectScreenOnTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  screenOnTime << " seconds";
+    EXPECT_LE(abs(screenOnTime - expectScreenOnTime), deviation) <<
+        " StatsDisplayTest_012 Screen on total time fail due to time mismatch";
+
+    long brightnessTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS);
+    long expectBrightnessTime = testTimeSec * (count + 1);
+    GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectBrightnessTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  brightnessTime << " seconds";
+    EXPECT_LE(abs(brightnessTime - expectBrightnessTime), deviation) <<
+        " StatsDisplayTest_012 Screen brightness total time fail due to time mismatch";
+    GTEST_LOG_(INFO) << " StatsDisplayTest_012: test end";
 }
 }

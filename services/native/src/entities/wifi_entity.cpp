@@ -40,7 +40,7 @@ void WifiEntity::Calculate(int32_t uid)
 
     // Calculate Wifi scan power
     auto wifiScanAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
-    auto wifiScanCount = GetTrafficByte(StatsUtils::STATS_TYPE_WIFI_SCAN);
+    auto wifiScanCount = GetConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN);
     auto wifiScanPowerMah = wifiScanAverageMa * wifiScanCount;
 
     wifiPowerMah_ = wifiOnPowerMah + wifiScanPowerMah;
@@ -81,7 +81,7 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
     return wifiPowerMah_;
 }
 
-int64_t WifiEntity::GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid)
+int64_t WifiEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
 {
     int64_t count = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
@@ -163,7 +163,7 @@ void WifiEntity::Reset()
 void WifiEntity::DumpInfo(std::string& result, int32_t uid)
 {
     int64_t time = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
-    int64_t conut = GetTrafficByte(StatsUtils::STATS_TYPE_WIFI_SCAN);
+    int64_t conut = GetConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN);
     result.append("Wifi dump:\n")
         .append("Wifi on time: ")
         .append(ToString(time))

@@ -81,8 +81,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -113,8 +113,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -148,8 +148,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -179,8 +179,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -219,8 +219,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -259,10 +259,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
-    int32_t stateHolding = static_cast<int>(TelCallState::CALL_STATUS_HOLDING);
-    int32_t stateDisconnecting = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTING);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateHolding = static_cast<int32_t>(TelCallState::CALL_STATUS_HOLDING);
+    int32_t stateDisconnecting = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTING);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -302,7 +302,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
     int32_t stateOn = 10;
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -332,8 +332,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
     double deviation = 0.01;
@@ -377,10 +377,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_009, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -412,10 +412,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_010, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
@@ -446,10 +446,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_011, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
     
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -478,10 +478,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_012, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
@@ -518,16 +518,16 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_013, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = 2 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
@@ -555,10 +555,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_014, TestSize.Level0)
     int32_t stateOn = 5;
     int32_t stateOff = 0;
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -591,18 +591,18 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_015, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = 3 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
@@ -627,8 +627,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
     double deviation = 0.01;
@@ -639,7 +639,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", callStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
@@ -649,11 +649,11 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", callStateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
     sleep(testWaitTimeSec);
 
@@ -682,8 +682,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
     double deviation = 0.01;
@@ -694,7 +694,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", callStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
@@ -704,11 +704,11 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", callStateOff);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
     sleep(testWaitTimeSec);
 
@@ -744,8 +744,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t callStateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t callStateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
 
@@ -755,11 +755,11 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
     HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", callStateOff);
     sleep(testWaitTimeSec);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
     sleep(testWaitTimeSec);
 
@@ -786,8 +786,8 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -832,10 +832,10 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
     sleep(testTimeSec);
-    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     sleep(testWaitTimeSec);
 
     double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
@@ -867,5 +867,65 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
     EXPECT_LE(abs(expectedPower - actualPower), deviation)
         <<" StatsPhoneTest_020 fail due to power mismatch";
     GTEST_LOG_(INFO) << " StatsPhoneTest_020: test end";
+}
+
+/**
+ * @tc.name: StatsPhoneTest_021
+ * @tc.desc: test GetTotalTimeSecond function(Phone Call)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsPhoneTest_021, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsPhoneTest_021: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CALL_MANAGER", "CALL_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    sleep(testWaitTimeSec);
+
+    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
+    EXPECT_LE(abs(time - testTimeSec), deviation) << " StatsPhoneTest_021 fail due to time mismatch";
+    GTEST_LOG_(INFO) << " StatsPhoneTest_021: test end";
+}
+
+/**
+ * @tc.name: StatsPhoneTest_022
+ * @tc.desc: test GetTotalTimeSecond function(Phone Data)
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsClientTest, StatsPhoneTest_022, TestSize.Level0)
+{
+    GTEST_LOG_(INFO) << " StatsPhoneTest_022: test start";
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    long testTimeSec = 2;
+    long testWaitTimeSec = 1;
+    int32_t stateOn = 1;
+    int32_t stateOff = 0;
+    double deviation = 0.01;
+
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
+    sleep(testTimeSec);
+    HiSysEvent::Write("CELLULAR_DATA", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+    sleep(testWaitTimeSec);
+
+    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_DATA);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
+    EXPECT_LE(abs(time - testTimeSec), deviation) << " StatsPhoneTest_022 fail due to time mismatch";
+    GTEST_LOG_(INFO) << " StatsPhoneTest_022: test end";
 }
 }

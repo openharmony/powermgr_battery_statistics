@@ -33,10 +33,15 @@ IdleEntity::IdleEntity()
 int64_t IdleEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_PHONE_IDLE) {
-        activeTimeMs = StatsHelper::GetOnBatteryUpTimeMs();
-    } else if (statsType == StatsUtils::STATS_TYPE_CPU_SUSPEND) {
-        activeTimeMs = StatsHelper::GetOnBatteryBootTimeMs();
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_PHONE_IDLE:
+            activeTimeMs = StatsHelper::GetOnBatteryUpTimeMs();
+            break;
+        case StatsUtils::STATS_TYPE_CPU_SUSPEND:
+            activeTimeMs = StatsHelper::GetOnBatteryBootTimeMs();
+            break;
+        default:
+            break;
     }
     return activeTimeMs;
 }

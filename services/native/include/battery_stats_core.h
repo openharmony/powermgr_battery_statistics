@@ -46,6 +46,7 @@ public:
     int64_t GetTotalTimeMs(int32_t uid, StatsUtils::StatsType statsType,
         int16_t level = StatsUtils::INVALID_VALUE);
     int64_t GetTotalDataCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
+    int64_t GetTotalConsumptionCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE);
     void UpdateStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state,
         int16_t level = StatsUtils::INVALID_VALUE, int32_t uid = StatsUtils::INVALID_VALUE,
         const std::string& deviceId = "");

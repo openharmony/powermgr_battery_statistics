@@ -34,15 +34,20 @@ AudioEntity::AudioEntity()
 int64_t AudioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_AUDIO_ON) {
-        auto iter = audioTimerMap_.find(uid);
-        if (iter != audioTimerMap_.end()) {
-            activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Get audio on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
-                uid);
-        } else {
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_AUDIO_ON: {
+            auto iter = audioTimerMap_.find(uid);
+            if (iter != audioTimerMap_.end()) {
+                activeTimeMs = iter->second->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get audio on time: %{public}" PRId64 "ms for uid: %{public}d",
+                    activeTimeMs, uid);
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
+            break;
         }
+        default:
+            break;
     }
     return activeTimeMs;
 }

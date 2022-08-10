@@ -37,6 +37,12 @@ int64_t BatteryStatsEntity::GetTrafficByte(StatsUtils::StatsType statsType, int3
     return StatsUtils::DEFAULT_VALUE;
 }
 
+int64_t BatteryStatsEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
+{
+    STATS_HILOGE(COMP_SVC, "No need to consumption count");
+    return StatsUtils::DEFAULT_VALUE;
+}
+
 BatteryStatsInfoList BatteryStatsEntity::GetStatsInfoList()
 {
     return statsInfoList_;
