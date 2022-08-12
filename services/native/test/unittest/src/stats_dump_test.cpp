@@ -324,9 +324,12 @@ HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
     long testWaitTimeSec = 1;
     std::string actionName = "thermallevel";
     int32_t value = 3;
+    float ratio = 0.60;
+    int32_t beginPos = 0;
+    int32_t ratioLen = 4;
 
     HiviewDFX::HiSysEvent::Write("THERMAL", "THERMAL_ACTION_TRIGGERED",
-        HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value);
+        HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
     sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
@@ -335,7 +338,9 @@ HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
         .append(" Action name = ")
         .append(actionName)
         .append(" Value = ")
-        .append(ToString(value));
+        .append(ToString(value))
+        .append(" Ratio = ")
+        .append(std::to_string(ratio).substr(beginPos, ratioLen));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
