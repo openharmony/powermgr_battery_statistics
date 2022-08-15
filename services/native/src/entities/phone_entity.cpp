@@ -33,34 +33,66 @@ PhoneEntity::PhoneEntity()
 
 int64_t PhoneEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
-    int64_t time = StatsUtils::DEFAULT_VALUE;
+    int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     switch (statsType) {
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
-            auto iter = phoneOnTimerMap_.find(level);
-            if (iter != phoneOnTimerMap_.end() && iter->second != nullptr) {
-                time = iter->second->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get phone on time: %{public}" PRId64 "ms of signal level: %{public}d", time,
-                    level);
+            if (level != StatsUtils::INVALID_VALUE) {
+                auto iter = phoneOnTimerMap_.find(level);
+                if (iter != phoneOnTimerMap_.end() && iter->second != nullptr) {
+                    activeTimeMs = iter->second->GetRunningTimeMs();
+                    STATS_HILOGD(COMP_SVC, "Get phone on time: %{public}" PRId64 "ms of signal level: %{public}d",
+                        activeTimeMs, level);
+                    break;
+                }
+                STATS_HILOGD(COMP_SVC, "No phone on timer found, return 0");
                 break;
             }
-            STATS_HILOGD(COMP_SVC, "No phone on timer found, return 0");
+            activeTimeMs = GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+            STATS_HILOGD(COMP_SVC, "Get phone on total time: %{public}" PRId64 "ms", activeTimeMs);
             break;
         }
         case StatsUtils::STATS_TYPE_PHONE_DATA: {
-            auto iter = phoneDataTimerMap_.find(level);
-            if (iter != phoneDataTimerMap_.end() && iter->second != nullptr) {
-                time = iter->second->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get phone data time: %{public}" PRId64 "ms of signal level: %{public}d", time,
-                    level);
+            if (level != StatsUtils::INVALID_VALUE) {
+                auto iter = phoneDataTimerMap_.find(level);
+                if (iter != phoneDataTimerMap_.end() && iter->second != nullptr) {
+                    activeTimeMs = iter->second->GetRunningTimeMs();
+                    STATS_HILOGD(COMP_SVC, "Get phone data time: %{public}" PRId64 "ms of signal level: %{public}d",
+                        activeTimeMs, level);
+                    break;
+                }
+                STATS_HILOGD(COMP_SVC, "No phone data timer found, return 0");
                 break;
             }
-            STATS_HILOGD(COMP_SVC, "No phone data timer found, return 0");
+            activeTimeMs = GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA);
+            STATS_HILOGD(COMP_SVC, "Get phone data total time: %{public}" PRId64 "ms", activeTimeMs);
             break;
         }
         default:
             break;
     }
-    return time;
+    return activeTimeMs;
+}
+
+int64_t PhoneEntity::GetTotalTimeMs(StatsUtils::StatsType statsType)
+{
+    int64_t totalTimeMs = StatsUtils::DEFAULT_VALUE;
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_PHONE_ACTIVE: {
+            for (auto timerIter : phoneOnTimerMap_) {
+                totalTimeMs += timerIter.second->GetRunningTimeMs();
+            }
+            break;
+        }
+        case StatsUtils::STATS_TYPE_PHONE_DATA: {
+            for (auto timerIter : phoneDataTimerMap_) {
+                totalTimeMs += timerIter.second->GetRunningTimeMs();
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return totalTimeMs;
 }
 
 void PhoneEntity::Calculate(int32_t uid)

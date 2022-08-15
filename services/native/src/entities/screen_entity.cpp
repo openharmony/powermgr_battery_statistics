@@ -33,25 +33,46 @@ ScreenEntity::ScreenEntity()
 int64_t ScreenEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    if (statsType == StatsUtils::STATS_TYPE_SCREEN_ON) {
-        if (screenOnTimer_ != nullptr) {
-            activeTimeMs = screenOnTimer_->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC, "Get screen on time: %{public}" PRId64 "ms", activeTimeMs);
-        } else {
+    switch (statsType) {
+        case StatsUtils::STATS_TYPE_SCREEN_ON: {
+            if (screenOnTimer_ != nullptr) {
+                activeTimeMs = screenOnTimer_->GetRunningTimeMs();
+                STATS_HILOGD(COMP_SVC, "Get screen on time: %{public}" PRId64 "ms", activeTimeMs);
+                break;
+            }
             STATS_HILOGD(COMP_SVC, "Didn't find related timer, return 0");
+            break;
         }
-    } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
-        auto iter = screenBrightnessTimerMap_.find(level);
-        if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
-            activeTimeMs = iter->second->GetRunningTimeMs();
-            STATS_HILOGD(COMP_SVC,
-                "Get screen brightness time: %{public}" PRId64 "ms of brightness level: %{public}d",
-                activeTimeMs, level);
-        } else {
-            STATS_HILOGD(COMP_SVC, "No screen brightness timer found, return 0");
+        case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS: {
+            if (level != StatsUtils::INVALID_VALUE) {
+                auto iter = screenBrightnessTimerMap_.find(level);
+                if (iter != screenBrightnessTimerMap_.end() && iter->second != nullptr) {
+                    activeTimeMs = iter->second->GetRunningTimeMs();
+                    STATS_HILOGD(COMP_SVC,
+                        "Get screen brightness time: %{public}" PRId64 "ms of brightness level: %{public}d",
+                        activeTimeMs, level);
+                    break;
+                }
+                STATS_HILOGD(COMP_SVC, "No screen brightness timer found, return 0");
+                break;
+            }
+            activeTimeMs = GetBrightnessTotalTimeMs();
+            STATS_HILOGD(COMP_SVC, "Get screen brightness total time: %{public}" PRId64 "ms", activeTimeMs);
+            break;
         }
+        default:
+            break;
     }
     return activeTimeMs;
+}
+
+int64_t ScreenEntity::GetBrightnessTotalTimeMs()
+{
+    int64_t totalTimeMs = StatsUtils::DEFAULT_VALUE;
+    for (auto timerIter : screenBrightnessTimerMap_) {
+        totalTimeMs += timerIter.second->GetRunningTimeMs();
+    }
+    return totalTimeMs;
 }
 
 void ScreenEntity::Calculate(int32_t uid)

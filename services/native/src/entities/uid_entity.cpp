@@ -288,7 +288,7 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
     int64_t wakelockTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
 
     // Dump for alarm related info
-    int64_t alarmCount = core->GetTotalDataCount(StatsUtils::STATS_TYPE_ALARM, uid);
+    int64_t alarmCount = core->GetTotalConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid);
 
     result.append("Camera on time: ")
         .append(ToString(cameraTime))
@@ -313,7 +313,7 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
         .append("ms\n")
         .append("Alarm trigger count: ")
         .append(ToString(alarmCount))
-        .append("ms\n");
+        .append("times\n");
 }
 
 void UidEntity::DumpInfo(std::string& result, int32_t uid)

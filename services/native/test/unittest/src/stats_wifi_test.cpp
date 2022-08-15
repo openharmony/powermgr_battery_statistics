@@ -500,9 +500,9 @@ HWTEST_F (StatsClientTest, StatsWifiTest_013, TestSize.Level0)
     }
     sleep(testWaitTimeSec);
 
-    long data = StatsUtils::INVALID_VALUE;
-    data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_WIFI_SCAN);
-    EXPECT_EQ(data, count) << " StatsWifiTest_013 fail due to reset failed";
+    long expectValue = StatsUtils::DEFAULT_VALUE;
+    long data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_WIFI_SCAN);
+    EXPECT_EQ(data, expectValue) << " StatsWifiTest_013 fail due to reset failed";
     GTEST_LOG_(INFO) << " StatsWifiTest_013: test end";
 }
 

@@ -36,6 +36,7 @@ public:
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
+    int64_t GetTotalTimeMs(StatsUtils::StatsType statsType);
     std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> phoneOnTimerMap_;
     std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> phoneDataTimerMap_;
     double phonePowerMah_ = StatsUtils::DEFAULT_VALUE;

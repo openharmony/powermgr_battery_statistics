@@ -28,7 +28,7 @@ public:
     ~WifiEntity() = default;
     void Calculate(int32_t uid = StatsUtils::INVALID_VALUE) override;
     int64_t GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level = StatsUtils::INVALID_VALUE) override;
-    int64_t GetTrafficByte(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
+    int64_t GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     double GetEntityPowerMah(int32_t uidOrUserId = StatsUtils::INVALID_VALUE) override;
     double GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid = StatsUtils::INVALID_VALUE) override;
     std::shared_ptr<StatsHelper::ActiveTimer> GetOrCreateTimer(StatsUtils::StatsType statsType,
