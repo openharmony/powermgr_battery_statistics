@@ -81,7 +81,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
         }
 
         if (type.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
-            STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d", (int)value.size());
+            STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d", static_cast<int32_t>(value.size()));
             speedNum_.push_back(value.size());
         }
 

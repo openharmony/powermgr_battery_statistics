@@ -112,7 +112,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_002, TestSize.Level0)
     int32_t pid = 3456;
     int32_t stateLock = 1;
     int32_t stateUnlock = 0;
-    int32_t type = static_cast<int>(RunningLockType::RUNNINGLOCK_SCREEN);
+    int32_t type = static_cast<int32_t>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " StatsDumpTest_002";
 
     HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,

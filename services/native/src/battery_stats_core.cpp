@@ -144,7 +144,7 @@ bool BatteryStatsCore::Init()
 void BatteryStatsCore::ComputePower()
 {
     STATS_HILOGD(COMP_SVC, "Calculate battery stats");
-    const int DFX_DELAY_MS = 10000;
+    const uint32_t DFX_DELAY_MS = 10000;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsCoreComputePower", DFX_DELAY_MS, nullptr, nullptr,
         HiviewDFX::XCOLLIE_FLAG_NOOP);
 

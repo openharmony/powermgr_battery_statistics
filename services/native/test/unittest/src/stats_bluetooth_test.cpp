@@ -43,10 +43,10 @@ static void ParserAveragePowerFile()
 static void WriteBluetoothEvent(int32_t pid, int32_t uid, long time)
 {
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t stateScanOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateScanOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateScanOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateScanOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -124,8 +124,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_001, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -160,8 +160,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_002, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     double deviation = 0.01;
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -193,8 +193,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_003, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double fullPercent = 1;
@@ -229,8 +229,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_004, TestSize.Level0)
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -272,8 +272,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_005, TestSize.Level0)
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -317,10 +317,10 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_006, TestSize.Level0)
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t stateTurningOn = static_cast<int>(bluetooth::BTStateID::STATE_TURNING_ON);
-    int32_t stateTurningOff = static_cast<int>(bluetooth::BTStateID::STATE_TURNING_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateTurningOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURNING_ON);
+    int32_t stateTurningOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURNING_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -366,7 +366,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_007, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 10;
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -401,8 +401,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_008, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
     double deviation = 0.01;
@@ -447,8 +447,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_009, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
@@ -481,8 +481,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_010, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
     GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
@@ -517,8 +517,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_011, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     double deviation = 0.01;
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -550,8 +550,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_012, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double fullPercent = 1;
@@ -586,8 +586,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_013, TestSize.Level0)
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -629,8 +629,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_014, TestSize.Level0)
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -674,10 +674,10 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_015, TestSize.Level0)
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
-    int32_t stateTurningOn = static_cast<int>(bluetooth::BTStateID::STATE_TURNING_ON);
-    int32_t stateTurningOff = static_cast<int>(bluetooth::BTStateID::STATE_TURNING_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateTurningOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURNING_ON);
+    int32_t stateTurningOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURNING_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -723,7 +723,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_016, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 10;
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -758,8 +758,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_017, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
     double deviation = 0.01;
@@ -804,8 +804,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_018, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BLE_STATE", HiSysEvent::EventType::STATISTIC,
@@ -838,8 +838,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_019, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_DISCOVERY_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -875,8 +875,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_020, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_DISCOVERY_STATE", HiSysEvent::EventType::STATISTIC,
@@ -911,8 +911,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_021, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -945,8 +945,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_022, TestSize.Level0)
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -990,9 +990,9 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_023, TestSize.Level0)
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
-    int32_t stateScan = static_cast<int>(bluetooth::DISCOVERYING);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateScan = static_cast<int32_t>(bluetooth::DISCOVERYING);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -1038,7 +1038,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_024, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 10;
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_DISCOVERY_STATE", HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
@@ -1073,8 +1073,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_025, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
     double deviation = 0.01;
@@ -1119,8 +1119,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_026, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_DISCOVERY_STATE", HiSysEvent::EventType::STATISTIC,
@@ -1156,8 +1156,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_027, TestSize.Level0)
     int32_t pidOne = 3458;
     int32_t uidTwo = 10004;
     int32_t pidTwo = 3459;
-    int32_t stateOn = static_cast<int>(bluetooth::DISCOVERY_STARTED);
-    int32_t stateOff = static_cast<int>(bluetooth::DISCOVERY_STOPED);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::DISCOVERY_STARTED);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::DISCOVERY_STOPED);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_DISCOVERY_STATE", HiSysEvent::EventType::STATISTIC,
@@ -1515,8 +1515,8 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_036, TestSize.Level0)
     long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     double deviation = 0.01;
 
     HiSysEvent::Write("BLUETOOTH", "BLUETOOTH_BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,

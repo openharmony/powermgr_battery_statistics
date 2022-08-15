@@ -30,7 +30,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
 {
     STATS_HILOGD(COMP_SVC, "Remote request, cmd = %{public}d, flags = %{public}d",
         code, option.GetFlags());
-    const int DFX_DELAY_MS = 10000;
+    const uint32_t DFX_DELAY_MS = 10000;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_MS, nullptr, nullptr,
         HiviewDFX::XCOLLIE_FLAG_NOOP);
 
@@ -50,43 +50,43 @@ int32_t BatteryStatsStub::ChooseCodeStub(uint32_t code, MessageParcel &data, Mes
 {
     int32_t ret = ERR_OK;
     switch (code) {
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GET): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET): {
             ret = GetBatteryStatsStub(reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETTIME): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETTIME): {
             ret = GetTotalTimeSecondStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETDATA): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETDATA): {
             ret = GetTotalDataBytesStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPMAH): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPMAH): {
             ret = GetAppStatsMahStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETAPPPER): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPPER): {
             ret = GetAppStatsPercentStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTMAH): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTMAH): {
             ret = GetPartStatsMahStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_GETPARTPER): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTPER): {
             ret = GetPartStatsPercentStub(data, reply);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_RESET): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_RESET): {
             ret = ResetStub();
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_SETONBATT): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_SETONBATT): {
             ret = SetOnBatteryStub(data);
             break;
         }
-        case static_cast<int>(IBatteryStats::BATTERY_STATS_DUMP): {
+        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_DUMP): {
             ret = ShellDumpStub(data, reply);
             break;
         }

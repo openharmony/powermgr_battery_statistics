@@ -105,7 +105,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
     int32_t stateLock = 1;
     int32_t stateUnlock = 0;
     double wakelockAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
-    int32_t type = static_cast<int>(RunningLockType::RUNNINGLOCK_SCREEN);
+    int32_t type = static_cast<int32_t>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " BatteryStatsSysTest_001";
     double deviation = 0.01;
 
@@ -165,8 +165,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int>(DisplayPowerMgr::DisplayState::DISPLAY_OFF);
+    int32_t stateOn = static_cast<int32_t>(DisplayPowerMgr::DisplayState::DISPLAY_ON);
+    int32_t stateOff = static_cast<int32_t>(DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 150;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
@@ -357,8 +357,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -426,8 +426,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
 
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(TelCallState::CALL_STATUS_ACTIVE);
-    int32_t stateOff = static_cast<int>(TelCallState::CALL_STATUS_DISCONNECTED);
+    int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
+    int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
@@ -690,8 +690,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     long testTimeSec = 2;
     long testWaitTimeSec = 1;
-    int32_t stateOn = static_cast<int>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     double deviation = 0.01;
@@ -808,7 +808,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     int32_t stateRunning = 2;
     int32_t stateStopped = 3;
     double deviation = 0.01;
-
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     sleep(testTimeSec);
@@ -825,7 +824,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     pid = 3459;
     std::string gnssStateOn = "start";
     std::string gnssStateOff = "stop";
-
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", gnssStateOn);
     sleep(testTimeSec);
@@ -839,7 +837,6 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     uid = 10005;
     pid = 3457;
-
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
     sleep(testTimeSec);

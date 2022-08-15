@@ -26,7 +26,7 @@
 
 using namespace OHOS::PowerMgr;
 
-static void SetValueInt32(const napi_env& env, std::string fieldStr, const int intValue, napi_value& result)
+static void SetValueInt32(const napi_env& env, std::string fieldStr, const int32_t intValue, napi_value& result)
 {
     STATS_HILOGD(COMP_FWK, "Set int32_t value: %{public}d", intValue);
     napi_value value;
@@ -43,7 +43,7 @@ static void SetValueDouble(const napi_env& env, std::string fieldStr, const doub
 }
 
 static void StatsInfoToJsArray(const napi_env& env, const std::vector<BatteryStats>& vecJsStatsInfo,
-    const int idx, napi_value& arrayResult)
+    const int32_t idx, napi_value& arrayResult)
 {
     napi_value result;
     napi_create_object(env, &result);
@@ -80,7 +80,7 @@ static bool GetBatteryStatsInfoList(std::vector<BatteryStats>& vecStatsInfo)
     }
     NativeCppStatsInfoToJsStatsInfo(vecCppStatsInfos, vecStatsInfo);
     STATS_HILOGD(COMP_FWK, "CppStatsInfos size: %{public}d, JsStatsInfo size: %{public}d",
-        (int)vecCppStatsInfos.size(), (int)vecStatsInfo.size());
+        static_cast<int32_t>(vecCppStatsInfos.size()), static_cast<int32_t>(vecStatsInfo.size()));
     return true;
 }
 
@@ -91,7 +91,7 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
         STATS_HILOGE(COMP_FWK, "Napi creates array error: %{public}d", status);
         return;
     }
-    for (size_t i = 0; i < vecStatsInfo.size(); ++i) {
+    for (int32_t i = 0; i < vecStatsInfo.size(); ++i) {
         StatsInfoToJsArray(env, vecStatsInfo, i, result);
     }
 }

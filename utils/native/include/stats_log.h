@@ -48,9 +48,9 @@ namespace PowerMgr {
 
 namespace {
 // Battery stats reserved domain id range
-constexpr unsigned int STATS_DOMAIN_ID_START = 0xD002960;
-constexpr unsigned int STATS_DOMAIN_ID_END = STATS_DOMAIN_ID_START + 32;
-constexpr unsigned int TEST_DOMAIN_ID = 0xD000F00;
+constexpr uint32_t STATS_DOMAIN_ID_START = 0xD002960;
+constexpr uint32_t STATS_DOMAIN_ID_END = STATS_DOMAIN_ID_START + 32;
+constexpr uint32_t TEST_DOMAIN_ID = 0xD000F00;
 }
 
 enum BatteryStatsLogLabel {
