@@ -948,8 +948,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
             info->SetConsumptioType(static_cast<BatteryStatsInfo::ConsumptionType>(id));
             info->SetPower(root["Power"][*iter].asDouble());
         }
-        STATS_HILOGD(COMP_SVC, "Load power: %{public}lfmAh, id: %{public}d, user: %{public}d",
-            info->GetPower(), id, usr);
+        STATS_HILOGD(COMP_SVC, "Load power:%{public}lfmAh,id:%{public}d,user:%{public}d", info->GetPower(), id, usr);
         BatteryStatsEntity::UpdateStatsInfoList(info);
     }
     for (auto& iter : tmpUserPowerMap) {
