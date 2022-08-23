@@ -113,6 +113,7 @@ namespace {
  * @tc.name: StatsBluetoothTest_001
  * @tc.desc: test Reset function(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_001, TestSize.Level0)
 {
@@ -148,6 +149,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_001, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_002
  * @tc.desc: test GetPartStatsMah function(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_002, TestSize.Level0)
 {
@@ -184,6 +186,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_002, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_003
  * @tc.desc: test GetPartStatsPercent function(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_003, TestSize.Level0)
 {
@@ -219,6 +222,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_003, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_004
  * @tc.desc: test GetBatteryStats function(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_004, TestSize.Level0)
 {
@@ -262,6 +266,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_004, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_005
  * @tc.desc: test BLUETOOTH_BR_SWITCH_STATE event are sent repeatedly, Bluetooth BR power consumption(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_005, TestSize.Level0)
 {
@@ -307,6 +312,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_005, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_006
  * @tc.desc: test GetAppStatsMah function, Bluetooth BR on state composite test
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_006, TestSize.Level0)
 {
@@ -354,6 +360,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_006, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_007
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BR on abnormal state test(Bluetooth BR is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_007, TestSize.Level0)
 {
@@ -389,6 +396,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_007, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_008
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BR on abnormal state test(Bluetooth BR is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_008, TestSize.Level0)
 {
@@ -436,6 +444,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_008, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_009
  * @tc.desc: test GetTotalTimeSecond function(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_009, TestSize.Level0)
 {
@@ -470,6 +479,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_009, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_010
  * @tc.desc: test Reset function(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_010, TestSize.Level0)
 {
@@ -505,6 +515,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_010, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_011
  * @tc.desc: test GetPartStatsMah function(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_011, TestSize.Level0)
 {
@@ -541,6 +552,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_011, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_012
  * @tc.desc: test GetPartStatsPercent function(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_012, TestSize.Level0)
 {
@@ -576,6 +588,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_012, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_013
  * @tc.desc: test GetBatteryStats function(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_013, TestSize.Level0)
 {
@@ -619,6 +632,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_013, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_014
  * @tc.desc: test BLUETOOTH_BLE_STATE event are sent repeatedly, Bluetooth BLE power consumption(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_014, TestSize.Level0)
 {
@@ -664,6 +678,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_014, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_015
  * @tc.desc: test GetAppStatsMah function, Bluetooth BLE on state composite test
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_015, TestSize.Level0)
 {
@@ -711,6 +726,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_015, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_016
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BLE on abnormal state test(Bluetooth BLE is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_016, TestSize.Level0)
 {
@@ -746,6 +762,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_016, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_017
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BLE on abnormal state test(Bluetooth BLE is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_017, TestSize.Level0)
 {
@@ -793,6 +810,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_017, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_018
  * @tc.desc: test GetTotalTimeSecond function(Bluetooth BLE on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_018, TestSize.Level0)
 {
@@ -827,6 +845,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_018, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_019
  * @tc.desc: test Reset function(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_019, TestSize.Level0)
 {
@@ -863,6 +882,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_019, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_020
  * @tc.desc: test GetAppStatsMah function(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_020, TestSize.Level0)
 {
@@ -900,6 +920,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_020, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_021
  * @tc.desc: test GetAppStatsPercent function(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_021, TestSize.Level0)
 {
@@ -935,6 +956,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_021, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_022
  * @tc.desc: test BLUETOOTH_DISCOVERY_STATE event are sent repeatedly, BR scan power consumption(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_022, TestSize.Level0)
 {
@@ -980,6 +1002,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_022, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_023
  * @tc.desc: test GetAppStatsMah function, Bluetooth BR scan state composite test
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_023, TestSize.Level0)
 {
@@ -1026,6 +1049,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_023, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_024
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BR scan abnormal state test(Bluetooth BR scan is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_024, TestSize.Level0)
 {
@@ -1061,6 +1085,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_024, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_025
  * @tc.desc: test test GetAppStatsMah function, Bluetooth BR scan abnormal state test(Bluetooth BR scan is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_025, TestSize.Level0)
 {
@@ -1108,6 +1133,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_025, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_026
  * @tc.desc: test GetTotalTimeSecond function(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_026, TestSize.Level0)
 {
@@ -1142,6 +1168,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_026, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_027
  * @tc.desc: test GetAppStatsMah function with different UID(Bluetooth BR scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_027, TestSize.Level0)
 {
@@ -1197,6 +1224,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_027, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_028
  * @tc.desc: test Reset function(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_028, TestSize.Level0)
 {
@@ -1231,6 +1259,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_028, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_029
  * @tc.desc: test GetAppStatsMah function(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_029, TestSize.Level0)
 {
@@ -1266,6 +1295,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_029, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_030
  * @tc.desc: test GetAppStatsPercent function(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_030, TestSize.Level0)
 {
@@ -1299,6 +1329,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_030, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_031
  * @tc.desc: test Bluetooth BLE scan event are sent repeatedly, Bluetooth BLE power consumption(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_031, TestSize.Level0)
 {
@@ -1342,6 +1373,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_031, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_032
  * @tc.desc: test GetTotalTimeSecond function(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_032, TestSize.Level0)
 {
@@ -1374,6 +1406,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_032, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_033
  * @tc.desc: test GetAppStatsMah function with different UID(Bluetooth BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_033, TestSize.Level0)
 {
@@ -1427,6 +1460,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_033, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_034
  * @tc.desc: test GetPartStatsMah function(Bluetooth BR on & BLE on & BR scan & BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_034, TestSize.Level0)
 {
@@ -1467,6 +1501,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_034, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_035
  * @tc.desc: test SetOnBattery function(Bluetooth BR on & BLE on & BR scan & BLE scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_035, TestSize.Level0)
 {
@@ -1503,6 +1538,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_035, TestSize.Level0)
  * @tc.name: StatsBluetoothTest_036
  * @tc.desc: test GetPartStatsMah function with battery changed(Bluetooth BR on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsBluetoothTest_036, TestSize.Level0)
 {
