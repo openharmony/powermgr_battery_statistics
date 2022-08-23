@@ -71,6 +71,7 @@ namespace {
  * @tc.name: StatsLocationTest_001
  * @tc.desc: test Reset function(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_001, TestSize.Level0)
 {
@@ -108,6 +109,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_001, TestSize.Level0)
  * @tc.name: StatsLocationTest_002
  * @tc.desc: test GetAppStatsMah function(Gnss)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
 {
@@ -146,6 +148,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
  * @tc.name: StatsLocationTest_003
  * @tc.desc: test GetAppStatsPercent function(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_003, TestSize.Level0)
 {
@@ -182,6 +185,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_003, TestSize.Level0)
  * @tc.name: StatsLocationTest_004
  * @tc.desc: test GNSS_STATE event are sent repeatedly, gnss power consumption(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_004, TestSize.Level0)
 {
@@ -228,6 +232,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_004, TestSize.Level0)
  * @tc.name: StatsLocationTest_005
  * @tc.desc: test test GetAppStatsMah function, GNSS abnormal state test(GNSS is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_005, TestSize.Level0)
 {
@@ -264,6 +269,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_005, TestSize.Level0)
  * @tc.name: StatsLocationTest_006
  * @tc.desc: test test GetAppStatsMah function, GNSS abnormal state test(GNSS is On)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_006, TestSize.Level0)
 {
@@ -312,6 +318,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_006, TestSize.Level0)
  * @tc.name: StatsLocationTest_007
  * @tc.desc: test GetTotalTimeSecond function(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_007, TestSize.Level0)
 {
@@ -347,6 +354,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_007, TestSize.Level0)
  * @tc.name: StatsLocationTest_008
  * @tc.desc:  test test GetAppStatsMah function with different UID(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_008, TestSize.Level0)
 {
@@ -400,6 +408,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_008, TestSize.Level0)
  * @tc.name: StatsLocationTest_009
  * @tc.desc: test SetOnBattery function(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_009, TestSize.Level0)
 {
@@ -438,6 +447,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_009, TestSize.Level0)
  * @tc.name: StatsLocationTest_010
  * @tc.desc: test GetPartStatsMah function with battery changed(GNSS)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsLocationTest_010, TestSize.Level0)
 {

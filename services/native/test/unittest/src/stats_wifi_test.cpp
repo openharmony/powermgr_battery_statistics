@@ -72,6 +72,7 @@ namespace {
  * @tc.name: StatsWifiTest_001
  * @tc.desc: test Reset function(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_001, TestSize.Level0)
 {
@@ -103,6 +104,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_001, TestSize.Level0)
  * @tc.name: StatsWifiTest_002
  * @tc.desc: test GetPartStatsMah function(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_002, TestSize.Level0)
 {
@@ -136,6 +138,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_002, TestSize.Level0)
  * @tc.name: StatsWifiTest_003
  * @tc.desc: test GetPartStatsPercent function(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_003, TestSize.Level0)
 {
@@ -167,6 +170,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_003, TestSize.Level0)
  * @tc.name: StatsWifiTest_004
  * @tc.desc: test GetBatteryStats function
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_004, TestSize.Level0)
 {
@@ -207,6 +211,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_004, TestSize.Level0)
  * @tc.name: StatsWifiTest_005
  * @tc.desc: test WIFI_CONNECTION event are sent repeatedly, wifi on power consumption(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_005, TestSize.Level0)
 {
@@ -247,6 +252,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_005, TestSize.Level0)
  * @tc.name: StatsWifiTest_006
  * @tc.desc: test test GetAppStatsMah function, Wifi connection abnormal state test(Wifi is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_006, TestSize.Level0)
 {
@@ -278,6 +284,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_006, TestSize.Level0)
  * @tc.name: StatsWifiTest_007
  * @tc.desc: test test GetAppStatsMah function, Wifi connection abnormal state test(Wifi is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_007, TestSize.Level0)
 {
@@ -320,6 +327,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_007, TestSize.Level0)
  * @tc.name: StatsWifiTest_008
  * @tc.desc: test GetTotalTimeSecond function(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_008, TestSize.Level0)
 {
@@ -351,6 +359,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_008, TestSize.Level0)
  * @tc.name: StatsWifiTest_09
  * @tc.desc: test Reset function(Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_09, TestSize.Level0)
 {
@@ -382,6 +391,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_09, TestSize.Level0)
  * @tc.name: StatsWifiTest_010
  * @tc.desc: test GetPartStatsMah function(Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_010, TestSize.Level0)
 {
@@ -415,6 +425,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_010, TestSize.Level0)
  * @tc.name: StatsWifiTest_011
  * @tc.desc: test GetPartStatsPercent function(Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_011, TestSize.Level0)
 {
@@ -445,6 +456,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_011, TestSize.Level0)
  * @tc.name: StatsWifiTest_012
  * @tc.desc: test GetBatteryStats function(Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_012, TestSize.Level0)
 {
@@ -484,6 +496,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_012, TestSize.Level0)
  * @tc.name: StatsWifiTest_013
  * @tc.desc: test GetTotalDataBytes function (Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_013, TestSize.Level0)
 {
@@ -510,6 +523,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_013, TestSize.Level0)
  * @tc.name: StatsWifiTest_014
  * @tc.desc: test GetPartStatsMah function(Wifi connection & Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_014, TestSize.Level0)
 {
@@ -557,6 +571,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_014, TestSize.Level0)
  * @tc.name: StatsWifiTest_015
  * @tc.desc: test SetOnBattery function(Wifi connection & Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_015, TestSize.Level0)
 {
@@ -598,6 +613,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_015, TestSize.Level0)
  * @tc.name: StatsWifiTest_016
  * @tc.desc: test GetPartStatsMah function with battery changed(Wifi connection)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_016, TestSize.Level0)
 {
@@ -638,6 +654,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_016, TestSize.Level0)
  * @tc.name: StatsWifiTest_017
  * @tc.desc: test GetPartStatsMah function with battery changed(Wifi scan)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_017, TestSize.Level0)
 {
@@ -681,6 +698,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_017, TestSize.Level0)
  * @tc.name: StatsWifiTest_018
  * @tc.desc: test GetPartStatsPercent(Wifi on) and GetAppStatsPercent(Camera) function
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJK
  */
 HWTEST_F (StatsClientTest, StatsWifiTest_018, TestSize.Level0)
 {
