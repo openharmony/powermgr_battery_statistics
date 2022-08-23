@@ -72,6 +72,7 @@ namespace {
  * @tc.name: StatsPhoneTest_001
  * @tc.desc: test Reset function(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
 {
@@ -104,6 +105,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
  * @tc.name: StatsPhoneTest_002
  * @tc.desc: test GetPartStatsMah function(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
 {
@@ -139,6 +141,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
  * @tc.name: StatsPhoneTest_003
  * @tc.desc: test GetPartStatsPercent function(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
 {
@@ -170,6 +173,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
  * @tc.name: StatsPhoneTest_004
  * @tc.desc: test GetBatteryStats function(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
 {
@@ -210,6 +214,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
  * @tc.name: StatsPhoneTest_005
  * @tc.desc: test CALL_STATE event are sent repeatedly, phone power consumption(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
 {
@@ -250,6 +255,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
  * @tc.name: StatsPhoneTest_006
  * @tc.desc: test GetAppStatsMah function, Phone call on state composite test
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
 {
@@ -292,6 +298,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
  * @tc.name: StatsPhoneTest_007
  * @tc.desc: test test GetAppStatsMah function, Phone call on abnormal state test(Phone call is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
 {
@@ -323,6 +330,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
  * @tc.name: StatsPhoneTest_008
  * @tc.desc: test test GetAppStatsMah function, Phone call on abnormal state test(Phone call is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
 {
@@ -365,6 +373,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
  * @tc.name: StatsPhoneTest_009
  * @tc.desc: test Reset function(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_009, TestSize.Level0)
 {
@@ -397,6 +406,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_009, TestSize.Level0)
  * @tc.name: StatsPhoneTest_010
  * @tc.desc: test GetPartStatsMah function(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_010, TestSize.Level0)
 {
@@ -432,6 +442,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_010, TestSize.Level0)
  * @tc.name: StatsPhoneTest_011
  * @tc.desc: test GetPartStatsPercent function(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_011, TestSize.Level0)
 {
@@ -463,6 +474,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_011, TestSize.Level0)
  * @tc.name: StatsPhoneTest_012
  * @tc.desc: test GetBatteryStats function(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_012, TestSize.Level0)
 {
@@ -503,6 +515,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_012, TestSize.Level0)
  * @tc.name: StatsPhoneTest_013
  * @tc.desc: test CALL_STATE event are sent repeatedly, phone power consumption(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_013, TestSize.Level0)
 {
@@ -543,6 +556,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_013, TestSize.Level0)
  * @tc.name: StatsPhoneTest_014
  * @tc.desc: test test GetAppStatsMah function, Phone data on abnormal state test(Phone data is off)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_014, TestSize.Level0)
 {
@@ -574,6 +588,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_014, TestSize.Level0)
  * @tc.name: StatsPhoneTest_015
  * @tc.desc: test test GetAppStatsMah function, Phone data on abnormal state test(Phone data is on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_015, TestSize.Level0)
 {
@@ -618,6 +633,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_015, TestSize.Level0)
  * @tc.name: StatsPhoneTest_016
  * @tc.desc: test CALL_STATE and CELLULAR_DATA event are sent repeatedly, power consumption(Func:GetPartStatsMah)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
 {
@@ -673,6 +689,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
  * @tc.name: StatsPhoneTest_017
  * @tc.desc: test CALL_STATE and CELLULAR_DATA event are sent repeatedly, power consumption(Func:GetBatteryStats)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
 {
@@ -734,6 +751,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
  * @tc.name: StatsPhoneTest_018
  * @tc.desc: test SetOnBattery function(Phone Call & Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
 {
@@ -777,6 +795,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
  * @tc.name: StatsPhoneTest_019
  * @tc.desc: test GetPartStatsMah function with battery changed(Phone call on)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
 {
@@ -817,6 +836,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
  * @tc.name: StatsPhoneTest_020
  * @tc.desc: test GetPartStatsMah(Phone Data) and GetAppStatsMah(Audio) function
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
 {
@@ -873,6 +893,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
  * @tc.name: StatsPhoneTest_021
  * @tc.desc: test GetTotalTimeSecond function(Phone Call)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_021, TestSize.Level0)
 {
@@ -903,6 +924,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_021, TestSize.Level0)
  * @tc.name: StatsPhoneTest_022
  * @tc.desc: test GetTotalTimeSecond function(Phone Data)
  * @tc.type: FUNC
+ * @tc.require: issueI5HWJ3
  */
 HWTEST_F (StatsClientTest, StatsPhoneTest_022, TestSize.Level0)
 {
