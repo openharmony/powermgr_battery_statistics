@@ -59,7 +59,6 @@
                     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client"
                 ],
                 "service_group": [
-                    "//base/powermgr/battery_statistics/etc/init:batterystats.cfg",
                     "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
                     "//base/powermgr/battery_statistics/services:service"
                 ]
