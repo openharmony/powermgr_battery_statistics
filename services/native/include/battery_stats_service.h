@@ -68,7 +68,6 @@ private:
     std::shared_ptr<HiviewDFX::HiSysEventSubscribeCallBack> listenerPtr_;
     bool ready_ = false;
     std::mutex mutex_;
-    void InitDependency();
     bool SubscribeCommonEvent();
     bool AddHiSysEventListener();
 };
