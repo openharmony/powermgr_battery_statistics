@@ -62,7 +62,6 @@ void BatteryStatsService::OnStart()
         STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }
-    InitDependency();
 
     ready_ = true;
 }
@@ -134,21 +133,6 @@ bool BatteryStatsService::Init()
     }
 
     return true;
-}
-
-void BatteryStatsService::InitDependency()
-{
-    sptr<ISystemAbilityManager> sysMgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    if (!sysMgr || !sysMgr->CheckSystemAbility(COMMON_EVENT_SERVICE_ID)) {
-        STATS_HILOGI(COMP_SVC, "Dependency is not ready yet, re-check in 2s later");
-        auto task = [this]() { this->InitDependency(); };
-        handler_->PostTask(task, DEPENDENCY_CHECK_DELAY_MS);
-        return;
-    }
-
-    if (!SubscribeCommonEvent()) {
-        STATS_HILOGE(COMP_SVC, "Register to commonevent manager failed");
-    }
 }
 
 bool BatteryStatsService::SubscribeCommonEvent()
