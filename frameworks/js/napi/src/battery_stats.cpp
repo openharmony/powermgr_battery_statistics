@@ -91,7 +91,7 @@ static void BatteryStatsToNapiValue(napi_env env, std::vector<BatteryStats>& vec
         STATS_HILOGE(COMP_FWK, "Napi creates array error: %{public}d", status);
         return;
     }
-    for (int32_t i = 0; i < vecStatsInfo.size(); ++i) {
+    for (int32_t i = 0; i < static_cast<int32_t>(vecStatsInfo.size()); ++i) {
         StatsInfoToJsArray(env, vecStatsInfo, i, result);
     }
 }
