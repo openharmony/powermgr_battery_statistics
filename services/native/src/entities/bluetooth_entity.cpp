@@ -134,6 +134,7 @@ void BluetoothEntity::UpdateAppBluetoothBlePower(PowerType type, int32_t uid, do
             appBluetoothBrPowerMap_.insert(std::pair<int32_t, double>(uid, powerMah));
             STATS_HILOGD(COMP_SVC, "Create app bluetooth Br power consumption: %{public}lfmAh for uid: %{public}d",
                 powerMah, uid);
+            break;
         }
         case POWER_TYPE_BLE: {
             auto iter = appBluetoothBlePowerMap_.find(uid);
@@ -146,6 +147,7 @@ void BluetoothEntity::UpdateAppBluetoothBlePower(PowerType type, int32_t uid, do
             appBluetoothBlePowerMap_.insert(std::pair<int32_t, double>(uid, powerMah));
             STATS_HILOGD(COMP_SVC, "Create app bluetooth Ble power consumption: %{public}lfmAh for uid: %{public}d",
                 powerMah, uid);
+            break;
         }
         case POWER_TYPE_ALL: {
             auto iter = appBluetoothPowerMap_.find(uid);
@@ -158,6 +160,7 @@ void BluetoothEntity::UpdateAppBluetoothBlePower(PowerType type, int32_t uid, do
             appBluetoothPowerMap_.insert(std::pair<int32_t, double>(uid, powerMah));
             STATS_HILOGD(COMP_SVC, "Create app bluetooth power consumption: %{public}lfmAh for uid: %{public}d",
                 powerMah, uid);
+            break;
         }
         default:
             break;
