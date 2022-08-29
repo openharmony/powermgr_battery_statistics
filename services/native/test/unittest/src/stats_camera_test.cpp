@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_camera_test.h"
 
 #include <hisysevent.h>
 
@@ -38,19 +38,19 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsCameraTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsCameraTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsCameraTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -58,7 +58,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsCameraTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -71,7 +71,7 @@ namespace {
  * @tc.desc: test Reset function(Camera)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_001, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsClientTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -106,7 +106,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_001, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Camera)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_002, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -142,7 +142,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_002, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Camera)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_003, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -175,7 +175,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_003, TestSize.Level0)
  * @tc.desc: test Reset function(Camera with Flashlight)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_004, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsClientTest_066: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -217,7 +217,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_004, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Camera with Flashlight)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_005, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -261,7 +261,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_005, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Camera with Flashlight)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_006, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -301,7 +301,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_006, TestSize.Level0)
  * @tc.desc: test Reset function, The same Uid triggers the camera(different id) continuously
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_007, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -344,7 +344,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_007, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function, The same Uid triggers the camera(different id) continuously
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_008, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -388,7 +388,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_008, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function, The same Uid triggers the camera(different id) continuously
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_009, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -430,7 +430,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_009, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_010, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -475,7 +475,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_010, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_011, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -521,7 +521,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_011, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function, Camera-Flashlight is opened when camera closed
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_012, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -549,7 +549,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_012, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_013, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -590,7 +590,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_013, TestSize.Level0)
  * @tc.desc: test Reset function(Torch)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_014, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -626,7 +626,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_014, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Torch)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_015, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -663,7 +663,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_015, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Torch)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_016, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -697,7 +697,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_016, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah(Torch) and GetAppStatsPercent(Camera) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_017, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_017: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -752,7 +752,7 @@ HWTEST_F (StatsClientTest, StatsCameraTest_017, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah(Camera) and GetAppStatsPercent(Audio) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsCameraTest_018, TestSize.Level0)
+HWTEST_F (StatsCameraTest, StatsCameraTest_018, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsCameraTest_018: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

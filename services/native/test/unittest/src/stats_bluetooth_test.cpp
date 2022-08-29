@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_bluetooth_test.h"
 
 #include <bt_def.h>
 #include <hisysevent.h>
@@ -81,19 +81,19 @@ static void WriteBluetoothEvent(int32_t pid, int32_t uid, long time)
     sleep(testWaitTimeSec);
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsBluetoothTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsBluetoothTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsBluetoothTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -101,7 +101,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsBluetoothTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -115,7 +115,7 @@ namespace {
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_001, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -151,7 +151,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_001, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_002, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -188,7 +188,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_002, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_003, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -224,7 +224,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_003, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_004, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -268,7 +268,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_004, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_005, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -314,7 +314,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_005, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_006, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -362,7 +362,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_006, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_007, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -398,7 +398,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_007, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_008, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -446,7 +446,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_008, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_009, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -481,7 +481,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_009, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_010, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -517,7 +517,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_010, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_011, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -554,7 +554,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_011, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_012, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -590,7 +590,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_012, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_013, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -634,7 +634,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_013, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_014, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -680,7 +680,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_014, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_015, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -728,7 +728,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_015, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_016, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -764,7 +764,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_016, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_017, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_017, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_017: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -812,7 +812,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_017, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_018, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_018, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_018: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -847,7 +847,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_018, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_019, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_019, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_019: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -884,7 +884,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_019, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_020, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_020, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_020: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -922,7 +922,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_020, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_021, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_021, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_021: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -958,7 +958,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_021, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_022, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_022, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_022: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1004,7 +1004,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_022, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_023, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_023, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_023: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1051,7 +1051,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_023, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_024, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_024, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_024: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1087,7 +1087,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_024, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_025, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_025, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_025: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1135,7 +1135,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_025, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_026, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_026, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_026: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1170,7 +1170,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_026, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_027, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_027, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_027: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1226,7 +1226,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_027, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_028, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_028, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_028: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1261,7 +1261,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_028, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_029, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_029, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_029: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1297,7 +1297,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_029, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_030, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_030, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_030: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1331,7 +1331,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_030, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_031, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_031, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_031: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1375,7 +1375,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_031, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_032, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_032, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_032: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1408,7 +1408,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_032, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_033, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_033, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_033: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1462,7 +1462,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_033, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_034, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_034, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_034: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1503,7 +1503,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_034, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_035, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_035, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_035: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -1540,7 +1540,7 @@ HWTEST_F (StatsClientTest, StatsBluetoothTest_035, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsBluetoothTest_036, TestSize.Level0)
+HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_036, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsBluetoothTest_036: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_audio_test.h"
 
 #include <hisysevent.h>
 
@@ -38,19 +38,19 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsAudioTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsAudioTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsAudioTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -58,7 +58,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsAudioTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -71,7 +71,7 @@ namespace {
  * @tc.desc: test Reset function(Audio)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_001, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -107,7 +107,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_001, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Audio)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_002, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -144,7 +144,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_002, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Audio)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_003, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -178,7 +178,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_003, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function, Audio state composite test
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_004, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -233,7 +233,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_004, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function, Audio abnormal state test
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_005, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -280,7 +280,7 @@ HWTEST_F (StatsClientTest, StatsAudioTest_005, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah(Audio) and GetAppStatsPercent(Sensor) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsAudioTest_006, TestSize.Level0)
+HWTEST_F (StatsAudioTest, StatsAudioTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsAudioTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
