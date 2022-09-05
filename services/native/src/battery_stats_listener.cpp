@@ -34,9 +34,13 @@ namespace {
 constexpr int32_t THERMAL_RATIO_BEGIN = 0;
 constexpr int32_t THERMAL_RATIO_LENGTH = 4;
 }
-void BatteryStatsListener::OnHandle(const std::string& domain, const std::string& eventName,
-    const int eventType, const std::string& eventDetail)
+void BatteryStatsListener::OnEvent(std::shared_ptr<HiviewDFX::HiSysEventRecord> sysEvent)
 {
+    if (sysEvent == nullptr) {
+        return;
+    }
+    std::string eventName = sysEvent->GetEventName();
+    std::string eventDetail = sysEvent->AsJson();
     STATS_HILOGD(COMP_SVC, "EventDetail: %{public}s", eventDetail.c_str());
     if (!StatsHiSysEvent::CheckHiSysEvent(eventName)) {
         return;

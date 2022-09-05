@@ -164,7 +164,7 @@ bool BatteryStatsService::AddHiSysEventListener()
     std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
     sysRules.push_back(distSchedRule);
-    auto res = HiviewDFX::HiSysEventManager::AddEventListener(listenerPtr_, sysRules);
+    auto res = HiviewDFX::HiSysEventManager::AddListener(listenerPtr_, sysRules);
     if (res != 0) {
         STATS_HILOGE(COMP_SVC, "Listener added failed");
     }
