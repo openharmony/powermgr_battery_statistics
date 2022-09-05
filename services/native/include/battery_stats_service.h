@@ -18,7 +18,7 @@
 
 #include "common_event_subscriber.h"
 #include "event_handler.h"
-#include "hisysevent_subscribe_callback.h"
+#include "hisysevent_listener.h"
 #include "system_ability.h"
 
 #include "battery_stats_core.h"
@@ -65,7 +65,7 @@ private:
     std::shared_ptr<BatteryStatsParser> parser_;
     std::shared_ptr<BatteryStatsDetector> detector_;
     std::shared_ptr<EventFwk::CommonEventSubscriber> subscriberPtr_;
-    std::shared_ptr<HiviewDFX::HiSysEventSubscribeCallBack> listenerPtr_;
+    std::shared_ptr<HiviewDFX::HiSysEventListener> listenerPtr_;
     bool ready_ = false;
     std::mutex mutex_;
     bool SubscribeCommonEvent();
