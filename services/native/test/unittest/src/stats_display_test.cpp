@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_display_test.h"
 
 #include <display_power_info.h>
 #include <hisysevent.h>
@@ -60,7 +60,7 @@ static void SetLastBrightness(int32_t lastBrightness)
     statsClient.Reset();
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsDisplayTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
@@ -69,12 +69,12 @@ void StatsClientTest::SetUpTestCase(void)
     pms.SuspendDevice();
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsDisplayTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsDisplayTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -82,7 +82,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsDisplayTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -95,7 +95,7 @@ namespace {
  * @tc.desc: test Reset function(Screen)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_001, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -129,7 +129,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_001, TestSize.Level0)
  * @tc.desc: test SetOnBattery function(Screen)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_002, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -164,7 +164,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_002, TestSize.Level0)
  * @tc.desc: test GetPartStatsMah function(Screen)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_003, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -203,7 +203,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_003, TestSize.Level0)
  * @tc.desc: test GetPartStatsPercent function(Screen)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_004, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -236,7 +236,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_004, TestSize.Level0)
  * @tc.desc: test GetBatteryStats function(Screen)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_005, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -281,7 +281,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_005, TestSize.Level0)
  * @tc.desc: test Last brightness value exists, but no BRIGHTNESS_NIT event notification, screen power consumption
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_006, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -321,7 +321,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_006, TestSize.Level0)
  * @tc.desc: test SCREEN_STATE event are sent repeatedly, screen power consumption
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_007, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -367,7 +367,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_007, TestSize.Level0)
  * @tc.desc: test Screen is off, BRIGHTNESS_NIT event is invalid
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_008, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -394,7 +394,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_008, TestSize.Level0)
  * @tc.desc: test Screen is off, BRIGHTNESS_NIT event is invalid
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_009, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -439,7 +439,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_009, TestSize.Level0)
  * @tc.desc: test Screen is on, BRIGHTNESS_NIT event are sent delay
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_010, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -485,7 +485,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_010, TestSize.Level0)
  * @tc.desc: test Screen is on, BRIGHTNESS_NIT event are sent with invalid value
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_011, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -533,7 +533,7 @@ HWTEST_F (StatsClientTest, StatsDisplayTest_011, TestSize.Level0)
  * @tc.desc: test GetTotalTimeSecond function(CURRENT_SCREEN_ON & CURRENT_SCREEN_BRIGHTNESS)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDisplayTest_012, TestSize.Level0)
+HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDisplayTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

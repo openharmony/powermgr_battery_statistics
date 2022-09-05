@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_location_test.h"
 
 #include <hisysevent.h>
 
@@ -38,7 +38,7 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsLocationTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
@@ -46,12 +46,12 @@ void StatsClientTest::SetUpTestCase(void)
 }
 
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsLocationTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsLocationTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -59,7 +59,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsLocationTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -73,7 +73,7 @@ namespace {
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_001, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -111,7 +111,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_001, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -150,7 +150,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_002, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_003, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -187,7 +187,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_003, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_004, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -234,7 +234,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_004, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_005, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -271,7 +271,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_005, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_006, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -320,7 +320,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_006, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_007, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -356,7 +356,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_007, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_008, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -410,7 +410,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_008, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_009, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -449,7 +449,7 @@ HWTEST_F (StatsClientTest, StatsLocationTest_009, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsLocationTest_010, TestSize.Level0)
+HWTEST_F (StatsLocationTest, StatsLocationTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsLocationTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

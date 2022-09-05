@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_dump_test.h"
 
 #include <display_power_info.h>
 #include <hisysevent.h>
@@ -30,18 +30,18 @@ using namespace std;
 
 static std::vector<std::string> dumpArgs;
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsDumpTest::SetUpTestCase(void)
 {
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsDumpTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsDumpTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -49,7 +49,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsDumpTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -62,7 +62,7 @@ namespace {
  * @tc.desc: test Dump function(BATTERY_CHANGED)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_001, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_001: test start";
 
@@ -99,7 +99,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_001, TestSize.Level0)
  * @tc.desc: test Dump function(POWER_RUNNINGLOCK)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_002, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_002: test start";
 
@@ -151,7 +151,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_002, TestSize.Level0)
  * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_003, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_003: test start";
 
@@ -187,7 +187,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_003, TestSize.Level0)
  * @tc.desc: test Dump function(POWER_WORKSCHEDULER)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_004, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_004: test start";
 
@@ -233,7 +233,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_004, TestSize.Level0)
  * @tc.desc: test Dump function(POWER_TEMPERATURE)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_005, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_005: test start";
 
@@ -270,7 +270,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_005, TestSize.Level0)
  * @tc.desc: test Dump function(START_REMOTE_ABILITY)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_006, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_006: test start";
 
@@ -314,7 +314,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_006, TestSize.Level0)
  * @tc.desc: test Dump function(THERMAL_ACTION_TRIGGERED)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_007: test start";
 
@@ -358,7 +358,7 @@ HWTEST_F (StatsClientTest, StatsDumpTest_007, TestSize.Level0)
  * @tc.desc: test Dump function(BACKLIGHT_DISCOUNT)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsDumpTest_008, TestSize.Level0)
+HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsDumpTest_008: test start";
 

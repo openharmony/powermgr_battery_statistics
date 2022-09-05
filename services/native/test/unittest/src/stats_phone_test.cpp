@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_phone_test.h"
 
 #include <call_manager_inner_type.h>
 #include <hisysevent.h>
@@ -40,19 +40,19 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsPhoneTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsPhoneTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsPhoneTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -60,7 +60,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsPhoneTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -74,7 +74,7 @@ namespace {
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -107,7 +107,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_001, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -143,7 +143,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_002, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -175,7 +175,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_003, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -216,7 +216,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_004, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -257,7 +257,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_005, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -300,7 +300,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_006, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -332,7 +332,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_007, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -375,7 +375,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_008, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_009, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -408,7 +408,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_009, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_010, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -444,7 +444,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_010, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_011, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -476,7 +476,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_011, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_012, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -517,7 +517,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_012, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_013, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -558,7 +558,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_013, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_014, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -590,7 +590,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_014, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_015, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -635,7 +635,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_015, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -691,7 +691,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_016, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_017, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_017: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -753,7 +753,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_017, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_018, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_018: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -797,7 +797,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_018, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_019, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_019: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -838,7 +838,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_019, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_020, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_020: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -895,7 +895,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_020, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_021, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_021, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_021: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -926,7 +926,7 @@ HWTEST_F (StatsClientTest, StatsPhoneTest_021, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJ3
  */
-HWTEST_F (StatsClientTest, StatsPhoneTest_022, TestSize.Level0)
+HWTEST_F (StatsPhoneTest, StatsPhoneTest_022, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPhoneTest_022: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

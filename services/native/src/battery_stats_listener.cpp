@@ -96,7 +96,7 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
         ProcessWifiEvent(data, root, eventName);
     } else if (eventName == "START_REMOTE_ABILITY") {
         ProcessDistributedSchedulerEvent(data, root);
-    } else if (eventName == "ALARM_TRIGGER") {
+    } else if (eventName == "MISC_TIME_STATISTIC_REPORT") {
         ProcessAlarmEvent(data, root);
     }
     detector->HandleStatsChangedEvent(data);
@@ -579,11 +579,11 @@ void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const 
 {
     data.type = StatsUtils::STATS_TYPE_ALARM;
     data.traffic = 1;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (!root["CALLER_UID"].asString().empty()) {
+        data.uid = stoi(root["CALLER_UID"].asString());
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (!root["CALLER_PID"].asString().empty()) {
+        data.pid = stoi(root["CALLER_PID"].asString());
     }
 }
 

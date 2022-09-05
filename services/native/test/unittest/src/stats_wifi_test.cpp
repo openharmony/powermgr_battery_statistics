@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_wifi_test.h"
 
 #include <hisysevent.h>
 #include <wifi_hisysevent.h>
@@ -40,19 +40,19 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsWifiTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsWifiTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsWifiTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -60,7 +60,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsWifiTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -74,7 +74,7 @@ namespace {
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_001, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -106,7 +106,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_001, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_002, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_002, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -140,7 +140,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_002, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_003, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_003, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -172,7 +172,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_003, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_004, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_004, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -213,7 +213,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_004, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_005, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_005, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -254,7 +254,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_005, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_006, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_006, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -286,7 +286,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_006, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_007, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -329,7 +329,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_007, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_008, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_008, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -361,7 +361,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_008, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_09, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_09, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_09: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -393,7 +393,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_09, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_010, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -427,7 +427,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_010, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_011, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -458,7 +458,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_011, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_012, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -498,7 +498,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_012, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_013, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -525,7 +525,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_013, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_014, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -573,7 +573,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_014, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_015, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -615,7 +615,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_015, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_016, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -656,7 +656,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_016, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_017, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_017: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -700,7 +700,7 @@ HWTEST_F (StatsClientTest, StatsWifiTest_017, TestSize.Level0)
  * @tc.type: FUNC
  * @tc.require: issueI5HWJK
  */
-HWTEST_F (StatsClientTest, StatsWifiTest_018, TestSize.Level0)
+HWTEST_F (StatsWifiTest, StatsWifiTest_018, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsWifiTest_018: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();

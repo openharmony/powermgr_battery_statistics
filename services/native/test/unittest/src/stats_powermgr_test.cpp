@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_client_test.h"
+#include "stats_powermgr_test.h"
 
 #include <bt_def.h>
 #include <call_manager_inner_type.h>
@@ -43,19 +43,19 @@ static void ParserAveragePowerFile()
     }
 }
 
-void StatsClientTest::SetUpTestCase(void)
+void StatsPowerMgrTest::SetUpTestCase(void)
 {
     ParserAveragePowerFile();
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsClientTest::TearDownTestCase(void)
+void StatsPowerMgrTest::TearDownTestCase(void)
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsClientTest::SetUp(void)
+void StatsPowerMgrTest::SetUp(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
@@ -63,7 +63,7 @@ void StatsClientTest::SetUp(void)
     sleep(WAIT_TIME);
 }
 
-void StatsClientTest::TearDown(void)
+void StatsPowerMgrTest::TearDown(void)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
@@ -76,7 +76,7 @@ namespace {
  * @tc.desc: test GetTotalTimeSecond function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_009, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -111,7 +111,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_009, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_010, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -148,7 +148,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_010, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_011, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -182,7 +182,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_011, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah(Sensor Gravity) and GetAppStatsPercent(Sensor Proximity) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_012, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -238,7 +238,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_012, TestSize.Level0)
  * @tc.desc: test GetTotalTimeSecond function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_013, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -273,7 +273,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_013, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_014, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -310,7 +310,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_014, TestSize.Level0)
  * @tc.desc: test GetAppStatsPercent function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_015, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -344,7 +344,7 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_015, TestSize.Level0)
  * @tc.desc: test GetAppStatsMah(Sensor Proximity) and GetAppStatsPercent(Torch) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_016, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
 {
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
@@ -393,141 +393,5 @@ HWTEST_F (StatsClientTest, StatsPowerMgrTest_016, TestSize.Level0)
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
         <<" StatsPowerMgrTest_016 fail due to percent mismatch";
     GTEST_LOG_(INFO) << " StatsPowerMgrTest_016: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_030
- * @tc.desc: test Reset function(Alarm)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_030, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_030: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long testWaitTimeSec = 1;
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    int16_t count = 10;
-
-    for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
-    }
-    sleep(testWaitTimeSec);
-
-    double powerMahBefore = statsClient.GetAppStatsMah(uid);
-    statsClient.Reset();
-    double powerMahAfter = statsClient.GetAppStatsMah(uid);
-    GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsPowerMgrTest_030 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_030: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_031
- * @tc.desc: test GetPartStatsMah function(Alarm)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_031, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_031: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
-    long testWaitTimeSec = 1;
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    int16_t count = 10;
-    double deviation = 0.01;
-
-    for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
-    }
-    sleep(testWaitTimeSec);
-
-    double expectedPower = count * alarmOnAverageMa;
-    double actualPower = statsClient.GetAppStatsMah(uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_031 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_031: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_032
- * @tc.desc: test GetAppStatsPercent function(Alarm)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_032, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_032: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-
-    long testWaitTimeSec = 1;
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    int16_t count = 10;
-    double fullPercent = 1;
-    double zeroPercent = 0;
-
-    for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
-    }
-    sleep(testWaitTimeSec);
-    double actualPercent = statsClient.GetAppStatsPercent(uid);
-    GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_032 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_032: test end";
-}
-
-/**
- * @tc.name: StatsPowerMgrTest_033
- * @tc.desc: test SetOnBattery function(Alarm)
- * @tc.type: FUNC
- */
-HWTEST_F (StatsClientTest, StatsPowerMgrTest_033, TestSize.Level0)
-{
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_033: test start";
-    auto& statsClient = BatteryStatsClient::GetInstance();
-    statsClient.Reset();
-    statsClient.SetOnBattery(false);
-
-    long testWaitTimeSec = 1;
-    int32_t uid = 10003;
-    int32_t pid = 3458;
-    int16_t count = 10;
-
-    for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "ALARM_TRIGGER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
-    }
-    sleep(testWaitTimeSec);
-
-    double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = statsClient.GetAppStatsMah(uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
-    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsPowerMgrTest_033 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_033: test end";
-    statsClient.SetOnBattery(true);
 }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef STATS_CLIENT_TEST_H
-#define STATS_CLIENT_TEST_H
+#ifndef STATS_CAMERA_TEST_H
+#define STATS_CAMERA_TEST_H
 
 #include <gtest/gtest.h>
 
@@ -22,7 +22,7 @@ namespace OHOS {
 namespace PowerMgr {
 constexpr int32_t SECOND_PER_HOUR = 3600;
 constexpr int32_t WAIT_TIME = 1;
-class StatsClientTest : public testing::Test {
+class StatsCameraTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
     static void TearDownTestCase(void);
@@ -31,4 +31,4 @@ public:
 };
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // STATS_CLIENT_TEST_H
+#endif // STATS_CAMERA_TEST_H

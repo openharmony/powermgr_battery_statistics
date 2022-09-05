@@ -33,8 +33,3 @@ POWER_SENSOR_PROXIMITY:
   UID: {type: INT32, desc: application uid}
   STATE: {type: INT32, desc: proximity sensor on or off}
 
-ALARM_TRIGGER:
-  __BASE: {type: STATISTIC, level: MINOR, tag: PowerStats, desc: alarm trigger}
-  PID: {type: INT32, desc: thread pid}
-  UID: {type: INT32, desc: package uid}
-  NAME: {type: STRING, desc: call package name}
