@@ -18,7 +18,13 @@ config("batterystatsnapi_private_config") {
 }
 
 ohos_shared_library("batterystatistics") {
-  sources = [ "${batterystats_frameworks_path}/js/napi/src/battery_stats.cpp" ]
+  sources = [
+    "src/async_callback_info.cpp",
+    "src/battery_stats.cpp",
+    "src/battery_stats_module.cpp",
+    "src/napi_error.cpp",
+    "src/napi_utils.cpp",
+  ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",

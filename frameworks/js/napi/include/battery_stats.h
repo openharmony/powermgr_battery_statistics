@@ -16,31 +16,32 @@
 #ifndef BATTERY_STATS_H
 #define BATTERY_STATS_H
 
-#include <cstdint>
+#include <functional>
+#include <string>
 #include <vector>
+
 #include "napi/native_api.h"
 #include "napi/native_common.h"
 #include "napi/native_node_api.h"
 
-#include "battery_stats_info.h"
-#include "stats_utils.h"
-
-using BatteryStatsInfo = OHOS::PowerMgr::BatteryStatsInfo;
-using StatsUtils = OHOS::PowerMgr::StatsUtils;
-
+#include "napi_error.h"
+namespace OHOS {
+namespace PowerMgr {
 class BatteryStats {
 public:
-    int32_t uid_ = StatsUtils::INVALID_VALUE;
-    int32_t type_ = BatteryStatsInfo::CONSUMPTION_TYPE_INVALID;
-    double power_ = StatsUtils::DEFAULT_VALUE;
-};
+    explicit BatteryStats(napi_env& env);
+    void StatsAsyncCallBack(napi_value& value);
+    napi_value StatsPromise();
+    napi_value GetAppStatsMah(napi_callback_info& info, uint32_t maxArgc, uint32_t index);
+    napi_value GetAppStatsPercent(napi_callback_info& info, uint32_t maxArgc, uint32_t index);
+    napi_value GetPartStatsMah(napi_callback_info& info, uint32_t maxArgc, uint32_t index);
+    napi_value GetPartStatsPercent(napi_callback_info& info, uint32_t maxArgc, uint32_t index);
 
-struct AsyncCallbackInfo {
-    napi_async_work asyncWork;
-    napi_deferred deferred;
-    napi_ref callback[2] = { 0 };
-    void *obj;
-    std::vector<BatteryStats> vecStatsInfo;
+private:
+    napi_value GetAppOrPartStats(napi_callback_info& info, uint32_t maxArgc, uint32_t index,
+        std::function<double(int32_t, NapiError&)> getAppOrPart);
+    napi_env env_ {nullptr};
 };
-
+} // namespace PowerMgr
+} // namespace OHOS
 #endif // BATTERY_STATS_H

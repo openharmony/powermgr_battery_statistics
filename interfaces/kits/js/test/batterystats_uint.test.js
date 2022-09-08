@@ -13,19 +13,18 @@
  * limitations under the License.
  */
 
-import app from '@system.app'
 import batteryStats from "@ohos.batteryStatistics"
-import {describe, beforeAll, beforeEach, afterEach, afterAll, it, expect} from 'deccjsunit/index'
+import { describe, it, expect } from 'deccjsunit/index'
 
 var ConsumptionType = {
-    CONSUMPTION_TYPE_INVALID : -17,
-    CONSUMPTION_TYPE_APP : -16,
-    CONSUMPTION_TYPE_BLUETOOTH : -15,
-    CONSUMPTION_TYPE_IDLE : -14,
-    CONSUMPTION_TYPE_PHONE : -13,
-    CONSUMPTION_TYPE_SCREEN : -12,
-    CONSUMPTION_TYPE_USER : -11,
-    CONSUMPTION_TYPE_WIFI : -10,
+    CONSUMPTION_TYPE_INVALID: -17,
+    CONSUMPTION_TYPE_APP: -16,
+    CONSUMPTION_TYPE_BLUETOOTH: -15,
+    CONSUMPTION_TYPE_IDLE: -14,
+    CONSUMPTION_TYPE_PHONE: -13,
+    CONSUMPTION_TYPE_SCREEN: -12,
+    CONSUMPTION_TYPE_USER: -11,
+    CONSUMPTION_TYPE_WIFI: -10,
 }
 
 describe('appInfoTest', function () {
@@ -54,8 +53,8 @@ describe('appInfoTest', function () {
                 found = true;
             }
         }
-        done();
         expect(found).assertTrue();
+        done();
     })
 
     /**
@@ -81,8 +80,8 @@ describe('appInfoTest', function () {
                 found = true;
             }
         }
-        done();
         expect(found).assertTrue();
+        done();
     })
 
     /**
@@ -108,8 +107,8 @@ describe('appInfoTest', function () {
                 found = true;
             }
         }
-        done();
         expect(found).assertTrue();
+        done();
     })
 
     /**
@@ -135,8 +134,8 @@ describe('appInfoTest', function () {
                 found = true;
             }
         }
-        done();
         expect(found).assertTrue();
+        done();
     })
 
     /* @tc.number batteryStats_js_006
@@ -174,12 +173,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getAppPowerValue Interface Test uid = "111"
      */
     it('batteryStats_009', 0, function () {
-        try{
+        try {
             batteryStats.getAppPowerValue("111");
-        } catch(e) {
-            var errorMsg = "Argument type check works: " + e;
-            console.debug("errorMsg");
-            expect(errorMsg.includes("Wrong argument type")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_009 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -188,12 +187,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getAppPowerValue Interface Test uid = 111, 222
      */
     it('batteryStats_010', 0, function () {
-        try{
+        try {
             batteryStats.getAppPowerValue(111, 222);
-        } catch(e) {
-            var errorMsg = "Argument number check works: " + e;
-            console.debug(errorMsg);
-            expect(errorMsg.includes("Wrong number of arguments")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_010 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -232,12 +231,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getAppPowerPercent Interface Test uid = "111"
      */
     it('batteryStats_014', 0, function () {
-        try{
+        try {
             batteryStats.getAppPowerPercent("111");
-        } catch(e) {
-            var errorMsg = "Argument type check works: " + e;
-            console.debug("errorMsg");
-            expect(errorMsg.includes("Wrong argument type")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_014 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -246,12 +245,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getAppPowerPercent Interface Test uid = 111, 222
      */
     it('batteryStats_015', 0, function () {
-        try{
+        try {
             batteryStats.getAppPowerPercent(111, 222);
-        } catch(e) {
-            var errorMsg = "Argument number check works: " + e;
-            console.debug(errorMsg);
-            expect(errorMsg.includes("Wrong number of arguments")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_015 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -290,12 +289,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getHardwareUnitPowerValue Interface Test type = "test"
      */
     it('batteryStats_019', 0, function () {
-        try{
+        try {
             batteryStats.getHardwareUnitPowerValue("test");
-        } catch(e) {
-            var errorMsg = "Argument type check works: " + e;
-            console.debug("errorMsg");
-            expect(errorMsg.includes("Wrong argument type")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_019 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -305,13 +304,13 @@ describe('appInfoTest', function () {
      * and ConsumptionType.CONSUMPTION_TYPE_WIFI
      */
     it('batteryStats_020', 0, function () {
-        try{
+        try {
             batteryStats.getHardwareUnitPowerValue(ConsumptionType.CONSUMPTION_TYPE_IDLE,
                 ConsumptionType.CONSUMPTION_TYPE_WIFI);
-        } catch(e) {
-            var errorMsg = "Argument number check works: " + e;
-            console.debug(errorMsg);
-            expect(errorMsg.includes("Wrong number of arguments")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_020 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -350,12 +349,12 @@ describe('appInfoTest', function () {
      * @tc.desc batteryStats getHardwareUnitPowerPercent Interface Test type = "test"
      */
     it('batteryStats_024', 0, function () {
-        try{
+        try {
             batteryStats.getHardwareUnitPowerPercent("test");
-        } catch(e) {
-            var errorMsg = "Argument type check works: " + e;
-            console.debug("errorMsg");
-            expect(errorMsg.includes("Wrong argument type")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_024 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 
@@ -365,13 +364,13 @@ describe('appInfoTest', function () {
      * and ConsumptionType.CONSUMPTION_TYPE_WIFI
      */
     it('batteryStats_025', 0, function () {
-        try{
+        try {
             batteryStats.getHardwareUnitPowerPercent(ConsumptionType.CONSUMPTION_TYPE_IDLE,
                 ConsumptionType.CONSUMPTION_TYPE_WIFI);
-        } catch(e) {
-            var errorMsg = "Argument number check works: " + e;
-            console.debug(errorMsg);
-            expect(errorMsg.includes("Wrong number of arguments")).assertTrue();
+        } catch (e) {
+            console.info('batteryStats_025 code:' + e.code + 'msg:' + e.message);
+            // 401: Invalid input parameter
+            expect(e.code === 401).assertTrue();
         }
     })
 })
