@@ -18,52 +18,33 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
-#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
 using namespace std;
 
-static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
-static std::vector<std::string> dumpArgs;
-
-static void ParserAveragePowerFile()
-{
-    if (g_statsParser == nullptr) {
-        g_statsParser = std::make_shared<BatteryStatsParser>();
-        if (!g_statsParser->Init()) {
-            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
-        }
-    }
-}
-
-void StatsAlarmTest::SetUpTestCase(void)
+void StatsAlarmTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-
-void StatsAlarmTest::TearDownTestCase(void)
+void StatsAlarmTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsAlarmTest::SetUp(void)
+void StatsAlarmTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsAlarmTest::TearDown(void)
+void StatsAlarmTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -75,11 +56,9 @@ namespace {
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsAlarmTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int16_t count = 10;
@@ -87,19 +66,15 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
+        usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
-    sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
     statsClient.Reset();
     double powerMahAfter = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsAlarmTest_001 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsAlarmTest_001: test end";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -110,32 +85,26 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsAlarmTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int16_t count = 10;
-    double deviation = 0.01;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
+        usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
-    sleep(testWaitTimeSec);
 
     double expectedPower = count * alarmOnAverageMa;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsAlarmTest_002 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsAlarmTest_002: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -146,11 +115,9 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsAlarmTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int16_t count = 10;
@@ -160,15 +127,11 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
     }
-    sleep(testWaitTimeSec);
+
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsAlarmTest_003 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsAlarmTest_003: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -179,12 +142,10 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsAlarmTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
 
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int16_t count = 10;
@@ -192,18 +153,14 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-        sleep(testWaitTimeSec);
+        usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsAlarmTest_004 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsAlarmTest_004: test end";
+    EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
 }
 }

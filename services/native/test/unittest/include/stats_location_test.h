@@ -16,16 +16,14 @@
 #ifndef STATS_LOCATION_TEST_H
 #define STATS_LOCATION_TEST_H
 
-#include <gtest/gtest.h>
+#include "stats_test.h"
 
 namespace OHOS {
 namespace PowerMgr {
-constexpr int32_t SECOND_PER_HOUR = 3600;
-constexpr int32_t WAIT_TIME = 1;
-class StatsLocationTest : public testing::Test {
+class StatsLocationTest : public testing::Test, public StatsTest {
 public:
-    static void SetUpTestCase(void);
-    static void TearDownTestCase(void);
+    static void SetUpTestCase();
+    static void TearDownTestCase();
     void SetUp();
     void TearDown();
 };

@@ -18,52 +18,35 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
-#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
 using namespace std;
 
-static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
-static std::vector<std::string> dumpArgs;
 
-static void ParserAveragePowerFile()
-{
-    if (g_statsParser == nullptr) {
-        g_statsParser = std::make_shared<BatteryStatsParser>();
-        if (!g_statsParser->Init()) {
-            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
-        }
-    }
-}
-
-void StatsLocationTest::SetUpTestCase(void)
+void StatsLocationTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
 
-void StatsLocationTest::TearDownTestCase(void)
+void StatsLocationTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsLocationTest::SetUp(void)
+void StatsLocationTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsLocationTest::TearDown(void)
+void StatsLocationTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -75,12 +58,9 @@ namespace {
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
@@ -88,21 +68,16 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_001, TestSize.Level0)
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
     statsClient.Reset();
     double powerMahAfter = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsLocationTest_001 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsLocationTest_001: test end";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -113,35 +88,27 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_002, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
     std::string stateOff = "stop";
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsLocationTest_002 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_002: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -152,12 +119,9 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_003, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
@@ -167,18 +131,13 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_003, TestSize.Level0)
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsLocationTest_003 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_003: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -189,43 +148,33 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_004, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
     std::string stateOff = "stop";
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 2 * testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsLocationTest_004 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_004: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -236,12 +185,9 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_005, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateInvaildOn = "star";
@@ -249,20 +195,15 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_005, TestSize.Level0)
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateInvaildOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsLocationTest_005 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_005: test end";
+    EXPECT_EQ(expectedPower, actualPower);
 }
 
 /**
@@ -273,45 +214,35 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_006, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
     std::string stateOff = "stop";
     std::string stateInvaildOn = "star";
     std::string stateInvaildOff = "stp";
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateInvaildOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateInvaildOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 3 * testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsLocationTest_006 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_006: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -322,32 +253,25 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_007, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     std::string stateOn = "start";
     std::string stateOff = "stop";
     int32_t uid = 10003;
     int32_t pid = 3458;
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_GNSS_ON, uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation)
-        <<" StatsLocationTest_007 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_007: test end";
+    long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    long actualTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_GNSS_ON, uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
+    EXPECT_EQ(expectedTime, actualTime);
 }
 
 /**
@@ -358,50 +282,42 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_008, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     std::string stateOn = "start";
     std::string stateOff = "stop";
     int32_t uidOne = 10003;
     int32_t pidOne = 3458;
     int32_t uidTwo = 10004;
     int32_t pidTwo = 3459;
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo,
         "STATE", stateOff);
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne,
         "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 3 * testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uidOne);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected first uid consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual first uid consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsLocationTest_008 fail due to first uid power mismatch";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
-    expectedPower = testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    expectedPower = POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uidTwo);
+    devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected second uid consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual second uid consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsLocationTest_008 fail due to second uid power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_008: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -412,13 +328,10 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_009, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
@@ -426,20 +339,15 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_009, TestSize.Level0)
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsLocationTest_009 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_009: test end";
+    EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
 }
 
@@ -451,39 +359,30 @@ HWTEST_F (StatsLocationTest, StatsLocationTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsLocationTest, StatsLocationTest_010, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsLocationTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     std::string stateOn = "start";
     std::string stateOff = "stop";
-    double deviation = 0.01;
 
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("LOCATION", "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 2 * testTimeSec * gnssOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation) << " StatsLocationTest_010 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsLocationTest_010: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 }

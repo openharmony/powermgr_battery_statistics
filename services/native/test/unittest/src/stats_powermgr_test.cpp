@@ -21,7 +21,6 @@
 #include <wifi_hisysevent.h>
 
 #include "battery_stats_client.h"
-#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -30,44 +29,28 @@ using namespace OHOS::Telephony;
 using namespace OHOS;
 using namespace std;
 
-static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
-static std::vector<std::string> dumpArgs;
 
-static void ParserAveragePowerFile()
-{
-    if (g_statsParser == nullptr) {
-        g_statsParser = std::make_shared<BatteryStatsParser>();
-        if (!g_statsParser->Init()) {
-            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
-        }
-    }
-}
-
-void StatsPowerMgrTest::SetUpTestCase(void)
+void StatsPowerMgrTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsPowerMgrTest::TearDownTestCase(void)
+void StatsPowerMgrTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsPowerMgrTest::SetUp(void)
+void StatsPowerMgrTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsPowerMgrTest::TearDown(void)
+void StatsPowerMgrTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -78,32 +61,25 @@ namespace {
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation)
-        <<" StatsPowerMgrTest_009 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_009: test end";
+    long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    long actualTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
+    EXPECT_EQ(expectedTime, actualTime);
 }
 
 /**
@@ -113,34 +89,27 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * sensorGravityOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_010 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_010: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -150,12 +119,9 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
@@ -165,16 +131,12 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_011 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_011: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -184,33 +146,27 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * sensorGravityOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_012 fail due to power mismatch";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
     uid = 10004;
     pid = 3459;
@@ -221,16 +177,12 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_012 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_012: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -240,32 +192,25 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
     int32_t uid = 10003;
     int32_t pid = 3458;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON, uid);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation)
-        <<" StatsPowerMgrTest_013 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_013: test end";
+    double expectedPower = StatsUtils::DEFAULT_VALUE;
+    double actualPower = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON, uid);
+    GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
+    GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
+    EXPECT_EQ(expectedPower, actualPower);
 }
 
 /**
@@ -275,34 +220,27 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * sensorProximityOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPowerMgrTest_014 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_014: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -312,12 +250,9 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
@@ -327,16 +262,12 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_015 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_015: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -346,33 +277,27 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10003;
     int32_t pid = 3458;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * sensorProximityOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" BatteryStatsClientTest_063 fail due to power mismatch";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
     uid = 10004;
     pid = 3459;
@@ -383,15 +308,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
 
     HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("CAMERA", "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPowerMgrTest_016 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPowerMgrTest_016: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 }
