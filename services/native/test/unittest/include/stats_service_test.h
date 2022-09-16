@@ -22,8 +22,8 @@ namespace OHOS {
 namespace PowerMgr {
 class StatsServiceTest : public testing::Test {
 public:
-    static void SetUpTestCase(void);
-    static void TearDownTestCase(void);
+    static void SetUpTestCase();
+    static void TearDownTestCase();
     void SetUp();
     void TearDown();
 };

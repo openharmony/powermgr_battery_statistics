@@ -31,22 +31,22 @@ using namespace testing::ext;
 using namespace OHOS::PowerMgr;
 using namespace OHOS;
 
-void StatsServiceTest::SetUpTestCase(void)
+void StatsServiceTest::SetUpTestCase()
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void StatsServiceTest::TearDownTestCase(void)
+void StatsServiceTest::TearDownTestCase()
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void StatsServiceTest::SetUp(void)
+void StatsServiceTest::SetUp()
 {
     GTEST_LOG_(INFO) << __func__;
 }
 
-void StatsServiceTest::TearDown(void)
+void StatsServiceTest::TearDown()
 {
     GTEST_LOG_(INFO) << __func__;
 }
@@ -59,11 +59,9 @@ namespace {
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsServiceTest_001: test start";
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     ASSERT_TRUE(sam != nullptr) << "StatsServiceTest_001 fail to get GetSystemAbilityManager";
     sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     ASSERT_TRUE(remoteObject_ != nullptr) << "GetSystemAbility failed.";
-    GTEST_LOG_(INFO) << " StatsServiceTest_001: test end";
 }
 }

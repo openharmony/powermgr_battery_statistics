@@ -19,7 +19,6 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
-#include "battery_stats_parser.h"
 #include "power_mgr_client.h"
 
 using namespace testing::ext;
@@ -27,66 +26,46 @@ using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
 using namespace std;
 
-static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
-static std::vector<std::string> dumpArgs;
-
-static void ParserAveragePowerFile()
-{
-    if (g_statsParser == nullptr) {
-        g_statsParser = std::make_shared<BatteryStatsParser>();
-        if (!g_statsParser->Init()) {
-            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
-        }
-    }
-}
 
 static void SetLastBrightness(int32_t lastBrightness)
 {
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
 
     GTEST_LOG_(INFO) << __func__ << ": Set last screen brightness value = " << lastBrightness;
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", lastBrightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(StatsTest::POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     auto& statsClient = BatteryStatsClient::GetInstance();
     GTEST_LOG_(INFO) << __func__ << ": Battery stats client reset";
     statsClient.Reset();
 }
 
-void StatsDisplayTest::SetUpTestCase(void)
+void StatsDisplayTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
     auto& pms = PowerMgrClient::GetInstance();
     pms.SuspendDevice();
 }
 
-void StatsDisplayTest::TearDownTestCase(void)
+void StatsDisplayTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsDisplayTest::SetUp(void)
+void StatsDisplayTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsDisplayTest::TearDown(void)
+void StatsDisplayTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -97,31 +76,24 @@ namespace {
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     statsClient.Reset();
     double powerMahAfter = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsDisplayTest_001 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_001: test end";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -131,31 +103,24 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_002, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 120;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsDisplayTest_002 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_002: test end";
+    EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
 }
 
@@ -166,36 +131,28 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_003, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
-    double expectedPower = average * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_003 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_003: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -205,12 +162,9 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_004, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
@@ -219,16 +173,12 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_004, TestSize.Level0)
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsDisplayTest_004 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_004: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -238,29 +188,23 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_005, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
-    double expectedPower = average * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
     auto list = statsClient.GetBatteryStats();
     for (auto it : list) {
@@ -268,12 +212,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_005, TestSize.Level0)
             actualPower = (*it).GetPower();
         }
     }
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_005 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_005: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -283,37 +225,29 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_006, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
-    double expectedPower = average * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_006 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_006: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -323,43 +257,33 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_007, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
-    double expectedPower = average * 2 * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * 2 * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_007 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_007: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -369,24 +293,19 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_008, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
     int32_t brightness = 100;
 
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsDisplayTest_008 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_008: test end";
+    EXPECT_EQ(expectedPower, actualPower);
 }
 
 /**
@@ -396,42 +315,33 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_009, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     int32_t currentBrightness = 200;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
 
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
-    double expectedPower = average * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_009 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_009: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -441,43 +351,34 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_010, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
     int32_t currentBrightness = 200;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double screenOnPower = screenOnAverage * 2 * testTimeSec;
-    double lastBrightnessPower = screenBrightnessAverage * lastBrightness * testTimeSec;
-    double curBrightnessPower = screenBrightnessAverage * currentBrightness * testTimeSec;
+    double screenOnPower = screenOnAverage * 2 * POWER_CONSUMPTION_DURATION_US;
+    double lastBrightnessPower = screenBrightnessAverage * lastBrightness * POWER_CONSUMPTION_DURATION_US;
+    double curBrightnessPower = screenBrightnessAverage * currentBrightness * POWER_CONSUMPTION_DURATION_US;
 
-    double expectedPower = (screenOnPower + lastBrightnessPower + curBrightnessPower) / SECOND_PER_HOUR;
+    double expectedPower = (screenOnPower + lastBrightnessPower + curBrightnessPower) / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_010 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_010: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -487,12 +388,9 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
@@ -500,32 +398,25 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
     int32_t invalidBrightness2 = 300;
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
 
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness1);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness2);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
-    double expectedPower = average * 3 * testTimeSec / SECOND_PER_HOUR;
+    double expectedPower = average * 3 * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE((abs(expectedPower - actualPower)) / expectedPower, deviation)
-        <<" StatsDisplayTest_011 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_011: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -535,12 +426,9 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDisplayTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t lastBrightness = 100;
@@ -548,33 +436,27 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
     int32_t brightness = 0;
     int32_t count = 50;
     int32_t step = 3;
-    double deviation = 0.1;
 
     SetLastBrightness(lastBrightness);
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     for (int32_t i = 0; i < count; i++) {
         brightness = brightnessBegin + step * i;
         HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-        GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-        sleep(testTimeSec);
+        usleep(POWER_CONSUMPTION_DURATION_US);
     }
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
+    long expectScreenOnTime = POWER_CONSUMPTION_DURATION_US * (count + 1) / US_PER_SECOND;
     long screenOnTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_ON);
-    long expectScreenOnTime = testTimeSec * (count + 1);
     GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectScreenOnTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  screenOnTime << " seconds";
-    EXPECT_LE(abs(screenOnTime - expectScreenOnTime), deviation) <<
-        " StatsDisplayTest_012 Screen on total time fail due to time mismatch";
+    EXPECT_EQ(expectScreenOnTime, screenOnTime);
 
+    long expectBrightnessTime = POWER_CONSUMPTION_DURATION_US * (count + 1) / US_PER_SECOND;
     long brightnessTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS);
-    long expectBrightnessTime = testTimeSec * (count + 1);
     GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectBrightnessTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  brightnessTime << " seconds";
-    EXPECT_LE(abs(brightnessTime - expectBrightnessTime), deviation) <<
-        " StatsDisplayTest_012 Screen brightness total time fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsDisplayTest_012: test end";
+    EXPECT_EQ(expectBrightnessTime, brightnessTime);
 }
 }

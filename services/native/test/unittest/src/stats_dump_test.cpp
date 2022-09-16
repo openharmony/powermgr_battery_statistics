@@ -30,30 +30,27 @@ using namespace std;
 
 static std::vector<std::string> dumpArgs;
 
-void StatsDumpTest::SetUpTestCase(void)
+void StatsDumpTest::SetUpTestCase()
 {
     dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsDumpTest::TearDownTestCase(void)
+void StatsDumpTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsDumpTest::SetUp(void)
+void StatsDumpTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsDumpTest::TearDown(void)
+void StatsDumpTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -64,18 +61,14 @@ namespace {
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_001: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t batteryLevel = 60;
     int32_t batteryChargerType = 2;
 
     HiSysEvent::Write("BATTERY", "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
         batteryLevel, "CHARGER", batteryChargerType);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
@@ -84,14 +77,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
         .append(ToString(batteryChargerType));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_001 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_001: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -101,13 +90,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_002: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t uid = 10001;
     int32_t pid = 3456;
     int32_t stateLock = 1;
@@ -117,11 +102,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
 
     HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(US_PER_MS);
     HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
@@ -136,14 +119,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
         .append("UNLOCK");
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_002 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_002: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -153,17 +132,12 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_003: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t ratio = 100;
 
     HiSysEvent::Write("DISPLAY", "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
-    sleep(testWaitTimeSec);
-
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
@@ -172,14 +146,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
         .append(ToString(ratio));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_003 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_003: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -189,12 +159,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_004: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t pid = 3457;
     int32_t uid = 10002;
     int32_t type = 1;
@@ -203,7 +170,6 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
 
     HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
@@ -218,14 +184,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
         .append(ToString(state));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_004 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_004: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -235,18 +197,14 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_005: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     std::string partName = "Battery";
     int32_t temperature = 40;
 
     HiSysEvent::Write("THERMAL", "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
         partName, "TEMPERATURE", temperature);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -255,14 +213,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
         .append(partName);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_005 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_005: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -272,12 +226,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_006: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     std::string callType = "DUBAI_TAG_DIST_SCHED_TO_REMOTE";
     int32_t callUid = 10003;
     int32_t callPid = 3458;
@@ -286,11 +237,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
     int32_t callAppUid = 9568;
     int32_t result = 1;
 
-
     HiSysEvent::Write("DISTSCHEDULE", "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR,
         "CALLING_TYPE", callType, "CALLING_UID", callUid, "CALLING_PID", callPid, "TARGET_BUNDLE", targetBundle,
         "TARGET_ABILITY", targetAbility, "CALLING_APP_UID", callAppUid, "RESULT", result);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -299,14 +248,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
         .append(callType);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_006 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_006: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -316,12 +261,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_007: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     std::string actionName = "thermallevel";
     int32_t value = 3;
     float ratio = 0.60;
@@ -330,7 +272,6 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 
     HiviewDFX::HiSysEvent::Write("THERMAL", "THERMAL_ACTION_TRIGGERED",
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -343,14 +284,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
         .append(std::to_string(ratio).substr(beginPos, ratioLen));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_007 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_007: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 
 /**
@@ -360,17 +297,13 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsDumpTest_008: test start";
-
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testWaitTimeSec = 1;
     int32_t type = 100;
     int32_t level = 101;
 
     HiSysEvent::Write("DISPLAY", "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
-    sleep(testWaitTimeSec);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -382,13 +315,9 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
         .append(ToString(level));
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
-
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
-
     auto index = actualDebugInfo.find(expectedDebugInfo);
-
-    EXPECT_TRUE(index != string::npos) << " StatsDumpTest_008 fail due to not found related debug info";
-    GTEST_LOG_(INFO) << " StatsDumpTest_008: test end";
+    EXPECT_TRUE(index != string::npos);
 }
 }

@@ -19,7 +19,6 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
-#include "battery_stats_parser.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -27,44 +26,28 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS::Telephony;
 using namespace std;
 
-static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
-static std::vector<std::string> dumpArgs;
 
-static void ParserAveragePowerFile()
-{
-    if (g_statsParser == nullptr) {
-        g_statsParser = std::make_shared<BatteryStatsParser>();
-        if (!g_statsParser->Init()) {
-            GTEST_LOG_(INFO) << __func__ << ": Battery stats parser initialization failed";
-        }
-    }
-}
-
-void StatsPhoneTest::SetUpTestCase(void)
+void StatsPhoneTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    dumpArgs.push_back("-batterystats");
     system("hidumper -s 3302 -a -u");
 }
 
-void StatsPhoneTest::TearDownTestCase(void)
+void StatsPhoneTest::TearDownTestCase()
 {
     system("hidumper -s 3302 -a -r");
 }
 
-void StatsPhoneTest::SetUp(void)
+void StatsPhoneTest::SetUp()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 1 seconds";
-    sleep(WAIT_TIME);
 }
 
-void StatsPhoneTest::TearDown(void)
+void StatsPhoneTest::TearDown()
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__;
 }
 
 namespace {
@@ -76,29 +59,22 @@ namespace {
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_001, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_001: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     statsClient.Reset();
     double powerMahAfter = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsPhoneTest_001 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_001: test end";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -109,32 +85,25 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_002, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_002: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
 
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_002 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_002: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -145,28 +114,21 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_003, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_003: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPhoneTest_003 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_003: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -177,25 +139,19 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_004, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_004: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
     auto list = statsClient.GetBatteryStats();
     for (auto it : list) {
@@ -203,11 +159,10 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_004, TestSize.Level0)
             actualPower = (*it).GetPower();
         }
     }
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_004 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_004: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -218,37 +173,28 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_005, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_005: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 2 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_005 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_005: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -259,39 +205,30 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_006, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_006: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t stateHolding = static_cast<int32_t>(TelCallState::CALL_STATUS_HOLDING);
     int32_t stateDisconnecting = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTING);
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateHolding);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateDisconnecting);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 3 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation) << " StatsPhoneTest_006 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_006: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -302,28 +239,21 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_007, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_007: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 10;
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) << " StatsPhoneTest_007 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_007: test end";
+    EXPECT_EQ(expectedPower, actualPower);
 }
 
 /**
@@ -334,39 +264,30 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_008, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_008: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 3 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation) << " StatsPhoneTest_008 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_008: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -377,29 +298,22 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_009, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_009: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     statsClient.Reset();
     double powerMahAfter = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE)
-        << " StatsPhoneTest_009 fail due to reset failed";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_009: test end";
+    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -410,32 +324,24 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_010, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_010: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_010 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_010: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -446,28 +352,21 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_011, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_011: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
     double fullPercent = 1;
     double zeroPercent = 0;
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
     
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
-    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent)
-        <<" StatsPhoneTest_011 fail due to percent mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_011: test end";
+    EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 }
 
 /**
@@ -478,25 +377,19 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_012, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_012: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
     auto list = statsClient.GetBatteryStats();
     for (auto it : list) {
@@ -504,11 +397,10 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_012, TestSize.Level0)
             actualPower = (*it).GetPower();
         }
     }
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_012 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_012: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -519,37 +411,28 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_013, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_013: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 2 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_013 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_013: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -560,28 +443,21 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_014, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_014: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 5;
     int32_t stateOff = 0;
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) << " StatsPhoneTest_014 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_014: test end";
+    EXPECT_EQ(expectedPower, actualPower);
 }
 
 /**
@@ -592,41 +468,32 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_015, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_015: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 3 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation) << " StatsPhoneTest_015 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_015: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -637,52 +504,40 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_016, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_016: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
-    sleep(testWaitTimeSec);
 
-    double phoneOnPower = 3 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
-    double phoneDataPower = 4 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double phoneOnPower = 3 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
+    double phoneDataPower = 4 * POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double expectedPower = phoneOnPower + phoneDataPower;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_016 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_016: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -693,44 +548,34 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_017, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_017: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
-    sleep(testWaitTimeSec);
 
-    double phoneOnPower = 3 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
-    double phoneDataPower = 4 * testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double phoneOnPower = 3 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
+    double phoneDataPower = 4 * POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double expectedPower = phoneOnPower + phoneDataPower;
     double actualPower = StatsUtils::DEFAULT_VALUE;
     auto list = statsClient.GetBatteryStats();
@@ -739,12 +584,10 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_017, TestSize.Level0)
             actualPower = (*it).GetPower();
         }
     }
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_017 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_017: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -755,39 +598,30 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_018, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_018: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int32_t dataStateOn = 1;
     int32_t dataStateOff = 0;
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
-    sleep(testWaitTimeSec);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
-    sleep(testWaitTimeSec);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_EQ(expectedPower, actualPower) <<" StatsPhoneTest_018 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_018: test end";
+    EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
 }
 
@@ -799,37 +633,28 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_018, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_019, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_019: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(false);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(true);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = 2 * testTimeSec * phoneOnAverageMa / SECOND_PER_HOUR;
+    double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation) << " StatsPhoneTest_019 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_019: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -840,31 +665,24 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_019, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_020, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_020: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    double expectedPower = testTimeSec * phoneDataAverageMa / SECOND_PER_HOUR;
+    double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_020 fail due to power mismatch";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -874,19 +692,16 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_020, TestSize.Level0)
 
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("AUDIO", "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-    sleep(testWaitTimeSec);
 
-    expectedPower = testTimeSec * audioOnAverageMa / SECOND_PER_HOUR;
+    expectedPower = POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
+    devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_LE(abs(expectedPower - actualPower), deviation)
-        <<" StatsPhoneTest_020 fail due to power mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_020: test end";
+    EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
 
 /**
@@ -897,27 +712,21 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_020, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_021, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_021: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
-    double deviation = 0.01;
 
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation) << " StatsPhoneTest_021 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_021: test end";
+    long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    long actualTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
+    EXPECT_EQ(expectedTime, actualTime);
 }
 
 /**
@@ -928,26 +737,20 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_021, TestSize.Level0)
  */
 HWTEST_F (StatsPhoneTest, StatsPhoneTest_022, TestSize.Level0)
 {
-    GTEST_LOG_(INFO) << " StatsPhoneTest_022: test start";
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    long testTimeSec = 2;
-    long testWaitTimeSec = 1;
     int32_t stateOn = 1;
     int32_t stateOff = 0;
-    double deviation = 0.01;
 
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
-    GTEST_LOG_(INFO) << __func__ << ": Sleep 2 seconds";
-    sleep(testTimeSec);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEvent::Write("TELEPHONY", "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    sleep(testWaitTimeSec);
 
-    long time = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_DATA);
-    GTEST_LOG_(INFO) << __func__ << ": expected time = " << testTimeSec << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  time << " seconds";
-    EXPECT_LE(abs(time - testTimeSec), deviation) << " StatsPhoneTest_022 fail due to time mismatch";
-    GTEST_LOG_(INFO) << " StatsPhoneTest_022: test end";
+    long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    long actualTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_DATA);
+    GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
+    GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
+    EXPECT_EQ(expectedTime, actualTime);
 }
 }
