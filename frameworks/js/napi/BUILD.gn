@@ -32,7 +32,6 @@ ohos_shared_library("batterystatistics") {
 
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
-    "ipc:ipc_core",
     "napi:ace_napi",
   ]
 
