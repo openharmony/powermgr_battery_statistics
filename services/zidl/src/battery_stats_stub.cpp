@@ -40,15 +40,15 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         STATS_HILOGE(COMP_SVC, "Remote request failed, descriptor is not matched");
         return E_STATS_GET_SERVICE_FAILED;
     }
-    ChooseCodeStub(code, data, reply, option);
+    int ret = ChooseCodeStub(code, data, reply, option);
     HiviewDFX::XCollie::GetInstance().CancelTimer(id);
-    return ERR_OK;
+    return ret;
 }
 
 int32_t BatteryStatsStub::ChooseCodeStub(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
-    int32_t ret = ERR_OK;
+    int32_t ret;
     switch (code) {
         case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET): {
             ret = GetBatteryStatsStub(reply);
