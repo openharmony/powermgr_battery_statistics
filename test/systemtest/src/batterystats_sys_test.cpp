@@ -85,6 +85,7 @@ void BatterystatsSysTest::TearDown(void)
     statsClient.SetOnBattery(false);
 }
 
+namespace {
 /**
  *
  * @tc.name: BatteryStatsSysTest_001
@@ -979,4 +980,5 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(abs(expectedPower - actualPower), deviation) <<" BatteryStatsSysTest_023 fail due to power mismatch";
     GTEST_LOG_(INFO) << " BatteryStatsSysTest_023: test end";
+}
 }
