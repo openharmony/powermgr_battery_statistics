@@ -70,6 +70,7 @@ ohos_shared_library("batterystats_service") {
     "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
     "${batterystats_innerkits}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
+    "//base/powermgr/power_manager/utils/permission:power_permission",
     "//third_party/jsoncpp",
   ]
 

@@ -27,6 +27,7 @@
 #include "hisysevent_manager.h"
 #include "iservice_registry.h"
 #include "if_system_ability_manager.h"
+#include "permission.h"
 #include "system_ability_definition.h"
 #include "watchdog.h"
 
@@ -178,8 +179,13 @@ bool BatteryStatsService::IsServiceReady() const
 
 BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 {
+    BatteryStatsInfoList statsInfoList = {};
+    if (!Permission::IsSystem()) {
+        return statsInfoList;
+    }
     core_->ComputePower();
-    return core_->GetBatteryStats();
+    statsInfoList = core_->GetBatteryStats();
+    return statsInfoList;
 }
 
 int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>& args)
@@ -203,24 +209,36 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
 
 double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 {
+    if (!Permission::IsSystem()) {
+        return StatsUtils::DEFAULT_VALUE;
+    }
     core_->ComputePower();
     return core_->GetAppStatsMah(uid);
 }
 
 double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 {
+    if (!Permission::IsSystem()) {
+        return StatsUtils::DEFAULT_VALUE;
+    }
     core_->ComputePower();
     return core_->GetAppStatsPercent(uid);
 }
 
 double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
+    if (!Permission::IsSystem()) {
+        return StatsUtils::DEFAULT_VALUE;
+    }
     core_->ComputePower();
     return core_->GetPartStatsMah(type);
 }
 
 double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
+    if (!Permission::IsSystem()) {
+        return StatsUtils::DEFAULT_VALUE;
+    }
     core_->ComputePower();
     return core_->GetPartStatsPercent(type);
 }
