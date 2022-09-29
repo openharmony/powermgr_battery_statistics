@@ -937,9 +937,9 @@ bool BatteryStatsCore::LoadBatteryStatsData()
             info->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
             info->SetPower(root["Power"][*iter].asDouble());
             usr = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(id);
-            auto iter = tmpUserPowerMap.find(usr);
-            if (iter != tmpUserPowerMap.end()) {
-                iter->second += info->GetPower();
+            const auto& userPower = tmpUserPowerMap.find(usr);
+            if (userPower != tmpUserPowerMap.end()) {
+                userPower->second += info->GetPower();
             } else {
                 tmpUserPowerMap.insert(std::pair<int32_t, double>(usr, info->GetPower()));
             }

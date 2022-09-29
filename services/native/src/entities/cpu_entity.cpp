@@ -102,11 +102,10 @@ void CpuEntity::Calculate(int32_t uid)
 
 double CpuEntity::CalculateCpuActivePower(int32_t uid)
 {
-    double cpuActivePower = StatsUtils::DEFAULT_VALUE;
     double cpuActiveAverageMa =
         g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_ACTIVE);
     int64_t cpuActiveTimeMs = cpuReader_->GetUidCpuActiveTimeMs(uid);
-    cpuActivePower = cpuActiveAverageMa * cpuActiveTimeMs / StatsUtils::MS_IN_HOUR;
+    double cpuActivePower = cpuActiveAverageMa * cpuActiveTimeMs / StatsUtils::MS_IN_HOUR;
 
     auto cpuActiveIter = cpuActivePowerMap_.find(uid);
     if (cpuActiveIter != cpuActivePowerMap_.end()) {
