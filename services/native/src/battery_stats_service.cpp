@@ -246,7 +246,7 @@ double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::Consumpt
 uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
     STATS_HILOGD(COMP_SVC, "statsType: %{public}d, uid: %{public}d", statsType, uid);
-    uint64_t timeSecond = StatsUtils::DEFAULT_VALUE;
+    uint64_t timeSecond;
     if (uid > StatsUtils::INVALID_VALUE) {
         double timeMs = static_cast<double>(core_->GetTotalTimeMs(uid, statsType));
         timeSecond = round(timeMs / StatsUtils::MS_IN_SECOND);

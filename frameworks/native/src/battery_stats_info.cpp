@@ -34,7 +34,7 @@ std::shared_ptr<BatteryStatsInfo> BatteryStatsInfo::Unmarshalling(Parcel& parcel
     std::shared_ptr<BatteryStatsInfo> statsInfo = std::make_shared<BatteryStatsInfo>();
     if (statsInfo == nullptr) {
         STATS_HILOGW(COMP_FWK, "BatteryStatsInfo object creation failed");
-        statsInfo = nullptr;
+        return statsInfo;
     }
     if (!statsInfo->ReadFromParcel(parcel)) {
         STATS_HILOGW(COMP_FWK, "Read from parcel failed");

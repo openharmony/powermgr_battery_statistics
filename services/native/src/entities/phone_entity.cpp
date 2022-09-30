@@ -100,22 +100,20 @@ void PhoneEntity::Calculate(int32_t uid)
     // Calculate phone on power
     double phoneOnPowerMah = StatsUtils::DEFAULT_VALUE;
     for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
-        double phoneOnLevelPowerMah = StatsUtils::DEFAULT_VALUE;
         auto phoneOnAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
         auto phoneOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, i);
-        phoneOnLevelPowerMah = phoneOnAverageMa * phoneOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
+        double phoneOnLevelPowerMah = phoneOnAverageMa * phoneOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
         phoneOnPowerMah += phoneOnLevelPowerMah;
     }
 
     // Calculate phone data power
     double phoneDataPowerMah = StatsUtils::DEFAULT_VALUE;
     for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
-        double phoneDataLevelPowerMah = StatsUtils::DEFAULT_VALUE;
         auto phoneDataAverageMa =
             g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, i);
         auto phoneDataLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, i);
-        phoneDataLevelPowerMah = phoneDataAverageMa * phoneDataLevelTimeMs / StatsUtils::MS_IN_HOUR;
+        double phoneDataLevelPowerMah = phoneDataAverageMa * phoneDataLevelTimeMs / StatsUtils::MS_IN_HOUR;
         phoneDataPowerMah += phoneDataLevelPowerMah;
     }
     phonePowerMah_ = phoneOnPowerMah + phoneDataPowerMah;

@@ -133,8 +133,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double appStatsMah = StatsUtils::DEFAULT_VALUE;
-    appStatsMah = reply.ReadDouble();
+    double appStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return appStatsMah;
 }
@@ -184,8 +183,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double appStatsPercent = StatsUtils::DEFAULT_VALUE;
-    appStatsPercent = reply.ReadDouble();
+    double appStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return appStatsPercent;
 }
@@ -212,8 +210,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double partStatsMah = StatsUtils::DEFAULT_VALUE;
-    partStatsMah = reply.ReadDouble();
+    double partStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return partStatsMah;
 }
@@ -240,8 +237,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    double partStatsPercent = StatsUtils::DEFAULT_VALUE;
-    partStatsPercent = reply.ReadDouble();
+    double partStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return partStatsPercent;
 }

@@ -214,14 +214,16 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
     }
 
     std::string line;
+    const int32_t INDEX_0 = 0;
+    const int32_t INDEX_1 = 1;
     while (getline(input, line)) {
         int32_t uid = StatsUtils::INVALID_VALUE;
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        if (splitedLine[0] == "cpus") {
+        if (splitedLine[INDEX_0] == "cpus") {
             continue;
         } else {
-            uid = stoi(splitedLine[0]);
+            uid = stoi(splitedLine[INDEX_0]);
         }
 
         if (uid > StatsUtils::INVALID_VALUE) {
@@ -232,7 +234,7 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
             }
         }
 
-        if (ReadUidCpuActiveTimeImpl(splitedLine[1], uid)) {
+        if (ReadUidCpuActiveTimeImpl(splitedLine[INDEX_1], uid)) {
             continue;
         } else {
             return false;
@@ -523,13 +525,12 @@ bool CpuTimeReader::ReadUidCpuTime()
         return false;
     }
     std::string line;
-    int32_t uid = -1;
     std::vector<int64_t> cpuTime;
     while (getline(input, line)) {
         cpuTime.clear();
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        uid = stoi(splitedLine[0]);
+        int32_t uid = stoi(splitedLine[0]);
         if (uid > StatsUtils::INVALID_VALUE) {
             auto uidEntity =
                 g_statsService->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
