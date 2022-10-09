@@ -27,6 +27,7 @@ public:
     static constexpr uint8_t SCREEN_BRIGHTNESS_BIN = 5;
     static constexpr uint8_t RADIO_SIGNAL_BIN = 5;
     static constexpr int8_t INVALID_VALUE = -1;
+    static constexpr double INVALID_DOUBLE_VALUE = -1;
     static constexpr uint32_t MS_IN_HOUR = 3600000;
     static constexpr uint32_t MS_IN_SECOND = 1000;
     static constexpr uint32_t NS_IN_MS = 1000000;

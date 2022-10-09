@@ -71,6 +71,7 @@ ohos_shared_library("batterystats_service") {
   deps = [
     "${batterystats_interfaces_path}/innerkits:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
+    "//base/powermgr/power_manager/utils:powermgr_utils",
     "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent_manager:libhisyseventmanager",
     "//base/powermgr/display_manager/interfaces/innerkits:displaymgr",
     "//base/powermgr/power_manager/interfaces/innerkits:powermgr_client",
