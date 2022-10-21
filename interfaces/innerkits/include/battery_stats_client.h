@@ -23,6 +23,7 @@
 
 #include "iremote_object.h"
 
+#include "battery_stats_errors.h"
 #include "battery_stats_info.h"
 #include "ibattery_stats.h"
 #include "stats_utils.h"
@@ -44,6 +45,7 @@ public:
     uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
     void Reset();
     std::string Dump(const std::vector<std::string>& args);
+    StatsError GetLastError();
 private:
     class BatteryStatsDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
@@ -55,6 +57,7 @@ private:
     };
 
     ErrCode Connect();
+    StatsError lastError_ {StatsError::ERR_OK};
     sptr<IBatteryStats> proxy_ {nullptr};
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ {nullptr};
     void ResetProxy(const wptr<IRemoteObject>& remote);
