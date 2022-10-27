@@ -837,3 +837,16 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 }
+
+/**
+ *
+ * @tc.name: BatteryStatsSysTest_024
+ * @tc.desc: test GetLastError interface
+ * @tc.type: FUNC
+ */
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_024, TestSize.Level0)
+{
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    StatsError error = statsClient.GetLastError();
+    EXPECT_TRUE(error == StatsError::ERR_OK) << "last error is " << static_cast<int32_t>(error);
+}
