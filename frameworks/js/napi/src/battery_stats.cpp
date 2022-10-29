@@ -37,12 +37,12 @@ void BatteryStats::StatsAsyncCallBack(napi_value& value)
     napi_create_async_work(
         env_, nullptr, resource,
         [](napi_env env, void* data) {
-            AsyncCallbackInfo* asCallbackInfo = (AsyncCallbackInfo*)data;
+            AsyncCallbackInfo* asCallbackInfo = reinterpret_cast<AsyncCallbackInfo*>(data);
             STATS_RETURN_IF(asCallbackInfo == nullptr);
             asCallbackInfo->GetError().Error(asCallbackInfo->GetData().GetBatteryStatsInfo());
         },
         [](napi_env env, napi_status status, void* data) {
-            AsyncCallbackInfo* asCallbackInfo = (AsyncCallbackInfo*)data;
+            AsyncCallbackInfo* asCallbackInfo = reinterpret_cast<AsyncCallbackInfo*>(data);
             STATS_RETURN_IF(asCallbackInfo == nullptr);
             napi_value arrRes = nullptr;
             asCallbackInfo->GetData().CreateArrayValue(env, arrRes);
@@ -50,7 +50,7 @@ void BatteryStats::StatsAsyncCallBack(napi_value& value)
             asCallbackInfo->Release(env);
             delete asCallbackInfo;
         },
-        (void*)asyncInfo.get(), &asyncInfo->GetAsyncWork());
+        reinterpret_cast<void*>(asyncInfo.get()), &asyncInfo->GetAsyncWork());
     NAPI_CALL_RETURN_VOID(env_, napi_queue_async_work(env_, asyncInfo->GetAsyncWork()));
     asyncInfo.release();
 }
@@ -67,12 +67,12 @@ napi_value BatteryStats::StatsPromise()
     napi_create_async_work(
         env_, nullptr, resourceName,
         [](napi_env env, void* data) {
-            AsyncCallbackInfo* asCallbackInfo = (AsyncCallbackInfo*)data;
+            AsyncCallbackInfo* asCallbackInfo = reinterpret_cast<AsyncCallbackInfo*>(data);
             STATS_RETURN_IF(asCallbackInfo == nullptr);
             asCallbackInfo->GetError().Error(asCallbackInfo->GetData().GetBatteryStatsInfo());
         },
         [](napi_env env, napi_status status, void* data) {
-            AsyncCallbackInfo* asCallbackInfo = (AsyncCallbackInfo*)data;
+            AsyncCallbackInfo* asCallbackInfo = reinterpret_cast<AsyncCallbackInfo*>(data);
             STATS_RETURN_IF(asCallbackInfo == nullptr);
             if (asCallbackInfo->GetError().IsError()) {
                 napi_reject_deferred(env, asCallbackInfo->GetDeferred(), asCallbackInfo->GetError().GetNapiError(env));
@@ -84,7 +84,7 @@ napi_value BatteryStats::StatsPromise()
             asCallbackInfo->Release(env);
             delete asCallbackInfo;
         },
-        (void*)asyncInfo.get(), &asyncInfo->GetAsyncWork());
+        reinterpret_cast<void*>(asyncInfo.get()), &asyncInfo->GetAsyncWork());
     NAPI_CALL_BASE(env_, napi_queue_async_work(env_, asyncInfo->GetAsyncWork()), promise);
     asyncInfo.release();
     return promise;

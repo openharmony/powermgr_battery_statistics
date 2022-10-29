@@ -17,15 +17,9 @@
 
 namespace OHOS {
 namespace PowerMgr {
-MockStatsRemoteObject::MockStatsRemoteObject(std::u16string descriptor) : IRemoteObject(descriptor)
-{
+MockStatsRemoteObject::MockStatsRemoteObject(std::u16string descriptor) : IRemoteObject(descriptor) {}
 
-}
-
-MockStatsRemoteObject::~MockStatsRemoteObject()
-{
-
-}
+MockStatsRemoteObject::~MockStatsRemoteObject() {}
 
 int32_t MockStatsRemoteObject::GetObjectRefCount()
 {

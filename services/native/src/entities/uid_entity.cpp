@@ -51,7 +51,7 @@ void UidEntity::UpdateUidMap(int32_t uid)
 std::vector<int32_t> UidEntity::GetUids()
 {
     std::vector<int32_t> uids;
-    std::transform(uidPowerMap_.begin(), uidPowerMap_.end(), std::back_inserter(uids), [](auto& item) {
+    std::transform(uidPowerMap_.begin(), uidPowerMap_.end(), std::back_inserter(uids), [](const auto& item) {
         return item.first;
     });
     return uids;
