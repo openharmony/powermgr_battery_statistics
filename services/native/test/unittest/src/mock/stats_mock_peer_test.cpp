@@ -23,25 +23,13 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsMockPeerTest::SetUpTestCase()
-{
+void StatsMockPeerTest::SetUpTestCase() {}
 
-}
+void StatsMockPeerTest::TearDownTestCase() {}
 
-void StatsMockPeerTest::TearDownTestCase()
-{
+void StatsMockPeerTest::SetUp() {}
 
-}
-
-void StatsMockPeerTest::SetUp()
-{
-
-}
-
-void StatsMockPeerTest::TearDown()
-{
-
-}
+void StatsMockPeerTest::TearDown() {}
 
 namespace {
 /**
