@@ -30,8 +30,6 @@ using namespace OHOS::PowerMgr;
 
 namespace {
 auto& g_batterystatsClient = BatteryStatsClient::GetInstance();
-constexpr int32_t MIN = 0;
-constexpr int32_t MAX = 3;
 constexpr int32_t DATANUM = 4;
 }
 
@@ -145,7 +143,7 @@ static void Reset(const uint8_t* data)
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    int32_t idSize = 8;
+    int32_t idSize = 4;
     int32_t cond[1];
     if (static_cast<int32_t>(size) > idSize) {
         if ((memcpy_s(cond, sizeof(cond), data, idSize)) != EOK) {
@@ -153,7 +151,8 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
         }
         std::random_device rd;
         std::default_random_engine engine(rd());
-        std::uniform_int_distribution<int32_t> randomNum(MIN, MAX);
+        std::uniform_int_distribution<int32_t> randomNum(static_cast<int32_t>(ApiNumber::NUM_ZERO),
+            static_cast<int32_t>(ApiNumber::NUM_END) - 1);
         int32_t number = randomNum(engine);
 
         switch (static_cast<ApiNumber>(number)) {
@@ -183,6 +182,9 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
                 break;
             case ApiNumber::NUM_EIGHT:
                 Reset(data);
+                break;
+            case ApiNumber::NUM_NINE:
+                g_batterystatsClient.GetLastError();
                 break;
             default:
                 break;
