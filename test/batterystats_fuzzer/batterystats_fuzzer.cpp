@@ -31,6 +31,7 @@ using namespace OHOS::PowerMgr;
 namespace {
 auto& g_batterystatsClient = BatteryStatsClient::GetInstance();
 constexpr int32_t DATANUM = 4;
+constexpr int32_t INDEX_0 = 0;
 }
 
 static void GetBatteryStats(const uint8_t* data)
@@ -99,7 +100,7 @@ static void GetPartStatsPercent(const uint8_t* data)
     g_batterystatsClient.GetPartStatsPercent(static_cast <BatteryStatsInfo::ConsumptionType>(type[0]));
 }
 
-static void GetTotalTimeSecond(const uint8_t* data)
+static void GetTotalTimeSecond(const uint8_t* data, size_t size)
 {
     int32_t type[1];
     int32_t idSize = 4;
@@ -107,14 +108,14 @@ static void GetTotalTimeSecond(const uint8_t* data)
     if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
         return;
     }
-    if ((memcpy_s(uid, sizeof(uid), (data+DATANUM), idSize)) != EOK) {
-        return;
+    if (size <= (idSize + DATANUM) || (memcpy_s(uid, sizeof(uid), (data + DATANUM), idSize) != EOK)) {
+        uid[INDEX_0] = type[INDEX_0];
     }
 
     g_batterystatsClient.GetTotalTimeSecond(static_cast <OHOS::PowerMgr::StatsUtils::StatsType>(type[0]), uid[0]);
 }
 
-static void GetTotalDataBytes(const uint8_t* data)
+static void GetTotalDataBytes(const uint8_t* data, size_t size)
 {
     int32_t type[1];
     int32_t idSize = 4;
@@ -122,8 +123,8 @@ static void GetTotalDataBytes(const uint8_t* data)
     if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
         return;
     }
-    if ((memcpy_s(uid, sizeof(uid), (data+DATANUM), idSize)) != EOK) {
-        return;
+    if (size <= (idSize + DATANUM) || (memcpy_s(uid, sizeof(uid), (data + DATANUM), idSize) != EOK)) {
+        uid[INDEX_0] = type[INDEX_0];
     }
 
     g_batterystatsClient.GetTotalDataBytes(static_cast <OHOS::PowerMgr::StatsUtils::StatsType>(type[0]), uid[0]);
@@ -175,10 +176,10 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
                 GetPartStatsPercent(data);
                 break;
             case ApiNumber::NUM_SIX:
-                GetTotalTimeSecond(data);
+                GetTotalTimeSecond(data, size);
                 break;
             case ApiNumber::NUM_SEVEN:
-                GetTotalDataBytes(data);
+                GetTotalDataBytes(data, size);
                 break;
             case ApiNumber::NUM_EIGHT:
                 Reset(data);
