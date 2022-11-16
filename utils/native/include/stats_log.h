@@ -23,7 +23,8 @@
 
 namespace OHOS {
 namespace PowerMgr {
-#define FORMAT(fmt, ...)  "[%{public}s:%{public}d] %{public}s# " fmt, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__
+#define FILE_NAME          (__builtin_strrchr("/" __FILE__, '/') + 1)
+#define FORMAT(fmt, ...) "[%{public}s:%{public}d] %{public}s# " fmt, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__
 
 #ifdef STATS_HILOGF
 #undef STATS_HILOGF
