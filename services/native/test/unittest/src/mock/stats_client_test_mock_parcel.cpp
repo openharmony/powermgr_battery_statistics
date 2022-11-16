@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_mock_parcel_test.h"
+#include "stats_client_test_mock_parcel.h"
 
 #include <hisysevent.h>
 
@@ -28,22 +28,22 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsMockParcelTest::SetUpTestCase() {}
+void StatsClientTestMockParcel::SetUpTestCase() {}
 
-void StatsMockParcelTest::TearDownTestCase() {}
+void StatsClientTestMockParcel::TearDownTestCase() {}
 
-void StatsMockParcelTest::SetUp() {}
+void StatsClientTestMockParcel::SetUp() {}
 
-void StatsMockParcelTest::TearDown() {}
+void StatsClientTestMockParcel::TearDown() {}
 
 namespace {
 /**
- * @tc.name: StatsMockParcelTest_001
+ * @tc.name: StatsClientTestMockParcel_001
  * @tc.desc: test BatteryStatsClient function
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_001, TestSize.Level0)
+HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_001, TestSize.Level0)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
@@ -65,12 +65,12 @@ HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_001, TestSize.Level0)
 }
 
 /**
- * @tc.name: StatsMockParcelTest_002
+ * @tc.name: StatsClientTestMockParcel_002
  * @tc.desc: test BatteryStatsProxy function(IRemoteObject is null)
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_002, TestSize.Level0)
+HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_002, TestSize.Level0)
 {
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(nullptr);
     sptrStatsProxy->Reset();
@@ -92,12 +92,12 @@ HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_002, TestSize.Level0)
 }
 
 /**
- * @tc.name: StatsMockParcelTest_003
+ * @tc.name: StatsClientTestMockParcel_003
  * @tc.desc: test BatteryStatsProxy function(IRemoteObject is not null)
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_003, TestSize.Level0)
+HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_003, TestSize.Level0)
 {
     sptr<IPCObjectStub> sptrRemoteObj = new IPCObjectStub();
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(sptrRemoteObj);
@@ -120,12 +120,12 @@ HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_003, TestSize.Level0)
 }
 
 /**
- * @tc.name: StatsMockParcelTest_004
+ * @tc.name: StatsClientTestMockParcel_004
  * @tc.desc: test class BatteryStatsInfo function
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockParcelTest, StatsMockParcelTest_004, TestSize.Level0)
+HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_004, TestSize.Level0)
 {
     std::shared_ptr<BatteryStatsInfo> sptrStatsInfo = std::make_shared<BatteryStatsInfo>();
     EXPECT_NE(sptrStatsInfo, nullptr);
