@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_mock_peer_test.h"
+#include "stats_client_test_mock_peer.h"
 
 #include "battery_stats_client.h"
 #include "battery_stats_proxy.h"
@@ -23,22 +23,22 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsMockPeerTest::SetUpTestCase() {}
+void StatsClientTestMockPeer::SetUpTestCase() {}
 
-void StatsMockPeerTest::TearDownTestCase() {}
+void StatsClientTestMockPeer::TearDownTestCase() {}
 
-void StatsMockPeerTest::SetUp() {}
+void StatsClientTestMockPeer::SetUp() {}
 
-void StatsMockPeerTest::TearDown() {}
+void StatsClientTestMockPeer::TearDown() {}
 
 namespace {
 /**
- * @tc.name: StatsMockPeerTest_001
+ * @tc.name: StatsClientTestMockPeer_001
  * @tc.desc: test BatteryStatsClient function(remoteObject is null)
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockPeerTest, StatsMockPeerTest_001, TestSize.Level0)
+HWTEST_F (StatsClientTestMockPeer, StatsClientTestMockPeer_001, TestSize.Level0)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();

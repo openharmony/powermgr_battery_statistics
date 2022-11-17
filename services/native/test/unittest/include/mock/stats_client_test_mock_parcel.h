@@ -13,14 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef STATS_MOCK_PARCEL_TEST_H
-#define STATS_MOCK_PARCEL_TEST_H
+#ifndef STATS_CLIENT_TEST_MOCK_PARCEL_H
+#define STATS_CLIENT_TEST_MOCK_PARCEL_H
 
 #include "stats_test.h"
 
 namespace OHOS {
 namespace PowerMgr {
-class StatsMockParcelTest : public testing::Test, public StatsTest {
+class StatsClientTestMockParcel : public testing::Test, public StatsTest {
 public:
     static void SetUpTestCase();
     static void TearDownTestCase();
@@ -29,4 +29,4 @@ public:
 };
 } // namespace PowerMgr
 } // namespace OHOS
-#endif // STATS_MOCK_PARCEL_TEST_H
+#endif // STATS_CLIENT_TEST_MOCK_PARCEL_H

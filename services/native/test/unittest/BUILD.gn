@@ -312,15 +312,15 @@ ohos_unittest("stats_util_test") {
   external_deps = deps_ex
 }
 
-############################mock_parcel_test#############################
-ohos_unittest("stats_mock_parcel_test") {
+############################client_test_mock_parcel#############################
+ohos_unittest("stats_client_test_mock_parcel") {
   module_out_path = module_output_path
 
   sources = [
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
     "mock/source/mock_message_parcel.cpp",
     "mock/source/mock_parcel.cpp",
-    "src/mock/stats_mock_parcel_test.cpp",
+    "src/mock/stats_client_test_mock_parcel.cpp",
   ]
 
   configs = [
@@ -339,14 +339,14 @@ ohos_unittest("stats_mock_parcel_test") {
   external_deps = deps_ex
 }
 
-############################mock_object_test#############################
-ohos_unittest("stats_mock_object_test") {
+############################client_test_mock_object#############################
+ohos_unittest("stats_client_test_mock_object") {
   module_out_path = module_output_path
 
   sources = [
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
     "mock/source/mock_stats_remote_object.cpp",
-    "src/mock/stats_mock_object_test.cpp",
+    "src/mock/stats_client_test_mock_object.cpp",
   ]
 
   configs = [
@@ -366,13 +366,13 @@ ohos_unittest("stats_mock_object_test") {
 }
 
 ############################mock_peer_test#############################
-ohos_unittest("stats_mock_peer_test") {
+ohos_unittest("stats_client_test_mock_peer") {
   module_out_path = module_output_path
 
   sources = [
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
     "mock/source/mock_peer_holder.cpp",
-    "src/mock/stats_mock_peer_test.cpp",
+    "src/mock/stats_client_test_mock_peer.cpp",
   ]
 
   configs = [
@@ -397,12 +397,12 @@ group("unittest") {
     ":stats_audio_test",
     ":stats_bluetooth_test",
     ":stats_camera_test",
+    ":stats_client_test_mock_object",
+    ":stats_client_test_mock_parcel",
+    ":stats_client_test_mock_peer",
     ":stats_display_test",
     ":stats_dump_test",
     ":stats_location_test",
-    ":stats_mock_object_test",
-    ":stats_mock_parcel_test",
-    ":stats_mock_peer_test",
     ":stats_phone_test",
     ":stats_powermgr_test",
     ":stats_service_test",

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "stats_mock_object_test.h"
+#include "stats_client_test_mock_object.h"
 
 #include "battery_stats_proxy.h"
 #include "mock_stats_remote_object.h"
@@ -23,22 +23,22 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsMockObjectTest::SetUpTestCase() {}
+void StatsClientTestMockObject::SetUpTestCase() {}
 
-void StatsMockObjectTest::TearDownTestCase() {}
+void StatsClientTestMockObject::TearDownTestCase() {}
 
-void StatsMockObjectTest::SetUp() {}
+void StatsClientTestMockObject::SetUp() {}
 
-void StatsMockObjectTest::TearDown() {}
+void StatsClientTestMockObject::TearDown() {}
 
 namespace {
 /**
- * @tc.name: StatsMockObjectTest_001
+ * @tc.name: StatsClientTestMockObject_001
  * @tc.desc: test BatteryStatsProxy function(IRemoteObject is mock, "SendRequest" function return false)
  * @tc.type: FUNC
  * @tc.require: issueI5X13X
  */
-HWTEST_F (StatsMockObjectTest, StatsMockObjectTest_001, TestSize.Level0)
+HWTEST_F (StatsClientTestMockObject, StatsClientTestMockObject_001, TestSize.Level0)
 {
     sptr<MockStatsRemoteObject> sptrRemoteObj = new MockStatsRemoteObject();
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(sptrRemoteObj);
