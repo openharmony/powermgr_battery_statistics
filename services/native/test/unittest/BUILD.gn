@@ -28,6 +28,15 @@ config("module_private_config") {
   ]
 }
 
+config("module_mock_private_config") {
+  include_dirs = [
+    "include/mock",
+    "mock/include",
+    "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include/",
+    "//commonlibrary/c_utils/base/include/",
+  ]
+}
+
 deps_ex = [
   "ability_base:base",
   "ability_base:want",
@@ -287,6 +296,100 @@ ohos_unittest("stats_alarm_test") {
   external_deps = deps_ex
 }
 
+############################util_test#############################
+ohos_unittest("stats_util_test") {
+  module_out_path = module_output_path
+
+  sources = [ "src/stats_util_test.cpp" ]
+
+  configs = [ ":module_private_config" ]
+
+  deps = [
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+  ]
+
+  external_deps = deps_ex
+}
+
+############################mock_parcel_test#############################
+ohos_unittest("stats_mock_parcel_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
+    "mock/source/mock_message_parcel.cpp",
+    "mock/source/mock_parcel.cpp",
+    "src/mock/stats_mock_parcel_test.cpp",
+  ]
+
+  configs = [
+    ":module_mock_private_config",
+    ":module_private_config",
+  ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
+  ]
+
+  external_deps = deps_ex
+}
+
+############################mock_object_test#############################
+ohos_unittest("stats_mock_object_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
+    "mock/source/mock_stats_remote_object.cpp",
+    "src/mock/stats_mock_object_test.cpp",
+  ]
+
+  configs = [
+    ":module_mock_private_config",
+    ":module_private_config",
+  ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
+  ]
+
+  external_deps = deps_ex
+}
+
+############################mock_peer_test#############################
+ohos_unittest("stats_mock_peer_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
+    "mock/source/mock_peer_holder.cpp",
+    "src/mock/stats_mock_peer_test.cpp",
+  ]
+
+  configs = [
+    ":module_mock_private_config",
+    ":module_private_config",
+  ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
+  ]
+
+  external_deps = deps_ex
+}
 group("unittest") {
   testonly = true
   deps = [
@@ -297,9 +400,13 @@ group("unittest") {
     ":stats_display_test",
     ":stats_dump_test",
     ":stats_location_test",
+    ":stats_mock_object_test",
+    ":stats_mock_parcel_test",
+    ":stats_mock_peer_test",
     ":stats_phone_test",
     ":stats_powermgr_test",
     ":stats_service_test",
+    ":stats_util_test",
     ":stats_wifi_test",
   ]
 }

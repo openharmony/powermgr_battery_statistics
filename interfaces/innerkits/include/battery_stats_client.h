@@ -31,7 +31,7 @@
 namespace OHOS {
 namespace PowerMgr {
 class BatteryStatsClient final : public DelayedRefSingleton<BatteryStatsClient> {
-    DECLARE_DELAYED_REF_SINGLETON(BatteryStatsClient)
+    DECLARE_DELAYED_REF_SINGLETON(BatteryStatsClient);
 
 public:
     DISALLOW_COPY_AND_MOVE(BatteryStatsClient);

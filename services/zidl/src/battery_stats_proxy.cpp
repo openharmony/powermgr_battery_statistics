@@ -275,7 +275,7 @@ std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, u
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
         STATS_HILOGE(COMP_FWK, "Write descriptor failed");
-        return 0;
+        return result;
     }
 
     data.WriteUint32(argc);
