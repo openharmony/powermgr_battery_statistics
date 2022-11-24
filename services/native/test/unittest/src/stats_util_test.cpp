@@ -288,14 +288,14 @@ HWTEST_F (StatsUtilTest, StatsHelper_006, TestSize.Level0)
     EXPECT_FALSE(StatsHelper::IsOnBattery());
     timeMs = StatsHelper::GetOnBatteryUpTimeMs();
     usleep(TIMER_DURATION_MS * US_PER_MS);
-    durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs); 
+    durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs);
     EXPECT_EQ(durationTimeMs, 0);
 
     StatsHelper::SetOnBattery(true);
     EXPECT_TRUE(StatsHelper::IsOnBattery());
     timeMs = StatsHelper::GetOnBatteryUpTimeMs();
     usleep(TIMER_DURATION_MS * US_PER_MS);
-    durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs); 
+    durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs);
     devTimeMs = abs(durationTimeMs - TIMER_DURATION_MS);
     EXPECT_LE(devTimeMs, DEVIATION_TIMER_THRESHOLD);
 }

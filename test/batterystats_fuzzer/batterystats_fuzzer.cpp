@@ -30,7 +30,7 @@ using namespace OHOS::PowerMgr;
 
 namespace {
 auto& g_batterystatsClient = BatteryStatsClient::GetInstance();
-constexpr int32_t DATANUM = 4;
+constexpr size_t DATANUM = 4;
 constexpr int32_t INDEX_0 = 0;
 }
 
@@ -103,7 +103,7 @@ static void GetPartStatsPercent(const uint8_t* data)
 static void GetTotalTimeSecond(const uint8_t* data, size_t size)
 {
     int32_t type[1];
-    int32_t idSize = 4;
+    size_t idSize = 4;
     int32_t uid[1];
     if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
         return;
@@ -118,7 +118,7 @@ static void GetTotalTimeSecond(const uint8_t* data, size_t size)
 static void GetTotalDataBytes(const uint8_t* data, size_t size)
 {
     int32_t type[1];
-    int32_t idSize = 4;
+    size_t idSize = 4;
     int32_t uid[1];
     if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
         return;

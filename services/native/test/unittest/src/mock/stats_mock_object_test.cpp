@@ -23,26 +23,6 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsMockObjectTest::SetUpTestCase()
-{
-
-}
-
-void StatsMockObjectTest::TearDownTestCase()
-{
-
-}
-
-void StatsMockObjectTest::SetUp()
-{
-
-}
-
-void StatsMockObjectTest::TearDown()
-{
-
-}
-
 namespace {
 /**
  * @tc.name: StatsMockObjectTest_001
