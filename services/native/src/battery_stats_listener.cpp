@@ -590,7 +590,6 @@ void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const 
 void BatteryStatsListener::OnServiceDied()
 {
     STATS_HILOGE(COMP_SVC, "Service disconnected");
-    exit(0);
 }
 } // namespace PowerMgr
 } // namespace OHOS
