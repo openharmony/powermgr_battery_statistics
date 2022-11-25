@@ -51,9 +51,6 @@
         },
         "build": {
             "group_type": {
-                "base_group": [
-                    "//base/powermgr/battery_statistics/utils:batterystat_dump"
-                ],
                 "fwk_group": [
                     "//base/powermgr/battery_statistics/frameworks/js/napi:batterystatistics",
                     "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client"
