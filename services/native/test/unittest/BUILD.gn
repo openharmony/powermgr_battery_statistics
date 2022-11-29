@@ -65,6 +65,27 @@ ohos_unittest("stats_service_test") {
   external_deps = deps_ex
 }
 
+############################service_death_test#############################
+ohos_unittest("stats_service_death_test") {
+  module_out_path = module_output_path
+
+  sources = [ "src/stats_service_death_test.cpp" ]
+
+  configs = [ ":module_private_config" ]
+
+  defines = [ "STATS_SERVICE_DEATH_UT" ]
+
+  deps = [
+    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_service_path}:batterystats_service",
+    "${batterystats_utils_path}:batterystats_utils",
+    "//third_party/googletest:gtest_main",
+    "//third_party/jsoncpp:jsoncpp",
+  ]
+
+  external_deps = deps_ex
+}
+
 ############################wifi_test#############################
 ohos_unittest("stats_wifi_test") {
   module_out_path = module_output_path
@@ -405,6 +426,7 @@ group("unittest") {
     ":stats_location_test",
     ":stats_phone_test",
     ":stats_powermgr_test",
+    ":stats_service_death_test",
     ":stats_service_test",
     ":stats_util_test",
     ":stats_wifi_test",
