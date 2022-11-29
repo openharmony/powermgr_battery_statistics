@@ -46,7 +46,10 @@ public:
     void Reset();
     std::string Dump(const std::vector<std::string>& args);
     StatsError GetLastError();
+
+#ifndef STATS_SERVICE_DEATH_UT
 private:
+#endif
     class BatteryStatsDeathRecipient : public IRemoteObject::DeathRecipient {
     public:
         BatteryStatsDeathRecipient() = default;
