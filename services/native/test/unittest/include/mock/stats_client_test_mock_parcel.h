@@ -20,13 +20,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class StatsClientTestMockParcel : public testing::Test, public StatsTest {
-public:
-    static void SetUpTestCase();
-    static void TearDownTestCase();
-    void SetUp();
-    void TearDown();
-};
+class StatsClientTestMockParcel : public testing::Test, public StatsTest {};
 } // namespace PowerMgr
 } // namespace OHOS
 #endif // STATS_CLIENT_TEST_MOCK_PARCEL_H

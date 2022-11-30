@@ -28,14 +28,6 @@ using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
 
-void StatsClientTestMockParcel::SetUpTestCase() {}
-
-void StatsClientTestMockParcel::TearDownTestCase() {}
-
-void StatsClientTestMockParcel::SetUp() {}
-
-void StatsClientTestMockParcel::TearDown() {}
-
 namespace {
 /**
  * @tc.name: StatsClientTestMockParcel_001
