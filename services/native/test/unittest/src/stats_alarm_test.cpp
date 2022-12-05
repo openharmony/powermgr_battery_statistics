@@ -64,7 +64,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
     int16_t count = 10;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
+        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
@@ -94,7 +94,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
     int16_t count = 10;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
+        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
@@ -125,7 +125,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
     double zeroPercent = 0;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
+        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
     }
 
@@ -151,7 +151,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
     int16_t count = 10;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
+        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
         "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
