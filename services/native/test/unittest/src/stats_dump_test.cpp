@@ -67,7 +67,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
     int32_t batteryLevel = 60;
     int32_t batteryChargerType = 2;
 
-    HiSysEvent::Write("BATTERY", "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
+    HiSysEventWrite(HiSysEvent::Domain::BATTERY, "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
         batteryLevel, "CHARGER", batteryChargerType);
 
     std::string expectedDebugInfo;
@@ -100,10 +100,10 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
     int32_t type = static_cast<int32_t>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " StatsDumpTest_002";
 
-    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     usleep(US_PER_MS);
-    HiSysEvent::Write("POWER", "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
 
     std::string expectedDebugInfo;
@@ -137,7 +137,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 
     int32_t ratio = 100;
 
-    HiSysEvent::Write("DISPLAY", "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
@@ -168,7 +168,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEvent::Write(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
 
     std::string expectedDebugInfo;
@@ -203,7 +203,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
     std::string partName = "Battery";
     int32_t temperature = 40;
 
-    HiSysEvent::Write("THERMAL", "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
+    HiSysEventWrite(HiSysEvent::Domain::THERMAL, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
         partName, "TEMPERATURE", temperature);
 
     std::string expectedDebugInfo;
@@ -237,7 +237,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
     int32_t callAppUid = 9568;
     int32_t result = 1;
 
-    HiSysEvent::Write("DISTSCHEDULE", "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR,
+    HiSysEventWrite(HiSysEvent::Domain::DISTRIBUTED_SCHEDULE, "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR,
         "CALLING_TYPE", callType, "CALLING_UID", callUid, "CALLING_PID", callPid, "TARGET_BUNDLE", targetBundle,
         "TARGET_ABILITY", targetAbility, "CALLING_APP_UID", callAppUid, "RESULT", result);
 
@@ -270,7 +270,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
     int32_t beginPos = 0;
     int32_t ratioLen = 4;
 
-    HiviewDFX::HiSysEvent::Write("THERMAL", "THERMAL_ACTION_TRIGGERED",
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::THERMAL, "THERMAL_ACTION_TRIGGERED",
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
 
     std::string expectedDebugInfo;
@@ -303,7 +303,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
     int32_t type = 100;
     int32_t level = 101;
 
-    HiSysEvent::Write("DISPLAY", "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")

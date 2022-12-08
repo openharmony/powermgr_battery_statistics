@@ -33,10 +33,10 @@ static void SetLastBrightness(int32_t lastBrightness)
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
 
     GTEST_LOG_(INFO) << __func__ << ": Set last screen brightness value = " << lastBrightness;
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", lastBrightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", lastBrightness);
     usleep(StatsTest::POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     auto& statsClient = BatteryStatsClient::GetInstance();
     GTEST_LOG_(INFO) << __func__ << ": Battery stats client reset";
@@ -83,10 +83,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_001, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 100;
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     statsClient.Reset();
@@ -111,10 +111,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_002, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
     int32_t brightness = 120;
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
@@ -140,10 +140,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_003, TestSize.Level0)
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
@@ -171,10 +171,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_004, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -197,10 +197,10 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_005, TestSize.Level0)
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
@@ -236,9 +236,9 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_006, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
@@ -268,13 +268,13 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_007, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
@@ -298,7 +298,7 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_008, TestSize.Level0)
 
     int32_t brightness = 100;
 
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -327,12 +327,12 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_009, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
@@ -363,11 +363,11 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_010, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double screenOnPower = screenOnAverage * 2 * POWER_CONSUMPTION_DURATION_US;
     double lastBrightnessPower = screenBrightnessAverage * lastBrightness * POWER_CONSUMPTION_DURATION_US;
@@ -401,13 +401,13 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness1);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness2);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness2);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
@@ -438,14 +438,14 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
     int32_t step = 3;
 
     SetLastBrightness(lastBrightness);
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
     for (int32_t i = 0; i < count; i++) {
         brightness = brightnessBegin + step * i;
-        HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+        HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
         usleep(POWER_CONSUMPTION_DURATION_US);
     }
-    HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     long expectScreenOnTime = POWER_CONSUMPTION_DURATION_US * (count + 1) / US_PER_SECOND;
     long screenOnTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_ON);
