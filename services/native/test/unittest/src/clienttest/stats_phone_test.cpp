@@ -125,7 +125,7 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_003, TestSize.Level0)
     HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    
+
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
@@ -363,7 +363,7 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_011, TestSize.Level0)
     HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-    
+
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);

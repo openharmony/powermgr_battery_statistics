@@ -20,7 +20,8 @@ config("module_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "include",
+    "${batterystats_service_native}/test/unittest/include",
+    "${batterystats_service_native}/test/unittest/include/clienttest",
     "${batterystats_service_native}/include",
     "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common",
@@ -30,8 +31,8 @@ config("module_private_config") {
 
 config("module_mock_private_config") {
   include_dirs = [
-    "include/mock",
-    "mock/include",
+    "${batterystats_service_native}/test/unittest/include/clienttest/mock",
+    "${batterystats_service_native}/test/unittest/mock/include",
     "//foundation/communication/ipc/interfaces/innerkits/ipc_core/include/",
     "//commonlibrary/c_utils/base/include/",
   ]
@@ -56,7 +57,7 @@ deps_ex = [
 ohos_unittest("stats_service_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_service_test.cpp" ]
+  sources = [ "stats_service_test.cpp" ]
 
   configs = [ ":module_private_config" ]
 
@@ -69,7 +70,7 @@ ohos_unittest("stats_service_test") {
 ohos_unittest("stats_service_death_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_service_death_test.cpp" ]
+  sources = [ "stats_service_death_test.cpp" ]
 
   configs = [ ":module_private_config" ]
 
@@ -92,7 +93,7 @@ ohos_unittest("stats_wifi_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_wifi_test.cpp",
+    "stats_wifi_test.cpp",
   ]
 
   configs = [
@@ -117,7 +118,7 @@ ohos_unittest("stats_camera_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_camera_test.cpp",
+    "stats_camera_test.cpp",
   ]
 
   configs = [
@@ -142,7 +143,7 @@ ohos_unittest("stats_audio_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_audio_test.cpp",
+    "stats_audio_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -164,7 +165,7 @@ ohos_unittest("stats_powermgr_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_powermgr_test.cpp",
+    "stats_powermgr_test.cpp",
   ]
 
   configs = [
@@ -189,7 +190,7 @@ ohos_unittest("stats_location_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_location_test.cpp",
+    "stats_location_test.cpp",
   ]
 
   configs = [
@@ -212,7 +213,7 @@ ohos_unittest("stats_location_test") {
 ohos_unittest("stats_dump_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_dump_test.cpp" ]
+  sources = [ "stats_dump_test.cpp" ]
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
@@ -235,7 +236,7 @@ ohos_unittest("stats_display_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_display_test.cpp",
+    "stats_display_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -257,7 +258,7 @@ ohos_unittest("stats_phone_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_phone_test.cpp",
+    "stats_phone_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -279,7 +280,7 @@ ohos_unittest("stats_bluetooth_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_bluetooth_test.cpp",
+    "stats_bluetooth_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -301,7 +302,7 @@ ohos_unittest("stats_alarm_test") {
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
-    "src/stats_alarm_test.cpp",
+    "stats_alarm_test.cpp",
   ]
 
   configs = [ ":module_private_config" ]
@@ -321,7 +322,7 @@ ohos_unittest("stats_alarm_test") {
 ohos_unittest("stats_util_test") {
   module_out_path = module_output_path
 
-  sources = [ "src/stats_util_test.cpp" ]
+  sources = [ "stats_util_test.cpp" ]
 
   configs = [ ":module_private_config" ]
 
@@ -338,10 +339,10 @@ ohos_unittest("stats_client_test_mock_parcel") {
   module_out_path = module_output_path
 
   sources = [
+    "${batterystats_service_native}/test/unittest/mock/source/mock_message_parcel.cpp",
+    "${batterystats_service_native}/test/unittest/mock/source/mock_parcel.cpp",
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
-    "mock/source/mock_message_parcel.cpp",
-    "mock/source/mock_parcel.cpp",
-    "src/mock/stats_client_test_mock_parcel.cpp",
+    "mock/stats_client_test_mock_parcel.cpp",
   ]
 
   configs = [
@@ -365,9 +366,9 @@ ohos_unittest("stats_client_test_mock_object") {
   module_out_path = module_output_path
 
   sources = [
+    "${batterystats_service_native}/test/unittest/mock/source/mock_stats_remote_object.cpp",
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
-    "mock/source/mock_stats_remote_object.cpp",
-    "src/mock/stats_client_test_mock_object.cpp",
+    "mock/stats_client_test_mock_object.cpp",
   ]
 
   configs = [
@@ -391,9 +392,9 @@ ohos_unittest("stats_client_test_mock_peer") {
   module_out_path = module_output_path
 
   sources = [
+    "${batterystats_service_native}/test/unittest/mock/source/mock_peer_holder.cpp",
     "${batterystats_service_path}/zidl/src/battery_stats_proxy.cpp",
-    "mock/source/mock_peer_holder.cpp",
-    "src/mock/stats_client_test_mock_peer.cpp",
+    "mock/stats_client_test_mock_peer.cpp",
   ]
 
   configs = [
