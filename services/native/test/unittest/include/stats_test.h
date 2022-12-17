@@ -30,6 +30,7 @@ static constexpr int32_t US_PER_SECOND = 1000000;
 static constexpr int32_t US_PER_MS = 1000;
 static constexpr int32_t POWER_CONSUMPTION_TRIGGERED_US = 20000;
 static constexpr int32_t POWER_CONSUMPTION_DURATION_US = 300000;
+static constexpr int32_t SERVICE_POWER_CONSUMPTION_DURATION_US = 200000;
 static constexpr double DEVIATION_PERCENT_THRESHOLD = 0.05;
 static constexpr int64_t TIMER_DURATION_MS = 50;
 static constexpr int32_t DEVIATION_TIMER_THRESHOLD = 5;

@@ -349,7 +349,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_001, TestSize.Level0)
     EXPECT_EQ(uid, sptrStatsInfo->GetUid());
     sptrStatsInfo->SetUserId(StatsUtils::INVALID_VALUE);
     EXPECT_EQ(userId, sptrStatsInfo->GetUserId());
-    
+
     Parcel infoParcel = {};
     EXPECT_EQ(nullptr, sptrStatsInfo->Unmarshalling(infoParcel));
 

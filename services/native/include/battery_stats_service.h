@@ -56,7 +56,10 @@ public:
     std::shared_ptr<BatteryStatsCore> GetBatteryStatsCore() const;
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
+
+#ifndef STATS_SERVICE_UT_TEST
 private:
+#endif
     static constexpr int32_t DEPENDENCY_CHECK_DELAY_MS = 2000;
     bool Init();
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
