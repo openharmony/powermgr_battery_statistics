@@ -18,6 +18,7 @@
 #include <display_power_info.h>
 #include <hisysevent.h>
 
+#include "stats_log.h"
 #include "battery_stats_client.h"
 #include "power_mgr_client.h"
 
@@ -426,6 +427,7 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsDisplayTest_012 is start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -442,7 +444,9 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
     usleep(POWER_CONSUMPTION_DURATION_US);
     for (int32_t i = 0; i < count; i++) {
         brightness = brightnessBegin + step * i;
-        HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+        auto ret = HiSysEvent::Write("DISPLAY", "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC,
+            "BRIGHTNESS", brightness);
+        STATS_HILOGD(LABEL_TEST, "HiSysEventWrite return: %{public}d", ret);
         usleep(POWER_CONSUMPTION_DURATION_US);
     }
     HiSysEvent::Write("DISPLAY", "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
@@ -458,5 +462,6 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_012, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectBrightnessTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  brightnessTime << " seconds";
     EXPECT_EQ(expectBrightnessTime, brightnessTime);
+    STATS_HILOGD(LABEL_TEST, "StatsDisplayTest_012 is end");
 }
 }

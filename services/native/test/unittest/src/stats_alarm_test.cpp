@@ -61,7 +61,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
 
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
@@ -91,7 +91,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
@@ -120,7 +120,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
 
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int16_t count = 10;
+    int16_t count = 2;
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -148,7 +148,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
 
     int32_t uid = 10003;
     int32_t pid = 3458;
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("TIME", "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,

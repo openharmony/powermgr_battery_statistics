@@ -17,6 +17,7 @@
 
 #include <hisysevent.h>
 #include <wifi_hisysevent.h>
+#include "stats_log.h"
 
 #include "battery_stats_client.h"
 
@@ -285,7 +286,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_09, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
@@ -312,7 +313,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_010, TestSize.Level0)
     statsClient.Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
@@ -340,7 +341,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_011, TestSize.Level0)
 
     double fullPercent = 1;
     double zeroPercent = 0;
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
@@ -364,7 +365,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_012, TestSize.Level0)
     statsClient.Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
-    int16_t count = 10;
+    int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
@@ -396,7 +397,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_013, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int16_t count = 10;
+    int16_t count = 2;
     for (int16_t i = 0; i < count; i++) {
         HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
@@ -422,7 +423,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    int16_t count = 10;
+    int16_t count = 2;
 
     HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
@@ -459,7 +460,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
 
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    int16_t count = 10;
+    int16_t count = 2;
 
     HiSysEvent::Write("COMMUNICATION", "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
@@ -517,16 +518,18 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_017 is start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
-    int16_t totalCount = 20;
-    int16_t delayCount = 10;
-    int16_t startDelayPos = 5;
+    int16_t totalCount = 3;
+    int16_t delayCount = 1;
+    int16_t startDelayPos = 1;
 
     for (int16_t i = 0; i < totalCount; i++) {
-        HiSysEvent::Write("COMMUNICATION", "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+        auto ret =  HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+        STATS_HILOGD(LABEL_TEST, "HiSysEventWrite return: %{public}d", ret);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
         if (i == startDelayPos) {
             statsClient.SetOnBattery(false);
@@ -544,6 +547,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_017 is end");
 }
 
 /**
