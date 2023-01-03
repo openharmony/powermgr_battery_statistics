@@ -75,7 +75,6 @@
                 }
             ],
             "test": [
-                "//base/powermgr/battery_statistics/interfaces/kits/js/test:batterystats_js_interface_test",
                 "//base/powermgr/battery_statistics/services/native/test/:batterystats_test",
                 "//base/powermgr/battery_statistics/test/:fuzztest",
                 "//base/powermgr/battery_statistics/test/:systemtest"
