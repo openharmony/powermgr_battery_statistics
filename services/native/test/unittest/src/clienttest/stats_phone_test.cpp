@@ -690,10 +690,10 @@ HWTEST_F (StatsPhoneTest, StatsPhoneTest_020, TestSize.Level0)
     int32_t stateRunning = 2;
     int32_t stateStopped = 3;
 
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
