@@ -82,7 +82,7 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     } else if (eventName == "CAMERA_CONNECT" || eventName == "CAMERA_DISCONNECT" ||
         eventName == "FLASHLIGHT_ON" || eventName == "FLASHLIGHT_OFF") {
         ProcessCameraEvent(data, root, eventName);
-    } else if (eventName == "AUDIO_STREAM_CHANGE") {
+    } else if (eventName == "STREAM_CHANGE") {
         ProcessAudioEvent(data, root);
     } else if (eventName == "POWER_SENSOR_GRAVITY" || eventName == "POWER_SENSOR_PROXIMITY") {
         ProcessSensorEvent(data, root, eventName);

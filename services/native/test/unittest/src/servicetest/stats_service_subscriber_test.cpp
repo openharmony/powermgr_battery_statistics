@@ -192,11 +192,11 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_003, TestSize.L
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -231,31 +231,31 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_004, TestSize.L
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_NONE);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_AC);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_BUTT);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -286,11 +286,11 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_005, TestSize.L
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "AUDIO_STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_AC);
