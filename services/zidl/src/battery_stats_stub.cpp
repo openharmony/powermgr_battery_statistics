@@ -15,9 +15,10 @@
 
 #include "battery_stats_stub.h"
 
-#include "errors.h"
 #include "battery_stats_info.h"
+#include "errors.h"
 #include "ipc_object_stub.h"
+#include "stats_common.h"
 #include "stats_errors.h"
 #include "stats_log.h"
 #include "stats_utils.h"
@@ -115,6 +116,8 @@ int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
         }
         templateVal->Marshalling(reply);
     }
+    int32_t error = static_cast<int32_t>(GetLastError());
+    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -155,6 +158,8 @@ int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel&
         STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
+    int32_t error = static_cast<int32_t>(GetLastError());
+    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -167,6 +172,8 @@ int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessagePar
         STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
+    int32_t error = static_cast<int32_t>(GetLastError());
+    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -180,6 +187,8 @@ int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel
         STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
+    int32_t error = static_cast<int32_t>(GetLastError());
+    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -193,6 +202,8 @@ int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessagePa
         STATS_HILOGE(COMP_SVC, "Write ret failed");
         return false;
     }
+    int32_t error = static_cast<int32_t>(GetLastError());
+    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 

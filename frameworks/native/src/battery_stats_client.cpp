@@ -174,9 +174,13 @@ std::string BatteryStatsClient::Dump(const std::vector<std::string>& args)
 
 StatsError BatteryStatsClient::GetLastError()
 {
-    StatsError tmpError = lastError_;
-    lastError_ = StatsError::ERR_OK;
-    return tmpError;
+    if (lastError_ != StatsError::ERR_OK) {
+        StatsError tmpError = lastError_;
+        lastError_ = StatsError::ERR_OK;
+        return tmpError;
+    }
+    STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, StatsError::ERR_CONNECTION_FAIL);
+    return proxy_->GetLastError();
 }
 }  // namespace PowerMgr
 }  // namespace OHOS

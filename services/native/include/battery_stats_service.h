@@ -56,6 +56,7 @@ public:
     std::shared_ptr<BatteryStatsCore> GetBatteryStatsCore() const;
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
+    StatsError GetLastError() override;
 
 #ifndef STATS_SERVICE_UT_TEST
 private:
@@ -71,6 +72,7 @@ private:
     std::shared_ptr<HiviewDFX::HiSysEventListener> listenerPtr_;
     bool ready_ = false;
     std::mutex mutex_;
+    StatsError lastError_ = StatsError::ERR_OK;
     bool SubscribeCommonEvent();
     bool AddHiSysEventListener();
 };

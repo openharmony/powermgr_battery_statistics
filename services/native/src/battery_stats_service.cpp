@@ -180,7 +180,13 @@ bool BatteryStatsService::IsServiceReady() const
 BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 {
     BatteryStatsInfoList statsInfoList = {};
-    if (!Permission::IsSystem()) {
+    if (Permission::IsHap()) {
+        if (!Permission::IsSystemHap()) {
+            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+            return statsInfoList;
+        }
+    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
+        lastError_ = StatsError::ERR_PERMISSION_DENIED;
         return statsInfoList;
     }
     core_->ComputePower();
@@ -209,7 +215,13 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
 
 double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 {
-    if (!Permission::IsSystem()) {
+    if (Permission::IsHap()) {
+        if (!Permission::IsSystemHap()) {
+            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+            return StatsUtils::DEFAULT_VALUE;
+        }
+    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
+        lastError_ = StatsError::ERR_PERMISSION_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -218,7 +230,13 @@ double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 
 double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 {
-    if (!Permission::IsSystem()) {
+    if (Permission::IsHap()) {
+        if (!Permission::IsSystemHap()) {
+            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+            return StatsUtils::DEFAULT_VALUE;
+        }
+    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
+        lastError_ = StatsError::ERR_PERMISSION_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -227,7 +245,13 @@ double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 
 double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
-    if (!Permission::IsSystem()) {
+    if (Permission::IsHap()) {
+        if (!Permission::IsSystemHap()) {
+            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+            return StatsUtils::DEFAULT_VALUE;
+        }
+    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
+        lastError_ = StatsError::ERR_PERMISSION_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -236,7 +260,13 @@ double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionT
 
 double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
-    if (!Permission::IsSystem()) {
+    if (Permission::IsHap()) {
+        if (!Permission::IsSystemHap()) {
+            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+            return StatsUtils::DEFAULT_VALUE;
+        }
+    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
+        lastError_ = StatsError::ERR_PERMISSION_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -295,6 +325,13 @@ std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args,
     bool ret = BatteryStatsDumper::Dump(args, result);
     STATS_HILOGI(COMP_SVC, "PID: %{public}d, Dump result :%{public}d", pid, ret);
     return result;
+}
+
+StatsError BatteryStatsService::GetLastError()
+{
+    StatsError tmpError = lastError_;
+    lastError_ = StatsError::ERR_OK;
+    return tmpError;
 }
 } // namespace PowerMgr
 } // namespace OHOS

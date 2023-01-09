@@ -19,6 +19,7 @@
 #include "iremote_broker.h"
 #include "iremote_object.h"
 
+#include "battery_stats_errors.h"
 #include "battery_stats_info.h"
 
 namespace OHOS {
@@ -49,6 +50,7 @@ public:
         const int32_t& uid = StatsUtils::INVALID_VALUE) = 0;
     virtual void Reset() = 0;
     virtual std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) = 0;
+    virtual StatsError GetLastError() = 0;
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.powermgr.IBatteryStats");
 };
