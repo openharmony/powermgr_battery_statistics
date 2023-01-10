@@ -88,9 +88,9 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
         ProcessSensorEvent(data, root, eventName);
     } else if (eventName == "GNSS_STATE") {
         ProcessGnssEvent(data, root);
-    } else if (eventName == "BLUETOOTH_BR_SWITCH_STATE" || eventName == "BLUETOOTH_DISCOVERY_STATE" ||
-        eventName == "BLUETOOTH_BLE_STATE" || eventName == "BLUETOOTH_BLE_SCAN_START" ||
-        eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+    } else if (eventName == "BR_SWITCH_STATE" || eventName == "DISCOVERY_STATE" ||
+        eventName == "BLE_SWITCH_STATE" || eventName == "BLE_SCAN_START" ||
+        eventName == "BLE_SCAN_STOP") {
         ProcessBluetoothEvent(data, root, eventName);
     } else if (eventName == "WIFI_CONNECTION" || eventName == "WIFI_SCAN") {
         ProcessWifiEvent(data, root, eventName);
@@ -202,7 +202,7 @@ void BatteryStatsListener::ProcessGnssEvent(StatsUtils::StatsData& data, const J
 void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const Json::Value& root,
     const std::string& eventName)
 {
-    if (eventName == "BLUETOOTH_BR_SWITCH_STATE") {
+    if (eventName == "BR_SWITCH_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
         if (!root["STATE"].asString().empty()) {
             if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
@@ -211,7 +211,7 @@ void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, 
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
-    } else if (eventName == "BLUETOOTH_DISCOVERY_STATE") {
+    } else if (eventName == "DISCOVERY_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
         if (!root["STATE"].asString().empty()) {
             if (stoi(root["STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
@@ -232,7 +232,7 @@ void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, 
 void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const Json::Value& root,
     const std::string& eventName)
 {
-    if (eventName == "BLUETOOTH_BLE_STATE") {
+    if (eventName == "BLE_SWITCH_STATE") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
         if (!root["STATE"].asString().empty()) {
             if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
@@ -241,11 +241,11 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
-    } else if (eventName == "BLUETOOTH_BLE_SCAN_START" || eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+    } else if (eventName == "BLE_SCAN_START" || eventName == "BLE_SCAN_STOP") {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN;
-        if (eventName == "BLUETOOTH_BLE_SCAN_START") {
+        if (eventName == "BLE_SCAN_START") {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+        } else if (eventName == "BLE_SCAN_STOP") {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
         if (!root["UID"].asString().empty()) {
@@ -260,10 +260,10 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
 void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root,
     const std::string& eventName)
 {
-    if (eventName == "BLUETOOTH_BR_SWITCH_STATE" || eventName == "BLUETOOTH_DISCOVERY_STATE") {
+    if (eventName == "BR_SWITCH_STATE" || eventName == "DISCOVERY_STATE") {
         ProcessBluetoothBrEvent(data, root, eventName);
-    } else if (eventName == "BLUETOOTH_BLE_STATE" ||eventName == "BLUETOOTH_BLE_SCAN_START" ||
-        eventName == "BLUETOOTH_BLE_SCAN_STOP") {
+    } else if (eventName == "BLE_SWITCH_STATE" ||eventName == "BLE_SCAN_START" ||
+        eventName == "BLE_SCAN_STOP") {
         ProcessBluetoothBleEvent(data, root, eventName);
     }
 }
