@@ -52,6 +52,9 @@ BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
         info->ReadFromParcel(reply);
         infoList.emplace_back(info);
     }
+    int32_t error;
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, infoList);
+    lastError_ = static_cast<StatsError>(error);
     return infoList;
 }
 
@@ -135,6 +138,9 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
 
     double appStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
+    int32_t error;
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, appStatsMah);
+    lastError_ = static_cast<StatsError>(error);
     return appStatsMah;
 }
 
@@ -185,6 +191,9 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
 
     double appStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
+    int32_t error;
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, appStatsPercent);
+    lastError_ = static_cast<StatsError>(error);
     return appStatsPercent;
 }
 
@@ -212,6 +221,9 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
 
     double partStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
+    int32_t error;
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, partStatsMah);
+    lastError_ = static_cast<StatsError>(error);
     return partStatsMah;
 }
 
@@ -239,6 +251,9 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
 
     double partStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
+    int32_t error;
+    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, partStatsPercent);
+    lastError_ = static_cast<StatsError>(error);
     return partStatsPercent;
 }
 
@@ -291,6 +306,13 @@ std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, u
     result = reply.ReadString();
 
     return result;
+}
+
+StatsError BatteryStatsProxy::GetLastError()
+{
+    StatsError tmpError = lastError_;
+    lastError_ = StatsError::ERR_OK;
+    return tmpError;
 }
 } // namespace PowerMgr
 } // namespace OHOS

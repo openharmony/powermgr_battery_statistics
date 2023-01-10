@@ -47,8 +47,10 @@ public:
     virtual uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid) override;
     virtual void Reset() override;
     virtual std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) override;
+    virtual StatsError GetLastError() override;
 private:
     static inline BrokerDelegator<BatteryStatsProxy> delegator_;
+    StatsError lastError_ {StatsError::ERR_OK};
 };
 } // namespace PowerMgr
 } // namespace OHOS
