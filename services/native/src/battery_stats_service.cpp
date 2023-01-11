@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -180,13 +180,8 @@ bool BatteryStatsService::IsServiceReady() const
 BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 {
     BatteryStatsInfoList statsInfoList = {};
-    if (Permission::IsHap()) {
-        if (!Permission::IsSystemHap()) {
-            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-            return statsInfoList;
-        }
-    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
-        lastError_ = StatsError::ERR_PERMISSION_DENIED;
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return statsInfoList;
     }
     core_->ComputePower();
@@ -215,13 +210,8 @@ int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>&
 
 double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 {
-    if (Permission::IsHap()) {
-        if (!Permission::IsSystemHap()) {
-            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-            return StatsUtils::DEFAULT_VALUE;
-        }
-    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
-        lastError_ = StatsError::ERR_PERMISSION_DENIED;
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -230,13 +220,8 @@ double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 
 double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 {
-    if (Permission::IsHap()) {
-        if (!Permission::IsSystemHap()) {
-            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-            return StatsUtils::DEFAULT_VALUE;
-        }
-    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
-        lastError_ = StatsError::ERR_PERMISSION_DENIED;
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -245,13 +230,8 @@ double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 
 double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
-    if (Permission::IsHap()) {
-        if (!Permission::IsSystemHap()) {
-            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-            return StatsUtils::DEFAULT_VALUE;
-        }
-    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
-        lastError_ = StatsError::ERR_PERMISSION_DENIED;
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
@@ -260,13 +240,8 @@ double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionT
 
 double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
 {
-    if (Permission::IsHap()) {
-        if (!Permission::IsSystemHap()) {
-            lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-            return StatsUtils::DEFAULT_VALUE;
-        }
-    } else if (!Permission::IsSystemApl() && !Permission::IsShell()) {
-        lastError_ = StatsError::ERR_PERMISSION_DENIED;
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
     }
     core_->ComputePower();
