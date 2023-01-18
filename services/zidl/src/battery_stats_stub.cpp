@@ -27,6 +27,9 @@
 
 namespace OHOS {
 namespace PowerMgr {
+namespace {
+constexpr uint32_t PARAM_MAX_NUM = 10;
+}
 int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     STATS_HILOGD(COMP_SVC, "Remote request, cmd = %{public}d, flags = %{public}d",
@@ -232,13 +235,18 @@ int32_t BatteryStatsStub::ShellDumpStub(MessageParcel& data, MessageParcel& repl
         return E_STATS_READ_PARCEL_ERROR;
     }
 
+    if (argc >= PARAM_MAX_NUM) {
+        STATS_HILOGW(COMP_SVC, "params exceed limit, argc=%{public}d", argc);
+        return E_STATS_EXCEED_PARAM_LIMIT;
+    }
+
     for (uint32_t i = 0; i < argc; i++) {
         std::string arg = data.ReadString();
-        if (!arg.empty()) {
-            args.push_back(arg);
-        } else {
-            STATS_HILOGW(COMP_SVC, "read value fail: %{public}d", i);
+        if (arg.empty()) {
+            STATS_HILOGW(COMP_SVC, "read value fail=%{public}d", i);
+            return E_STATS_READ_PARCEL_ERROR;
         }
+        args.push_back(arg);
     }
 
     std::string ret = ShellDump(args, argc);
