@@ -86,8 +86,8 @@ void StatsServiceSubscriberTest::PublishChangedEvent(const sptr<BatteryStatsServ
     const std::string& action)
 {
     Want want;
-    want.SetParam(ToString(BatteryInfo::COMMON_EVENT_CODE_CAPACITY), capacity_);
-    want.SetParam(ToString(BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE), static_cast<int>(pluggedType_));
+    want.SetParam(BatteryInfo::COMMON_EVENT_KEY_CAPACITY, capacity_);
+    want.SetParam(BatteryInfo::COMMON_EVENT_KEY_PLUGGED_TYPE, static_cast<int>(pluggedType_));
     want.SetAction(action);
     CommonEventData data;
     data.SetWant(want);
