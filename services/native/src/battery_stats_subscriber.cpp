@@ -43,10 +43,9 @@ void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventDat
         statsService->GetBatteryStatsCore()->SaveBatteryStatsData();
         STATS_HILOGI(COMP_SVC, "Received COMMON_EVENT_SHUTDOWN event");
     } else if (action == OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED) {
-        int capacity = data.GetWant().GetIntParam(
-            ToString(BatteryInfo::COMMON_EVENT_CODE_CAPACITY), StatsUtils::INVALID_VALUE);
+        int capacity = data.GetWant().GetIntParam(BatteryInfo::COMMON_EVENT_KEY_CAPACITY, StatsUtils::INVALID_VALUE);
         int pluggedType = data.GetWant().GetIntParam(
-            ToString(BatteryInfo::COMMON_EVENT_CODE_PLUGGED_TYPE), StatsUtils::INVALID_VALUE);
+            BatteryInfo::COMMON_EVENT_KEY_PLUGGED_TYPE, StatsUtils::INVALID_VALUE);
 
         STATS_HILOGI(COMP_SVC,
             "Received COMMON_EVENT_BATTERY_CHANGED event, capacity=%{public}d, pluggedType=%{public}d",
