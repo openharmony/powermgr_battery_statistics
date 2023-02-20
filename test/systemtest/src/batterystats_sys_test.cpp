@@ -160,11 +160,13 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE",
+        HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE",
+        HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
@@ -346,9 +348,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -468,8 +472,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     std::string stateOn = "start";
     std::string stateOff = "stop";
 
-    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE",
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
         "STATE", stateOff);
@@ -742,9 +746,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE",
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE",
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);

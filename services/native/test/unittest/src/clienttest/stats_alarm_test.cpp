@@ -64,8 +64,8 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
     int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
-        "CALLER_UID", uid);
+        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT",
+            HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid, "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
 

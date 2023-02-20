@@ -129,7 +129,8 @@ double StatsServiceTestProxy::GetAppStatsMah(const int32_t& uid)
 
     data.WriteInt32(uid);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPMAH), data, reply, option);
+    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPMAH),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
@@ -154,7 +155,8 @@ bool StatsServiceTestProxy::SetOnBattery(bool isOnBattery)
 
     data.WriteBool(isOnBattery);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_SETONBATT), data, reply, option);
+    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_SETONBATT),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
         return false;
@@ -177,7 +179,8 @@ double StatsServiceTestProxy::GetAppStatsPercent(const int32_t& uid)
 
     data.WriteInt32(uid);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPPER), data, reply, option);
+    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPPER),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
@@ -202,7 +205,8 @@ double StatsServiceTestProxy::GetPartStatsMah(const BatteryStatsInfo::Consumptio
 
     data.WriteInt32(type);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTMAH), data, reply, option);
+    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTMAH),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
@@ -227,7 +231,8 @@ double StatsServiceTestProxy::GetPartStatsPercent(const BatteryStatsInfo::Consum
 
     data.WriteInt32(type);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTPER), data, reply, option);
+    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTPER),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }

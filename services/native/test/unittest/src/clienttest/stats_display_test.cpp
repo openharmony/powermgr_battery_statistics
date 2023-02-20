@@ -35,7 +35,8 @@ static void SetLastBrightness(int32_t lastBrightness)
 
     GTEST_LOG_(INFO) << __func__ << ": Set last screen brightness value = " << lastBrightness;
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", lastBrightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+        HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", lastBrightness);
     usleep(StatsTest::POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
@@ -85,7 +86,8 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_001, TestSize.Level0)
     int32_t brightness = 100;
 
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+        HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
@@ -328,7 +330,8 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_009, TestSize.Level0)
 
     SetLastBrightness(lastBrightness);
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+        HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", currentBrightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
 
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
@@ -404,9 +407,11 @@ HWTEST_F (StatsDisplayTest, StatsDisplayTest_011, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness1);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+        HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT", HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness2);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+        HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", invalidBrightness2);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE", HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 

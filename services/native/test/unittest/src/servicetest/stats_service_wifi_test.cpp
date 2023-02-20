@@ -278,8 +278,8 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOff);
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
