@@ -98,7 +98,8 @@ private:
     }
 
     template<typename... Types>
-    static void InnerCombine(EventBase &eventBase, const std::string &key, const unsigned char value, Types... keyValues)
+    static void InnerCombine(EventBase &eventBase, const std::string &key,
+        const unsigned char value, Types... keyValues)
     {
         AppendData<unsigned short>(eventBase, key, value);
         InnerCombine(eventBase, keyValues...);
@@ -112,7 +113,8 @@ private:
     }
 
     template<typename... Types>
-    static void InnerCombine(EventBase &eventBase, const std::string &key, const unsigned short value, Types... keyValues)
+    static void InnerCombine(EventBase &eventBase, const std::string &key,
+        const unsigned short value, Types... keyValues)
     {
         AppendData<unsigned short>(eventBase, key, value);
         InnerCombine(eventBase, keyValues...);
@@ -140,7 +142,8 @@ private:
     }
 
     template<typename... Types>
-    static void InnerCombine(EventBase &eventBase, const std::string &key, const unsigned long value, Types... keyValues)
+    static void InnerCombine(EventBase &eventBase, const std::string &key,
+        const unsigned long value, Types... keyValues)
     {
         AppendData<unsigned long>(eventBase, key, value);
         InnerCombine(eventBase, keyValues...);

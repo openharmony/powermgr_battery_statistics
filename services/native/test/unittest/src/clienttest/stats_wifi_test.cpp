@@ -65,9 +65,11 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
 
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     statsClient.Reset();
@@ -236,9 +238,11 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOn);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE",
+        stateInvaildOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOff);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE",
+        stateInvaildOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 

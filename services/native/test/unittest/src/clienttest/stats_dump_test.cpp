@@ -137,7 +137,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 
     int32_t ratio = 100;
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT",
+        HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
@@ -303,7 +304,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
     int32_t type = 100;
     int32_t level = 101;
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT",
+        HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
