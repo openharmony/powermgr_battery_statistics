@@ -16,7 +16,7 @@
 #include "entities/bluetooth_entity.h"
 
 #include <cinttypes>
-
+#include <ipc_skeleton.h>
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
 #include "system_ability_definition.h"
@@ -423,7 +423,9 @@ double BluetoothEntity::GetBluetoothUidPower()
     }
 
     std::string bundleName = "com.ohos.bluetooth";
+    std::string identity = IPCSkeleton::ResetCallingIdentity();
     int32_t bluetoothUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
+    IPCSkeleton::SetCallingIdentity(identity);
 
     auto core = g_statsService->GetBatteryStatsCore();
     auto uidEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
