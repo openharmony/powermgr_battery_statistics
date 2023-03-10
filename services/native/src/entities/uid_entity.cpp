@@ -17,6 +17,7 @@
 
 #include <bundle_constants.h>
 #include <bundle_mgr_interface.h>
+#include <ipc_skeleton.h>
 #include <ohos_account_kits_impl.h>
 #include <system_ability_definition.h>
 #include <sys_mgr_client.h>
@@ -331,7 +332,9 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
             if (bmgr == nullptr) {
                 STATS_HILOGE(COMP_SVC, "Failed to get bundle manager proxy");
             } else {
+                std::string identity = IPCSkeleton::ResetCallingIdentity();
                 bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
+                IPCSkeleton::SetCallingIdentity(identity);
                 if (!res) {
                     STATS_HILOGE(COMP_SVC, "Failed to get bundle name for uid: %{public}d", iter.first);
                 }
