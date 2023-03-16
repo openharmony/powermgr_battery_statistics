@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -35,6 +35,7 @@
 #include "battery_stats_client.h"
 #include "battery_stats_parser.h"
 #include "stats_common.h"
+#include "stats_hisysevent.h"
 
 using namespace std;
 using namespace testing::ext;
@@ -105,10 +106,12 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
     int32_t type = static_cast<int32_t>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " BatteryStatsSysTest_001";
 
-    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK,
+        HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+    HiSysEventWrite(HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK,
+        HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
 
     double expectedPowerMah = wakelockAverage * POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
@@ -160,12 +163,12 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     double screenOnAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     double screenBrightnessAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE",
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BRIGHTNESS_NIT",
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BRIGHTNESS_NIT,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "SCREEN_STATE",
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double average = screenBrightnessAverage * brightness + screenOnAverage;
@@ -179,7 +182,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("SCREEN_STATE");
+        .append(StatsHiSysEvent::SCREEN_STATE);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
@@ -209,8 +212,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
     int32_t batteryLevel = 60;
     int32_t batteryChargerType = 2;
 
-    HiSysEventWrite(HiSysEvent::Domain::BATTERY, "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
-        batteryLevel, "CHARGER", batteryChargerType);
+    HiSysEventWrite(HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED,
+        HiSysEvent::EventType::STATISTIC, "LEVEL", batteryLevel, "CHARGER", batteryChargerType);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
@@ -237,8 +240,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
     std::string partName = "Battery";
     int32_t temperature = 40;
 
-    HiSysEventWrite(HiSysEvent::Domain::THERMAL, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
-        partName, "TEMPERATURE", temperature);
+    HiSysEventWrite(HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE,
+        HiSysEvent::EventType::STATISTIC, "NAME", partName, "TEMPERATURE", temperature);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -268,8 +271,9 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type,
+        "INTERVAL", interval, "STATE", state);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
@@ -320,10 +324,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, "BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, "BR_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -348,10 +352,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
@@ -378,9 +382,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
     int16_t level = 0;
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -441,11 +447,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
     int32_t stateRunning = 2;
     int32_t stateStopped = 3;
 
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateRunning);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE,
+        HiSysEvent::EventType::BEHAVIOR, "PID", pid, "UID", uid, "STATE", stateRunning);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateStopped);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE,
+        HiSysEvent::EventType::BEHAVIOR, "PID", pid, "UID", uid, "STATE", stateStopped);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -472,11 +478,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     std::string stateOn = "start";
     std::string stateOff = "stop";
 
-    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE",
+    HiSysEventWrite(HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -503,11 +509,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -533,10 +539,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT, HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -564,11 +570,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -594,10 +600,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, "BLE_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, "BLE_SWITCH_STATE", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -610,9 +616,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -639,11 +647,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -657,10 +665,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     pid = 3459;
     std::string deviceId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", deviceId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT, HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "ID", deviceId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -689,11 +697,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     int32_t stateOff = 0;
     int32_t stateRunning = 2;
     int32_t stateStopped = 3;
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateRunning);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID",
+        pid, "UID", uid, "STATE", stateRunning);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateStopped);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID",
+        pid, "UID", uid, "STATE", stateStopped);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -705,11 +713,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     pid = 3459;
     std::string gnssStateOn = "start";
     std::string gnssStateOff = "stop";
-    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", gnssStateOn);
+    HiSysEventWrite(HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", gnssStateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", gnssStateOff);
+    HiSysEventWrite(HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC, "PID",
+        pid, "UID", uid, "STATE", gnssStateOff);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
@@ -718,11 +726,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     uid = 10005;
     pid = 3457;
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
@@ -746,10 +754,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     int16_t level = 0;
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE",
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE",
+    HiSysEventWrite(HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
@@ -766,11 +774,11 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     int32_t stateRunning = 2;
     int32_t stateStopped = 3;
 
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateRunning);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID",
+        pid, "UID", uid, "STATE", stateRunning);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateStopped);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID",
+        pid, "UID", uid, "STATE", stateStopped);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
     actualPower = statsClient.GetAppStatsMah(uid);
@@ -825,14 +833,14 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT, HiSysEvent::EventType::STATISTIC,
+        "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double expectedPower = (3 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR) +

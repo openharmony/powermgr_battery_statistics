@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "stats_hisysevent.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -63,11 +64,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_001, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
-        "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT,
+        HiSysEvent::EventType::STATISTIC, "ID", cameraId);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
     statsClient.Reset();
@@ -92,10 +93,10 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_002, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -122,10 +123,10 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_003, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", deviceId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", deviceId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -146,14 +147,14 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_004, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -180,14 +181,14 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_005, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double expectedPower = (3 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR) +
@@ -215,14 +216,14 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_006, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -245,15 +246,15 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_007, TestSize.Level0)
     std::string cameraId0 = "Camera0";
     std::string cameraId1 = "Camera1";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId0);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId0);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId0);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId1);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -280,15 +281,15 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_008, TestSize.Level0)
     std::string cameraId0 = "Camera0";
     std::string cameraId1 = "Camera1";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId0);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId0);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId0);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId1);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -316,15 +317,15 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_009, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId0);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId0);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId0);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId1);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -348,16 +349,16 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_010, TestSize.Level0)
     std::string cameraId0 = "Camera0";
     std::string cameraId1 = "Camera1";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId0);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId0);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId1);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId0);
 
     double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -385,16 +386,16 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_011, TestSize.Level0)
     int32_t pid2 = 3459;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid1,
-        "UID", uid1, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid1, "UID", uid1, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid2,
-        "UID", uid2, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid2, "UID", uid2, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -417,9 +418,9 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_012, TestSize.Level0)
 
     int32_t uid = 10003;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_OFF", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
 
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -442,12 +443,13 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_013, TestSize.Level0)
     int32_t pid = 3458;
     std::string cameraId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "FLASHLIGHT_ON", HiSysEvent::EventType::STATISTIC);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_ON, HiSysEvent::EventType::STATISTIC);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC, "ID", cameraId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT,
+        HiSysEvent::EventType::STATISTIC, "ID", cameraId);
     usleep(POWER_CONSUMPTION_DURATION_US);
 
     double expectedPower = (2 * POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR) +
@@ -474,11 +476,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_014, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
     statsClient.Reset();
@@ -504,11 +506,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_015, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -535,11 +537,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_016, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
@@ -561,11 +563,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -580,10 +582,10 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", deviceId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", deviceId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -605,10 +607,10 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_018, TestSize.Level0)
     int32_t pid = 3458;
     std::string deviceId = "Camera0";
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "ID", deviceId);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "ID", deviceId);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
@@ -625,11 +627,11 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_018, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateRunning);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE,
+        HiSysEvent::EventType::BEHAVIOR, "PID", pid, "UID", uid, "STATE", stateRunning);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
-        "UID", uid, "STATE", stateStopped);
+    HiSysEventWrite(HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE,
+        HiSysEvent::EventType::BEHAVIOR, "PID", pid, "UID", uid, "STATE", stateStopped);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);

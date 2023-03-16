@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -86,7 +87,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_001, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -117,7 +118,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_002, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -149,7 +150,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_003, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -177,7 +178,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_004, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -208,7 +209,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_005, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -246,7 +247,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_006, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -279,7 +280,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_007, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC);
     }
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;

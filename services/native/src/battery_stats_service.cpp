@@ -35,6 +35,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_subscriber.h"
 #include "stats_common.h"
+#include "stats_hisysevent.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -161,7 +162,7 @@ bool BatteryStatsService::AddHiSysEventListener()
         listenerPtr_ = std::make_shared<BatteryStatsListener>();
     }
     OHOS::HiviewDFX::ListenerRule statsRule("PowerStats");
-    OHOS::HiviewDFX::ListenerRule distSchedRule("DISTSCHEDULE", "START_REMOTE_ABILITY");
+    OHOS::HiviewDFX::ListenerRule distSchedRule("DISTSCHEDULE", StatsHiSysEvent::START_REMOTE_ABILITY);
     std::vector<OHOS::HiviewDFX::ListenerRule> sysRules;
     sysRules.push_back(statsRule);
     sysRules.push_back(distSchedRule);
