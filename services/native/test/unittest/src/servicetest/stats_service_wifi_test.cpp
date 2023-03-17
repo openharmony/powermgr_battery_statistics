@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -84,10 +85,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     g_statsServiceProxy->Reset();
@@ -113,10 +116,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -144,10 +149,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -171,10 +178,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
@@ -207,16 +216,20 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -242,10 +255,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -273,16 +288,20 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
     int32_t stateInvaildOff = -1;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION",
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::COMMUNICATION,
+    StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateInvaildOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -308,10 +327,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
     long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_WIFI_ON);
@@ -336,7 +357,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -364,7 +385,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double expectedPower = count * wifiScanAverageMa;
@@ -393,7 +414,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -418,7 +439,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double expectedPower = count * wifiScanAverageMa;
@@ -450,7 +471,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
     int16_t count = 10;
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     long expectValue = StatsUtils::DEFAULT_VALUE;
@@ -477,14 +498,16 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
     int16_t count = 10;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double wifiOnPower = SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
@@ -516,14 +539,16 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
     int16_t count = 10;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -551,14 +576,16 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
@@ -587,7 +614,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
 
     for (int16_t i = 0; i < totalCount; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::COMMUNICATION, "WIFI_SCAN", HiSysEvent::EventType::STATISTIC);
+            HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
         if (i == startDelayPos) {
             g_statsServiceProxy->SetOnBattery(false);
         } else if (i == startDelayPos + delayCount)
@@ -622,10 +649,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
+        HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -636,11 +665,11 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
     std::string deviceId = "Camera0";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::CAMERA, "CAMERA_CONNECT", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "ID", deviceId);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::CAMERA, "CAMERA_DISCONNECT", HiSysEvent::EventType::STATISTIC,
+        HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
     actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -660,10 +689,10 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
     g_statsServiceProxy->Reset();
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION, HiSysEvent::EventType::STATISTIC);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::COMMUNICATION, "WIFI_CONNECTION", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION, HiSysEvent::EventType::STATISTIC);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);

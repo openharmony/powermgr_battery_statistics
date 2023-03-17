@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@
 #include <wifi_hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "stats_hisysevent.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -69,11 +70,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
     long actualTime = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid);
@@ -98,11 +99,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -129,11 +130,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
@@ -155,11 +156,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -175,11 +176,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
@@ -200,11 +201,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = statsClient.GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON, uid);
@@ -229,11 +230,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -260,11 +261,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
@@ -286,11 +287,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_PROXIMITY", HiSysEvent::EventType::STATISTIC, "PID",
-        pid, "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_PROXIMITY,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
     double actualPower = statsClient.GetAppStatsMah(uid);
@@ -306,11 +307,11 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOn);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::CAMERA, "TORCH_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateOff);
+    HiSysEventWrite(HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);

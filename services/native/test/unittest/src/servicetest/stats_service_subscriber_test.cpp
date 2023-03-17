@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@
 #include "common_event_manager.h"
 #include "common_event_support.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -116,7 +117,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_001, TestSize.L
 
     for (int16_t i = 0; i < count; i++) {
         StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
@@ -150,19 +151,19 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_002, TestSize.L
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_NONE);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+        HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
         "CALLER_PID", pid, "CALLER_UID", uid);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_USB);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_BUTT);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC,
+            HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
 
     double expectedPower = 2 * alarmOnAverageMa;
@@ -192,11 +193,11 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_003, TestSize.L
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -231,31 +232,31 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_004, TestSize.L
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_NONE);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_AC);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_BUTT);
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -286,11 +287,11 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_005, TestSize.L
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     SetPluggedType(BatteryPluggedType::PLUGGED_TYPE_AC);
@@ -321,10 +322,10 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_006, TestSize.L
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE, HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE, HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     PublishChangedEvent(statsService, CommonEventSupport::COMMON_EVENT_SHUTDOWN);
     g_statsServiceProxy->Reset();

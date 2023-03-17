@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -86,10 +87,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_001, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     g_statsServiceProxy->Reset();
@@ -117,10 +120,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_002, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -149,10 +154,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_003, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -177,10 +184,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_004, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
@@ -214,16 +223,20 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_005, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -253,16 +266,20 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_006, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateHolding);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateHolding);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateDisconnecting);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateDisconnecting);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -288,10 +305,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_007, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -320,16 +339,20 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_008, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateInvaildOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -355,10 +378,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_009, TestSize.Level0)
     int32_t stateOff = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     g_statsServiceProxy->Reset();
@@ -386,10 +411,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_010, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -417,10 +444,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_011, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -445,10 +474,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_012, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
@@ -482,16 +513,20 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_013, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -517,10 +552,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_014, TestSize.Level0)
     int32_t stateOff = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -549,18 +586,22 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_015, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR,
         "STATE", stateInvaildOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -591,25 +632,28 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_016, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOff);
 
     double phoneOnPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double phoneDataPower = 4 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
@@ -642,24 +686,27 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_017, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
 
     double phoneOnPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
@@ -697,17 +744,19 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_018, TestSize.Level0)
     int32_t dataStateOff = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
         "STATE", dataStateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -736,14 +785,16 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_019, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -771,10 +822,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
@@ -790,11 +843,11 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -821,10 +874,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_021, TestSize.Level0)
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
     long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
@@ -849,10 +904,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_022, TestSize.Level0)
     int32_t stateOff = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
     long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_DATA);
@@ -874,16 +931,16 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_023, TestSize.Level0)
     g_statsServiceProxy->Reset();
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE, HiSysEvent::EventType::BEHAVIOR);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "CALL_STATE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE, HiSysEvent::EventType::BEHAVIOR);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, "DATA_CONNECTION_STATE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);

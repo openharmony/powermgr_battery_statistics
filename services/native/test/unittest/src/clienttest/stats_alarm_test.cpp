@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +18,7 @@
 #include <hisysevent.h>
 
 #include "battery_stats_client.h"
+#include "stats_hisysevent.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -64,7 +65,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
     int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT",
+        HiSysEventWrite(HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT,
             HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid, "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
@@ -94,8 +95,8 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
     int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
-        "CALLER_UID", uid);
+        HiSysEventWrite(HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT,
+            HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid, "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
 
@@ -125,8 +126,8 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
     double zeroPercent = 0;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
-        "CALLER_UID", uid);
+        HiSysEventWrite(HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT,
+            HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid, "CALLER_UID", uid);
     }
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -151,8 +152,8 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
     int16_t count = 2;
 
     for (int16_t i = 0; i < count; i++) {
-        HiSysEventWrite(HiSysEvent::Domain::TIME, "MISC_TIME_STATISTIC_REPORT", HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid,
-        "CALLER_UID", uid);
+        HiSysEventWrite(HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT,
+            HiSysEvent::EventType::STATISTIC, "CALLER_PID", pid, "CALLER_UID", uid);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@
 #include <string_ex.h>
 
 #include "battery_stats_client.h"
+#include "stats_hisysevent.h"
 
 using namespace testing::ext;
 using namespace OHOS::HiviewDFX;
@@ -67,8 +68,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
     int32_t batteryLevel = 60;
     int32_t batteryChargerType = 2;
 
-    HiSysEventWrite(HiSysEvent::Domain::BATTERY, "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
-        batteryLevel, "CHARGER", batteryChargerType);
+    HiSysEventWrite(HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED,
+        HiSysEvent::EventType::STATISTIC, "LEVEL", batteryLevel, "CHARGER", batteryChargerType);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
@@ -100,11 +101,11 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
     int32_t type = static_cast<int32_t>(RunningLockType::RUNNINGLOCK_SCREEN);
     std::string name = " StatsDumpTest_002";
 
-    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
+    HiSysEventWrite(HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     usleep(US_PER_MS);
-    HiSysEventWrite(HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
+    HiSysEventWrite(HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
@@ -137,12 +138,12 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 
     int32_t ratio = 100;
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT",
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BACKLIGHT_DISCOUNT,
         HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("BACKLIGHT_DISCOUNT")
+        .append(StatsHiSysEvent::BACKLIGHT_DISCOUNT)
         .append(" Ratio = ")
         .append(ToString(ratio));
 
@@ -169,8 +170,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
-        "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
+    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
@@ -204,8 +205,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
     std::string partName = "Battery";
     int32_t temperature = 40;
 
-    HiSysEventWrite(HiSysEvent::Domain::THERMAL, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
-        partName, "TEMPERATURE", temperature);
+    HiSysEventWrite(HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE,
+        HiSysEvent::EventType::STATISTIC, "NAME", partName, "TEMPERATURE", temperature);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -238,7 +239,8 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
     int32_t callAppUid = 9568;
     int32_t result = 1;
 
-    HiSysEventWrite(HiSysEvent::Domain::DISTRIBUTED_SCHEDULE, "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR,
+    HiSysEventWrite(HiSysEvent::Domain::DISTRIBUTED_SCHEDULE,
+        StatsHiSysEvent::START_REMOTE_ABILITY, HiSysEvent::EventType::BEHAVIOR,
         "CALLING_TYPE", callType, "CALLING_UID", callUid, "CALLING_PID", callPid, "TARGET_BUNDLE", targetBundle,
         "TARGET_ABILITY", targetAbility, "CALLING_APP_UID", callAppUid, "RESULT", result);
 
@@ -271,7 +273,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
     int32_t beginPos = 0;
     int32_t ratioLen = 4;
 
-    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::THERMAL, "THERMAL_ACTION_TRIGGERED",
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::THERMAL, StatsHiSysEvent::THERMAL_ACTION_TRIGGERED,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
 
     std::string expectedDebugInfo;
@@ -304,13 +306,13 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
     int32_t type = 100;
     int32_t level = 101;
 
-    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT",
+    HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::AMBIENT_LIGHT,
         HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("AMBIENT_LIGHT")
+        .append(StatsHiSysEvent::AMBIENT_LIGHT)
         .append(" Ambient type = ")
         .append(ToString(type))
         .append(" Ambient brightness = ")

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -89,7 +90,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
     int32_t batteryChargerType = 2;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::BATTERY, "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC, "LEVEL",
+        HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED, HiSysEvent::EventType::STATISTIC, "LEVEL",
         batteryLevel, "CHARGER", batteryChargerType);
 
     std::string expectedDebugInfo;
@@ -105,7 +106,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::BATTERY, "BATTERY_CHANGED", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Battery level = ").append(ToString(-1));
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
@@ -133,11 +134,11 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
     std::string name = " StatsServiceDumpTest_002";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateLock, "TYPE", type, "NAME", name);
     usleep(US_PER_MS);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
 
     std::string expectedDebugInfo;
@@ -159,7 +160,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWER, "POWER_RUNNINGLOCK", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(", wakelock name = ").append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
@@ -182,11 +183,12 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
     int32_t ratio = 100;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
+        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BACKLIGHT_DISCOUNT,
+        HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("BACKLIGHT_DISCOUNT")
+        .append(StatsHiSysEvent::BACKLIGHT_DISCOUNT)
         .append(" Ratio = ")
         .append(ToString(ratio));
 
@@ -197,7 +199,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, "BACKLIGHT_DISCOUNT", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BACKLIGHT_DISCOUNT, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(" Ratio = ").append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
@@ -224,7 +226,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     int32_t state = 5;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC, "PID", pid,
+        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+        HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
 
     std::string expectedDebugInfo;
@@ -246,7 +249,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, "POWER_WORKSCHEDULER", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(", work interval = ").append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
@@ -270,7 +273,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
     int32_t temperature = 40;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::THERMAL, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC, "NAME",
+        HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE, HiSysEvent::EventType::STATISTIC, "NAME",
         partName, "TEMPERATURE", temperature);
 
     std::string expectedDebugInfo;
@@ -286,7 +289,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::THERMAL, "POWER_TEMPERATURE", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Additional debug info: ")
         .append("Event name = POWER_TEMPERATURE")
@@ -318,7 +321,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
     int32_t result = 1;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISTRIBUTED_SCHEDULE, "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR,
+        HiSysEvent::Domain::DISTRIBUTED_SCHEDULE,
+        StatsHiSysEvent::START_REMOTE_ABILITY, HiSysEvent::EventType::BEHAVIOR,
         "CALLING_TYPE", callType, "CALLING_UID", callUid, "CALLING_PID", callPid, "TARGET_BUNDLE", targetBundle,
         "TARGET_ABILITY", targetAbility, "CALLING_APP_UID", callAppUid, "RESULT", result);
 
@@ -335,7 +339,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISTRIBUTED_SCHEDULE, "START_REMOTE_ABILITY", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::DISTRIBUTED_SCHEDULE,
+        StatsHiSysEvent::START_REMOTE_ABILITY, HiSysEvent::EventType::BEHAVIOR);
     std::string expectedMissInfo;
     expectedMissInfo.append("Additional debug info: ")
         .append("Event name = START_REMOTE_ABILITY")
@@ -365,7 +370,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
     int32_t ratioLen = 4;
 
     StatsWriteHiSysEvent(statsService,
-        HiviewDFX::HiSysEvent::Domain::THERMAL, "THERMAL_ACTION_TRIGGERED",
+        HiviewDFX::HiSysEvent::Domain::THERMAL, StatsHiSysEvent::THERMAL_ACTION_TRIGGERED,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
 
     std::string expectedDebugInfo;
@@ -385,7 +390,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::THERMAL, "THERMAL_ACTION_TRIGGERED", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::THERMAL, StatsHiSysEvent::THERMAL_ACTION_TRIGGERED, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Additional debug info: ")
         .append("Event name = THERMAL_ACTION_TRIGGERED")
@@ -412,12 +417,13 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
     int32_t level = 101;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
+        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::AMBIENT_LIGHT,
+        HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("AMBIENT_LIGHT")
+        .append(StatsHiSysEvent::AMBIENT_LIGHT)
         .append(" Ambient type = ")
         .append(ToString(type))
         .append(" Ambient brightness = ")
@@ -430,11 +436,11 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, "AMBIENT_LIGHT", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::AMBIENT_LIGHT, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Additional debug info: ")
         .append("Event name = ")
-        .append("AMBIENT_LIGHT")
+        .append(StatsHiSysEvent::AMBIENT_LIGHT)
         .append(" Ambient type = ")
         .append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());

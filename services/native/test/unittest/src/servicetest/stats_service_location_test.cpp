@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -86,12 +87,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
     g_statsServiceProxy->Reset();
@@ -120,12 +121,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -155,12 +156,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
@@ -186,20 +187,20 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -227,12 +228,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateInvaildOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -262,20 +263,20 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
     std::string stateInvaildOff = "stp";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateInvaildOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateInvaildOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -303,12 +304,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
     int32_t pid = 3458;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
     long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_GNSS_ON, uid);
@@ -338,20 +339,20 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
     int32_t pidTwo = 3459;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo, "STATE", stateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uidOne);
@@ -387,12 +388,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -421,16 +422,16 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     g_statsServiceProxy->SetOnBattery(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -459,12 +460,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level
     std::string stateOff = "stop";
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOn);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid,
-        "STATE", stateOff);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
+        HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     auto statsCore = statsService->GetBatteryStatsCore();
     auto gnssEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_GNSS);
@@ -495,10 +496,10 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level
 
     int32_t uid = 10003;
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::LOCATION, "GNSS_STATE", HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);

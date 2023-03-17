@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
 #include "hisysevent_operation.h"
+#include "stats_hisysevent.h"
 #include "stats_service_test_proxy.h"
 #include "stats_service_write_event.h"
 
@@ -86,11 +87,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
@@ -120,11 +121,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -155,11 +156,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
@@ -188,27 +189,27 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
     int32_t statePaused = 5;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateReleased);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", statePaused);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -240,19 +241,19 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
     int32_t stateAbnormal = 101;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateInvalid);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateAbnormal);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -282,11 +283,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
@@ -304,11 +305,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
+        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, "POWER_SENSOR_GRAVITY", HiSysEvent::EventType::STATISTIC, "PID",
+        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
@@ -335,11 +336,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_007, TestSize.Level0)
     int32_t stateStopped = 3;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateRunning);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR, "PID", pid,
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
 
     auto statsCore = statsService->GetBatteryStatsCore();
@@ -371,10 +372,10 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_008, TestSize.Level0)
 
     int32_t uid = 10003;
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::AUDIO, "STREAM_CHANGE", HiSysEvent::EventType::BEHAVIOR);
+        HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);

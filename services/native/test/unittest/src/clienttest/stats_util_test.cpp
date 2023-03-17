@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -50,7 +50,7 @@ namespace {
  */
 HWTEST_F (StatsUtilTest, StatsHiSysEvent_001, TestSize.Level0)
 {
-    EXPECT_TRUE(StatsHiSysEvent::CheckHiSysEvent("POWER_RUNNINGLOCK"));
+    EXPECT_TRUE(StatsHiSysEvent::CheckHiSysEvent(StatsHiSysEvent::POWER_RUNNINGLOCK));
     EXPECT_FALSE(StatsHiSysEvent::CheckHiSysEvent("POWER_RUNNINGLOCK_WRONG"));
 }
 
