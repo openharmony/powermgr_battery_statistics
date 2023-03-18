@@ -61,14 +61,14 @@ public:
         HISYSEVENT_TYPE_END
     };
 
-    static constexpr const char* POWER_RUNNINGLOCK = "POWER_RUNNINGLOCK";
+    static constexpr const char* POWER_RUNNINGLOCK = "RUNNINGLOCK";
     static constexpr const char* SCREEN_STATE = "SCREEN_STATE";
     static constexpr const char* BRIGHTNESS_NIT = "BRIGHTNESS_NIT";
     static constexpr const char* BACKLIGHT_DISCOUNT = "BACKLIGHT_DISCOUNT";
     static constexpr const char* AMBIENT_LIGHT = "AMBIENT_LIGHT";
-    static constexpr const char* BATTERY_CHANGED = "BATTERY_CHANGED";
+    static constexpr const char* BATTERY_CHANGED = "CHANGED";
     static constexpr const char* POWER_TEMPERATURE = "POWER_TEMPERATURE";
-    static constexpr const char* THERMAL_LEVEL_CHANGED = "THERMAL_LEVEL_CHANGED";
+    static constexpr const char* THERMAL_LEVEL_CHANGED = "LEVEL_CHANGED";
     static constexpr const char* POWER_WORKSCHEDULER = "POWER_WORKSCHEDULER";
     static constexpr const char* WORK_ADD = "WORK_ADD";
     static constexpr const char* WORK_REMOVE = "WORK_REMOVE";
@@ -92,7 +92,7 @@ public:
     static constexpr const char* WIFI_SCAN = "WIFI_SCAN";
     static constexpr const char* START_REMOTE_ABILITY = "START_REMOTE_ABILITY";
     static constexpr const char* MISC_TIME_STATISTIC_REPORT = "MISC_TIME_STATISTIC_REPORT";
-    static constexpr const char* THERMAL_ACTION_TRIGGERED = "THERMAL_ACTION_TRIGGERED";
+    static constexpr const char* THERMAL_ACTION_TRIGGERED = "ACTION_TRIGGERED";
     static constexpr const char* CALL_STATE = "CALL_STATE";
     static constexpr const char* DATA_CONNECTION_STATE = "DATA_CONNECTION_STATE";
 
