@@ -19,7 +19,7 @@ config("batterystats_private_config") {
     "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
-    "//base/powermgr/display_manager/interfaces/innerkits/native/include",
+    "${displaymgr_innerkits}/native/include",
   ]
 }
 
