@@ -209,7 +209,7 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
 {
     std::ifstream input(UID_CPU_ACTIVE_TIME_FILE);
     if (!input) {
-        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_ACTIVE_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file failed");
         return false;
     }
 
@@ -293,7 +293,7 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
 {
     std::ifstream input(UID_CPU_CLUSTER_TIME_FILE);
     if (!input) {
-        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_CLUSTER_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file failed");
         return false;
     }
     std::string line;
@@ -431,7 +431,7 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
 {
     std::ifstream input(UID_CPU_FREQ_TIME_FILE);
     if (!input) {
-        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_FREQ_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file failed");
         return false;
     }
     std::string line;
@@ -521,7 +521,7 @@ bool CpuTimeReader::ReadUidCpuTime()
 {
     std::ifstream input(UID_CPU_TIME_FILE);
     if (!input) {
-        STATS_HILOGW(COMP_SVC, "Open file: %{private}s failed", UID_CPU_TIME_FILE.c_str());
+        STATS_HILOGW(COMP_SVC, "Open file failed");
         return false;
     }
     std::string line;
