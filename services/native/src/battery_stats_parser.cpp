@@ -19,6 +19,7 @@
 #include "ios"
 #include "json/reader.h"
 #include "json/value.h"
+#include "string_ex.h"
 
 #include "stats_utils.h"
 
@@ -131,6 +132,22 @@ double BatteryStatsParser::GetAveragePowerMa(std::string type, uint16_t level)
 uint16_t BatteryStatsParser::GetClusterNum()
 {
     return clusterNum_;
+}
+
+void BatteryStatsParser::DumpInfo(std::string& result)
+{
+    result.append("POWER AVERAGE CONFIGATION DUMP:\n");
+    result.append("\n");
+    for (auto iter : averageMap_) {
+        result.append(iter.first).append(" : ").append(ToString(iter.second)).append("\n");
+    }
+    for (auto vecIter : averageVecMap_) {
+        result.append(vecIter.first).append(" : [");
+        for (auto levelIter : vecIter.second) {
+            result.append(" ").append(ToString(levelIter));
+        }
+        result.append(" ]").append("\n");
+    }
 }
 } // namespace PowerMgr
 } // namespace OHOS
