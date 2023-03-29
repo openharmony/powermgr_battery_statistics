@@ -278,7 +278,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
-        .append("Event name = THERMAL_ACTION_TRIGGERED")
+        .append("Event name = ACTION_TRIGGERED")
         .append(" Action name = ")
         .append(actionName)
         .append(" Value = ")

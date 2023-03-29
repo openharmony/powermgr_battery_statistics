@@ -375,7 +375,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
-        .append("Event name = THERMAL_ACTION_TRIGGERED")
+        .append("Event name = ACTION_TRIGGERED")
         .append(" Action name = ")
         .append(actionName)
         .append(" Value = ")
@@ -393,7 +393,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
         HiSysEvent::Domain::THERMAL, StatsHiSysEvent::THERMAL_ACTION_TRIGGERED, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Additional debug info: ")
-        .append("Event name = THERMAL_ACTION_TRIGGERED")
+        .append("Event name = ACTION_TRIGGERED")
         .append(" Action name = ")
         .append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
