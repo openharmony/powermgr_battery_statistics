@@ -52,8 +52,8 @@
         "build": {
             "group_type": {
                 "fwk_group": [
-                    "//base/powermgr/battery_statistics/frameworks/js/napi:batterystatistics",
-                    "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client"
+                    "//base/powermgr/battery_statistics/frameworks/napi:batterystatistics",
+                    "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client"
                 ],
                 "service_group": [
                     "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
@@ -62,7 +62,7 @@
             },
             "inner_kits": [
                 {
-                    "name": "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
+                    "name": "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client",
                     "header": {
                       "header_files": [
                         "battery_stats_client.h",
@@ -70,7 +70,7 @@
                         "battery_stats_info.h",
                         "ibattery_stats.h"
                       ],
-                      "header_base": "//base/powermgr/battery_statistics/interfaces/innerkits/include"
+                      "header_base": "//base/powermgr/battery_statistics/interfaces/inner_api/include"
                     }
                 }
             ],
