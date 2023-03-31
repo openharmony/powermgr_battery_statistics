@@ -33,7 +33,7 @@ ohos_shared_library("batterystatistics") {
 
   deps = [
     "${batterystats_utils_path}:batterystats_utils",
-    "${batterystats_innerkits}:batterystats_client",
+    "//base/powermgr/battery_statistics/interfaces/innerkits:batterystats_client",
   ]
 
   external_deps = [
