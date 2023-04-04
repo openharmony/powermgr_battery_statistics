@@ -333,10 +333,11 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
                 STATS_HILOGE(COMP_SVC, "Failed to get bundle manager proxy");
             } else {
                 std::string identity = IPCSkeleton::ResetCallingIdentity();
-                bool res = bmgr->GetBundleNameForUid(iter.first, bundleName);
+                ErrCode res = bmgr->GetNameForUid(iter.first, bundleName);
                 IPCSkeleton::SetCallingIdentity(identity);
-                if (!res) {
-                    STATS_HILOGE(COMP_SVC, "Failed to get bundle name for uid: %{public}d", iter.first);
+                if (res != ERR_OK) {
+                    STATS_HILOGE(COMP_SVC, "Failed to get bundle name for uid=%{public}d, ErrCode=%{public}d",
+                        iter.first, static_cast<int32_t>(res));
                 }
             }
         }
