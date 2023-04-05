@@ -19,7 +19,6 @@ config("batterystats_private_config") {
     "//base/telephony/call_manager/interfaces/innerkits",
     "//foundation/communication/bluetooth/services/bluetooth/common/",
     "//foundation/communication/wifi/wifi/utils/inc",
-    "//base/powermgr/display_manager/interfaces/innerkits/native/include",
   ]
 }
 
@@ -68,7 +67,7 @@ ohos_shared_library("batterystats_service") {
 
   deps = [
     ":batterystats_stub",
-    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_inner_api}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
     "//base/powermgr/power_manager/utils/permission:power_permission",
     "//third_party/jsoncpp",
@@ -80,6 +79,7 @@ ohos_shared_library("batterystats_service") {
     "battery_manager:batterysrv_client",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
+    "display_manager:displaymgr",
     "eventhandler:libeventhandler",
     "hicollie_native:libhicollie",
     "hisysevent_native:libhisyseventmanager",
@@ -104,6 +104,7 @@ ohos_shared_library("batterystats_stub") {
 
   external_deps = [
     "c_utils:utils",
+    "display_manager:displaymgr",
     "hicollie_native:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

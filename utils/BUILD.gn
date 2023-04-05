@@ -17,7 +17,7 @@ config("batterystats_utils_config") {
   include_dirs = [
     "native/include",
     "//commonlibrary/c_utils/base/include",
-    "${batterystats_innerkits}/include",
+    "${batterystats_inner_api}/include",
   ]
 }
 
