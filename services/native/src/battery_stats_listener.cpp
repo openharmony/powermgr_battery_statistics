@@ -388,6 +388,9 @@ void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, con
     if (!root["NAME"].asString().empty()) {
         data.eventDataName = root["NAME"].asString();
     }
+    if (!root["PROXY_STATE"].asString().empty()) {
+        data.eventDebugInfo.append(" PROXY_STATE = ").append(root["PROXY_STATE"].asString());
+    }
     if (!root["LOG_LEVEL"].asString().empty()) {
         data.eventDebugInfo.append(" LOG_LEVEL = ").append(root["LOG_LEVEL"].asString());
     }
