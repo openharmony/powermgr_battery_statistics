@@ -356,11 +356,9 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_001, TestSize.Level0)
 
     sptrStatsInfo->Marshalling(infoParcel);
     auto unmarshalInfo = sptrStatsInfo->Unmarshalling(infoParcel);
-    if (unmarshalInfo != nullptr) {
-        EXPECT_EQ(uid, unmarshalInfo->GetUid());
-        EXPECT_EQ(consumptionType, unmarshalInfo->GetConsumptionType());
-        EXPECT_EQ(totalPowerMah, unmarshalInfo->GetPower());
-    }
+    EXPECT_EQ(uid, unmarshalInfo->GetUid());
+    EXPECT_EQ(consumptionType, unmarshalInfo->GetConsumptionType());
+    EXPECT_EQ(totalPowerMah, unmarshalInfo->GetPower());
 }
 
 /**
