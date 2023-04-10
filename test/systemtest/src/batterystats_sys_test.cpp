@@ -271,7 +271,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type,
         "INTERVAL", interval, "STATE", state);
 
@@ -509,10 +509,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
     int32_t stateOn = 1;
     int32_t stateOff = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
@@ -726,10 +726,10 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     uid = 10005;
     pid = 3457;
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     expectedPower = POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
