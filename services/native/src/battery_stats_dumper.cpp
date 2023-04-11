@@ -23,6 +23,7 @@ namespace PowerMgr {
 namespace {
 constexpr const char* ARGS_HELP = "-h";
 constexpr const char* ARGS_STATS = "-batterystats";
+constexpr const char* ARGS_POWER_AVERAGE = "-poweraverage";
 }
 
 bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string& result)
@@ -44,6 +45,12 @@ bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string&
                 continue;
             }
             core->DumpInfo(result);
+        } else if (*it == ARGS_POWER_AVERAGE) {
+            auto parser = bss->GetBatteryStatsParser();
+            if (parser == nullptr) {
+                continue;
+            }
+            parser->DumpInfo(result);
         }
     }
     return true;
@@ -55,7 +62,8 @@ void BatteryStatsDumper::ShowUsage(std::string& result)
         "usage: statistics <command> [<options>]\n"
         "command list:\n"
         "  -h              :    Show this help menu. \n"
-        "  -batterystats   :    Show all the information of battery stats.\n";
+        "  -batterystats   :    Show all the information of battery stats.\n"
+        "  -poweraverage   :    Show all the information of power average configuration.\n";
     result.append(HELP_COMMAND_MSG);
 }
 } // namespace PowerMgr

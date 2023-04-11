@@ -592,7 +592,7 @@ int64_t BatteryStatsCore::GetTotalTimeMs(StatsUtils::StatsType statsType, int16_
 
 void BatteryStatsCore::DumpInfo(std::string& result)
 {
-    result.append("BATTERY STATS DUMP (statistics dump -batterystats):\n");
+    result.append("BATTERY STATS DUMP:\n");
     result.append("\n");
     if (bluetoothEntity_) {
         bluetoothEntity_->DumpInfo(result);
