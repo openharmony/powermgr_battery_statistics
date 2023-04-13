@@ -149,9 +149,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
         .append(", wakelock type = ")
         .append(ToString(type))
         .append(", wakelock name = ")
-        .append(name)
-        .append(", wakelock state = ")
-        .append("UNLOCK");
+        .append(name);
 
     std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;

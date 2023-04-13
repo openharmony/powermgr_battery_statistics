@@ -144,12 +144,6 @@ void BatteryStatsDetector::HandleDispalyInfo(StatsUtils::StatsData data, int64_t
 
 void BatteryStatsDetector::HandleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
-    std::string eventState;
-    if (data.state == StatsUtils::STATS_STATE_ACTIVATED) {
-        eventState = "LOCK";
-    } else {
-        eventState = "UNLOCK";
-    }
     debugInfo.append("\n")
         .append("Wakelock event: UID = ")
         .append(ToString(data.uid))
@@ -159,8 +153,6 @@ void BatteryStatsDetector::HandleWakelockInfo(StatsUtils::StatsData data, int64_
         .append(ToString(data.eventDataType))
         .append(", wakelock name = ")
         .append(data.eventDataName)
-        .append(", wakelock state = ")
-        .append(eventState)
         .append(", boot time after boot = ")
         .append(ToString(bootTimeMs))
         .append("ms\n");

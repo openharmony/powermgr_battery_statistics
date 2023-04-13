@@ -376,20 +376,35 @@ void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, con
         data.pid = stoi(root["PID"].asString());
     }
     if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
-            data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
-            data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+        RunningLockState lockState = RunningLockState(stoi(root["STATE"].asString()));
+        std::string stateLabel = "";
+        switch (lockState) {
+            case RunningLockState::RUNNINGLOCK_STATE_DISABLE: {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+                stateLabel = "Disable";
+                break;
+            }
+            case RunningLockState::RUNNINGLOCK_STATE_ENABLE: {
+                data.state = StatsUtils::STATS_STATE_ACTIVATED;
+                stateLabel = "Enable";
+                break;
+            }
+            case RunningLockState::RUNNINGLOCK_STATE_PROXIED:
+            case RunningLockState::RUNNINGLOCK_STATE_UNPROXIED_RESTORE: {
+                data.state = StatsUtils::STATS_STATE_DEACTIVATED;
+                stateLabel = "Proxied";
+                break;
+            }
+            default:
+                break;
         }
+        data.eventDebugInfo.append(" STATE = ").append(stateLabel);
     }
     if (!root["TYPE"].asString().empty()) {
         data.eventDataType = stoi(root["TYPE"].asString());
     }
     if (!root["NAME"].asString().empty()) {
         data.eventDataName = root["NAME"].asString();
-    }
-    if (!root["PROXY_STATE"].asString().empty()) {
-        data.eventDebugInfo.append(" PROXY_STATE = ").append(root["PROXY_STATE"].asString());
     }
     if (!root["LOG_LEVEL"].asString().empty()) {
         data.eventDebugInfo.append(" LOG_LEVEL = ").append(root["LOG_LEVEL"].asString());

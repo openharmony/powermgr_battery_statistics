@@ -30,6 +30,16 @@ enum class AudioState : int32_t {
     AUDIO_STATE_RELEASED,
     AUDIO_STATE_PAUSED
 };
+
+/**
+ * Runnninglock State
+ */
+enum class RunningLockState : int32_t {
+    RUNNINGLOCK_STATE_DISABLE = 0,
+    RUNNINGLOCK_STATE_ENABLE,
+    RUNNINGLOCK_STATE_PROXIED,
+    RUNNINGLOCK_STATE_UNPROXIED_RESTORE,
+};
 } // namespace PowerMgr
 } // namespace OHOS
 

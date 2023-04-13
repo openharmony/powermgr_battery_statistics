@@ -119,7 +119,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_003, TestSize.Level0)
 {
     std::shared_ptr<BatteryStatsCore> statsCore = std::make_shared<BatteryStatsCore>();
     std::string expectedDebugInfo;
-    expectedDebugInfo.append("BATTERY STATS DUMP (statistics dump -batterystats):\n").append("\n");
+    expectedDebugInfo.append("BATTERY STATS DUMP:\n").append("\n");
     std::string actualDebugInfo {};
     statsCore->DumpInfo(actualDebugInfo);
     auto index = actualDebugInfo.find(expectedDebugInfo);
