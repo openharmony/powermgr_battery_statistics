@@ -305,11 +305,11 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     double zeroPercent = 0;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
+        HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
+        HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);

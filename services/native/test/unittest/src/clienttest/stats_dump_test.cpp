@@ -170,7 +170,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
     int32_t interval = 30000;
     int32_t state = 5;
 
-    HiSysEventWrite(HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+    HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
 
     std::string expectedDebugInfo;

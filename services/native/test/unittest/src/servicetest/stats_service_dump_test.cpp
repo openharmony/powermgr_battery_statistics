@@ -226,7 +226,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     int32_t state = 5;
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER,
+        HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER,
         HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
 
@@ -249,7 +249,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
 
     StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::POWERMGR, StatsHiSysEvent::POWER_WORKSCHEDULER, HiSysEvent::EventType::STATISTIC);
+        HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(", work interval = ").append("");
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
