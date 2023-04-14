@@ -20,7 +20,7 @@ module_output_path = "${batterystats_part_name}/batterystats"
 ohos_fuzztest("BatteryStatsFuzzTest") {
   module_out_path = module_output_path
   fuzz_config_file =
-      "//base/powermgr/battery_statistics/test/batterystats_fuzzer"
+      "${batterystats_root_path}/test/fuzztest"
 
   include_dirs = [
     "./",
@@ -34,7 +34,7 @@ ohos_fuzztest("BatteryStatsFuzzTest") {
     "-fno-omit-frame-pointer",
   ]
   sources = [ "./batterystats_fuzzer.cpp" ]
-  deps = [ "${batterystats_innerkits}:batterystats_client" ]
+  deps = [ "${batterystats_inner_api}:batterystats_client" ]
 
   external_deps = [
     "c_utils:utils",

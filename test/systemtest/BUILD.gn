@@ -44,7 +44,7 @@ ohos_systemtest("batterystats_sys_test") {
 
   deps = [
     "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
-    "${batterystats_innerkits}:batterystats_client",
+    "${batterystats_inner_api}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
     "//third_party/googletest:gtest_main",
     "//third_party/jsoncpp:jsoncpp",

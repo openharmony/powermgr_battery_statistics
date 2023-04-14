@@ -21,5 +21,13 @@ group("systemtest") {
 
 group("fuzztest") {
   testonly = true
-  deps = [ "batterystats_fuzzer:fuzztest" ]
+  deps = [ "fuzztest:fuzztest" ]
+}
+
+group("unittest") {
+  testonly = true
+  deps = [
+    "unittest/src/clienttest:unittest",
+    "unittest/src/servicetest:unittest",
+  ]
 }
