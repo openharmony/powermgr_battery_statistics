@@ -42,6 +42,7 @@ deps_ex = [
   "ability_base:base",
   "ability_base:want",
   "common_event_service:cesfwk_innerkits",
+  "config_policy:configpolicy_util",
   "c_utils:utils",
   "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",

@@ -44,6 +44,7 @@ deps_ex = [
   "ability_base:want",
   "battery_manager:batterysrv_client",
   "common_event_service:cesfwk_innerkits",
+  "config_policy:configpolicy_util",
   "c_utils:utils",
   "display_manager:displaymgr",
   "eventhandler:libeventhandler",
