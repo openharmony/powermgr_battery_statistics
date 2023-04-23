@@ -40,6 +40,7 @@ ohos_systemtest("batterystats_sys_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [

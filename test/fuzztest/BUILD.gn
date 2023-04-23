@@ -19,14 +19,16 @@ module_output_path = "${batterystats_part_name}/batterystats"
 ##############################fuzztest##########################################
 ohos_fuzztest("BatteryStatsFuzzTest") {
   module_out_path = module_output_path
-  fuzz_config_file =
-      "${batterystats_root_path}/test/fuzztest"
+  fuzz_config_file = "${batterystats_root_path}/test/fuzztest"
 
   include_dirs = [
     "./",
     "${batterystats_utils_path}:batterystats_utils_config",
     "${batterystats_utils_path}/native/include",
   ]
+
+  configs = [ "${batterystats_utils_path}:coverage_flags" ]
+
   cflags = [
     "-g",
     "-O0",

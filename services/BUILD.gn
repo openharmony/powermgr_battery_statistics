@@ -61,6 +61,7 @@ ohos_shared_library("batterystats_service") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":batterystats_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   public_configs = [ ":batterystats_public_config" ]
@@ -98,6 +99,7 @@ ohos_shared_library("batterystats_stub") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":batterystats_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   public_configs = [ ":batterystats_public_config" ]

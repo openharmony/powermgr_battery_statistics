@@ -59,7 +59,10 @@ ohos_unittest("stats_service_test") {
 
   sources = [ "stats_service_test.cpp" ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [ "//third_party/googletest:gtest_main" ]
 
@@ -72,7 +75,10 @@ ohos_unittest("stats_service_death_test") {
 
   sources = [ "stats_service_death_test.cpp" ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_DEATH_UT" ]
 
@@ -99,6 +105,7 @@ ohos_unittest("stats_wifi_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -124,6 +131,7 @@ ohos_unittest("stats_camera_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -146,7 +154,10 @@ ohos_unittest("stats_audio_test") {
     "stats_audio_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -171,6 +182,7 @@ ohos_unittest("stats_powermgr_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -196,6 +208,7 @@ ohos_unittest("stats_location_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -218,6 +231,7 @@ ohos_unittest("stats_dump_test") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -239,7 +253,10 @@ ohos_unittest("stats_display_test") {
     "stats_display_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -261,7 +278,10 @@ ohos_unittest("stats_phone_test") {
     "stats_phone_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -283,7 +303,10 @@ ohos_unittest("stats_bluetooth_test") {
     "stats_bluetooth_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -305,7 +328,10 @@ ohos_unittest("stats_alarm_test") {
     "stats_alarm_test.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -324,7 +350,10 @@ ohos_unittest("stats_util_test") {
 
   sources = [ "stats_util_test.cpp" ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_utils_path}:batterystats_utils",
@@ -348,6 +377,7 @@ ohos_unittest("stats_client_test_mock_parcel") {
   configs = [
     ":module_mock_private_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -374,6 +404,7 @@ ohos_unittest("stats_client_test_mock_object") {
   configs = [
     ":module_mock_private_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
@@ -400,6 +431,7 @@ ohos_unittest("stats_client_test_mock_peer") {
   configs = [
     ":module_mock_private_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [

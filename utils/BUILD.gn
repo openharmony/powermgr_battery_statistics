@@ -21,12 +21,26 @@ config("batterystats_utils_config") {
   ]
 }
 
+declare_args() {
+  battery_statistics_feature_coverage = false
+}
+
+config("coverage_flags") {
+  if (battery_statistics_feature_coverage) {
+    cflags = [ "--coverage" ]
+    cflags_cc = [ "--coverage" ]
+    ldflags = [ "--coverage" ]
+  }
+}
+
 ohos_source_set("batterystats_utils") {
   sources = [
     "native/src/stats_helper.cpp",
     "native/src/stats_hisysevent.cpp",
     "native/src/stats_utils.cpp",
   ]
+
+  configs = [ "${batterystats_utils_path}:coverage_flags" ]
 
   public_configs = [ ":batterystats_utils_config" ]
   external_deps = [
