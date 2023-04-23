@@ -128,9 +128,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
         .append(", wakelock type = ")
         .append(ToString(type))
         .append(", wakelock name = ")
-        .append(name)
-        .append(", wakelock state = ")
-        .append("UNLOCK");
+        .append(name);
 
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
 
