@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,21 +34,17 @@ FlashlightEntity::FlashlightEntity()
 int64_t FlashlightEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_FLASHLIGHT_ON: {
-            auto iter = flashlightTimerMap_.find(uid);
-            if (iter != flashlightTimerMap_.end()) {
-                activeTimeMs = iter->second->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get flashlight on time: %{public}" PRId64 "ms for uid: %{public}d",
-                    activeTimeMs, uid);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
-            break;
-        }
-        default:
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_FLASHLIGHT_ON) {
+        return activeTimeMs;
     }
+
+    auto iter = flashlightTimerMap_.find(uid);
+    if (iter != flashlightTimerMap_.end()) {
+        activeTimeMs = iter->second->GetRunningTimeMs();
+        STATS_HILOGD(COMP_SVC, "Get flashlight on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs, uid);
+        return activeTimeMs;
+    }
+    STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
     return activeTimeMs;
 }
 
@@ -105,27 +101,19 @@ double FlashlightEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32
 std::shared_ptr<StatsHelper::ActiveTimer> FlashlightEntity::GetOrCreateTimer(int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_FLASHLIGHT_ON: {
-            auto flashlightOnIter = flashlightTimerMap_.find(uid);
-            if (flashlightOnIter != flashlightTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Get flashlight on timer for uid: %{public}d", uid);
-                timer = flashlightOnIter->second;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create flashlight on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> flashTimer = std::make_shared<StatsHelper::ActiveTimer>();
-            flashlightTimerMap_.insert(
-                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, flashTimer));
-            timer = flashTimer;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_FLASHLIGHT_ON) {
+        return nullptr;
     }
-    return timer;
+
+    auto flashlightOnIter = flashlightTimerMap_.find(uid);
+    if (flashlightOnIter != flashlightTimerMap_.end()) {
+        STATS_HILOGD(COMP_SVC, "Get flashlight on timer for uid: %{public}d", uid);
+        return flashlightOnIter->second;
+    }
+    STATS_HILOGD(COMP_SVC, "Create flashlight on timer for uid: %{public}d", uid);
+    std::shared_ptr<StatsHelper::ActiveTimer> flashTimer = std::make_shared<StatsHelper::ActiveTimer>();
+    flashlightTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, flashTimer));
+    return flashTimer;
 }
 
 void FlashlightEntity::Reset()
