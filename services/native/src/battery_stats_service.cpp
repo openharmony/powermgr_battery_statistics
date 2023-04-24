@@ -270,6 +270,9 @@ uint64_t BatteryStatsService::GetTotalDataBytes(const StatsUtils::StatsType& sta
 
 void BatteryStatsService::Reset()
 {
+    if (!Permission::IsSystem()) {
+        return;
+    }
     core_->Reset();
 }
 
@@ -290,11 +293,17 @@ std::shared_ptr<BatteryStatsDetector> BatteryStatsService::GetBatteryStatsDetect
 
 void BatteryStatsService::SetOnBattery(bool isOnBattery)
 {
+    if (!Permission::IsSystem()) {
+        return;
+    }
     StatsHelper::SetOnBattery(isOnBattery);
 }
 
 std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args, uint32_t argc)
 {
+    if (!Permission::IsSystem()) {
+        return "";
+    }
     std::lock_guard lock(mutex_);
     pid_t pid = IPCSkeleton::GetCallingPid();
     std::string result;
