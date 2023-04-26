@@ -68,7 +68,10 @@ ohos_unittest("stats_service_alarm_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -95,7 +98,10 @@ ohos_unittest("stats_service_audio_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -122,7 +128,10 @@ ohos_unittest("stats_service_bluetooth_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -149,7 +158,10 @@ ohos_unittest("stats_service_camera_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -176,7 +188,10 @@ ohos_unittest("stats_service_display_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -203,7 +218,10 @@ ohos_unittest("stats_service_dump_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -230,7 +248,10 @@ ohos_unittest("stats_service_location_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -257,7 +278,10 @@ ohos_unittest("stats_service_phone_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -284,7 +308,10 @@ ohos_unittest("stats_service_powermgr_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -311,7 +338,10 @@ ohos_unittest("stats_service_wifi_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -338,7 +368,10 @@ ohos_unittest("stats_service_subscriber_test") {
     "utils/string_filter.cpp",
   ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   defines = [ "STATS_SERVICE_UT_TEST" ]
 
@@ -359,7 +392,10 @@ ohos_unittest("stats_service_stub_test") {
 
   sources = [ "stats_service_stub_test.cpp" ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -378,7 +414,10 @@ ohos_unittest("stats_service_core_test") {
 
   sources = [ "stats_service_core_test.cpp" ]
 
-  configs = [ ":module_private_config" ]
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -405,6 +444,7 @@ ohos_unittest("stats_service_test_mock_parcel") {
   configs = [
     ":module_mock_private_config",
     ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   defines = [ "MESSAGE_PARCEL_WRITE_TOKEN_NORMAL" ]

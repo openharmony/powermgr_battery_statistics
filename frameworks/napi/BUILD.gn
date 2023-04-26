@@ -29,11 +29,12 @@ ohos_shared_library("batterystatistics") {
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
     ":batterystatsnapi_private_config",
+    "${batterystats_utils_path}:coverage_flags",
   ]
 
   deps = [
-    "${batterystats_utils_path}:batterystats_utils",
     "${batterystats_inner_api}:batterystats_client",
+    "${batterystats_utils_path}:batterystats_utils",
   ]
 
   external_deps = [
