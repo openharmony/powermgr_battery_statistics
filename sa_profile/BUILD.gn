@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/ohos/sa_profile/sa_profile.gni")
+import("../batterystats.gni")
 
 ohos_sa_profile("batterystats_sa_profile") {
   sources = [ "3304.xml" ]

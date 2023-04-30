@@ -11,8 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/powermgr/battery_statistics/batterystats.gni")
 import("//build/test.gni")
+import("../batterystats.gni")
 
 group("systemtest") {
   testonly = true
