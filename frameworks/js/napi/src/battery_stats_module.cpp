@@ -95,6 +95,7 @@ static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
     napi_value bluetooth = nullptr;
     napi_value idle = nullptr;
     napi_value phone = nullptr;
+    napi_value radio = nullptr;
     napi_value screen = nullptr;
     napi_value user = nullptr;
     napi_value wifi = nullptr;
@@ -104,6 +105,7 @@ static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_BLUETOOTH, &bluetooth);
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_IDLE, &idle);
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_PHONE, &phone);
+    napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_RADIO, &radio);
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_SCREEN, &screen);
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_USER, &user);
     napi_create_int32(env, (int32_t)BatteryStatsInfo::ConsumptionType::CONSUMPTION_TYPE_WIFI, &wifi);
@@ -114,6 +116,7 @@ static napi_value CreateEnumStatsType(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_BLUETOOTH", bluetooth),
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_IDLE", idle),
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_PHONE", phone),
+        DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_RADIO", radio),
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_SCREEN", screen),
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_USER", user),
         DECLARE_NAPI_STATIC_PROPERTY("CONSUMPTION_TYPE_WIFI", wifi),
