@@ -425,4 +425,20 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsParser_001, TestSize.Level0)
     EXPECT_EQ(expectSpeedCluster0Num, g_statsParser->GetSpeedNum(speedClusterZero));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsParser->GetSpeedNum(errorSpeedCluster));
 }
+
+/**
+ * @tc.name: BatteryStatsRadio_001
+ * @tc.desc: test class BatteryStatsClient function with radio type
+ * @tc.type: FUNC
+ * @tc.require: issueI6ZT17
+ */
+HWTEST_F (StatsPowerMgrTest, BatteryStatsRadio_001, TestSize.Level0)
+{
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    statsClient.Reset();
+
+    double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
+    double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
+    EXPECT_TRUE(actualPower == StatsUtils::DEFAULT_VALUE && actualPercent == StatsUtils::DEFAULT_VALUE);
+}
 }
