@@ -29,7 +29,7 @@
 #include "if_system_ability_manager.h"
 #include "permission.h"
 #include "system_ability_definition.h"
-#include "watchdog.h"
+#include "xcollie/watchdog.h"
 
 #include "battery_stats_dumper.h"
 #include "battery_stats_listener.h"

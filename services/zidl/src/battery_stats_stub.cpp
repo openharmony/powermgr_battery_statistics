@@ -22,8 +22,8 @@
 #include "stats_errors.h"
 #include "stats_log.h"
 #include "stats_utils.h"
-#include "xcollie.h"
-#include "xcollie_define.h"
+#include "xcollie/xcollie.h"
+#include "xcollie/xcollie_define.h"
 
 namespace OHOS {
 namespace PowerMgr {

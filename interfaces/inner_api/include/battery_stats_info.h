@@ -21,7 +21,6 @@
 #include <parcel.h>
 #include <string>
 
-#include "battery_stats_info.h"
 #include "stats_utils.h"
 
 namespace OHOS {
