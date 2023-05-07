@@ -22,15 +22,25 @@
 #include "string_ex.h"
 
 #include "stats_utils.h"
+#include "config_policy_utils.h"
 
 namespace OHOS {
 namespace PowerMgr {
 namespace {
+static const std::string POWER_AVERAGE_FILE = "etc/profile/power_average.json";
 static const std::string VENDOR_POWER_AVERAGE_FILE = "/vendor/etc/profile/power_average.json";
 static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/profile/power_average.json";
 } // namespace
 bool BatteryStatsParser::Init()
 {
+    char buf[MAX_PATH_LEN];
+    char* path = GetOneCfgFile(POWER_AVERAGE_FILE.c_str(), buf, MAX_PATH_LEN);
+    if (path != nullptr && *path != '\0') {
+        if (LoadAveragePowerFromFile(path)) {
+            return true;
+        }
+        return false;
+    }
     if (!LoadAveragePowerFromFile(VENDOR_POWER_AVERAGE_FILE)) {
         STATS_HILOGE(COMP_SVC, "Failed to load vendor average power file");
         if (!LoadAveragePowerFromFile(SYSTEM_POWER_AVERAGE_FILE)) {
