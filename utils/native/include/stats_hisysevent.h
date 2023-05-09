@@ -53,6 +53,8 @@ public:
         HISYSEVENT_TYPE_BLE_SCAN_STOP,
         HISYSEVENT_TYPE_WIFI_CONNECTION,
         HISYSEVENT_TYPE_WIFI_SCAN,
+        HISYSEVENT_TYPE_WIFI_SIGNAL,
+        HISYSEVENT_TYPE_WIFI_BAND,
         HISYSEVENT_TYPE_START_REMOTE_ABILITY,
         HISYSEVENT_TYPE_MISC_TIME_STATISTIC_REPORT,
         HISYSEVENT_TYPE_THERMAL_ACTION_TRIGGERED,
@@ -90,6 +92,8 @@ public:
     static constexpr const char* BLE_SCAN_STOP = "BLE_SCAN_STOP";
     static constexpr const char* WIFI_CONNECTION = "WIFI_CONNECTION";
     static constexpr const char* WIFI_SCAN = "WIFI_SCAN";
+    static constexpr const char* WIFI_SIGNAL = "WIFI_SIGNAL";
+    static constexpr const char* WIFI_BAND = "WIFI_BAND";
     static constexpr const char* START_REMOTE_ABILITY = "START_REMOTE_ABILITY";
     static constexpr const char* MISC_TIME_STATISTIC_REPORT = "MISC_TIME_STATISTIC_REPORT";
     static constexpr const char* THERMAL_ACTION_TRIGGERED = "ACTION_TRIGGERED";
@@ -126,6 +130,8 @@ public:
         BLE_SCAN_STOP,
         WIFI_CONNECTION,
         WIFI_SCAN,
+        WIFI_SIGNAL,
+        WIFI_BAND,
         START_REMOTE_ABILITY,
         MISC_TIME_STATISTIC_REPORT,
         THERMAL_ACTION_TRIGGERED,
