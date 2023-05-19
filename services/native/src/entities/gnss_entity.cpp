@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,21 +34,17 @@ GnssEntity::GnssEntity()
 int64_t GnssEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_GNSS_ON: {
-            auto iter = gnssTimerMap_.find(uid);
-            if (iter != gnssTimerMap_.end()) {
-                activeTimeMs = iter->second->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get gnss on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs,
-                    uid);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
-            break;
-        }
-        default:
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_GNSS_ON) {
+        return activeTimeMs;
     }
+
+    auto iter = gnssTimerMap_.find(uid);
+    if (iter != gnssTimerMap_.end()) {
+        activeTimeMs = iter->second->GetRunningTimeMs();
+        STATS_HILOGD(COMP_SVC, "Get gnss on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs, uid);
+        return activeTimeMs;
+    }
+    STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
     return activeTimeMs;
 }
 
@@ -104,26 +100,19 @@ double GnssEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
 std::shared_ptr<StatsHelper::ActiveTimer> GnssEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_GNSS_ON: {
-            auto gnssOnIter = gnssTimerMap_.find(uid);
-            if (gnssOnIter != gnssTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Get gnss on timer for uid: %{public}d", uid);
-                timer = gnssOnIter->second;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create gnss on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> gnssTimer = std::make_shared<StatsHelper::ActiveTimer>();
-            gnssTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, gnssTimer));
-            timer = gnssTimer;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_GNSS_ON) {
+        return nullptr;
     }
-    return timer;
+
+    auto gnssOnIter = gnssTimerMap_.find(uid);
+    if (gnssOnIter != gnssTimerMap_.end()) {
+        STATS_HILOGD(COMP_SVC, "Get gnss on timer for uid: %{public}d", uid);
+        return gnssOnIter->second;
+    }
+    STATS_HILOGD(COMP_SVC, "Create gnss on timer for uid: %{public}d", uid);
+    std::shared_ptr<StatsHelper::ActiveTimer> gnssTimer = std::make_shared<StatsHelper::ActiveTimer>();
+    gnssTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, gnssTimer));
+    return gnssTimer;
 }
 
 void GnssEntity::Reset()

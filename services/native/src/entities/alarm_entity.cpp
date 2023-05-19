@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,19 +34,13 @@ AlarmEntity::AlarmEntity()
 int64_t AlarmEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
 {
     int64_t count = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_ALARM: {
-            auto almIter = alarmCounterMap_.find(uid);
-            if (almIter != alarmCounterMap_.end()) {
-                count = almIter->second->GetCount();
-                STATS_HILOGD(COMP_SVC, "Get alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "No alarm count related to uid: %{public}d was found, return 0", uid);
-            break;
+    if (statsType == StatsUtils::STATS_TYPE_ALARM) {
+        auto almIter = alarmCounterMap_.find(uid);
+        if (almIter != alarmCounterMap_.end()) {
+            count = almIter->second->GetCount();
+            STATS_HILOGD(COMP_SVC, "Get alarm count: %{public}" PRId64 " for uid: %{public}d", count, uid);
         }
-        default:
-            break;
+        STATS_HILOGD(COMP_SVC, "No alarm count related to uid: %{public}d was found, return 0", uid);
     }
     return count;
 }
@@ -102,26 +96,19 @@ double AlarmEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t ui
 
 std::shared_ptr<StatsHelper::Counter> AlarmEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
 {
-    std::shared_ptr<StatsHelper::Counter> counter = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_ALARM: {
-            auto alarmOnIter = alarmCounterMap_.find(uid);
-            if (alarmOnIter != alarmCounterMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Get alarm on counter for uid: %{public}d", uid);
-                counter = alarmOnIter->second;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create alarm on counter for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::Counter> alarmConuter = std::make_shared<StatsHelper::Counter>();
-            alarmCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, alarmConuter));
-            counter = alarmConuter;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active conuter failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_ALARM) {
+        return nullptr;
     }
-    return counter;
+
+    auto alarmOnIter = alarmCounterMap_.find(uid);
+    if (alarmOnIter != alarmCounterMap_.end()) {
+        STATS_HILOGD(COMP_SVC, "Get alarm on counter for uid: %{public}d", uid);
+        return alarmOnIter->second;
+    }
+    STATS_HILOGD(COMP_SVC, "Create alarm on counter for uid: %{public}d", uid);
+    std::shared_ptr<StatsHelper::Counter> alarmConuter = std::make_shared<StatsHelper::Counter>();
+    alarmCounterMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::Counter>>(uid, alarmConuter));
+    return alarmConuter;
 }
 
 void AlarmEntity::Reset()

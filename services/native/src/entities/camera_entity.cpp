@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -98,35 +98,27 @@ double CameraEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t u
 std::shared_ptr<StatsHelper::ActiveTimer> CameraEntity::GetOrCreateTimer(const std::string& deviceId, int32_t uid,
     StatsUtils::StatsType statsType, int16_t level)
 {
-    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_CAMERA_ON: {
-            auto cameraIter = cameraTimerMap_.find(deviceId);
-            if (cameraIter != cameraTimerMap_.end()) {
-                auto uidIter = cameraIter->second.find(uid);
-                if (uidIter != cameraIter->second.end()) {
-                    timer = uidIter->second;
-                    break;
-                }
-                std::shared_ptr<StatsHelper::ActiveTimer> cmrTimer = std::make_shared<StatsHelper::ActiveTimer>();
-                cameraIter->second.insert(
-                    std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, cmrTimer));
-                timer = cmrTimer;
-                break;
-            }
-            std::shared_ptr<StatsHelper::ActiveTimer> cmrTimer = std::make_shared<StatsHelper::ActiveTimer>();
-            std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> uidTimerMap;
-            uidTimerMap.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, cmrTimer));
-            cameraTimerMap_.insert(std::pair<std::string, std::map<int32_t,
-                std::shared_ptr<StatsHelper::ActiveTimer>>>(deviceId, uidTimerMap));
-            timer = cmrTimer;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
-            break;
+    std::shared_ptr<StatsHelper::ActiveTimer> cmrTimer = nullptr;
+    if (statsType != StatsUtils::STATS_TYPE_CAMERA_ON) {
+        return cmrTimer;
     }
-    return timer;
+
+    auto cameraIter = cameraTimerMap_.find(deviceId);
+    if (cameraIter != cameraTimerMap_.end()) {
+        auto uidIter = cameraIter->second.find(uid);
+        if (uidIter != cameraIter->second.end()) {
+            return uidIter->second;
+        }
+        cmrTimer = std::make_shared<StatsHelper::ActiveTimer>();
+        cameraIter->second.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, cmrTimer));
+        return cmrTimer;
+    }
+    cmrTimer = std::make_shared<StatsHelper::ActiveTimer>();
+    std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>> uidTimerMap;
+    uidTimerMap.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, cmrTimer));
+    cameraTimerMap_.insert(
+        std::pair<std::string, std::map<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>>(deviceId, uidTimerMap));
+    return cmrTimer;
 }
 
 void CameraEntity::Reset()

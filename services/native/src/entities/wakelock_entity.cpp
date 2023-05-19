@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,21 +34,17 @@ WakelockEntity::WakelockEntity()
 int64_t WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WAKELOCK_HOLD: {
-            auto iter = wakelockTimerMap_.find(uid);
-            if (iter != wakelockTimerMap_.end()) {
-                activeTimeMs = iter->second->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get wakelock on time: %{public}" PRId64 "ms for uid: %{public}d",
-                    activeTimeMs, uid);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
-            break;
-        }
-        default:
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WAKELOCK_HOLD) {
+        return activeTimeMs;
     }
+
+    auto iter = wakelockTimerMap_.find(uid);
+    if (iter != wakelockTimerMap_.end()) {
+        activeTimeMs = iter->second->GetRunningTimeMs();
+        STATS_HILOGD(COMP_SVC, "Get wakelock on time: %{public}" PRId64 "ms for uid: %{public}d", activeTimeMs, uid);
+        return activeTimeMs;
+    }
+    STATS_HILOGD(COMP_SVC, "Didn't find related timer for uid: %{public}d, return 0", uid);
     return activeTimeMs;
 }
 
@@ -105,27 +101,19 @@ double WakelockEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t
 std::shared_ptr<StatsHelper::ActiveTimer> WakelockEntity::GetOrCreateTimer(int32_t uid, StatsUtils::StatsType statsType,
     int16_t level)
 {
-    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WAKELOCK_HOLD: {
-            auto wakelockOnIter = wakelockTimerMap_.find(uid);
-            if (wakelockOnIter != wakelockTimerMap_.end()) {
-                STATS_HILOGD(COMP_SVC, "Get wakelock on timer for uid: %{public}d", uid);
-                timer = wakelockOnIter->second;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create wakelock on timer for uid: %{public}d", uid);
-            std::shared_ptr<StatsHelper::ActiveTimer> holdTimer = std::make_shared<StatsHelper::ActiveTimer>();
-            wakelockTimerMap_.insert(
-                std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, holdTimer));
-            timer = holdTimer;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WAKELOCK_HOLD) {
+        return nullptr;
     }
-    return timer;
+
+    auto wakelockOnIter = wakelockTimerMap_.find(uid);
+    if (wakelockOnIter != wakelockTimerMap_.end()) {
+        STATS_HILOGD(COMP_SVC, "Get wakelock on timer for uid: %{public}d", uid);
+        return wakelockOnIter->second;
+    }
+    STATS_HILOGD(COMP_SVC, "Create wakelock on timer for uid: %{public}d", uid);
+    std::shared_ptr<StatsHelper::ActiveTimer> holdTimer = std::make_shared<StatsHelper::ActiveTimer>();
+    wakelockTimerMap_.insert(std::pair<int32_t, std::shared_ptr<StatsHelper::ActiveTimer>>(uid, holdTimer));
+    return holdTimer;
 }
 
 void WakelockEntity::Reset()

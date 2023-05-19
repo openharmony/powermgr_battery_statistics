@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -55,19 +55,15 @@ void WifiEntity::Calculate(int32_t uid)
 int64_t WifiEntity::GetActiveTimeMs(StatsUtils::StatsType statsType, int16_t level)
 {
     int64_t time = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WIFI_ON: {
-            if (wifiOnTimer_) {
-                time = wifiOnTimer_->GetRunningTimeMs();
-                STATS_HILOGD(COMP_SVC, "Get wifi on time: %{public}" PRId64 "ms", time);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Wifi has not been turned on yet, return 0");
-            break;
-        }
-        default:
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WIFI_ON) {
+        return time;
     }
+    if (wifiOnTimer_) {
+        time = wifiOnTimer_->GetRunningTimeMs();
+        STATS_HILOGD(COMP_SVC, "Get wifi on time: %{public}" PRId64 "ms", time);
+        return time;
+    }
+    STATS_HILOGD(COMP_SVC, "Wifi has not been turned on yet, return 0");
     return time;
 }
 
@@ -84,64 +80,44 @@ double WifiEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid
 int64_t WifiEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_t uid)
 {
     int64_t count = StatsUtils::DEFAULT_VALUE;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WIFI_SCAN: {
-            if (wifiScanCounter_) {
-                count = wifiScanCounter_->GetCount();
-                STATS_HILOGD(COMP_SVC, "Get wifi scan count: %{public}" PRId64 "", count);
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Wifi scan has not been triggered yet, return 0");
-            break;
-        }
-        default:
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WIFI_SCAN) {
+        return count;
     }
+    if (wifiScanCounter_) {
+        count = wifiScanCounter_->GetCount();
+        STATS_HILOGD(COMP_SVC, "Get wifi scan count: %{public}" PRId64 "", count);
+        return count;
+    }
+    STATS_HILOGD(COMP_SVC, "Wifi scan has not been triggered yet, return 0");
     return count;
 }
 
 std::shared_ptr<StatsHelper::ActiveTimer> WifiEntity::GetOrCreateTimer(StatsUtils::StatsType statsType, int16_t level)
 {
-    std::shared_ptr<StatsHelper::ActiveTimer> timer = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WIFI_ON: {
-            if (wifiOnTimer_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Get wifi on timer");
-                timer = wifiOnTimer_;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create wifi on timer");
-            wifiOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
-            timer = wifiOnTimer_;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create active timer failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WIFI_ON) {
+        return nullptr;
     }
-    return timer;
+
+    if (wifiOnTimer_ != nullptr) {
+        STATS_HILOGD(COMP_SVC, "Get wifi on timer");
+        return wifiOnTimer_;
+    }
+    wifiOnTimer_ = std::make_shared<StatsHelper::ActiveTimer>();
+    return wifiOnTimer_;
 }
 
 std::shared_ptr<StatsHelper::Counter> WifiEntity::GetOrCreateCounter(StatsUtils::StatsType statsType, int32_t uid)
 {
-    std::shared_ptr<StatsHelper::Counter> counter = nullptr;
-    switch (statsType) {
-        case StatsUtils::STATS_TYPE_WIFI_SCAN: {
-            if (wifiScanCounter_ != nullptr) {
-                STATS_HILOGD(COMP_SVC, "Get wifi scan counter");
-                counter = wifiScanCounter_;
-                break;
-            }
-            STATS_HILOGD(COMP_SVC, "Create wifi scan counter");
-            wifiScanCounter_ = std::make_shared<StatsHelper::Counter>();
-            counter = wifiScanCounter_;
-            break;
-        }
-        default:
-            STATS_HILOGW(COMP_SVC, "Create wifi scan counter failed");
-            break;
+    if (statsType != StatsUtils::STATS_TYPE_WIFI_SCAN) {
+        return nullptr;
     }
-    return counter;
+    if (wifiScanCounter_ != nullptr) {
+        STATS_HILOGD(COMP_SVC, "Get wifi scan counter");
+        return wifiScanCounter_;
+    }
+    STATS_HILOGD(COMP_SVC, "Create wifi scan counter");
+    wifiScanCounter_ = std::make_shared<StatsHelper::Counter>();
+    return wifiScanCounter_;
 }
 
 void WifiEntity::Reset()
