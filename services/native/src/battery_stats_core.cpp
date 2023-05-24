@@ -143,6 +143,7 @@ bool BatteryStatsCore::Init()
 
 void BatteryStatsCore::ComputePower()
 {
+    std::lock_guard lock(mutex_);
     STATS_HILOGD(COMP_SVC, "Calculate battery stats");
     const uint32_t DFX_DELAY_MS = 10000;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsCoreComputePower", DFX_DELAY_MS, nullptr, nullptr,
@@ -705,6 +706,7 @@ int64_t BatteryStatsCore::GetTotalConsumptionCount(StatsUtils::StatsType statsTy
 
 double BatteryStatsCore::GetAppStatsMah(const int32_t& uid)
 {
+    std::lock_guard lock(mutex_);
     double appStatsMah = StatsUtils::DEFAULT_VALUE;
     auto statsInfoList = GetBatteryStats();
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
@@ -963,6 +965,7 @@ bool BatteryStatsCore::LoadBatteryStatsData()
 
 void BatteryStatsCore::Reset()
 {
+    std::lock_guard lock(mutex_);
     audioEntity_->Reset();
     bluetoothEntity_->Reset();
     cameraEntity_->Reset();

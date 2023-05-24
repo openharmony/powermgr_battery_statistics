@@ -80,6 +80,7 @@ private:
     bool isScreenOn_ = false;
     int32_t lastBrightnessLevel_ = StatsUtils::INVALID_VALUE;
     int32_t lastCameraUid_ = StatsUtils::INVALID_VALUE;
+    std::mutex mutex_;
     std::string debugInfo_;
     void UpdateTimer(std::shared_ptr<BatteryStatsEntity> entity, StatsUtils::StatsType statsType,
         StatsUtils::StatsState state, int32_t uid = StatsUtils::INVALID_VALUE);
