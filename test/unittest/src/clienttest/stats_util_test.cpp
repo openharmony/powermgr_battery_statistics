@@ -15,6 +15,7 @@
 
 #include "stats_util_test.h"
 
+#include "battery_stats_parser.h"
 #include "stats_helper.h"
 #include "stats_hisysevent.h"
 #include "stats_utils.h"
@@ -298,5 +299,17 @@ HWTEST_F (StatsUtilTest, StatsHelper_006, TestSize.Level0)
     durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs);
     devTimeMs = abs(durationTimeMs - TIMER_DURATION_MS);
     EXPECT_LE(devTimeMs, DEVIATION_TIMER_THRESHOLD);
+}
+
+/**
+ * @tc.name: StatsParserTest_001
+ * @tc.desc: test Init
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsUtilTest, StatsParserTest_001, TestSize.Level0)
+{
+    auto parser = std::make_shared<BatteryStatsParser>();
+    bool ret = parser->Init();
+    EXPECT_TRUE(ret);
 }
 }

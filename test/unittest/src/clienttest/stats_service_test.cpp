@@ -20,6 +20,7 @@
 #include <system_ability_definition.h>
 #include "battery_stats_parser.h"
 #include "battery_stats_service.h"
+#include "config_policy_utils.h"
 #include "gtest/gtest-message.h"
 #include "gtest/gtest-test-part.h"
 #include "gtest/gtest.h"
@@ -32,6 +33,11 @@
 using namespace testing::ext;
 using namespace OHOS::PowerMgr;
 using namespace OHOS;
+
+char* GetOneCfgFile(const char *pathSuffix, char *buf, unsigned int bufLength)
+{
+    return nullptr;
+}
 
 void StatsServiceTest::SetUpTestCase()
 {
@@ -113,10 +119,22 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
 
 /**
  * @tc.name: StatsParserTest_001
- * @tc.desc: test DumpInfo
+ * @tc.desc: test Init
  * @tc.type: FUNC
  */
 HWTEST_F (StatsServiceTest, StatsParserTest_001, TestSize.Level0)
+{
+    auto parser = std::make_shared<BatteryStatsParser>();
+    bool ret = parser->Init();
+    EXPECT_TRUE(ret);
+}
+
+/**
+ * @tc.name: StatsParserTest_002
+ * @tc.desc: test DumpInfo
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceTest, StatsParserTest_002, TestSize.Level0)
 {
     auto parser = std::make_shared<BatteryStatsParser>();
     parser->Init();
