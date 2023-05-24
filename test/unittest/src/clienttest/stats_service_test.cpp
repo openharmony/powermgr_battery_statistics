@@ -18,6 +18,8 @@
 #include <if_system_ability_manager.h>
 #include <iservice_registry.h>
 #include <system_ability_definition.h>
+#include "battery_stats_parser.h"
+#include "battery_stats_service.h"
 #include "gtest/gtest-message.h"
 #include "gtest/gtest-test-part.h"
 #include "gtest/gtest.h"
@@ -63,5 +65,63 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
     ASSERT_TRUE(sam != nullptr) << "StatsServiceTest_001 fail to get GetSystemAbilityManager";
     sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     ASSERT_TRUE(remoteObject_ != nullptr) << "GetSystemAbility failed.";
+}
+
+/**
+ * @tc.name: StatsServiceTest_002
+ * @tc.desc: test OnStart
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceTest, StatsServiceTest_002, TestSize.Level0)
+{
+    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    statsService->OnStart();
+    statsService->OnStart();
+    bool ret = statsService->IsServiceReady();
+    EXPECT_FALSE(ret);
+}
+
+/**
+ * @tc.name: StatsServiceTest_003
+ * @tc.desc: test OnStop
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceTest, StatsServiceTest_003, TestSize.Level0)
+{
+    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    statsService->OnAddSystemAbility(DFX_SYS_EVENT_SERVICE_ABILITY_ID, "");
+    statsService->OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
+    statsService->OnStart();
+    statsService->OnStop();
+    bool ret = statsService->IsServiceReady();
+    EXPECT_FALSE(ret);
+}
+
+/**
+ * @tc.name: StatsServiceTest_004
+ * @tc.desc: test Dump
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
+{
+    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    int32_t fd = 1;
+    std::vector<std::u16string> vec;
+    int32_t ret = statsService->Dump(fd, vec);
+    EXPECT_EQ(ret, OHOS::ERR_OK);
+}
+
+/**
+ * @tc.name: StatsParserTest_001
+ * @tc.desc: test DumpInfo
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceTest, StatsParserTest_001, TestSize.Level0)
+{
+    auto parser = std::make_shared<BatteryStatsParser>();
+    parser->Init();
+    std::string result = "";
+    parser->DumpInfo(result);
+    EXPECT_TRUE(result != "");
 }
 }
