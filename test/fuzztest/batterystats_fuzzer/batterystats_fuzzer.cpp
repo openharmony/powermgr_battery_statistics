@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,8 +21,10 @@
 #include <cstdlib>
 #include <random>
 #include <ctime>
-#include "securec.h"
 #include "battery_stats_client.h"
+#include "battery_stats_service.h"
+#include "message_parcel.h"
+#include "securec.h"
 
 using namespace std;
 using namespace OHOS;
@@ -30,168 +32,120 @@ using namespace OHOS::PowerMgr;
 
 namespace {
 auto& g_batterystatsClient = BatteryStatsClient::GetInstance();
-constexpr size_t DATANUM = 4;
-constexpr int32_t INDEX_0 = 0;
+sptr<BatteryStatsService> g_service = nullptr;
+const int32_t REWIND_READ_DATA = 0;
 }
 
-static void GetBatteryStats(const uint8_t* data)
+static int32_t GetInt32(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
+    int32_t value = 0;
+    if (size < sizeof(value)) {
+        return value;
     }
+    if (memcpy_s(&value, sizeof(value), data, sizeof(value)) != EOK) {
+        return value;
+    }
+    return value;
+}
 
+static void GetBatteryStats([[maybe_unused]] const uint8_t* data, [[maybe_unused]] size_t size)
+{
     g_batterystatsClient.GetBatteryStats();
 }
 
-static void SetOnBattery(const uint8_t* data)
+static void SetOnBattery(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
-    g_batterystatsClient.SetOnBattery(type[0]);
+    int32_t onBattery = GetInt32(data, size);
+    g_batterystatsClient.SetOnBattery(onBattery);
 }
 
-static void GetAppStatsMah(const uint8_t* data)
+static void GetAppStatsMah(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
-    g_batterystatsClient.GetAppStatsMah(type[0]);
+    int32_t uid = GetInt32(data, size);
+    g_batterystatsClient.GetAppStatsMah(uid);
 }
 
-static void GetAppStatsPercent(const uint8_t* data)
+static void GetAppStatsPercent(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
-    g_batterystatsClient.GetAppStatsPercent(type[0]);
+    int32_t uid = GetInt32(data, size);
+    g_batterystatsClient.GetAppStatsPercent(uid);
 }
 
-static void GetPartStatsMah(const uint8_t* data)
+static void GetPartStatsMah(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
-    g_batterystatsClient.GetPartStatsMah(static_cast <BatteryStatsInfo::ConsumptionType>(type[0]));
+    int32_t type = GetInt32(data, size);
+    g_batterystatsClient.GetPartStatsMah(static_cast<BatteryStatsInfo::ConsumptionType>(type));
 }
 
-static void GetPartStatsPercent(const uint8_t* data)
+static void GetPartStatsPercent(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
-    g_batterystatsClient.GetPartStatsPercent(static_cast <BatteryStatsInfo::ConsumptionType>(type[0]));
+    int32_t type = GetInt32(data, size);
+    g_batterystatsClient.GetPartStatsPercent(static_cast<BatteryStatsInfo::ConsumptionType>(type));
 }
 
 static void GetTotalTimeSecond(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    size_t idSize = 4;
-    int32_t uid[1];
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-    if (size <= (idSize + DATANUM) || (memcpy_s(uid, sizeof(uid), (data + DATANUM), idSize) != EOK)) {
-        uid[INDEX_0] = type[INDEX_0];
-    }
-
-    g_batterystatsClient.GetTotalTimeSecond(static_cast <OHOS::PowerMgr::StatsUtils::StatsType>(type[0]), uid[0]);
+    int32_t type = GetInt32(data, size);
+    int32_t uid = GetInt32(data + sizeof(int32_t), size - sizeof(int32_t));
+    g_batterystatsClient.GetTotalTimeSecond(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(type), uid);
 }
 
 static void GetTotalDataBytes(const uint8_t* data, size_t size)
 {
-    int32_t type[1];
-    size_t idSize = 4;
-    int32_t uid[1];
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-    if (size <= (idSize + DATANUM) || (memcpy_s(uid, sizeof(uid), (data + DATANUM), idSize) != EOK)) {
-        uid[INDEX_0] = type[INDEX_0];
-    }
-
-    g_batterystatsClient.GetTotalDataBytes(static_cast <OHOS::PowerMgr::StatsUtils::StatsType>(type[0]), uid[0]);
+    int32_t type = GetInt32(data, size);
+    int32_t uid = GetInt32(data + sizeof(int32_t), size - sizeof(int32_t));
+    g_batterystatsClient.GetTotalDataBytes(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(type), uid);
 }
 
-static void Reset(const uint8_t* data)
+static void Reset([[maybe_unused]] const uint8_t* data, [[maybe_unused]] size_t size)
 {
-    int32_t type[1];
-    int32_t idSize = 4;
-    if ((memcpy_s(type, sizeof(type), data, idSize)) != EOK) {
-        return;
-    }
-
     g_batterystatsClient.Reset();
 }
+
+static void BatteryStatsServiceStub(const uint8_t* data, size_t size)
+{
+    uint32_t code;
+    if (size < sizeof(code)) {
+        return;
+    }
+    if (memcpy_s(&code, sizeof(code), data, sizeof(code)) != EOK) {
+        return;
+    }
+
+    MessageParcel datas;
+    datas.WriteInterfaceToken(BatteryStatsService::GetDescriptor());
+    datas.WriteBuffer(data, size);
+    datas.RewindRead(REWIND_READ_DATA);
+    MessageParcel reply;
+    MessageOption option;
+    if (g_service == nullptr) {
+        g_service = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+        g_service->OnStart();
+    }
+    g_service->OnRemoteRequest(code, datas, reply, option);
+}
+
+static std::vector<std::function<void(const uint8_t*, size_t)>> fuzzFunc = {
+    &GetBatteryStats,
+    &SetOnBattery,
+    &GetAppStatsMah,
+    &GetAppStatsPercent,
+    &GetPartStatsMah,
+    &GetPartStatsPercent,
+    &GetTotalTimeSecond,
+    &GetTotalDataBytes,
+    &Reset
+};
 
 namespace OHOS {
 bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
-    int32_t idSize = 4;
-    int32_t cond[1];
-    if (static_cast<int32_t>(size) > idSize) {
-        if ((memcpy_s(cond, sizeof(cond), data, idSize)) != EOK) {
-            return false;
-        }
-        std::random_device rd;
-        std::default_random_engine engine(rd());
-        std::uniform_int_distribution<int32_t> randomNum(static_cast<int32_t>(ApiNumber::NUM_ZERO),
-            static_cast<int32_t>(ApiNumber::NUM_END) - 1);
-        int32_t number = randomNum(engine);
-
-        switch (static_cast<ApiNumber>(number)) {
-            case ApiNumber::NUM_ZERO:
-                GetBatteryStats(data);
-                break;
-            case ApiNumber::NUM_ONE:
-                SetOnBattery(data);
-                break;
-            case ApiNumber::NUM_TWO:
-                GetAppStatsMah(data);
-                break;
-            case ApiNumber::NUM_THREE:
-                GetAppStatsPercent(data);
-                break;
-            case ApiNumber::NUM_FOUR:
-                GetPartStatsMah(data);
-                break;
-            case ApiNumber::NUM_FIVE:
-                GetPartStatsPercent(data);
-                break;
-            case ApiNumber::NUM_SIX:
-                GetTotalTimeSecond(data, size);
-                break;
-            case ApiNumber::NUM_SEVEN:
-                GetTotalDataBytes(data, size);
-                break;
-            case ApiNumber::NUM_EIGHT:
-                Reset(data);
-                break;
-            case ApiNumber::NUM_NINE:
-                g_batterystatsClient.GetLastError();
-                break;
-            default:
-                break;
-        }
-    }
-
+    std::random_device rd;
+    std::default_random_engine engine(rd());
+    std::uniform_int_distribution<int32_t> randomNum(0, fuzzFunc.size() - 1);
+    int32_t number = randomNum(engine);
+    fuzzFunc[number](data, size);
+    BatteryStatsServiceStub(data, size);
     return true;
 }
 }
