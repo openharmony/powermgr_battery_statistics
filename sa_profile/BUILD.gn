@@ -15,6 +15,6 @@ import("//build/ohos/sa_profile/sa_profile.gni")
 import("../batterystats.gni")
 
 ohos_sa_profile("batterystats_sa_profile") {
-  sources = [ "3304.xml" ]
+  sources = [ "3304.json" ]
   part_name = "${batterystats_part_name}"
 }
