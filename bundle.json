@@ -27,9 +27,9 @@
                 "ability_base",
                 "ability_runtime",
                 "battery_manager",
-                "bundle_framework",
+                "call_manager",
                 "common_event_service",
-                "core_service",
+                "config_policy",
                 "c_utils",
                 "display_manager",
                 "eventhandler",
@@ -45,7 +45,6 @@
                 "samgr"
             ],
             "third_party": [
-                "googletest",
                 "jsoncpp"
             ]
         },

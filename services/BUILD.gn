@@ -13,13 +13,6 @@
 
 import("../batterystats.gni")
 
-config("batterystats_private_config") {
-  include_dirs = [
-    "//foundation/communication/bluetooth/services/bluetooth/common/",
-    "//foundation/communication/wifi/wifi/utils/inc",
-  ]
-}
-
 config("batterystats_public_config") {
   include_dirs = [
     "native/include",
@@ -58,7 +51,6 @@ ohos_shared_library("batterystats_service") {
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
-    ":batterystats_private_config",
     "${batterystats_utils_path}:coverage_flags",
   ]
 
@@ -76,6 +68,7 @@ ohos_shared_library("batterystats_service") {
     "ability_base:want",
     "ability_runtime:abilitykit_native",
     "battery_manager:batterysrv_client",
+    "bluetooth:btframework",
     "c_utils:utils",
     "call_manager:tel_call_manager_api",
     "common_event_service:cesfwk_innerkits",
@@ -88,6 +81,7 @@ ohos_shared_library("batterystats_service") {
     "ipc:ipc_core",
     "os_account:libaccountkits",
     "safwk:system_ability_fwk",
+    "wifi:wifi_sdk",
   ]
 
   subsystem_name = "powermgr"
@@ -99,7 +93,6 @@ ohos_shared_library("batterystats_stub") {
 
   configs = [
     "${batterystats_utils_path}:batterystats_utils_config",
-    ":batterystats_private_config",
     "${batterystats_utils_path}:coverage_flags",
   ]
 

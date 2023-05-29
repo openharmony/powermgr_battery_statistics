@@ -16,7 +16,7 @@
 #include "stats_wifi_test.h"
 
 #include <hisysevent.h>
-#include <wifi_hisysevent.h>
+#include "wifi_msg.h"
 #include "stats_log.h"
 
 #include "battery_stats_client.h"
@@ -64,8 +64,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
@@ -92,8 +92,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_002, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
@@ -119,8 +119,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_003, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
@@ -147,8 +147,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_004, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
@@ -182,8 +182,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_005, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
@@ -217,7 +217,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_006, TestSize.Level0)
     statsClient.Reset();
 
     int32_t stateOn = 3;
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
@@ -244,8 +244,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
 
@@ -280,8 +280,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_008, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
@@ -447,8 +447,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     int16_t count = 2;
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
@@ -487,8 +487,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
     statsClient.Reset();
     statsClient.SetOnBattery(false);
 
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     int16_t count = 2;
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
@@ -523,8 +523,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
 
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
@@ -596,8 +596,8 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_018, TestSize.Level0)
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     double fullPercent = 1;
     double zeroPercent = 0;
 
