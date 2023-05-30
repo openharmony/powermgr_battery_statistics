@@ -223,6 +223,7 @@ double BatteryStatsService::GetAppStatsMah(const int32_t& uid)
 
 double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 {
+    std::lock_guard lock(mutex_);
     if (!Permission::IsSystem()) {
         lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
@@ -233,6 +234,7 @@ double BatteryStatsService::GetAppStatsPercent(const int32_t& uid)
 
 double BatteryStatsService::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
 {
+    std::lock_guard lock(mutex_);
     if (!Permission::IsSystem()) {
         lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
         return StatsUtils::DEFAULT_VALUE;
