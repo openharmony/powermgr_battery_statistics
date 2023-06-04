@@ -20,7 +20,7 @@
 #include <iostream>
 #include <unistd.h>
 
-#include <bt_def.h>
+#include <bluetooth_def.h>
 #include <call_manager_inner_type.h>
 #include <display_power_info.h>
 #include <hisysevent.h>
@@ -30,7 +30,7 @@
 #include <running_lock_info.h>
 #include <string_ex.h>
 #include <system_ability_definition.h>
-#include <wifi_hisysevent.h>
+#include "wifi_msg.h"
 
 #include "battery_stats_client.h"
 #include "battery_stats_parser.h"
@@ -318,8 +318,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     statsClient.Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
-    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
@@ -348,8 +348,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     statsClient.Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    int32_t stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    int32_t stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
@@ -594,8 +594,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     statsClient.Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
-    int32_t stateOn = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_ON);
-    int32_t stateOff = static_cast<int32_t>(bluetooth::BTStateID::STATE_TURN_OFF);
+    int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
+    int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t uid = 10003;
     int32_t pid = 3458;
     HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
@@ -612,8 +612,8 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
-    stateOn = static_cast<int32_t>(Wifi::WifiConnectionType::CONNECT);
-    stateOff = static_cast<int32_t>(Wifi::WifiConnectionType::DISCONNECT);
+    stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
+    stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
     HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);

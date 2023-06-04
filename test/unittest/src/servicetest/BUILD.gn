@@ -24,8 +24,6 @@ config("module_private_config") {
     "${batterystats_root_path}/test/unittest/include/servicetest",
     "${batterystats_root_path}/test/unittest/include/servicetest/utils",
     "${batterystats_service_native}/include",
-    "//foundation/communication/bluetooth/services/bluetooth/common",
-    "//foundation/communication/wifi/wifi/utils/inc",
   ]
 }
 
@@ -145,6 +143,7 @@ ohos_unittest("stats_service_bluetooth_test") {
   ]
 
   external_deps = deps_ex
+  external_deps += [ "bluetooth:btframework" ]
 }
 
 ############################service_camera_test#############################
@@ -355,6 +354,7 @@ ohos_unittest("stats_service_wifi_test") {
   ]
 
   external_deps = deps_ex
+  external_deps += [ "wifi:wifi_sdk" ]
 }
 
 ############################service_subscriber_test#############################

@@ -18,10 +18,10 @@
 #include <string>
 #include <strstream>
 
-#include "bt_def.h"
+#include "bluetooth_def.h"
 #include "call_manager_inner_type.h"
 #include "display_power_info.h"
-#include "wifi_hisysevent.h"
+#include "wifi_msg.h"
 
 #include "battery_stats_service.h"
 #include "stats_hisysevent.h"
@@ -208,18 +208,18 @@ void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, 
     if (eventName == StatsHiSysEvent::BR_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
         if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
+            if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
     } else if (eventName == StatsHiSysEvent::DISCOVERY_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
         if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == bluetooth::DISCOVERY_STARTED) {
+            if (stoi(root["STATE"].asString()) == Bluetooth::DISCOVERY_STARTED) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == bluetooth::DISCOVERY_STOPED) {
+            } else if (stoi(root["STATE"].asString()) == Bluetooth::DISCOVERY_STOPED) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -238,9 +238,9 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
     if (eventName == StatsHiSysEvent::BLE_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
         if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_ON) {
+            if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -277,12 +277,12 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
     if (eventName == StatsHiSysEvent::WIFI_CONNECTION) {
         data.type = StatsUtils::STATS_TYPE_WIFI_ON;
         if (!root["TYPE"].asString().empty()) {
-            Wifi::WifiConnectionType connectionType = Wifi::WifiConnectionType(stoi(root["TYPE"].asString()));
+            Wifi::ConnState connectionType = Wifi::ConnState(stoi(root["TYPE"].asString()));
             switch (connectionType) {
-                case Wifi::WifiConnectionType::CONNECT:
+                case Wifi::ConnState::CONNECTED:
                     data.state = StatsUtils::STATS_STATE_ACTIVATED;
                     break;
-                case Wifi::WifiConnectionType::DISCONNECT:
+                case Wifi::ConnState::DISCONNECTED:
                     data.state = StatsUtils::STATS_STATE_DEACTIVATED;
                     break;
                 default:

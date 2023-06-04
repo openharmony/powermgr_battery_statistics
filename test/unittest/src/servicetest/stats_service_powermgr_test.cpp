@@ -15,11 +15,9 @@
 
 #include "stats_service_powermgr_test.h"
 
-#include <bt_def.h>
 #include <call_manager_inner_type.h>
 #include <hisysevent.h>
 #include <running_lock_info.h>
-#include <wifi_hisysevent.h>
 
 #include "battery_stats_listener.h"
 #include "battery_stats_service.h"
