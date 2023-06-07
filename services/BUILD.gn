@@ -80,6 +80,7 @@ ohos_shared_library("batterystats_service") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "os_account:libaccountkits",
+    "power_manager:power_sysparam",
     "safwk:system_ability_fwk",
     "wifi:wifi_sdk",
   ]

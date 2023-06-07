@@ -16,6 +16,7 @@
 #ifndef BATTERY_STATS_SERVICE_H
 #define BATTERY_STATS_SERVICE_H
 
+#include <atomic>
 #include "common_event_subscriber.h"
 #include "event_handler.h"
 #include "hisysevent_listener.h"
@@ -71,10 +72,12 @@ private:
     std::shared_ptr<EventFwk::CommonEventSubscriber> subscriberPtr_;
     std::shared_ptr<HiviewDFX::HiSysEventListener> listenerPtr_;
     bool ready_ = false;
+    static std::atomic_bool isBootCompleted_;
     std::mutex mutex_;
     StatsError lastError_ = StatsError::ERR_OK;
     bool SubscribeCommonEvent();
     bool AddHiSysEventListener();
+    void RegisterBootCompletedCallback();
 };
 } // namespace PowerMgr
 } // namespace OHOS

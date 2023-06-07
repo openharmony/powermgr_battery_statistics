@@ -19,7 +19,11 @@
 #include <iservice_registry.h>
 #include <system_ability_definition.h>
 #include "battery_stats_parser.h"
+#define private public
+#define protected public
 #include "battery_stats_service.h"
+#undef private
+#undef protected
 #include "config_policy_utils.h"
 #include "gtest/gtest-message.h"
 #include "gtest/gtest-test-part.h"
@@ -113,6 +117,7 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     int32_t fd = 1;
     std::vector<std::u16string> vec;
+    statsService->isBootCompleted_ = true;
     int32_t ret = statsService->Dump(fd, vec);
     EXPECT_EQ(ret, OHOS::ERR_OK);
 }

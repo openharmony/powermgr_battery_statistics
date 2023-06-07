@@ -25,9 +25,10 @@
 #include "common_event_support.h"
 #include "hisysevent.h"
 #include "hisysevent_manager.h"
-#include "iservice_registry.h"
 #include "if_system_ability_manager.h"
+#include "iservice_registry.h"
 #include "permission.h"
+#include "sysparam.h"
 #include "system_ability_definition.h"
 #include "xcollie/watchdog.h"
 
@@ -42,7 +43,9 @@ namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
+SysParam::BootCompletedCallback g_bootCompletedCallback;
 }
+std::atomic_bool BatteryStatsService::isBootCompleted_ = false;
 
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
 
@@ -64,7 +67,7 @@ void BatteryStatsService::OnStart()
         STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }
-
+    RegisterBootCompletedCallback();
     ready_ = true;
 }
 
@@ -75,6 +78,7 @@ void BatteryStatsService::OnStop()
         return;
     }
     ready_ = false;
+    isBootCompleted_ = false;
     RemoveSystemAbilityListener(DFX_SYS_EVENT_SERVICE_ABILITY_ID);
     RemoveSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
     HiviewDFX::HiSysEventManager::RemoveListener(listenerPtr_);
@@ -82,6 +86,15 @@ void BatteryStatsService::OnStop()
         STATS_HILOGE(COMP_SVC, "OnStart unregister to commonevent manager failed");
     }
 }
+
+void BatteryStatsService::RegisterBootCompletedCallback()
+{
+    g_bootCompletedCallback = []() {
+        isBootCompleted_ = true;
+    };
+    SysParam::RegisterBootCompletedCallback(g_bootCompletedCallback);
+}
+
 
 void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
@@ -193,6 +206,12 @@ BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 
 int32_t BatteryStatsService::Dump(int32_t fd, const std::vector<std::u16string>& args)
 {
+    if (!isBootCompleted_) {
+        return ERR_NO_INIT;
+    }
+    if (!Permission::IsSystem()) {
+        return ERR_PERMISSION_DENIED;
+    }
     std::lock_guard lock(mutex_);
     std::vector<std::string> argsInStr;
     std::transform(args.begin(), args.end(), std::back_inserter(argsInStr),
@@ -306,7 +325,7 @@ void BatteryStatsService::SetOnBattery(bool isOnBattery)
 
 std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args, uint32_t argc)
 {
-    if (!Permission::IsSystem()) {
+    if (!Permission::IsSystem()|| !isBootCompleted_) {
         return "";
     }
     std::lock_guard lock(mutex_);
