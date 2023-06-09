@@ -16,11 +16,21 @@
 #include "stats_service_death_test.h"
 
 #include "battery_stats_client.h"
+#include "battery_stats_parser.h"
+#include "battery_stats_service.h"
+#include "config_policy_utils.h"
 
 using namespace testing::ext;
 using namespace OHOS::PowerMgr;
 using namespace OHOS;
 using namespace std;
+
+char* GetOneCfgFile(const char *pathSuffix, char *buf, unsigned int bufLength)
+{
+    std::string path = " ";
+    char* ret = (char*)path.c_str();
+    return ret;
+}
 
 namespace {
 /**
@@ -40,5 +50,30 @@ HWTEST_F (StatsServiceDeathTest, StatsServiceDeathTest_001, TestSize.Level0)
     EXPECT_NE(deathRecipient, nullptr);
     deathRecipient->OnRemoteDied(remoteObj);
     EXPECT_NE(statsClient.proxy_, nullptr);
+}
+
+/**
+ * @tc.name: StatsParserTest_001
+ * @tc.desc: test Init
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceDeathTest, StatsParserTest_001, TestSize.Level0)
+{
+    auto parser = std::make_shared<BatteryStatsParser>();
+    bool ret = parser->Init();
+    EXPECT_FALSE(ret);
+}
+
+/**
+ * @tc.name: StatsServiceTest_001
+ * @tc.desc: test OnStart
+ * @tc.type: FUNC
+ */
+HWTEST_F (StatsServiceDeathTest, StatsServiceTest_001, TestSize.Level0)
+{
+    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    statsService->OnStart();
+    bool ret = statsService->IsServiceReady();
+    EXPECT_FALSE(ret);
 }
 }
