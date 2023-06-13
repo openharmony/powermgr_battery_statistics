@@ -44,6 +44,7 @@ void StatsServiceDumpTest::SetUpTestCase()
     ParserAveragePowerFile();
     g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
     g_statsService->OnStart();
+    g_statsService->isBootCompleted_ = true;
 
     if (g_statsService->listenerPtr_ == nullptr) {
         g_statsService->listenerPtr_ = std::make_shared<BatteryStatsListener>();
