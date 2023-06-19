@@ -251,6 +251,10 @@ double BatteryStatsService::GetPartStatsPercent(const BatteryStatsInfo::Consumpt
 
 uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+        return 0;
+    }
     STATS_HILOGD(COMP_SVC, "statsType: %{public}d, uid: %{public}d", statsType, uid);
     uint64_t timeSecond;
     if (uid > StatsUtils::INVALID_VALUE) {
@@ -265,6 +269,10 @@ uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& st
 
 uint64_t BatteryStatsService::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
 {
+    if (!Permission::IsSystem()) {
+        lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
+        return 0;
+    }
     return core_->GetTotalDataCount(statsType, uid);
 }
 
