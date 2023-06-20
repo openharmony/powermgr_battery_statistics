@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,10 +15,10 @@
 
 #include "battery_stats_parser.h"
 
+#include <algorithm>
 #include <fstream>
 #include "ios"
 #include "json/reader.h"
-#include "json/value.h"
 #include "string_ex.h"
 
 #include "stats_utils.h"
@@ -97,21 +97,23 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
         }
 
         if (value.isArray()) {
-            std::vector<double> listValues;
-            for (uint16_t i = 0; i < value.size(); i++) {
-                listValues.push_back(value[i].asDouble());
-                STATS_HILOGD(COMP_SVC, "Read list value: %{public}lf of %{public}s", value[i].asDouble(),
-                    type.c_str());
-            }
-            averageVecMap_.insert(std::pair<std::string, std::vector<double>>(type, listValues));
-        } else {
-            double singleValue = value.asDouble();
-            averageMap_.insert(std::pair<std::string, double>(type, singleValue));
-            STATS_HILOGD(COMP_SVC, "Read single value: %{public}lf of %{public}s", singleValue,
-                type.c_str());
+            ParsingArray(type, value);
+        } else if (value.isDouble()) {
+            averageMap_.insert(std::pair<std::string, double>(type, value.asDouble()));
         }
     }
     return true;
+}
+
+void BatteryStatsParser::ParsingArray(const std::string& type, const Json::Value& array)
+{
+    std::vector<double> listValues;
+    std::for_each(array.begin(), array.end(), [&](const Json::Value& value) {
+        if (value.isDouble()) {
+            listValues.push_back(value.asDouble());
+        }
+    });
+    averageVecMap_.insert(std::pair<std::string, std::vector<double>>(type, listValues));
 }
 
 double BatteryStatsParser::GetAveragePowerMa(std::string type)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,13 +16,14 @@
 #ifndef BATTERY_STATS_PARSER_H
 #define BATTERY_STATS_PARSER_H
 
+#include <cstdint>
+#include <functional>
+#include <iosfwd>
 #include <map>
 #include <string>
 #include <vector>
-#include <cstdint>
-#include <functional>
-#include <cstdint>
-#include <iosfwd>
+
+#include "json/value.h"
 
 #include "stats_log.h"
 
@@ -43,6 +44,7 @@ public:
     void DumpInfo(std::string& result);
 private:
     bool LoadAveragePowerFromFile(const std::string& path);
+    void ParsingArray(const std::string& type, const Json::Value& array);
     std::map<std::string, double> averageMap_;
     std::map<std::string, std::vector<double>> averageVecMap_;
     uint16_t clusterNum_ = 0;
