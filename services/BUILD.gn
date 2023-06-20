@@ -75,7 +75,7 @@ ohos_shared_library("batterystats_service") {
     "config_policy:configpolicy_util",
     "display_manager:displaymgr",
     "eventhandler:libeventhandler",
-    "hicollie_native:libhicollie",
+    "hicollie:libhicollie",
     "hisysevent_native:libhisyseventmanager",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
@@ -103,7 +103,7 @@ ohos_shared_library("batterystats_stub") {
     "c_utils:utils",
     "call_manager:tel_call_manager_api",
     "display_manager:displaymgr",
-    "hicollie_native:libhicollie",
+    "hicollie:libhicollie",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]

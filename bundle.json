@@ -37,7 +37,7 @@
                 "c_utils",
                 "display_manager",
                 "eventhandler",
-                "hicollie_native",
+                "hicollie",
                 "hisysevent_native",
                 "hiviewdfx_hilog_native",
                 "ipc",
