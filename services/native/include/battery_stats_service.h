@@ -18,7 +18,6 @@
 
 #include <atomic>
 #include "common_event_subscriber.h"
-#include "event_handler.h"
 #include "hisysevent_listener.h"
 #include "system_ability.h"
 
@@ -64,8 +63,6 @@ private:
 #endif
     static constexpr int32_t DEPENDENCY_CHECK_DELAY_MS = 2000;
     bool Init();
-    std::shared_ptr<AppExecFwk::EventHandler> handler_;
-    std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<BatteryStatsCore> core_;
     std::shared_ptr<BatteryStatsParser> parser_;
     std::shared_ptr<BatteryStatsDetector> detector_;
