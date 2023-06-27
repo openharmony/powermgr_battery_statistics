@@ -85,16 +85,14 @@ static void GetPartStatsPercent(const uint8_t* data, size_t size)
 
 static void GetTotalTimeSecond(const uint8_t* data, size_t size)
 {
-    int32_t type = GetInt32(data, size);
-    int32_t uid = GetInt32(data + sizeof(int32_t), size - sizeof(int32_t));
-    g_batterystatsClient.GetTotalTimeSecond(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(type), uid);
+    int32_t number = GetInt32(data, size);
+    g_batterystatsClient.GetTotalTimeSecond(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(number), number);
 }
 
 static void GetTotalDataBytes(const uint8_t* data, size_t size)
 {
-    int32_t type = GetInt32(data, size);
-    int32_t uid = GetInt32(data + sizeof(int32_t), size - sizeof(int32_t));
-    g_batterystatsClient.GetTotalDataBytes(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(type), uid);
+    int32_t number = GetInt32(data, size);
+    g_batterystatsClient.GetTotalDataBytes(static_cast<OHOS::PowerMgr::StatsUtils::StatsType>(number), number);
 }
 
 static void Reset([[maybe_unused]] const uint8_t* data, [[maybe_unused]] size_t size)
