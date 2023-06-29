@@ -36,7 +36,6 @@
                 "config_policy",
                 "c_utils",
                 "display_manager",
-                "eventhandler",
                 "hicollie",
                 "hisysevent_native",
                 "hiviewdfx_hilog_native",

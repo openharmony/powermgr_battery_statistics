@@ -45,7 +45,6 @@ deps_ex = [
   "config_policy:configpolicy_util",
   "c_utils:utils",
   "display_manager:displaymgr",
-  "eventhandler:libeventhandler",
   "hisysevent_native:libhisysevent",
   "hisysevent_native:libhisyseventmanager",
   "hiviewdfx_hilog_native:libhilog",

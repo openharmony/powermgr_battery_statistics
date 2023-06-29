@@ -57,7 +57,6 @@ ohos_systemtest("batterystats_sys_test") {
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
     "display_manager:displaymgr",
-    "eventhandler:libeventhandler",
     "hicollie:libhicollie",
     "hisysevent_native:libhisysevent",
     "hisysevent_native:libhisyseventmanager",

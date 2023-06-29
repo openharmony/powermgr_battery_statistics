@@ -130,38 +130,23 @@ bool BatteryStatsService::Init()
         detector_ = std::make_shared<BatteryStatsDetector>();
     }
 
-    if (!runner_) {
-        runner_ = AppExecFwk::EventRunner::Create("BatteryStatsEventRunner");
-        if (runner_ == nullptr) {
-            STATS_HILOGE(COMP_SVC, "Create EventRunner failed");
-            return false;
-        }
-    }
-
-    if (!handler_) {
-        handler_ = std::make_shared<OHOS::AppExecFwk::EventHandler>(runner_);
-        if (handler_ == nullptr) {
-            STATS_HILOGE(COMP_SVC, "Create EventHandler failed");
-            return false;
-        }
-        HiviewDFX::Watchdog::GetInstance().AddThread("BatteryStatsEventHandler", handler_);
-    }
-
     return true;
 }
 
 bool BatteryStatsService::SubscribeCommonEvent()
 {
+    using namespace OHOS::EventFwk;
     bool result = false;
-    OHOS::EventFwk::MatchingSkills matchingSkills;
-    matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_SHUTDOWN);
-    matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
-    matchingSkills.AddEvent(OHOS::EventFwk::CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
-    OHOS::EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    MatchingSkills matchingSkills;
+    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_SHUTDOWN);
+    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
+    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
+    CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::COMMON);
     if (!subscriberPtr_) {
         subscriberPtr_ = std::make_shared<BatteryStatsSubscriber>(subscribeInfo);
     }
-    result = OHOS::EventFwk::CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
+    result = CommonEventManager::SubscribeCommonEvent(subscriberPtr_);
     if (!result) {
         STATS_HILOGE(COMP_SVC, "Subscribe CommonEvent failed");
     }
