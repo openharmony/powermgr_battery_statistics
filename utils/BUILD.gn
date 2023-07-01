@@ -44,7 +44,7 @@ ohos_source_set("batterystats_utils") {
   public_configs = [ ":batterystats_utils_config" ]
   external_deps = [
     "c_utils:utils",
-    "hiviewdfx_hilog_native:libhilog",
+    "hilog:libhilog",
   ]
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
