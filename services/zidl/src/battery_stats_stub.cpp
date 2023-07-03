@@ -15,6 +15,7 @@
 
 #include "battery_stats_stub.h"
 
+#include "battery_stats_ipc_interface_code.h"
 #include "battery_stats_info.h"
 #include "errors.h"
 #include "ipc_object_stub.h"
@@ -54,43 +55,43 @@ int32_t BatteryStatsStub::ChooseCodeStub(uint32_t code, MessageParcel &data, Mes
 {
     int32_t ret;
     switch (code) {
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET): {
             ret = GetBatteryStatsStub(reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETTIME): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETTIME): {
             ret = GetTotalTimeSecondStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETDATA): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETDATA): {
             ret = GetTotalDataBytesStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPMAH): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPMAH): {
             ret = GetAppStatsMahStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPPER): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPPER): {
             ret = GetAppStatsPercentStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTMAH): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTMAH): {
             ret = GetPartStatsMahStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTPER): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTPER): {
             ret = GetPartStatsPercentStub(data, reply);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_RESET): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_RESET): {
             ret = ResetStub();
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_SETONBATT): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_SETONBATT): {
             ret = SetOnBatteryStub(data);
             break;
         }
-        case static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_DUMP): {
+        case static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_DUMP): {
             ret = ShellDumpStub(data, reply);
             break;
         }

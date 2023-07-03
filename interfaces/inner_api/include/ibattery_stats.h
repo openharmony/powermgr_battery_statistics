@@ -26,18 +26,6 @@ namespace OHOS {
 namespace PowerMgr {
 class IBatteryStats : public IRemoteBroker {
 public:
-    enum {
-        BATTERY_STATS_GET = 0,
-        BATTERY_STATS_GETAPPMAH,
-        BATTERY_STATS_GETAPPPER,
-        BATTERY_STATS_GETPARTMAH,
-        BATTERY_STATS_GETPARTPER,
-        BATTERY_STATS_GETTIME,
-        BATTERY_STATS_GETDATA,
-        BATTERY_STATS_RESET,
-        BATTERY_STATS_SETONBATT,
-        BATTERY_STATS_DUMP,
-    };
     virtual BatteryStatsInfoList GetBatteryStats() = 0;
     virtual void SetOnBattery(bool isOnBattery) = 0;
     virtual double GetAppStatsMah(const int32_t& uid) = 0;

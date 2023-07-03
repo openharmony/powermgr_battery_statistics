@@ -19,6 +19,7 @@
 
 #include "stats_errors.h"
 #include "stats_log.h"
+#include "battery_stats_ipc_interface_code.h"
 #include "battery_stats_proxy.h"
 #include "battery_stats_service.h"
 #include "battery_stats_stub.h"
@@ -44,7 +45,9 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
     MessageParcel reply;
     MessageOption option;
 
-    int ret = statsStub->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET), data, reply, option);
+    int ret = statsStub->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET),
+        data, reply, option);
     EXPECT_EQ(ret, E_STATS_GET_SERVICE_FAILED);
 }
 
@@ -64,7 +67,8 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
     MessageOption option;
     data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
     
-    uint32_t invalidCode = static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET) + 100;
+    uint32_t invalidCode =
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET) + 100;
     int ret = statsStub->OnRemoteRequest(invalidCode, data, reply, option);
     EXPECT_NE(ret, ERR_OK);
 }
@@ -87,7 +91,7 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
     data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
     const int32_t PARAM_MAX_NUM = 100;
     data.WriteUint32(PARAM_MAX_NUM);
-    uint32_t code = static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_DUMP);
+    uint32_t code = static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_DUMP);
     int32_t ret = statsStub->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ret, E_STATS_EXCEED_PARAM_LIMIT) << " ret:" << ret;
 

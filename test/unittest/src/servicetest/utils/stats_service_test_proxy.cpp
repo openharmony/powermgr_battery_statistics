@@ -17,6 +17,7 @@
 
 #include <message_parcel.h>
 
+#include "battery_stats_ipc_interface_code.h"
 #include "battery_stats_proxy.h"
 #include "errors.h"
 #include "message_option.h"
@@ -47,7 +48,8 @@ BatteryStatsInfoList StatsServiceTestProxy::GetBatteryStats()
         return infoList;
     }
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GET),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Send request is failed, error code: %{public}d", ret);
@@ -79,7 +81,9 @@ uint64_t StatsServiceTestProxy::GetTotalTimeSecond(const StatsUtils::StatsType& 
     STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
     STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETTIME), data, reply, option);
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETTIME),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
@@ -105,7 +109,9 @@ uint64_t StatsServiceTestProxy::GetTotalDataBytes(const StatsUtils::StatsType& s
     STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
     STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETDATA), data, reply, option);
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETDATA),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
@@ -129,7 +135,8 @@ double StatsServiceTestProxy::GetAppStatsMah(const int32_t& uid)
 
     data.WriteInt32(uid);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPMAH),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPMAH),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
@@ -155,7 +162,8 @@ bool StatsServiceTestProxy::SetOnBattery(bool isOnBattery)
 
     data.WriteBool(isOnBattery);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_SETONBATT),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_SETONBATT),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
@@ -179,7 +187,8 @@ double StatsServiceTestProxy::GetAppStatsPercent(const int32_t& uid)
 
     data.WriteInt32(uid);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETAPPPER),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPPER),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
@@ -205,7 +214,8 @@ double StatsServiceTestProxy::GetPartStatsMah(const BatteryStatsInfo::Consumptio
 
     data.WriteInt32(type);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTMAH),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTMAH),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
@@ -231,7 +241,8 @@ double StatsServiceTestProxy::GetPartStatsPercent(const BatteryStatsInfo::Consum
 
     data.WriteInt32(type);
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_GETPARTPER),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTPER),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
@@ -255,7 +266,9 @@ bool StatsServiceTestProxy::Reset()
         return false;
     }
 
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_RESET), data, reply, option);
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_RESET),
+        data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
         return false;
@@ -281,7 +294,8 @@ std::string StatsServiceTestProxy::ShellDump(const std::vector<std::string>& arg
     for (uint32_t i = 0; i < argc; i++) {
         data.WriteString(args[i]);
     }
-    int ret = stub_->OnRemoteRequest(static_cast<uint32_t>(IBatteryStats::BATTERY_STATS_DUMP),
+    int ret = stub_->OnRemoteRequest(
+        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_DUMP),
         data, reply, option);
     if (ret != ERR_OK) {
         STATS_HILOGE(LABEL_TEST, "SendRequest is failed, error code: %{public}d", ret);
