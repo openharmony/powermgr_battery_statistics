@@ -51,7 +51,8 @@ void BatteryStats::StatsAsyncCallBack(napi_value& value)
             delete asCallbackInfo;
         },
         reinterpret_cast<void*>(asyncInfo.get()), &asyncInfo->GetAsyncWork());
-    NAPI_CALL_RETURN_VOID(env_, napi_queue_async_work(env_, asyncInfo->GetAsyncWork()));
+    NAPI_CALL_RETURN_VOID(
+        env_, napi_queue_async_work_with_qos(env_, asyncInfo->GetAsyncWork(), napi_qos_utility));
     asyncInfo.release();
 }
 
@@ -85,7 +86,7 @@ napi_value BatteryStats::StatsPromise()
             delete asCallbackInfo;
         },
         reinterpret_cast<void*>(asyncInfo.get()), &asyncInfo->GetAsyncWork());
-    NAPI_CALL_BASE(env_, napi_queue_async_work(env_, asyncInfo->GetAsyncWork()), promise);
+    NAPI_CALL_BASE(env_, napi_queue_async_work_with_qos(env_, asyncInfo->GetAsyncWork(), napi_qos_utility), promise);
     asyncInfo.release();
     return promise;
 }
