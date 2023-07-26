@@ -34,28 +34,28 @@ static void WriteBluetoothEvent(int32_t pid, int32_t uid, long time)
     int32_t stateScanOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
     int32_t stateScanOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(time * StatsTest::US_PER_MS);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(time * StatsTest::US_PER_MS);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(time * StatsTest::US_PER_MS);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateScanOn);
     usleep(time * StatsTest::US_PER_MS);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateScanOff);
 }
 
@@ -98,10 +98,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_001, TestSize.Level0)
     int32_t pid = 3458;
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -129,10 +129,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_002, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -161,10 +161,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_003, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -189,10 +189,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_004, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -226,16 +226,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_005, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -265,16 +265,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_006, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateTurningOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateTurningOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -301,10 +301,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_007, TestSize.Level0)
     int32_t stateOn = 10;
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -333,16 +333,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_008, TestSize.Level0)
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
@@ -369,10 +369,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_009, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
@@ -397,10 +397,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_010, TestSize.Level0)
     int32_t pid = 3458;
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double powerMahBefore = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -429,10 +429,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_011, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -461,10 +461,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_012, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
@@ -489,10 +489,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_013, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -526,16 +526,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_014, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -565,16 +565,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_015, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateTurningOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateTurningOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -601,10 +601,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_016, TestSize.Level0)
     int32_t stateOn = 10;
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -633,16 +633,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_017, TestSize.Level0)
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -669,10 +669,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_018, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
@@ -698,10 +698,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_019, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -729,10 +729,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_020, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
@@ -761,10 +761,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_021, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -789,16 +789,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_022, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
@@ -827,16 +827,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_023, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateScan);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateScan);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
@@ -863,10 +863,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_024, TestSize.Level0)
     int32_t stateOn = 10;
     int32_t stateOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
@@ -895,16 +895,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_025, TestSize.Level0)
     int32_t stateInvaildOn = 5;
     int32_t stateInvaildOff = -1;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateInvaildOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
@@ -931,10 +931,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_026, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
@@ -963,16 +963,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_027, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::DISCOVERY_STOPED);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo, "STATE", stateOff);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::DISCOVERY_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne, "STATE", stateOff);
 
     double expectedPowerOne = 3 * POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
@@ -1004,10 +1004,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_028, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
     double powerMahBefore = statsClient.GetAppStatsMah(uid);
@@ -1033,10 +1033,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_029, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
     double expectedPower = POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
@@ -1063,10 +1063,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_030, TestSize.Level0)
     double fullPercent = 1;
     double zeroPercent = 0;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
     double actualPercent = statsClient.GetAppStatsPercent(uid);
@@ -1089,16 +1089,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_031, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
@@ -1123,10 +1123,10 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_032, TestSize.Level0)
     int32_t uid = 10003;
     int32_t pid = 3458;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid);
 
     long expectedTime = round(POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
@@ -1153,16 +1153,16 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_033, TestSize.Level0)
     int32_t uidTwo = 10004;
     int32_t pidTwo = 3459;
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_START,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_START,
         HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pidTwo, "UID", uidTwo);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BLE_SCAN_STOP,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP,
         HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne);
 
     double expectedPowerOne = 3 * POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
@@ -1264,14 +1264,14 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_036, TestSize.Level0)
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
 
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(false);
     usleep(POWER_CONSUMPTION_DURATION_US);
     statsClient.SetOnBattery(true);
     usleep(POWER_CONSUMPTION_DURATION_US);
-    HiSysEventWrite(HiSysEvent::Domain::BLUETOOTH, StatsHiSysEvent::BR_SWITCH_STATE,
+    HiSysEventWrite(HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
