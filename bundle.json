@@ -40,7 +40,6 @@
                 "hisysevent",
                 "hilog",
                 "ipc",
-                "jsoncpp",
                 "napi",
                 "os_account",
                 "power_manager",
