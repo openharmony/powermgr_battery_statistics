@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,16 @@
 #ifndef BATTERYSTATS_FUZZER_TEST_H
 #define BATTERYSTATS_FUZZER_TEST_H
 
-#define FUZZ_PROJECT_NAME "batterystats_fuzzer"
+#include "battery_stats_service.h"
+
+class BatteryStatsFuzzerTest {
+public:
+    BatteryStatsFuzzerTest();
+    ~BatteryStatsFuzzerTest();
+    void TestStatsServiceStub(const uint32_t code, const uint8_t* data, size_t size);
+
+private:
+    OHOS::sptr<OHOS::PowerMgr::BatteryStatsService> service_ = nullptr;
+};
 
 #endif
-
