@@ -911,26 +911,15 @@ bool BatteryStatsCore::SaveBatteryStatsData()
     return true;
 }
 
-bool BatteryStatsCore::LoadBatteryStatsData()
+void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
 {
-    Json::CharReaderBuilder reader;
-    Json::Value root;
-    std::string errors;
-    std::ifstream ifs(BATTERY_STATS_JSON, std::ios::binary);
-    if (!ifs.is_open()) {
-        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
-        return false;
-    }
-    if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
-        ifs.close();
-        return false;
-    }
-    ifs.close();
     BatteryStatsEntity::ResetStatsEntity();
     Json::Value::Members member = root["Power"].getMemberNames();
     std::map<int32_t, double> tmpUserPowerMap;
     for (auto iter = member.begin(); iter != member.end(); iter++) {
+        if (!root["Power"][*iter].isDouble()) {
+            continue;
+        }
         auto id = std::stoi(*iter);
         int32_t usr = StatsUtils::INVALID_VALUE;
         std::shared_ptr<BatteryStatsInfo> info = std::make_shared<BatteryStatsInfo>();
@@ -960,6 +949,25 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         statsInfo->SetPower(iter.second);
         BatteryStatsEntity::UpdateStatsInfoList(statsInfo);
     }
+}
+
+bool BatteryStatsCore::LoadBatteryStatsData()
+{
+    Json::CharReaderBuilder reader;
+    Json::Value root;
+    std::string errors;
+    std::ifstream ifs(BATTERY_STATS_JSON, std::ios::binary);
+    if (!ifs.is_open()) {
+        STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
+        return false;
+    }
+    if (!parseFromStream(reader, ifs, &root, &errors)) {
+        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
+        ifs.close();
+        return false;
+    }
+    ifs.close();
+    UpdateStatsEntity(root);
     return true;
 }
 

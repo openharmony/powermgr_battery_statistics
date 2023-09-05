@@ -37,6 +37,8 @@ private:
     void ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
     void ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
     void ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);

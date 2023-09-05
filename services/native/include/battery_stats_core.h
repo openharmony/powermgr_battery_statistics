@@ -99,6 +99,7 @@ private:
     void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void CreatePartEntity();
     void CreateAppEntity();
+    void UpdateStatsEntity(Json::Value &root);
     void SaveForHardware(Json::Value& root);
     void SaveForSoftware(Json::Value& root);
     void SaveForSoftwareCommon(Json::Value& root, int32_t uid);
