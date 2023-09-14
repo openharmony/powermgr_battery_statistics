@@ -110,13 +110,13 @@ void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const
 {
     if (eventName == StatsHiSysEvent::CAMERA_CONNECT || eventName == StatsHiSysEvent::CAMERA_DISCONNECT) {
         data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
-        if (!root["UID"].asString().empty()) {
-            data.uid = stoi(root["UID"].asString());
+        if (root["UID"].isInt()) {
+            data.uid = root["UID"].asInt();
         }
-        if (!root["PID"].asString().empty()) {
-            data.pid = stoi(root["PID"].asString());
+        if (root["PID"].isInt()) {
+            data.pid = root["PID"].asInt();
         }
-        if (!root["ID"].asString().empty()) {
+        if (root["ID"].isString() && !root["ID"].asString().empty()) {
             data.deviceId = root["ID"].asString();
         }
         if (eventName == StatsHiSysEvent::CAMERA_CONNECT) {
@@ -137,14 +137,14 @@ void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const
 void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_AUDIO_ON;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (root["UID"].isInt()) {
+        data.uid = root["UID"].asInt();
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (root["PID"].isInt()) {
+        data.pid = root["PID"].asInt();
     }
-    if (!root["STATE"].asString().empty()) {
-        AudioState audioState = AudioState(stoi(root["STATE"].asString()));
+    if (root["STATE"].isInt()) {
+        AudioState audioState = AudioState(root["STATE"].asInt());
         switch (audioState) {
             case AudioState::AUDIO_STATE_RUNNING:
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
@@ -169,16 +169,16 @@ void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const
         data.type = StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON;
     }
 
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (root["UID"].isInt()) {
+        data.uid = root["UID"].asInt();
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (root["PID"].isInt()) {
+        data.pid = root["PID"].asInt();
     }
-    if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
+    if (root["STATE"].isInt()) {
+        if (root["STATE"].asInt() == 1) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
+        } else if (root["STATE"].asInt() == 0) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
@@ -187,13 +187,13 @@ void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const
 void BatteryStatsListener::ProcessGnssEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_GNSS_ON;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (root["UID"].isInt()) {
+        data.uid = root["UID"].asInt();
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (root["PID"].isInt()) {
+        data.pid = root["PID"].asInt();
     }
-    if (!root["STATE"].asString().empty()) {
+    if (root["STATE"].isString() && !root["STATE"].asString().empty()) {
         if (root["STATE"].asString() == "start") {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
         } else if (root["STATE"].asString() == "stop") {
@@ -207,27 +207,27 @@ void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, 
 {
     if (eventName == StatsHiSysEvent::BR_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
-        if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_ON) {
+        if (root["STATE"].isInt()) {
+            if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
     } else if (eventName == StatsHiSysEvent::DISCOVERY_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
-        if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == Bluetooth::DISCOVERY_STARTED) {
+        if (root["STATE"].isInt()) {
+            if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STARTED) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == Bluetooth::DISCOVERY_STOPED) {
+            } else if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STOPED) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
-        if (!root["UID"].asString().empty()) {
-            data.uid = stoi(root["UID"].asString());
+        if (root["UID"].isInt()) {
+            data.uid = root["UID"].asInt();
         }
-        if (!root["PID"].asString().empty()) {
-            data.pid = stoi(root["PID"].asString());
+        if (root["PID"].isInt()) {
+            data.pid = root["PID"].asInt();
         }
     }
 }
@@ -237,10 +237,10 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
 {
     if (eventName == StatsHiSysEvent::BLE_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
-        if (!root["STATE"].asString().empty()) {
-            if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_ON) {
+        if (root["STATE"].isInt()) {
+            if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (stoi(root["STATE"].asString()) == Bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -251,11 +251,11 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
         } else if (eventName == StatsHiSysEvent::BLE_SCAN_STOP) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
-        if (!root["UID"].asString().empty()) {
-            data.uid = stoi(root["UID"].asString());
+        if (root["UID"].isInt()) {
+            data.uid = root["UID"].asInt();
         }
-        if (!root["PID"].asString().empty()) {
-            data.pid = stoi(root["PID"].asString());
+        if (root["PID"].isInt()) {
+            data.pid = root["PID"].asInt();
         }
     }
 }
@@ -276,8 +276,8 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
 {
     if (eventName == StatsHiSysEvent::WIFI_CONNECTION) {
         data.type = StatsUtils::STATS_TYPE_WIFI_ON;
-        if (!root["TYPE"].asString().empty()) {
-            Wifi::ConnState connectionType = Wifi::ConnState(stoi(root["TYPE"].asString()));
+        if (root["TYPE"].isInt()) {
+            Wifi::ConnState connectionType = Wifi::ConnState(root["TYPE"].asInt());
             switch (connectionType) {
                 case Wifi::ConnState::CONNECTED:
                     data.state = StatsUtils::STATS_STATE_ACTIVATED;
@@ -297,17 +297,17 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
 
 void BatteryStatsListener::ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    if (!root["name_"].asString().empty()) {
+    if (root["name_"].isString() && !root["name_"].asString().empty()) {
         data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
-    if (!root["STATE"].asString().empty()) {
-        data.eventDebugInfo.append(" State = ").append(root["STATE"].asString());
+    if (root["STATE"].isInt()) {
+        data.eventDebugInfo.append(" State = ").append(std::to_string(root["STATE"].asInt()));
     }
-    if (!root["SLOT_ID"].asString().empty()) {
-        data.eventDebugInfo.append(" Slot ID = ").append(root["SLOT_ID"].asString());
+    if (root["SLOT_ID"].isInt()) {
+        data.eventDebugInfo.append(" Slot ID = ").append(std::to_string(root["SLOT_ID"].asInt()));
     }
-    if (!root["INDEX_ID"].asString().empty()) {
-        data.eventDebugInfo.append(" Index ID = ").append(root["INDEX_ID"].asString());
+    if (root["INDEX_ID"].isInt()) {
+        data.eventDebugInfo.append(" Index ID = ").append(std::to_string(root["INDEX_ID"].asInt()));
     }
 }
 
@@ -316,8 +316,8 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
 {
     if (eventName == StatsHiSysEvent::CALL_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
-        if (!root["STATE"].asString().empty()) {
-            Telephony::TelCallState callState = Telephony::TelCallState(stoi(root["STATE"].asString()));
+        if (root["STATE"].isInt()) {
+            Telephony::TelCallState callState = Telephony::TelCallState(root["STATE"].asInt());
             switch (callState) {
                 case Telephony::TelCallState::CALL_STATUS_ACTIVE:
                     data.state = StatsUtils::STATS_STATE_ACTIVATED;
@@ -331,10 +331,10 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
         }
     } else if (eventName == StatsHiSysEvent::DATA_CONNECTION_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_DATA;
-        if (!root["STATE"].asString().empty()) {
-            if (root["STATE"].asString() == "1") {
+        if (root["STATE"].isInt()) {
+            if (root["STATE"].asInt() == 1) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (root["STATE"].asString() == "0") {
+            } else if (root["STATE"].asInt() == 0) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -351,16 +351,16 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
 void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_FLASHLIGHT_ON;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (root["UID"].isInt()) {
+        data.uid = root["UID"].asInt();
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (root["PID"].isInt()) {
+        data.pid = root["PID"].asInt();
     }
-    if (!root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "1") {
+    if (root["STATE"].isInt()) {
+        if (root["STATE"].asInt() == 1) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "0") {
+        } else if (root["STATE"].asInt() == 0) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
@@ -369,14 +369,14 @@ void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, c
 void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_WAKELOCK_HOLD;
-    if (!root["UID"].asString().empty()) {
-        data.uid = stoi(root["UID"].asString());
+    if (root["UID"].isInt()) {
+        data.uid = root["UID"].asInt();
     }
-    if (!root["PID"].asString().empty()) {
-        data.pid = stoi(root["PID"].asString());
+    if (root["PID"].isInt()) {
+        data.pid = root["PID"].asInt();
     }
-    if (!root["STATE"].asString().empty()) {
-        RunningLockState lockState = RunningLockState(stoi(root["STATE"].asString()));
+    if (root["STATE"].isInt()) {
+        RunningLockState lockState = RunningLockState(root["STATE"].asInt());
         std::string stateLabel = "";
         switch (lockState) {
             case RunningLockState::RUNNINGLOCK_STATE_DISABLE: {
@@ -400,48 +400,48 @@ void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, con
         }
         data.eventDebugInfo.append(" STATE = ").append(stateLabel);
     }
-    if (!root["TYPE"].asString().empty()) {
-        data.eventDataType = stoi(root["TYPE"].asString());
+    if (root["TYPE"].isInt()) {
+        data.eventDataType = root["TYPE"].asInt();
     }
-    if (!root["NAME"].asString().empty()) {
+    if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
         data.eventDataName = root["NAME"].asString();
     }
-    if (!root["LOG_LEVEL"].asString().empty()) {
-        data.eventDebugInfo.append(" LOG_LEVEL = ").append(root["LOG_LEVEL"].asString());
+    if (root["LOG_LEVEL"].isInt()) {
+        data.eventDebugInfo.append(" LOG_LEVEL = ").append(std::to_string(root["LOG_LEVEL"].asInt()));
     }
-    if (!root["TAG"].asString().empty()) {
+    if (root["TAG"].isString() && !root["TAG"].asString().empty()) {
         data.eventDebugInfo.append(" TAG = ").append(root["TAG"].asString());
     }
-    if (!root["MESSAGE"].asString().empty()) {
+    if (root["MESSAGE"].isString() && !root["MESSAGE"].asString().empty()) {
         data.eventDebugInfo.append(" MESSAGE = ").append(root["MESSAGE"].asString());
     }
 }
 
 void BatteryStatsListener::ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    if (!root["name_"].asString().empty()) {
+    if (root["name_"].isString() && !root["name_"].asString().empty()) {
         data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
-    if (!root["STATE"].asString().empty()) {
-        data.eventDebugInfo.append(" Screen state = ").append(root["STATE"].asString());
+    if (root["STATE"].isInt()) {
+        data.eventDebugInfo.append(" Screen state = ").append(std::to_string(root["STATE"].asInt()));
     }
-    if (!root["BRIGHTNESS"].asString().empty()) {
-        data.eventDebugInfo.append(" Screen brightness = ").append(root["BRIGHTNESS"].asString());
+    if (root["BRIGHTNESS"].isInt()) {
+        data.eventDebugInfo.append(" Screen brightness = ").append(std::to_string(root["BRIGHTNESS"].asInt()));
     }
-    if (!root["REASON"].asString().empty()) {
+    if (root["REASON"].isString() && !root["REASON"].asString().empty()) {
         data.eventDebugInfo.append(" Brightness reason = ").append(root["REASON"].asString());
     }
-    if (!root["NIT"].asString().empty()) {
-        data.eventDebugInfo.append(" Brightness nit = ").append(root["NIT"].asString());
+    if (root["NIT"].isInt()) {
+        data.eventDebugInfo.append(" Brightness nit = ").append(std::to_string(root["NIT"].asInt()));
     }
-    if (!root["RATIO"].asString().empty()) {
-        data.eventDebugInfo.append(" Ratio = ").append(root["RATIO"].asString());
+    if (root["RATIO"].isInt()) {
+        data.eventDebugInfo.append(" Ratio = ").append(std::to_string(root["RATIO"].asInt()));
     }
-    if (!root["TYPE"].asString().empty()) {
-        data.eventDebugInfo.append(" Ambient type = ").append(root["TYPE"].asString());
+    if (root["TYPE"].isInt()) {
+        data.eventDebugInfo.append(" Ambient type = ").append(std::to_string(root["TYPE"].asInt()));
     }
-    if (!root["LEVEL"].asString().empty()) {
-        data.eventDebugInfo.append(" Ambient brightness = ").append(root["LEVEL"].asString());
+    if (root["LEVEL"].isInt()) {
+        data.eventDebugInfo.append(" Ambient brightness = ").append(std::to_string(root["LEVEL"].asInt()));
     }
 }
 
@@ -451,8 +451,8 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
     data.type = StatsUtils::STATS_TYPE_DISPLAY;
     if (eventName == StatsHiSysEvent::SCREEN_STATE) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
-        if (!root["STATE"].asString().empty()) {
-            DisplayPowerMgr::DisplayState displayState = DisplayPowerMgr::DisplayState(stoi(root["STATE"].asString()));
+        if (root["STATE"].isInt()) {
+            DisplayPowerMgr::DisplayState displayState = DisplayPowerMgr::DisplayState(root["STATE"].asInt());
             switch (displayState) {
                 case DisplayPowerMgr::DisplayState::DISPLAY_OFF:
                     data.state = StatsUtils::STATS_STATE_DEACTIVATED;
@@ -466,8 +466,8 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
         }
     } else if (eventName == StatsHiSysEvent::BRIGHTNESS_NIT) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS;
-        if (!root["BRIGHTNESS"].asString().empty()) {
-            data.level = stoi(root["BRIGHTNESS"].asString());
+        if (root["BRIGHTNESS"].isInt()) {
+            data.level = root["BRIGHTNESS"].asInt();
         }
     }
     ProcessDispalyDebugInfo(data, root);
@@ -476,123 +476,137 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
 void BatteryStatsListener::ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_BATTERY;
-    if (!root["LEVEL"].asString().empty()) {
-        data.level = stoi(root["LEVEL"].asString());
+    if (root["LEVEL"].isInt()) {
+        data.level = root["LEVEL"].asInt();
     }
-    if (!root["CHARGER"].asString().empty()) {
-        data.eventDataExtra = stoi(root["CHARGER"].asString());
+    if (root["CHARGER"].isInt()) {
+        data.eventDataExtra = root["CHARGER"].asInt();
     }
-    if (!root["VOLTAGE"].asString().empty()) {
-        data.eventDebugInfo.append(" Voltage = ").append(root["VOLTAGE"].asString());
+    if (root["VOLTAGE"].isInt()) {
+        data.eventDebugInfo.append(" Voltage = ").append(std::to_string(root["VOLTAGE"].asInt()));
     }
-    if (!root["HEALTH"].asString().empty()) {
-        data.eventDebugInfo.append(" Health = ").append(root["HEALTH"].asString());
+    if (root["HEALTH"].isInt()) {
+        data.eventDebugInfo.append(" Health = ").append(std::to_string(root["HEALTH"].asInt()));
     }
-    if (!root["TEMPERATURE"].asString().empty()) {
-        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
+    if (root["TEMPERATURE"].isInt()) {
+        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(root["TEMPERATURE"].asInt()));
     }
 }
 
 void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_THERMAL;
-    if (!root["name_"].asString().empty()) {
+    if (root["name_"].isString() && !root["name_"].asString().empty()) {
         data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
-    if (!root["NAME"].asString().empty()) {
+    if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
         data.eventDebugInfo.append(" Name = ").append(root["NAME"].asString());
     }
-    if (!root["TEMPERATURE"].asString().empty()) {
-        data.eventDebugInfo.append(" Temperature = ").append(root["TEMPERATURE"].asString());
+    if (root["TEMPERATURE"].isInt()) {
+        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(root["TEMPERATURE"].asInt()));
     }
-    if (!root["LEVEL"].asString().empty()) {
-        data.eventDebugInfo.append(" Temperature level = ").append(root["LEVEL"].asString());
+    if (root["LEVEL"].isInt()) {
+        data.eventDebugInfo.append(" Temperature level = ").append(std::to_string(root["LEVEL"].asInt()));
     }
-    if (!root["ACTION"].asString().empty()) {
+    if (root["ACTION"].isString() && !root["ACTION"].asString().empty()) {
         data.eventDebugInfo.append(" Action name = ").append(root["ACTION"].asString());
     }
-    if (!root["VALUE"].asString().empty()) {
-        data.eventDebugInfo.append(" Value = ").append(root["VALUE"].asString());
+    if (root["VALUE"].isInt()) {
+        data.eventDebugInfo.append(" Value = ").append(std::to_string(root["VALUE"].asInt()));
     }
-    if (!root["RATIO"].asString().empty()) {
+    if (root["RATIO"].isNumeric()) {
         std::string ratio = std::to_string(root["RATIO"].asFloat()).substr(THERMAL_RATIO_BEGIN, THERMAL_RATIO_LENGTH);
         data.eventDebugInfo.append(" Ratio = ").append(ratio);
     }
 }
 
-void BatteryStatsListener::ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
-    data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
-    if (root["name_"].asString() == StatsHiSysEvent::POWER_WORKSCHEDULER) {
-        if (!root["UID"].asString().empty()) {
-            data.uid = stoi(root["UID"].asString());
+        data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
+        if (root["UID"].isInt()) {
+            data.uid = root["UID"].asInt();
         }
-        if (!root["PID"].asString().empty()) {
-            data.pid = stoi(root["PID"].asString());
+        if (root["PID"].isInt()) {
+            data.pid = root["PID"].asInt();
         }
-        if (!root["STATE"].asString().empty()) {
-            data.state = StatsUtils::StatsState(stoi(root["STATE"].asString()));
+        if (root["STATE"].isInt()) {
+            data.state = StatsUtils::StatsState(root["STATE"].asInt());
         }
-        if (!root["TYPE"].asString().empty()) {
-            data.eventDataType = stoi(root["TYPE"].asString());
+        if (root["TYPE"].isInt()) {
+            data.eventDataType = root["TYPE"].asInt();
         }
-        if (!root["INTERVAL"].asString().empty()) {
-            data.eventDataExtra = stoi(root["INTERVAL"].asString());
+        if (root["INTERVAL"].isInt()) {
+            data.eventDataExtra = root["INTERVAL"].asInt();
         }
-    } else {
-        if (!root["name_"].asString().empty()) {
+}
+
+void BatteryStatsListener::ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+        data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
+        if (root["name_"].isString() && !root["name_"].asString().empty()) {
             data.eventDebugInfo.append(root["name_"].asString()).append(":");
         }
-        if (!root["UID"].asString().empty()) {
-            data.uid = stoi(root["UID"].asString());
+        if (root["UID"].isInt()) {
+            data.uid = root["UID"].asInt();
         }
-        if (!root["PID"].asString().empty()) {
-            data.pid = stoi(root["PID"].asString());
+        if (root["PID"].isInt()) {
+            data.pid = root["PID"].asInt();
         }
-        if (!root["NAME"].asString().empty()) {
+        if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
             data.eventDebugInfo.append(" Bundle name = ").append(root["NAME"].asString());
         }
-        if (!root["WORKID"].asString().empty()) {
+        if (root["WORKID"].isString() && !root["WORKID"].asString().empty()) {
             data.eventDebugInfo.append(" Work ID = ").append(root["WORKID"].asString());
         }
-        if (!root["TRIGGER"].asString().empty()) {
+        if (root["TRIGGER"].isString() && !root["TRIGGER"].asString().empty()) {
             data.eventDebugInfo.append(" Trigger conditions = ").append(root["TRIGGER"].asString());
         }
-        if (!root["TYPE"].asString().empty()) {
+        if (root["TYPE"].isString() && !root["TYPE"].asString().empty()) {
             data.eventDebugInfo.append(" Work type = ").append(root["TYPE"].asString());
         }
-        if (!root["INTERVAL"].asString().empty()) {
-            data.eventDebugInfo.append(" Interval = ").append(root["INTERVAL"].asString());
+        if (root["INTERVAL"].isInt()) {
+            data.eventDebugInfo.append(" Interval = ").append(std::to_string(root["INTERVAL"].asInt()));
         }
+}
+
+void BatteryStatsListener::ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+{
+    if (!root["name_"].isString() || root["name_"].asString().empty()) {
+        return;
+    }
+    if (root["name_"].asString() == StatsHiSysEvent::POWER_WORKSCHEDULER) {
+        ProcessPowerWorkschedulerEvent(data, root);
+    } else {
+        ProcessOthersWorkschedulerEvent(data, root);
     }
 }
 
 void BatteryStatsListener::ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
 {
     data.type = StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER;
-    if (!root["name_"].asString().empty()) {
+    if (root["name_"].isString() && !root["name_"].asString().empty()) {
         data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
     }
-    if (!root["CALLING_TYPE"].asString().empty()) {
+    if (root["CALLING_TYPE"].isString() && !root["CALLING_TYPE"].asString().empty()) {
         data.eventDebugInfo.append(" Calling Type = ").append(root["CALLING_TYPE"].asString());
     }
-    if (!root["CALLING_UID"].asString().empty()) {
-        data.eventDebugInfo.append(" Calling Uid = ").append(root["CALLING_UID"].asString());
+    if (root["CALLING_UID"].isInt()) {
+        data.eventDebugInfo.append(" Calling Uid = ").append(std::to_string(root["CALLING_UID"].asInt()));
     }
-    if (!root["CALLING_PID"].asString().empty()) {
-        data.eventDebugInfo.append(" Calling Pid = ").append(root["CALLING_PID"].asString());
+    if (root["CALLING_PID"].isInt()) {
+        data.eventDebugInfo.append(" Calling Pid = ").append(std::to_string(root["CALLING_PID"].asInt()));
     }
-    if (!root["TARGET_BUNDLE"].asString().empty()) {
+    if (root["TARGET_BUNDLE"].isString() && !root["TARGET_BUNDLE"].asString().empty()) {
         data.eventDebugInfo.append(" Target Bundle Name = ").append(root["TARGET_BUNDLE"].asString());
     }
-    if (!root["TARGET_ABILITY"].asString().empty()) {
+    if (root["TARGET_ABILITY"].isString() && !root["TARGET_ABILITY"].asString().empty()) {
         data.eventDebugInfo.append(" Target Ability Name = ").append(root["TARGET_ABILITY"].asString());
     }
-    if (!root["CALLING_APP_UID"].asString().empty()) {
-        data.eventDebugInfo.append(" Calling App Uid = ").append(root["CALLING_APP_UID"].asString());
+    if (root["CALLING_APP_UID"].isInt()) {
+        data.eventDebugInfo.append(" Calling App Uid = ").append(std::to_string(root["CALLING_APP_UID"].asInt()));
     }
-    if (!root["RESULT"].asString().empty()) {
-        data.eventDebugInfo.append(" RESULT = ").append(root["RESULT"].asString());
+    if (root["RESULT"].isInt()) {
+        data.eventDebugInfo.append(" RESULT = ").append(std::to_string(root["RESULT"].asInt()));
     }
 }
 
@@ -600,11 +614,11 @@ void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const 
 {
     data.type = StatsUtils::STATS_TYPE_ALARM;
     data.traffic = 1;
-    if (!root["CALLER_UID"].asString().empty()) {
-        data.uid = stoi(root["CALLER_UID"].asString());
+    if (root["CALLER_UID"].isInt()) {
+        data.uid = root["CALLER_UID"].asInt();
     }
-    if (!root["CALLER_PID"].asString().empty()) {
-        data.pid = stoi(root["CALLER_PID"].asString());
+    if (root["CALLER_PID"].isInt()) {
+        data.pid = root["CALLER_PID"].asInt();
     }
 }
 
