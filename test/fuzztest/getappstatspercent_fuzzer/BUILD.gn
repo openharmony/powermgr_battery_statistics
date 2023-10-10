@@ -14,7 +14,7 @@
 import("//build/test.gni")
 import("../../../batterystats.gni")
 
-module_output_path = "${batterystats_part_name}/batterystats"
+module_output_path = "battery_statistics/battery_statistics"
 
 ##############################fuzztest##########################################
 ohos_fuzztest("GetAppStatsPercentFuzzTest") {
