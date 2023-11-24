@@ -188,7 +188,6 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
             result = ConvertTypeForDebug(statsType);
             break;
         default:
-            STATS_HILOGW(COMP_UTILS, "Convert failed due to illegal type=%{public}d", static_cast<int32_t>(statsType));
             break;
     }
     return result;
