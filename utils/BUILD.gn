@@ -33,6 +33,8 @@ config("coverage_flags") {
 }
 
 ohos_source_set("batterystats_utils") {
+  branch_protector_ret = "pac_ret"
+
   sources = [
     "native/src/stats_helper.cpp",
     "native/src/stats_hisysevent.cpp",
