@@ -624,11 +624,13 @@ void BatteryStatsCore::DumpInfo(std::string& result)
 
 void BatteryStatsCore::UpdateDebugInfo(const std::string& info)
 {
+    std::lock_guard lock(mutex_);
     debugInfo_.append(info);
 }
 
 void BatteryStatsCore::GetDebugInfo(std::string& result)
 {
+    std::lock_guard lock(mutex_);
     if (debugInfo_.size() > 0) {
         result.append("Misc stats info dump:\n");
         result.append(debugInfo_);
