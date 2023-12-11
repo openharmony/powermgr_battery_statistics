@@ -179,6 +179,7 @@ bool BatteryStatsService::IsServiceReady() const
 
 BatteryStatsInfoList BatteryStatsService::GetBatteryStats()
 {
+    std::lock_guard lock(mutex_);
     BatteryStatsInfoList statsInfoList = {};
     if (!Permission::IsSystem()) {
         return statsInfoList;
