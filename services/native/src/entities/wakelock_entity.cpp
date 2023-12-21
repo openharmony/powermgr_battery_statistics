@@ -123,6 +123,7 @@ void WakelockEntity::Reset()
         iter.second = StatsUtils::DEFAULT_VALUE;
     }
 
+    STATS_HILOGI(COMP_SVC, "Reset Wakelock on timer.");
     // Reset Wakelock on timer
     for (auto& iter : wakelockTimerMap_) {
         if (iter.second) {
