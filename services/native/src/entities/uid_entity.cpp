@@ -38,6 +38,7 @@ UidEntity::UidEntity()
 
 void UidEntity::UpdateUidMap(int32_t uid)
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     if (uid > StatsUtils::INVALID_VALUE) {
         auto iter = uidPowerMap_.find(uid);
         if (iter != uidPowerMap_.end()) {
@@ -51,6 +52,7 @@ void UidEntity::UpdateUidMap(int32_t uid)
 
 std::vector<int32_t> UidEntity::GetUids()
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     std::vector<int32_t> uids;
     std::transform(uidPowerMap_.begin(), uidPowerMap_.end(), std::back_inserter(uids), [](const auto& item) {
         return item.first;
@@ -115,6 +117,7 @@ double UidEntity::CalculateForCommon(int32_t uid)
 
 void UidEntity::Calculate(int32_t uid)
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     auto core = g_statsService->GetBatteryStatsCore();
     auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     for (auto& iter : uidPowerMap_) {
@@ -143,6 +146,7 @@ void UidEntity::AddtoStatsList(int32_t uid, double power)
 
 double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     double power = StatsUtils::DEFAULT_VALUE;
     auto iter = uidPowerMap_.find(uidOrUserId);
     if (iter != uidPowerMap_.end()) {
@@ -243,6 +247,7 @@ double UidEntity::GetStatsPowerMah(StatsUtils::StatsType statsType, int32_t uid)
 
 void UidEntity::Reset()
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     // Reset app Uid total power consumption
     for (auto& iter : uidPowerMap_) {
         iter.second = StatsUtils::DEFAULT_VALUE;
@@ -319,6 +324,7 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 
 void UidEntity::DumpInfo(std::string& result, int32_t uid)
 {
+    std::lock_guard<std::mutex> lock(uidEntityMutex_);
     auto core = g_statsService->GetBatteryStatsCore();
     for (auto& iter : uidPowerMap_) {
         std::string bundleName = "NULL";

@@ -17,6 +17,7 @@
 #define UID_ENTITY_H
 
 #include <map>
+#include <mutex>
 
 #include "entities/battery_stats_entity.h"
 #include "stats_helper.h"
@@ -36,6 +37,7 @@ public:
     void Reset() override;
     void DumpInfo(std::string& result, int32_t uid = StatsUtils::INVALID_VALUE) override;
 private:
+    std::mutex uidEntityMutex_;
     std::map<int32_t, double> uidPowerMap_;
     void AddtoStatsList(int32_t uid, double power);
     double GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid);
