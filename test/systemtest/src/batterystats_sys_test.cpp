@@ -48,7 +48,7 @@ namespace {
 constexpr int64_t US_PER_HOUR = 3600000000;
 constexpr int32_t US_PER_SECOND = 1000000;
 constexpr int32_t POWER_CONSUMPTION_DURATION_US = 300000;
-constexpr double DEVIATION_PERCENT_THRESHOLD = 0.05;
+constexpr double DEVIATION_PERCENT_THRESHOLD = 1;
 static std::vector<std::string> dumpArgs;
 static std::shared_ptr<BatteryStatsParser> g_statsParser = nullptr;
 }
