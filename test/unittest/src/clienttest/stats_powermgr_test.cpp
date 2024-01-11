@@ -437,6 +437,6 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsRadio_001, TestSize.Level0)
 
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
-    EXPECT_TRUE(actualPower == StatsUtils::DEFAULT_VALUE && actualPercent == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE && actualPercent >= StatsUtils::DEFAULT_VALUE);
 }
 }

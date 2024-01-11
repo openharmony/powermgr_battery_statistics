@@ -70,7 +70,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED,
         HiSysEvent::EventType::STATISTIC, "LEVEL", batteryLevel, "CHARGER", batteryChargerType);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
         .append(ToString(batteryLevel))
@@ -106,7 +106,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
     usleep(US_PER_MS);
     HiSysEventWrite(HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateUnlock, "TYPE", type, "NAME", name);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
         .append(ToString(uid))
@@ -138,6 +138,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BACKLIGHT_DISCOUNT,
         HiSysEvent::EventType::STATISTIC, "RATIO", ratio);
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")
@@ -170,7 +171,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type, "INTERVAL", interval, "STATE", state);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
         .append(ToString(uid))
@@ -205,7 +206,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE,
         HiSysEvent::EventType::STATISTIC, "NAME", partName, "TEMPERATURE", temperature);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = POWER_TEMPERATURE")
@@ -241,7 +242,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
         StatsHiSysEvent::START_REMOTE_ABILITY, HiSysEvent::EventType::BEHAVIOR,
         "CALLING_TYPE", callType, "CALLING_UID", callUid, "CALLING_PID", callPid, "TARGET_BUNDLE", targetBundle,
         "TARGET_ABILITY", targetAbility, "CALLING_APP_UID", callAppUid, "RESULT", result);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = START_REMOTE_ABILITY")
@@ -273,7 +274,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 
     HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::THERMAL, StatsHiSysEvent::THERMAL_ACTION_TRIGGERED,
         HiviewDFX::HiSysEvent::EventType::STATISTIC, "ACTION", actionName, "VALUE", value, "RATIO", ratio);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ACTION_TRIGGERED")
@@ -306,7 +307,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::AMBIENT_LIGHT,
         HiSysEvent::EventType::STATISTIC, "TYPE", type, "LEVEL", level);
-
+    usleep(POWER_CONSUMPTION_DURATION_US);
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
         .append("Event name = ")

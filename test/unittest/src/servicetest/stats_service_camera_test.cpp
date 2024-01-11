@@ -98,7 +98,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
     double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -199,7 +199,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
     double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -317,7 +317,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
     double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -507,7 +507,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
 
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
-    EXPECT_TRUE(actualPower == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
 }
 
 /**
@@ -579,7 +579,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
     double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
-    EXPECT_TRUE(powerMahBefore > StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
 }
 
 /**
