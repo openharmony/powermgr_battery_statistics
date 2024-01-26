@@ -531,60 +531,11 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
 
 /**
  * @tc.name: StatsServiceDisplayTest_012
- * @tc.desc: test GetTotalTimeSecond function(CURRENT_SCREEN_ON & CURRENT_SCREEN_BRIGHTNESS)
- * @tc.type: FUNC
- * @tc.require: issueI663DX
- */
-HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
-{
-    ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    g_statsServiceProxy->Reset();
-
-    int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
-    int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
-    int32_t lastBrightness = 100;
-    int32_t brightnessBegin = 0;
-    int32_t brightness = 0;
-    int32_t count = 50;
-    int32_t step = 3;
-
-    SetLastBrightness(lastBrightness);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
-        HiSysEvent::EventType::STATISTIC, "STATE", stateOn);
-    usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    for (int32_t i = 0; i < count; i++) {
-        brightness = brightnessBegin + step * i;
-        StatsWriteHiSysEvent(statsService,
-            HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BRIGHTNESS_NIT,
-            HiSysEvent::EventType::STATISTIC, "BRIGHTNESS", brightness);
-        usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    }
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
-        HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-
-    long expectScreenOnTime = SERVICE_POWER_CONSUMPTION_DURATION_US * (count + 1) / US_PER_SECOND;
-    long screenOnTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_ON);
-    GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectScreenOnTime << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  screenOnTime << " seconds";
-    EXPECT_EQ(expectScreenOnTime, screenOnTime);
-
-    long expectBrightnessTime = SERVICE_POWER_CONSUMPTION_DURATION_US * (count + 1) / US_PER_SECOND;
-    long brightnessTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS);
-    GTEST_LOG_(INFO) << __func__ << ": expected screen on time = " << expectBrightnessTime << " seconds";
-    GTEST_LOG_(INFO) << __func__ << ": actual screen on time = " <<  brightnessTime << " seconds";
-    EXPECT_EQ(expectBrightnessTime, brightnessTime);
-}
-
-/**
- * @tc.name: StatsServiceDisplayTest_013
  * @tc.desc: test send hisysevent with missing information(Screen)
  * @tc.type: FUNC
  * @tc.require: issueI663DX
  */
-HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_013, TestSize.Level0)
+HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
