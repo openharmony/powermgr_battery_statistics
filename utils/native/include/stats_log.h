@@ -23,8 +23,6 @@
 
 namespace OHOS {
 namespace PowerMgr {
-#define FILE_NAME          (__builtin_strrchr("/" __FILE__, '/') + 1)
-#define FORMAT(fmt, ...) "[%{public}s:%{public}d] %{public}s# " fmt, FILE_NAME, __LINE__, __FUNCTION__, ##__VA_ARGS__
 
 #ifdef STATS_HILOGF
 #undef STATS_HILOGF
@@ -78,22 +76,32 @@ enum BatteryStatsLogDomain {
     DOMAIN_END = STATS_DOMAIN_ID_END, // Max to 0xD002980, keep the sequence and length same as BatteryStatsLogLabel
 };
 
-// Keep the sequence and length same as BatteryStatsLogDomain
-static constexpr OHOS::HiviewDFX::HiLogLabel STATS_LABEL[LABEL_END] = {
-    {LOG_CORE, DOMAIN_APP,       "StatsApp"},
-    {LOG_CORE, DOMAIN_FRAMEWORK, "StatsFwk"},
-    {LOG_CORE, DOMAIN_SERVICE,   "StatsSvc"},
-    {LOG_CORE, DOMAIN_HDI,       "StatsHdi"},
-    {LOG_CORE, DOMAIN_DRIVER,    "StatsDrv"},
-    {LOG_CORE, DOMAIN_UTILS,     "StatsUtils"},
-    {LOG_CORE, DOMAIN_TEST,      "StatsTest"},
+struct BatteryStatsLogLabelDomain {
+    uint32_t domainId;
+    const char* tag;
 };
 
-#define STATS_HILOGF(domain, ...) (void)OHOS::HiviewDFX::HiLog::Fatal(STATS_LABEL[domain], FORMAT(__VA_ARGS__))
-#define STATS_HILOGE(domain, ...) (void)OHOS::HiviewDFX::HiLog::Error(STATS_LABEL[domain], FORMAT(__VA_ARGS__))
-#define STATS_HILOGW(domain, ...) (void)OHOS::HiviewDFX::HiLog::Warn(STATS_LABEL[domain], FORMAT(__VA_ARGS__))
-#define STATS_HILOGI(domain, ...) (void)OHOS::HiviewDFX::HiLog::Info(STATS_LABEL[domain], FORMAT(__VA_ARGS__))
-#define STATS_HILOGD(domain, ...) (void)OHOS::HiviewDFX::HiLog::Debug(STATS_LABEL[domain], FORMAT(__VA_ARGS__))
+// Keep the sequence and length same as BatteryStatsLogDomain
+static const BatteryStatsLogLabelDomain STATS_LABEL[LABEL_END] = {
+    {DOMAIN_APP,       "StatsApp"},
+    {DOMAIN_FRAMEWORK, "StatsFwk"},
+    {DOMAIN_SERVICE,   "StatsSvc"},
+    {DOMAIN_HDI,       "StatsHdi"},
+    {DOMAIN_DRIVER,    "StatsDrv"},
+    {DOMAIN_UTILS,     "StatsUtils"},
+    {DOMAIN_TEST,      "StatsTest"},
+};
+
+#define STATS_HILOGF(domain, ...) \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_FATAL, STATS_LABEL[domain].domainId, STATS_LABEL[domain].tag, ##__VA_ARGS__))
+#define STATS_HILOGE(domain, ...) \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_ERROR, STATS_LABEL[domain].domainId, STATS_LABEL[domain].tag, ##__VA_ARGS__))
+#define STATS_HILOGW(domain, ...) \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_WARN, STATS_LABEL[domain].domainId, STATS_LABEL[domain].tag, ##__VA_ARGS__))
+#define STATS_HILOGI(domain, ...) \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_INFO, STATS_LABEL[domain].domainId, STATS_LABEL[domain].tag, ##__VA_ARGS__))
+#define STATS_HILOGD(domain, ...) \
+    ((void)HILOG_IMPL(LOG_CORE, LOG_DEBUG, STATS_LABEL[domain].domainId, STATS_LABEL[domain].tag, ##__VA_ARGS__))
 } // namespace PowerMgr
 } // namespace OHOS
 
