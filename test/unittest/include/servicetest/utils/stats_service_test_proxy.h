@@ -27,7 +27,7 @@ namespace OHOS {
 namespace PowerMgr {
 class StatsServiceTestProxy {
 public:
-    StatsServiceTestProxy(const sptr<BatteryStatsService>& service);
+    StatsServiceTestProxy(const std::shared_ptr<BatteryStatsService>& service);
     ~StatsServiceTestProxy() = default;
 
     BatteryStatsInfoList GetBatteryStats();
@@ -42,7 +42,7 @@ public:
     std::string ShellDump(const std::vector<std::string>& args, uint32_t argc);
 
 private:
-    sptr<BatteryStatsStub> stub_ {nullptr};
+    std::shared_ptr<BatteryStatsStub> stub_ {nullptr};
 };
 } // namespace PowerMgr
 } // namespace OHOS

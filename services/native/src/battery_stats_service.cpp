@@ -42,7 +42,7 @@ namespace OHOS {
 namespace PowerMgr {
 namespace {
 auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
+const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.get());
 SysParam::BootCompletedCallback g_bootCompletedCallback;
 }
 std::atomic_bool BatteryStatsService::isBootCompleted_ = false;
@@ -63,7 +63,7 @@ void BatteryStatsService::OnStart()
     }
     AddSystemAbilityListener(DFX_SYS_EVENT_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
-    if (!Publish(DelayedStatsSpSingleton<BatteryStatsService>::GetInstance())) {
+    if (!Publish(this)) {
         STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }

@@ -28,7 +28,7 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
-    void PublishChangedEvent(const sptr<BatteryStatsService>& service, const std::string& action);
+    void PublishChangedEvent(const std::shared_ptr<BatteryStatsService>& service, const std::string& action);
     void SetCapacity(const int32_t capacity)
     {
         capacity_ = capacity;
