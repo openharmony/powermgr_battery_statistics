@@ -22,6 +22,11 @@ config("batterystats_public_config") {
 }
 
 ohos_shared_library("batterystats_service") {
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
   branch_protector_ret = "pac_ret"
 
   sources = [

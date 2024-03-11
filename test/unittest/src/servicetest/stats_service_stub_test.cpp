@@ -38,8 +38,8 @@ namespace {
  */
 HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
 {
-    sptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    sptr<BatteryStatsStub> statsStub = static_cast<BatteryStatsStub*>(statsService);
+    shared_ptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    shared_ptr<BatteryStatsStub> statsStub = static_cast<shared_ptr<BatteryStatsStub>>(statsService);
 
     MessageParcel data;
     MessageParcel reply;
@@ -59,8 +59,8 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
 {
-    sptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    sptr<BatteryStatsStub> statsStub = static_cast<BatteryStatsStub*>(statsService);
+    shared_ptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    shared_ptr<BatteryStatsStub> statsStub = static_cast<shared_ptr<BatteryStatsStub>>(statsService);
 
     MessageParcel data;
     MessageParcel reply;
@@ -85,8 +85,8 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    sptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-    sptr<BatteryStatsStub> statsStub = static_cast<BatteryStatsStub*>(statsService);
+    shared_ptr<BatteryStatsService> statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    shared_ptr<BatteryStatsStub> statsStub = static_cast<shared_ptr<BatteryStatsStub>>(statsService);
 
     data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
     const int32_t PARAM_MAX_NUM = 100;

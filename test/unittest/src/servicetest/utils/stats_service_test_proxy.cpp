@@ -27,10 +27,10 @@
 
 namespace OHOS {
 namespace PowerMgr {
-StatsServiceTestProxy::StatsServiceTestProxy(const sptr<BatteryStatsService>& service)
+StatsServiceTestProxy::StatsServiceTestProxy(const std::shared_ptr<BatteryStatsService>& service)
 {
     if (service != nullptr) {
-        stub_ = static_cast<BatteryStatsStub*>(service);
+        stub_ = static_cast<std::shared_ptr<BatteryStatsStub>>(service);
     }
 }
 

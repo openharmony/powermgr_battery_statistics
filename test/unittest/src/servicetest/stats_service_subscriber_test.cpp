@@ -38,7 +38,7 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static sptr<BatteryStatsService> g_statsService = nullptr;
+static shared_ptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 const int32_t BATTERY_LEVEL_FULL = 100;
 } // namespace
@@ -83,7 +83,7 @@ void StatsServiceSubscriberTest::TearDown()
     statsService->SetOnBattery(false);
 }
 
-void StatsServiceSubscriberTest::PublishChangedEvent(const sptr<BatteryStatsService>& service,
+void StatsServiceSubscriberTest::PublishChangedEvent(const shared_ptr<BatteryStatsService>& service,
     const std::string& action)
 {
     Want want;

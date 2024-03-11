@@ -25,7 +25,7 @@ public:
     void TestStatsServiceStub(const uint32_t code, const uint8_t* data, size_t size);
 
 private:
-    OHOS::sptr<OHOS::PowerMgr::BatteryStatsService> service_ = nullptr;
+    std::shared_ptr<OHOS::PowerMgr::BatteryStatsService> service_ = nullptr;
 };
 
 #endif

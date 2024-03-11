@@ -31,7 +31,7 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static sptr<BatteryStatsService> g_statsService = nullptr;
+static shared_ptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 

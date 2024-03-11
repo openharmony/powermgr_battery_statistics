@@ -24,7 +24,7 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static sptr<BatteryStatsService> g_statsService = nullptr;
+static shared_ptr<BatteryStatsService> g_statsService = nullptr;
 } // namespace
 
 void StatsServiceCoreTest::SetUpTestCase()
