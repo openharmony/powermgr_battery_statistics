@@ -75,13 +75,10 @@ ohos_shared_library("batterystats_service") {
     "ability_base:want",
     "ability_runtime:abilitykit_native",
     "battery_manager:batterysrv_client",
-    "bluetooth:btframework",
     "bundle_framework:appexecfwk_core",
     "c_utils:utils",
-    "call_manager:tel_call_manager_api",
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
-    "display_manager:displaymgr",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
@@ -89,8 +86,23 @@ ohos_shared_library("batterystats_service") {
     "os_account:libaccountkits",
     "power_manager:power_sysparam",
     "safwk:system_ability_fwk",
-    "wifi:wifi_sdk",
   ]
+
+  if (has_batterystats_bluetooth_part) {
+    external_deps += [ "bluetooth:btframework" ]
+  }
+
+  if (has_batterystats_call_manager_part) {
+    external_deps += [ "call_manager:tel_call_manager_api" ]
+  }
+
+  if (has_batterystats_display_manager_part) {
+    external_deps += [ "display_manager:displaymgr" ]
+  }
+
+  if (has_batterystats_wifi_part) {
+    external_deps += [ "wifi:wifi_sdk" ]
+  }
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
@@ -108,12 +120,18 @@ ohos_shared_library("batterystats_stub") {
 
   external_deps = [
     "c_utils:utils",
-    "call_manager:tel_call_manager_api",
-    "display_manager:displaymgr",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
+
+  if (has_batterystats_call_manager_part) {
+    external_deps += [ "call_manager:tel_call_manager_api" ]
+  }
+
+  if (has_batterystats_display_manager_part) {
+    external_deps += [ "display_manager:displaymgr" ]
+  }
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"

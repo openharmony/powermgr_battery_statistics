@@ -18,10 +18,21 @@
 #include <string>
 #include <strstream>
 
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
 #include "bluetooth_def.h"
+#endif
+
+#ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
 #include "call_manager_inner_type.h"
+#endif
+
+#ifdef HAS_BATTERYSTATS_DISPLAY_MANAGER_PART
 #include "display_power_info.h"
+#endif
+
+#ifdef HAS_BATTERYSTATS_WIFI_PART
 #include "wifi_msg.h"
+#endif
 
 #include "battery_stats_service.h"
 #include "stats_hisysevent.h"
@@ -208,20 +219,24 @@ void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, 
     if (eventName == StatsHiSysEvent::BR_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
         if (root["STATE"].isInt()) {
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
             if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
             } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
+#endif
         }
     } else if (eventName == StatsHiSysEvent::DISCOVERY_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
         if (root["STATE"].isInt()) {
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
             if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STARTED) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
             } else if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STOPED) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
+#endif
         }
         if (root["UID"].isInt()) {
             data.uid = root["UID"].asInt();
@@ -238,11 +253,13 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
     if (eventName == StatsHiSysEvent::BLE_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
         if (root["STATE"].isInt()) {
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
             if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
             } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
+#endif
         }
     } else if (eventName == StatsHiSysEvent::BLE_SCAN_START || eventName == StatsHiSysEvent::BLE_SCAN_STOP) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN;
@@ -277,6 +294,7 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
     if (eventName == StatsHiSysEvent::WIFI_CONNECTION) {
         data.type = StatsUtils::STATS_TYPE_WIFI_ON;
         if (root["TYPE"].isInt()) {
+#ifdef HAS_BATTERYSTATS_WIFI_PART
             Wifi::ConnState connectionType = Wifi::ConnState(root["TYPE"].asInt());
             switch (connectionType) {
                 case Wifi::ConnState::CONNECTED:
@@ -288,6 +306,7 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
                 default:
                     break;
             }
+#endif
         }
     } else if (eventName == StatsHiSysEvent::WIFI_SCAN) {
         data.type = StatsUtils::STATS_TYPE_WIFI_SCAN;
@@ -317,6 +336,7 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
     if (eventName == StatsHiSysEvent::CALL_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
         if (root["STATE"].isInt()) {
+#ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
             Telephony::TelCallState callState = Telephony::TelCallState(root["STATE"].asInt());
             switch (callState) {
                 case Telephony::TelCallState::CALL_STATUS_ACTIVE:
@@ -328,6 +348,7 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
                 default:
                     break;
             }
+#endif
         }
     } else if (eventName == StatsHiSysEvent::DATA_CONNECTION_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_DATA;
@@ -451,6 +472,7 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
     data.type = StatsUtils::STATS_TYPE_DISPLAY;
     if (eventName == StatsHiSysEvent::SCREEN_STATE) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
+#ifdef HAS_BATTERYSTATS_DISPLAY_MANAGER_PART
         if (root["STATE"].isInt()) {
             DisplayPowerMgr::DisplayState displayState = DisplayPowerMgr::DisplayState(root["STATE"].asInt());
             switch (displayState) {
@@ -464,6 +486,7 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
                     break;
             }
         }
+#endif
     } else if (eventName == StatsHiSysEvent::BRIGHTNESS_NIT) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS;
         if (root["BRIGHTNESS"].isInt()) {

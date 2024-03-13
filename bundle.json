@@ -16,10 +16,7 @@
         "subsystem": "powermgr",
         "syscap": [ "SystemCapability.PowerManager.BatteryStatistics" ],
         "features": [],
-        "adapted_system_type": [
-		"small",
-	       	"standard"
-       	],
+        "adapted_system_type": ["standard"],
         "rom": "1024KB",
         "ram": "2048KB",
         "hisysevent_config": [
