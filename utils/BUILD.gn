@@ -32,7 +32,7 @@ config("coverage_flags") {
   }
 }
 
-ohos_source_set("batterystats_utils") {
+ohos_static_library("batterystats_utils") {
   branch_protector_ret = "pac_ret"
 
   sources = [

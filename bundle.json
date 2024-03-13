@@ -41,6 +41,7 @@
                 "hisysevent",
                 "hilog",
                 "ipc",
+                "jsoncpp",
                 "napi",
                 "os_account",
                 "power_manager",
@@ -63,7 +64,7 @@
                     "//base/powermgr/battery_statistics/services:service"
                 ]
             },
-            "inner_api": [
+            "inner_kits": [
                 {
                     "name": "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client",
                     "header": {
@@ -74,6 +75,15 @@
                         "ibattery_stats.h"
                       ],
                       "header_base": "//base/powermgr/battery_statistics/interfaces/inner_api/include"
+                    }
+                },
+                {
+                    "name": "//base/powermgr/battery_statistics/utils:batterystats_utils",
+                    "header": {
+                      "header_files": [
+                        "stats_utils.h" 
+                      ],
+                      "header_base": "//base/powermgr/battery_statistics/utils/native/include"
                     }
                 }
             ],
