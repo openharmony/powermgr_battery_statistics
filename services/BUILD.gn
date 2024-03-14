@@ -86,10 +86,8 @@ ohos_shared_library("batterystats_service") {
     "wifi:wifi_sdk",
   ]
 
-  public_external_deps = [
-    "ability_runtime:appkit_native",
-  ]
-  
+  public_external_deps = [ "ability_runtime:appkit_native" ]
+
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
 }
@@ -112,10 +110,8 @@ ohos_shared_library("batterystats_stub") {
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
-  
-  public_external_deps = [
-    "ability_runtime:appkit_native",
-  ]
+
+  public_external_deps = [ "ability_runtime:appkit_native" ]
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
