@@ -73,7 +73,6 @@ ohos_shared_library("batterystats_service") {
   external_deps = [ "power_manager:power_permission" ]
   external_deps += [
     "ability_base:want",
-    "ability_runtime:abilitykit_native",
     "battery_manager:batterysrv_client",
     "bluetooth:btframework",
     "bundle_framework:appexecfwk_core",
@@ -91,6 +90,11 @@ ohos_shared_library("batterystats_service") {
     "safwk:system_ability_fwk",
     "wifi:wifi_sdk",
   ]
+
+  if (false) {
+    defines += [ "SYS_MGR_CLIENT_ENABLE" ]
+    external_deps += [ "ability_runtime:abilitykit_native" ]
+  }
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
