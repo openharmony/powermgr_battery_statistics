@@ -17,7 +17,6 @@
         "syscap": [ "SystemCapability.PowerManager.BatteryStatistics" ],
         "features": [],
         "adapted_system_type": [
-		"small",
 	       	"standard"
        	],
         "rom": "1024KB",
