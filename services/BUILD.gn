@@ -16,7 +16,6 @@ import("../batterystats.gni")
 config("batterystats_public_config") {
   include_dirs = [
     "native/include",
-    "${ability_runtime_path}/interfaces/kits/native/appkit/app",
     "${batterystats_service_zidl}/include",
   ]
 }
@@ -67,7 +66,6 @@ ohos_shared_library("batterystats_service") {
     ":batterystats_stub",
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/jsoncpp",
   ]
 
   external_deps = [ "power_manager:power_permission" ]
@@ -86,11 +84,14 @@ ohos_shared_library("batterystats_service") {
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
     "ipc:ipc_core",
+    "jsoncpp:jsoncpp",
     "os_account:libaccountkits",
     "power_manager:power_sysparam",
     "safwk:system_ability_fwk",
     "wifi:wifi_sdk",
   ]
+
+  public_external_deps = [ "ability_runtime:appkit_native" ]
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
@@ -114,6 +115,8 @@ ohos_shared_library("batterystats_stub") {
     "hilog:libhilog",
     "ipc:ipc_core",
   ]
+
+  public_external_deps = [ "ability_runtime:appkit_native" ]
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
