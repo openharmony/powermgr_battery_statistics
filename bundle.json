@@ -16,7 +16,9 @@
         "subsystem": "powermgr",
         "syscap": [ "SystemCapability.PowerManager.BatteryStatistics" ],
         "features": [],
-        "adapted_system_type": ["standard"],
+        "adapted_system_type": [
+	       	"standard"
+       	],
         "rom": "1024KB",
         "ram": "2048KB",
         "hisysevent_config": [
@@ -38,6 +40,7 @@
                 "hisysevent",
                 "hilog",
                 "ipc",
+                "jsoncpp",
                 "napi",
                 "os_account",
                 "power_manager",
@@ -60,7 +63,7 @@
                     "//base/powermgr/battery_statistics/services:service"
                 ]
             },
-            "inner_api": [
+            "inner_kits": [
                 {
                     "name": "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client",
                     "header": {
@@ -71,6 +74,14 @@
                         "ibattery_stats.h"
                       ],
                       "header_base": "//base/powermgr/battery_statistics/interfaces/inner_api/include"
+                    }
+                },
+                {
+                    "name": "//base/powermgr/battery_statistics/utils:batterystats_utils",
+                    "visibility": ["thermal_manager"],
+                    "header": {
+                      "header_files": [],
+                      "header_base": "//base/powermgr/battery_statistics/utils/native/include"
                     }
                 }
             ],
