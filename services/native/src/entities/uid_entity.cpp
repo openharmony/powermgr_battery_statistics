@@ -15,13 +15,15 @@
 
 #include "entities/uid_entity.h"
 
+#ifdef SYS_MGR_CLIENT_ENABLE
 #include <bundle_constants.h>
 #include <bundle_mgr_interface.h>
 #include <ipc_skeleton.h>
-#include <ohos_account_kits_impl.h>
 #include <system_ability_definition.h>
 #include <sys_mgr_client.h>
+#endif
 
+#include <ohos_account_kits_impl.h>
 #include "battery_stats_service.h"
 #include "stats_log.h"
 
@@ -328,6 +330,7 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
     auto core = g_statsService->GetBatteryStatsCore();
     for (auto& iter : uidPowerMap_) {
         std::string bundleName = "NULL";
+#ifdef SYS_MGR_CLIENT_ENABLE
         auto bundleObj =
             DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()
                 ->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
@@ -347,6 +350,7 @@ void UidEntity::DumpInfo(std::string& result, int32_t uid)
                 }
             }
         }
+#endif
         result.append("\n")
             .append(ToString(iter.first))
             .append("(Bundle name: ")

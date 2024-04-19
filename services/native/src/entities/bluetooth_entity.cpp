@@ -16,11 +16,13 @@
 #include "entities/bluetooth_entity.h"
 
 #include <cinttypes>
+#ifdef SYS_MGR_CLIENT_ENABLE
 #include <ipc_skeleton.h>
 #include "bundle_constants.h"
 #include "bundle_mgr_interface.h"
 #include "system_ability_definition.h"
 #include "sys_mgr_client.h"
+#endif
 
 #include "battery_stats_service.h"
 #include "stats_log.h"
@@ -409,6 +411,7 @@ std::shared_ptr<StatsHelper::ActiveTimer> BluetoothEntity::GetOrCreateTimer(Stat
 double BluetoothEntity::GetBluetoothUidPower()
 {
     double bluetoothUidPower = StatsUtils::DEFAULT_VALUE;
+#ifdef SYS_MGR_CLIENT_ENABLE
     auto bundleObj =
         DelayedSingleton<AppExecFwk::SysMrgClient>::GetInstance()->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     if (bundleObj == nullptr) {
@@ -433,6 +436,7 @@ double BluetoothEntity::GetBluetoothUidPower()
         bluetoothUidPower = uidEntity->GetEntityPowerMah(bluetoothUid);
     }
     STATS_HILOGD(COMP_SVC, "Get bluetooth uid power consumption: %{public}lfmAh", bluetoothUidPower);
+#endif
     return bluetoothUidPower;
 }
 
