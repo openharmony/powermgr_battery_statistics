@@ -326,9 +326,7 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
             STATS_HILOGD(COMP_SVC, "Power supply is not connected. Add the increment");
             auto iter = clusterTimeMap_.find(uid);
             if (iter != clusterTimeMap_.end()) {
-                for (uint16_t i = 0; i < clusters.size(); i++) {
-                    iter->second[i] += increments[i];
-                }
+                AddIncrementsToClusterTime(iter->second, increments, clusters);
             } else {
                 clusterTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, increments));
                 STATS_HILOGI(COMP_SVC, "Add cpu cluster time for uid: %{public}d", uid);
@@ -336,6 +334,14 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
         }
     }
     return true;
+}
+
+void CpuTimeReader::AddIncrementsToClusterTime(std::vector<int64_t>& clusterTime,
+    const std::vector<int64_t>& increments, const std::vector<uint16_t>& clusters)
+{
+    for (uint16_t i = 0; i < clusters.size(); i++) {
+        clusterTime[i] += increments[i];
+    }
 }
 
 bool CpuTimeReader::ProcessFreqTime(std::map<uint32_t, std::vector<int64_t>>& map, std::map<uint32_t,
@@ -546,18 +552,23 @@ bool CpuTimeReader::ReadUidCpuTime()
 
         if (StatsHelper::IsOnBattery()) {
             STATS_HILOGD(COMP_SVC, "Power supply is not connected. Add the increment");
-            auto iter = uidTimeMap_.find(uid);
-            if (iter != uidTimeMap_.end()) {
-                for (uint16_t i = 0; i < uidIncrements.size(); i++) {
-                    iter->second[i] = uidIncrements[i];
-                }
-            } else {
-                uidTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, uidIncrements));
-                STATS_HILOGI(COMP_SVC, "Add cpu time for uid: %{public}d", uid);
-            }
+            UpdateUidTimeMap(uid, uidIncrements);
         }
     }
     return true;
+}
+
+void CpuTimeReader::UpdateUidTimeMap(int32_t uid, const std::vector<int64_t>& uidIncrements)
+{
+    auto iter = uidTimeMap_.find(uid);
+    if (iter != uidTimeMap_.end()) {
+        for (uint16_t i = 0; i < uidIncrements.size(); i++) {
+            iter->second[i] = uidIncrements[i];
+        }
+    } else {
+        uidTimeMap_.insert(std::pair<int32_t, std::vector<int64_t>>(uid, uidIncrements));
+        STATS_HILOGI(COMP_SVC, "Add cpu time for uid: %{public}d", uid);
+    }
 }
 
 void CpuTimeReader::Split(std::string &origin, char delimiter, std::vector<std::string> &splited)

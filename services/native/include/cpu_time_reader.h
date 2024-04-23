@@ -47,6 +47,8 @@ private:
     bool ReadUidCpuActiveTime();
     bool ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid);
     bool ReadUidCpuClusterTime();
+    void AddIncrementsToClusterTime(std::vector<int64_t>& clusterTime,
+        const std::vector<int64_t>& increments, const std::vector<uint16_t>& clusters);
     void ReadPolicy(std::vector<uint16_t>& clusters, std::string& line);
     bool ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, std::vector<int64_t>& increments, int32_t uid,
         std::vector<uint16_t>& clusters, std::string& timeLine);
@@ -60,6 +62,7 @@ private:
         std::map<uint32_t, std::vector<int64_t>>& increments);
     void AddFreqTimeToUid(std::map<uint32_t, std::vector<int64_t>>& uidIncrements, int32_t uid);
     bool ReadUidCpuTime();
+    void UpdateUidTimeMap(int32_t uid, const std::vector<int64_t>& uidIncrements);
     bool ReadUidTimeIncrement(std::vector<int64_t>& clusterTime, std::vector<int64_t>& uidIncrements, int32_t uid,
         std::string& timeLine);
     void Split(std::string &origin, char delimiter, std::vector<std::string> &splited);
