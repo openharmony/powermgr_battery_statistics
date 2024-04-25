@@ -1,8 +1,8 @@
 # Battery Statistics<a name="EN-US_TOPIC_0000001115047353"></a>
 
--   [Introduction](#section11660541593xxxxxxx)
--   [Directory Structure](#section1947275221xxxx7)
--   [Repositories Involved](#section6315122906xxx2)
+-   [Introduction](#section11660541593)
+-   [Directory Structure](#section19472752217)
+-   [Repositories Involved](#section63151229062)
 
 ## Introduction<a name="section11660541593"></a>
 
