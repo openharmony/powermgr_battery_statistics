@@ -21,7 +21,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 IdleEntity::IdleEntity()
@@ -62,8 +61,9 @@ void IdleEntity::Calculate(int32_t uid)
 
 double IdleEntity::CalculateCpuSuspendPower()
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto cpuSuspendAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_SUSPEND);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_SUSPEND);
     auto bootOnBatteryTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_CPU_SUSPEND);
     auto cpuSuspendPowerMah = cpuSuspendAverageMa * bootOnBatteryTimeMs / StatsUtils::MS_IN_HOUR;
     cpuSuspendPowerMah_ = cpuSuspendPowerMah;
@@ -73,8 +73,9 @@ double IdleEntity::CalculateCpuSuspendPower()
 
 double IdleEntity::CalculateCpuIdlePower()
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto cpuIdleAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_IDLE);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_IDLE);
     auto upOnBatteryTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE);
     auto cpuIdlePowerMah = cpuIdleAverageMa * upOnBatteryTimeMs / StatsUtils::MS_IN_HOUR;
     cpuIdlePowerMah_ = cpuIdlePowerMah;

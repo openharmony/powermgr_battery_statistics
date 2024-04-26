@@ -32,13 +32,13 @@ using namespace OHOS;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 static void WriteBluetoothEvent(int32_t pid, int32_t uid, long time)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
     int32_t stateScanOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
@@ -80,7 +80,7 @@ static void WriteBluetoothEvent(int32_t pid, int32_t uid, long time)
 void StatsServiceBluetoothTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -100,13 +100,13 @@ void StatsServiceBluetoothTest::TearDownTestCase()
 
 void StatsServiceBluetoothTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceBluetoothTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -120,7 +120,7 @@ namespace {
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -152,7 +152,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -186,7 +186,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -218,7 +218,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -258,7 +258,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -300,7 +300,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -344,7 +344,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -376,7 +376,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -420,7 +420,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -452,7 +452,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -484,7 +484,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -519,7 +519,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -551,7 +551,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -591,7 +591,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -633,7 +633,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -677,7 +677,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -709,7 +709,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -753,7 +753,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -785,7 +785,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -818,7 +818,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
@@ -852,7 +852,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -884,7 +884,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
@@ -926,7 +926,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
@@ -969,7 +969,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -1001,7 +1001,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
@@ -1045,7 +1045,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -1077,7 +1077,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
@@ -1128,7 +1128,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -1159,7 +1159,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
@@ -1191,7 +1191,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -1221,7 +1221,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
@@ -1261,7 +1261,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -1291,7 +1291,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
@@ -1340,7 +1340,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -1377,7 +1377,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -1409,7 +1409,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -1447,7 +1447,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
@@ -1494,7 +1494,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Lev
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_038, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     int32_t uid = 10003;
 

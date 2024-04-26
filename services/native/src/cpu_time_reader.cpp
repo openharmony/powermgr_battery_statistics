@@ -30,7 +30,6 @@ static const std::string UID_CPU_ACTIVE_TIME_FILE = "/proc/uid_concurrent_active
 static const std::string UID_CPU_CLUSTER_TIME_FILE = "/proc/uid_concurrent_policy_time";
 static const std::string UID_CPU_FREQ_TIME_FILE = "/proc/uid_time_in_state";
 static const std::string UID_CPU_TIME_FILE = "/proc/uid_cputime/show_uid_stat";
-auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 } // namespace
 bool CpuTimeReader::Init()
 {
@@ -227,8 +226,9 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
         }
 
         if (uid > StatsUtils::INVALID_VALUE) {
+            auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
-                g_statsService->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
+                bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
             if (uidEntity) {
                 uidEntity->UpdateUidMap(uid);
             }
@@ -311,7 +311,8 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
         Split(line, ':', splitedLine);
         uid = stoi(splitedLine[0]);
         if (uid > StatsUtils::INVALID_VALUE) {
-            auto uidEntity = g_statsService->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
+            auto bss = BatteryStatsService::GetInstance();
+            auto uidEntity = bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
             if (uidEntity) {
                 uidEntity->UpdateUidMap(uid);
             }
@@ -370,7 +371,8 @@ bool CpuTimeReader::ProcessFreqTime(std::map<uint32_t, std::vector<int64_t>>& ma
 bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t>>& speedTime,
     std::map<uint32_t, std::vector<int64_t>>& increments, int32_t uid, std::vector<std::string>& splitedTime)
 {
-    auto parser = g_statsService->GetBatteryStatsParser();
+    auto bss = BatteryStatsService::GetInstance();
+    auto parser = bss->GetBatteryStatsParser();
     uint16_t clusterNum = parser->GetClusterNum();
     uint16_t count = 0;
     for (uint16_t i = 0; i < clusterNum; i++) {
@@ -401,7 +403,8 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
 void CpuTimeReader::DistributeFreqTime(std::map<uint32_t, std::vector<int64_t>>& uidIncrements,
     std::map<uint32_t, std::vector<int64_t>>& increments)
 {
-    auto parser = g_statsService->GetBatteryStatsParser();
+    auto bss = BatteryStatsService::GetInstance();
+    auto parser = bss->GetBatteryStatsParser();
     uint16_t clusterNum = parser->GetClusterNum();
     if (wakelockCounts_ > 0) {
         for (uint16_t i = 0; i < clusterNum; i++) {
@@ -417,7 +420,8 @@ void CpuTimeReader::DistributeFreqTime(std::map<uint32_t, std::vector<int64_t>>&
 
 void CpuTimeReader::AddFreqTimeToUid(std::map<uint32_t, std::vector<int64_t>>& uidIncrements, int32_t uid)
 {
-    auto parser = g_statsService->GetBatteryStatsParser();
+    auto bss = BatteryStatsService::GetInstance();
+    auto parser = bss->GetBatteryStatsParser();
     uint16_t clusterNum = parser->GetClusterNum();
     auto iter = freqTimeMap_.find(uid);
     if (iter != freqTimeMap_.end()) {
@@ -454,8 +458,9 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
         }
 
         if (uid > StatsUtils::INVALID_VALUE) {
+            auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
-                g_statsService->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
+                bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
             if (uidEntity) {
                 uidEntity->UpdateUidMap(uid);
             }
@@ -538,8 +543,9 @@ bool CpuTimeReader::ReadUidCpuTime()
         Split(line, ':', splitedLine);
         int32_t uid = stoi(splitedLine[0]);
         if (uid > StatsUtils::INVALID_VALUE) {
+            auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
-                g_statsService->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
+                bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
             if (uidEntity) {
                 uidEntity->UpdateUidMap(uid);
             }

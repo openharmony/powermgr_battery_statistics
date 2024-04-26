@@ -26,15 +26,16 @@
 #include "battery_stats_info.h"
 #include "battery_stats_parser.h"
 #include "battery_stats_stub.h"
-#include "delayed_stats_sp_singleton.h"
 
 namespace OHOS {
 namespace PowerMgr {
 class BatteryStatsService final : public SystemAbility, public BatteryStatsStub {
-    DECLARE_SYSTEM_ABILITY(BatteryStatsService)
-    DECLARE_DELAYED_STATS_SP_SINGLETON(BatteryStatsService);
+    DECLARE_SYSTEM_ABILITY(BatteryStatsService);
+    DISALLOW_COPY_AND_MOVE(BatteryStatsService);
 
 public:
+    BatteryStatsService();
+    virtual ~BatteryStatsService();
     virtual void OnStart() override;
     virtual void OnStop() override;
     virtual void OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId) override;
@@ -57,6 +58,8 @@ public:
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
     StatsError GetLastError() override;
+    static sptr<BatteryStatsService> GetInstance();
+    static void DestroyInstance();
 
 #ifndef STATS_SERVICE_UT_TEST
 private:
@@ -75,6 +78,8 @@ private:
     bool SubscribeCommonEvent();
     bool AddHiSysEventListener();
     void RegisterBootCompletedCallback();
+    static sptr<BatteryStatsService> instance_;
+    static std::mutex singletonMutex_;
 };
 } // namespace PowerMgr
 } // namespace OHOS

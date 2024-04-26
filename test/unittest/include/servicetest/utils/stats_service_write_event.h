@@ -25,7 +25,7 @@
 namespace OHOS {
 namespace PowerMgr {
 template<typename... Types>
-static void StatsWriteHiSysEvent(const std::shared_ptr<BatteryStatsService>& service, const std::string &domain,
+static void StatsWriteHiSysEvent(const sptr<BatteryStatsService>& service, const std::string &domain,
     const std::string &eventName, int type, Types... keyValues)
 {
     std::string eventDetail = HiSysEventOperation::CombineHiSysEvent(domain, eventName, type, keyValues...);

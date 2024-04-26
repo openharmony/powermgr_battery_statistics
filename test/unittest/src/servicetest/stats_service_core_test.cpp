@@ -24,12 +24,12 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 } // namespace
 
 void StatsServiceCoreTest::SetUpTestCase()
 {
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 }
 
@@ -40,14 +40,14 @@ void StatsServiceCoreTest::TearDownTestCase()
 
 void StatsServiceCoreTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     statsCore->Reset();
 }
 
 void StatsServiceCoreTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     statsCore->Reset();
 }
@@ -61,7 +61,7 @@ namespace {
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_001, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     EXPECT_EQ(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_INVALID));
     EXPECT_NE(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP));
@@ -89,7 +89,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_002, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     statsService->SetOnBattery(true);
     int64_t time = 100;
@@ -134,7 +134,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_004, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     int32_t uid = 1003;
 
@@ -193,7 +193,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_005, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     int32_t uid = 1003;
 
@@ -242,7 +242,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_006, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     auto cpuEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
     auto idleEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_IDLE);
@@ -271,7 +271,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_007, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     auto uidEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
     int32_t invalidUid = -1;

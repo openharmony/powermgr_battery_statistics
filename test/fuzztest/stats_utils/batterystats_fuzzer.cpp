@@ -30,7 +30,7 @@ const int32_t REWIND_READ_DATA = 0;
 
 BatteryStatsFuzzerTest::BatteryStatsFuzzerTest()
 {
-    service_ = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    service_ = BatteryStatsService::GetInstance();
     service_->OnStart();
 }
 

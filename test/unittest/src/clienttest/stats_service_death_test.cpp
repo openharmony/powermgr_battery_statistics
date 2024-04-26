@@ -71,7 +71,7 @@ HWTEST_F (StatsServiceDeathTest, StatsParserTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDeathTest, StatsServiceTest_001, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->OnStart();
     bool ret = statsService->IsServiceReady();
     EXPECT_FALSE(ret);

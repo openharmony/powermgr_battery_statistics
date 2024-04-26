@@ -34,7 +34,7 @@ namespace {
 void BatteryStatsSubscriber::OnReceiveEvent(const OHOS::EventFwk::CommonEventData &data)
 {
     std::string action = data.GetWant().GetAction();
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     if (statsService == nullptr) {
         STATS_HILOGE(COMP_SVC, "Battery stats service is null");
         return;

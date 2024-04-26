@@ -38,7 +38,7 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 const int32_t BATTERY_LEVEL_FULL = 100;
 } // namespace
@@ -46,7 +46,7 @@ const int32_t BATTERY_LEVEL_FULL = 100;
 void StatsServiceSubscriberTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -73,17 +73,17 @@ void StatsServiceSubscriberTest::TearDownTestCase()
 
 void StatsServiceSubscriberTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceSubscriberTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
-void StatsServiceSubscriberTest::PublishChangedEvent(const shared_ptr<BatteryStatsService>& service,
+void StatsServiceSubscriberTest::PublishChangedEvent(const sptr<BatteryStatsService>& service,
     const std::string& action)
 {
     Want want;
@@ -107,7 +107,7 @@ namespace {
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     BatteryInfoReset();
 
@@ -139,7 +139,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_001, TestSize.L
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
     BatteryInfoReset();
@@ -183,7 +183,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_002, TestSize.L
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     BatteryInfoReset();
 
@@ -218,7 +218,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_003, TestSize.L
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
     BatteryInfoReset();
@@ -276,7 +276,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_004, TestSize.L
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     BatteryInfoReset();
 
@@ -313,7 +313,7 @@ HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_005, TestSize.L
 HWTEST_F (StatsServiceSubscriberTest, StatsServiceSubscriberTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);

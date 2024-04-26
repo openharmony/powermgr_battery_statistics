@@ -39,7 +39,7 @@ void BatteryStatsDetector::HandleStatsChangedEvent(StatsUtils::StatsData data)
         data.traffic,
         data.deviceId.c_str());
 
-    auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto bss = BatteryStatsService::GetInstance();
     if (bss == nullptr) {
         STATS_HILOGE(COMP_SVC, "Get battery stats service failed");
         return;
@@ -232,7 +232,7 @@ void BatteryStatsDetector::HandleDistributedSchedulerInfo(StatsUtils::StatsData 
 void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
 {
     int64_t bootTimeMs = StatsHelper::GetBootTimeMs();
-    auto core = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance()->GetBatteryStatsCore();
+    auto core = BatteryStatsService::GetInstance()->GetBatteryStatsCore();
     std::string debugInfo;
     switch (data.type) {
         case StatsUtils::STATS_TYPE_THERMAL:

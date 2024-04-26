@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 SensorEntity::SensorEntity()
@@ -65,8 +64,9 @@ int64_t SensorEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
 
 double SensorEntity::CalculateGravity(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto gravityOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     auto gravityOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON);
     auto gravityOnPowerMah = gravityOnAverageMa * gravityOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto gravityIter = gravityPowerMap_.find(uid);
@@ -84,8 +84,9 @@ double SensorEntity::CalculateGravity(int32_t uid)
 
 double SensorEntity::CalculateProximity(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto proximityOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     auto proximityOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON);
     auto proximityOnPowerMah = proximityOnAverageMa * proximityOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto proximityIter = proximityPowerMap_.find(uid);

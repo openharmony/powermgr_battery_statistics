@@ -34,7 +34,7 @@ bool BatteryStatsDumper::Dump(const std::vector<std::string>& args, std::string&
         ShowUsage(result);
         return true;
     }
-    auto bss = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto bss = BatteryStatsService::GetInstance();
     if (bss == nullptr) {
         return true;
     }

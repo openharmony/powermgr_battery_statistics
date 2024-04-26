@@ -34,7 +34,7 @@ using namespace OHOS;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 static std::vector<std::string> dumpArgs;
 } // namespace
@@ -42,7 +42,7 @@ static std::vector<std::string> dumpArgs;
 void StatsServiceDumpTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
     g_statsService->isBootCompleted_ = true;
 
@@ -64,13 +64,13 @@ void StatsServiceDumpTest::TearDownTestCase()
 
 void StatsServiceDumpTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceDumpTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -84,7 +84,7 @@ namespace {
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t batteryLevel = 60;
@@ -124,7 +124,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10001;
@@ -176,7 +176,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t ratio = 100;
@@ -215,7 +215,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t pid = 3457;
@@ -265,7 +265,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     std::string partName = "Battery";
@@ -308,7 +308,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     std::string callType = "DUBAI_TAG_DIST_SCHED_TO_REMOTE";
@@ -359,7 +359,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     std::string actionName = "thermallevel";
@@ -409,7 +409,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t type = 100;
@@ -456,7 +456,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     std::vector<std::string> dumpArgsNone {};

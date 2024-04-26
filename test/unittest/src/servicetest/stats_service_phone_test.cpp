@@ -33,14 +33,14 @@ using namespace OHOS::Telephony;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 void StatsServicePhoneTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -60,13 +60,13 @@ void StatsServicePhoneTest::TearDownTestCase()
 
 void StatsServicePhoneTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServicePhoneTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -80,7 +80,7 @@ namespace {
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -111,7 +111,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_001, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -145,7 +145,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_002, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -175,7 +175,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_003, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -214,7 +214,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_004, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -255,7 +255,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_005, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -298,7 +298,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_006, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 10;
@@ -328,7 +328,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_007, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -371,7 +371,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_008, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -402,7 +402,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_009, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -435,7 +435,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_010, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -465,7 +465,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_011, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -504,7 +504,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_012, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_013, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -545,7 +545,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_013, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_014, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 5;
@@ -575,7 +575,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_014, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_015, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -620,7 +620,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_015, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_016, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -674,7 +674,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_016, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_017, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -734,7 +734,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_017, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_018, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -776,7 +776,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_018, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_019, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -813,7 +813,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_019, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -867,7 +867,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_021, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
@@ -897,7 +897,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_021, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_022, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -927,7 +927,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_022, TestSize.Level0)
 HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_023, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     StatsWriteHiSysEvent(statsService,

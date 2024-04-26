@@ -33,13 +33,13 @@ using namespace OHOS::PowerMgr;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 static void SetLastBrightness(int32_t lastBrightness)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
 
@@ -62,7 +62,7 @@ static void SetLastBrightness(int32_t lastBrightness)
 void StatsServiceDisplayTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -85,13 +85,13 @@ void StatsServiceDisplayTest::TearDownTestCase()
 
 void StatsServiceDisplayTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceDisplayTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -105,7 +105,7 @@ namespace {
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -140,7 +140,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -176,7 +176,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -215,7 +215,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -249,7 +249,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -294,7 +294,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -332,7 +332,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -378,7 +378,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t brightness = 100;
@@ -404,7 +404,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -447,7 +447,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -492,7 +492,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
@@ -538,7 +538,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::DISPLAY,

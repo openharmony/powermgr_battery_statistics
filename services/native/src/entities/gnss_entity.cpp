@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 GnssEntity::GnssEntity()
@@ -50,7 +49,8 @@ int64_t GnssEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsType
 
 void GnssEntity::Calculate(int32_t uid)
 {
-    auto gnssOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
+    auto bss = BatteryStatsService::GetInstance();
+    auto gnssOnAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     auto gnssOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_GNSS_ON);
     auto gnssOnPowerMah = gnssOnAverageMa * gnssOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = gnssPowerMap_.find(uid);
