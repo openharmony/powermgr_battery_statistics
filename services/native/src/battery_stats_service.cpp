@@ -40,9 +40,11 @@
 
 namespace OHOS {
 namespace PowerMgr {
+sptr<BatteryStatsService> BatteryStatsService::instance_ = nullptr;
+std::mutex BatteryStatsService::singletonMutex_;
 namespace {
-auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
-const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.get());
+auto g_statsService = BatteryStatsService::GetInstance();
+const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_statsService.GetRefPtr());
 SysParam::BootCompletedCallback g_bootCompletedCallback;
 }
 std::atomic_bool BatteryStatsService::isBootCompleted_ = false;
@@ -50,6 +52,17 @@ std::atomic_bool BatteryStatsService::isBootCompleted_ = false;
 BatteryStatsService::BatteryStatsService() : SystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID, true) {}
 
 BatteryStatsService::~BatteryStatsService() {}
+
+sptr<BatteryStatsService> BatteryStatsService::GetInstance()
+{
+    if (instance_ == nullptr) {
+        std::lock_guard<std::mutex> lock(singletonMutex_);
+        if (instance_ == nullptr) {
+            instance_ = new BatteryStatsService();
+        }
+    }
+    return instance_;
+}
 
 void BatteryStatsService::OnStart()
 {
@@ -63,7 +76,7 @@ void BatteryStatsService::OnStart()
     }
     AddSystemAbilityListener(DFX_SYS_EVENT_SERVICE_ABILITY_ID);
     AddSystemAbilityListener(COMMON_EVENT_SERVICE_ID);
-    if (!Publish(this)) {
+    if (!Publish(BatteryStatsService::GetInstance())) {
         STATS_HILOGE(COMP_SVC, "OnStart register to system ability manager failed");
         return;
     }
@@ -334,6 +347,15 @@ StatsError BatteryStatsService::GetLastError()
     StatsError tmpError = lastError_;
     lastError_ = StatsError::ERR_OK;
     return tmpError;
+}
+
+void BatteryStatsService::DestroyInstance()
+{
+    std::lock_guard<std::mutex> lock(singletonMutex_);
+    if (instance_) {
+        instance_.clear();
+        instance_ = nullptr;
+    }
 }
 } // namespace PowerMgr
 } // namespace OHOS

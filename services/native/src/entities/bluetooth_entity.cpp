@@ -30,7 +30,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 BluetoothEntity::BluetoothEntity()
@@ -51,16 +50,17 @@ void BluetoothEntity::Calculate(int32_t uid)
 
 void BluetoothEntity::CalculateBtPower()
 {
+    auto bss = BatteryStatsService::GetInstance();
     // Calculate Bluetooth BR on power
     auto bluetoothBrOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     auto bluetoothBrOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON);
     auto bluetoothBrOnPowerMah = bluetoothBrOnAverageMa * bluetoothBrOnTimeMs / StatsUtils::MS_IN_HOUR;
     bluetoothBrPowerMah_ += bluetoothBrOnPowerMah;
 
     // Calculate Bluetooth BLE on power
     auto bluetoothBleOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     auto bluetoothBleOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON);
     auto bluetoothBleOnPowerMah = bluetoothBleOnAverageMa * bluetoothBleOnTimeMs / StatsUtils::MS_IN_HOUR;
     bluetoothBlePowerMah_ += bluetoothBleOnPowerMah;
@@ -91,16 +91,17 @@ void BluetoothEntity::CalculateBtPower()
 
 void BluetoothEntity::CalculateBtPowerForApp(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     // Calculate Bluetooth Br scan power consumption
     auto bluetoothBrScanAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     auto bluetoothBrScanTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN);
     auto bluetoothBrScanPowerMah = bluetoothBrScanTimeMs * bluetoothBrScanAverageMa / StatsUtils::MS_IN_HOUR;
     UpdateAppBluetoothBlePower(POWER_TYPE_BR, uid, bluetoothBrScanPowerMah);
 
     // Calculate Bluetooth Ble scan power consumption
     auto bluetoothBleScanAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
     auto bluetoothBleScanTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN);
     auto bluetoothBleScanPowerMah = bluetoothBleScanTimeMs * bluetoothBleScanAverageMa / StatsUtils::MS_IN_HOUR;
     UpdateAppBluetoothBlePower(POWER_TYPE_BLE, uid, bluetoothBleScanPowerMah);
@@ -430,7 +431,8 @@ double BluetoothEntity::GetBluetoothUidPower()
     int32_t bluetoothUid = bmgr->GetUidByBundleName(bundleName, AppExecFwk::Constants::DEFAULT_USERID);
     IPCSkeleton::SetCallingIdentity(identity);
 
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     auto uidEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
     if (uidEntity != nullptr) {
         bluetoothUidPower = uidEntity->GetEntityPowerMah(bluetoothUid);

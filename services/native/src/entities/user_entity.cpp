@@ -24,7 +24,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 UserEntity::UserEntity()

@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 FlashlightEntity::FlashlightEntity()
@@ -50,8 +49,9 @@ int64_t FlashlightEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType sta
 
 void FlashlightEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto flashlightOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     auto flashlightOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON);
     auto flashlightOnPowerMah = flashlightOnAverageMa * flashlightOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = flashlightPowerMap_.find(uid);

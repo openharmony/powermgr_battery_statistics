@@ -31,14 +31,14 @@ using namespace OHOS::PowerMgr;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 void StatsServiceLocationTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -58,13 +58,13 @@ void StatsServiceLocationTest::TearDownTestCase()
 
 void StatsServiceLocationTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceLocationTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -78,7 +78,7 @@ namespace {
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -111,7 +111,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -145,7 +145,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -177,7 +177,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -219,7 +219,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -251,7 +251,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -295,7 +295,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     std::string stateOn = "start";
@@ -327,7 +327,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -378,7 +378,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -412,7 +412,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -450,7 +450,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
@@ -491,7 +491,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;

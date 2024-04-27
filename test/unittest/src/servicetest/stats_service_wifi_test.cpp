@@ -32,14 +32,14 @@ using namespace OHOS;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 void StatsServiceWifiTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -59,13 +59,13 @@ void StatsServiceWifiTest::TearDownTestCase()
 
 void StatsServiceWifiTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceWifiTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -79,7 +79,7 @@ namespace {
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -109,7 +109,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -140,7 +140,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -170,7 +170,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -208,7 +208,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -248,7 +248,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 3;
@@ -278,7 +278,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -320,7 +320,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -350,7 +350,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int16_t count = 10;
@@ -377,7 +377,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
@@ -405,7 +405,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double fullPercent = 1;
@@ -431,7 +431,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
@@ -465,7 +465,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int16_t count = 10;
@@ -488,7 +488,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -530,7 +530,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -568,7 +568,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
@@ -604,7 +604,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
@@ -640,7 +640,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -685,7 +685,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     StatsWriteHiSysEvent(statsService,

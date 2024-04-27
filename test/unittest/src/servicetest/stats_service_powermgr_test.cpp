@@ -34,14 +34,14 @@ using namespace OHOS;
 using namespace std;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 void StatsServicePowerMgrTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -61,13 +61,13 @@ void StatsServicePowerMgrTest::TearDownTestCase()
 
 void StatsServicePowerMgrTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServicePowerMgrTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -81,7 +81,7 @@ namespace {
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -113,7 +113,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
@@ -147,7 +147,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -178,7 +178,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
@@ -230,7 +230,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t stateOn = 1;
@@ -262,7 +262,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
@@ -296,7 +296,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -327,7 +327,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
@@ -379,7 +379,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
@@ -433,7 +433,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level
 HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double wakelockAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
@@ -476,7 +476,7 @@ HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Leve
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_011, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;

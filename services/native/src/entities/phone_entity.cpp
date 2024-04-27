@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 PhoneEntity::PhoneEntity()
@@ -97,11 +96,12 @@ int64_t PhoneEntity::GetTotalTimeMs(StatsUtils::StatsType statsType)
 
 void PhoneEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     // Calculate phone on power
     double phoneOnPowerMah = StatsUtils::DEFAULT_VALUE;
     for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         auto phoneOnAverageMa =
-            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
+            bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, i);
         auto phoneOnLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, i);
         double phoneOnLevelPowerMah = phoneOnAverageMa * phoneOnLevelTimeMs / StatsUtils::MS_IN_HOUR;
         phoneOnPowerMah += phoneOnLevelPowerMah;
@@ -111,7 +111,7 @@ void PhoneEntity::Calculate(int32_t uid)
     double phoneDataPowerMah = StatsUtils::DEFAULT_VALUE;
     for (int32_t i = 0; i < StatsUtils::RADIO_SIGNAL_BIN; i++) {
         auto phoneDataAverageMa =
-            g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, i);
+            bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, i);
         auto phoneDataLevelTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, i);
         double phoneDataLevelPowerMah = phoneDataAverageMa * phoneDataLevelTimeMs / StatsUtils::MS_IN_HOUR;
         phoneDataPowerMah += phoneDataLevelPowerMah;

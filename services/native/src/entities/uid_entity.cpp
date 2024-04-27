@@ -30,7 +30,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 UidEntity::UidEntity()
@@ -65,7 +64,8 @@ std::vector<int32_t> UidEntity::GetUids()
 double UidEntity::CalculateForConnectivity(int32_t uid)
 {
     double power = StatsUtils::DEFAULT_VALUE;
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
 
     // Calculate bluetooth power consumption
@@ -78,7 +78,8 @@ double UidEntity::CalculateForConnectivity(int32_t uid)
 double UidEntity::CalculateForCommon(int32_t uid)
 {
     double power = StatsUtils::DEFAULT_VALUE;
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
     auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
     auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
@@ -119,8 +120,9 @@ double UidEntity::CalculateForCommon(int32_t uid)
 
 void UidEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     std::lock_guard<std::mutex> lock(uidEntityMutex_);
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto core = bss->GetBatteryStatsCore();
     auto userEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_USER);
     for (auto& iter : uidPowerMap_) {
         double power = StatsUtils::DEFAULT_VALUE;
@@ -165,7 +167,8 @@ double UidEntity::GetEntityPowerMah(int32_t uidOrUserId)
 double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32_t uid)
 {
     double power = StatsUtils::DEFAULT_VALUE;
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     auto bluetoothEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
 
     if (statsType == StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN) {
@@ -179,7 +182,8 @@ double UidEntity::GetPowerForConnectivity(StatsUtils::StatsType statsType, int32
 double UidEntity::GetPowerForCommon(StatsUtils::StatsType statsType, int32_t uid)
 {
     double power = StatsUtils::DEFAULT_VALUE;
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     auto cameraEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CAMERA);
     auto flashlightEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_FLASHLIGHT);
     auto audioEntity = core->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_AUDIO);
@@ -258,8 +262,9 @@ void UidEntity::Reset()
 
 void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
 {
+    auto bss = BatteryStatsService::GetInstance();
     // Dump for bluetooth realted info
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto core = bss->GetBatteryStatsCore();
     int64_t bluetoothBrScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN);
     int64_t bluetoothBleScanTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN);
 
@@ -273,7 +278,8 @@ void UidEntity::DumpForBluetooth(int32_t uid, std::string& result)
 
 void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 {
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto bss = BatteryStatsService::GetInstance();
+    auto core = bss->GetBatteryStatsCore();
     // Dump for camera related info
     int64_t cameraTime = core->GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
 
@@ -326,8 +332,9 @@ void UidEntity::DumpForCommon(int32_t uid, std::string& result)
 
 void UidEntity::DumpInfo(std::string& result, int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     std::lock_guard<std::mutex> lock(uidEntityMutex_);
-    auto core = g_statsService->GetBatteryStatsCore();
+    auto core = bss->GetBatteryStatsCore();
     for (auto& iter : uidPowerMap_) {
         std::string bundleName = "NULL";
 #ifdef SYS_MGR_CLIENT_ENABLE

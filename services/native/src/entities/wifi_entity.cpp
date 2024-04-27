@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 WifiEntity::WifiEntity()
@@ -33,13 +32,14 @@ WifiEntity::WifiEntity()
 
 void WifiEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     // Calculate Wifi on power
-    auto wifiOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
+    auto wifiOnAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     auto wifiOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON);
     auto wifiOnPowerMah = wifiOnAverageMa * wifiOnTimeMs / StatsUtils::MS_IN_HOUR;
 
     // Calculate Wifi scan power
-    auto wifiScanAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
+    auto wifiScanAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     auto wifiScanCount = GetConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN);
     auto wifiScanPowerMah = wifiScanAverageMa * wifiScanCount;
 

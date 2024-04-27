@@ -31,14 +31,14 @@ using namespace std;
 using namespace testing::ext;
 
 namespace {
-static shared_ptr<BatteryStatsService> g_statsService = nullptr;
+static sptr<BatteryStatsService> g_statsService = nullptr;
 static std::shared_ptr<StatsServiceTestProxy> g_statsServiceProxy = nullptr;
 } // namespace
 
 void StatsServiceAlarmTest::SetUpTestCase()
 {
     ParserAveragePowerFile();
-    g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    g_statsService = BatteryStatsService::GetInstance();
     g_statsService->OnStart();
 
     if (g_statsService->listenerPtr_ == nullptr) {
@@ -58,13 +58,13 @@ void StatsServiceAlarmTest::TearDownTestCase()
 
 void StatsServiceAlarmTest::SetUp()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(true);
 }
 
 void StatsServiceAlarmTest::TearDown()
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->SetOnBattery(false);
 }
 
@@ -78,7 +78,7 @@ namespace {
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_001, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -108,7 +108,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_001, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_002, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
@@ -139,7 +139,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_002, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_003, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;
@@ -168,7 +168,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_003, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_004, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
     g_statsServiceProxy->SetOnBattery(false);
 
@@ -199,7 +199,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_004, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_005, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
@@ -237,7 +237,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_005, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_006, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
@@ -272,7 +272,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_006, TestSize.Level0)
 HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_007, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
 
     int32_t uid = 10003;

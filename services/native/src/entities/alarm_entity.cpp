@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 AlarmEntity::AlarmEntity()
@@ -47,7 +46,8 @@ int64_t AlarmEntity::GetConsumptionCount(StatsUtils::StatsType statsType, int32_
 
 void AlarmEntity::Calculate(int32_t uid)
 {
-    auto alarmOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
+    auto bss = BatteryStatsService::GetInstance();
+    auto alarmOnAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     auto alarmOnCount = GetConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid);
     auto alarmOnPowerMah = alarmOnAverageMa * alarmOnCount;
     auto iter = alarmPowerMap_.find(uid);

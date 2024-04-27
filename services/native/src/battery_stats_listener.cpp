@@ -69,7 +69,7 @@ void BatteryStatsListener::OnEvent(std::shared_ptr<HiviewDFX::HiSysEventRecord> 
 
 void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const Json::Value& root)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     auto detector = statsService->GetBatteryStatsDetector();
     StatsUtils::StatsData data;
     data.eventDebugInfo.clear();

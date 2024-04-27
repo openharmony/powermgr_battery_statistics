@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 WakelockEntity::WakelockEntity()
@@ -50,8 +49,9 @@ int64_t WakelockEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType stats
 
 void WakelockEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto wakelockOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
     auto wakelockOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD);
     auto wakelockOnPowerMah = wakelockOnAverageMa * wakelockOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = wakelockPowerMap_.find(uid);

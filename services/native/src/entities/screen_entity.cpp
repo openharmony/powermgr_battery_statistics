@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 ScreenEntity::ScreenEntity()
 {
@@ -77,13 +76,14 @@ int64_t ScreenEntity::GetBrightnessTotalTimeMs()
 
 void ScreenEntity::Calculate(int32_t uid)
 {
+    auto bss = BatteryStatsService::GetInstance();
     auto screenOnAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_ON);
     auto screenOnTimeMs = GetActiveTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON);
     double screenOnPowerMah = screenOnAverageMa * screenOnTimeMs;
 
     auto brightnessAverageMa =
-        g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
+        bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_SCREEN_BRIGHTNESS);
     double brightnessPowerMah = StatsUtils::DEFAULT_VALUE;
     for (auto& iter : screenBrightnessTimerMap_) {
         if (iter.second != nullptr) {

@@ -23,7 +23,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 AudioEntity::AudioEntity()
@@ -54,7 +53,8 @@ int64_t AudioEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTyp
 
 void AudioEntity::Calculate(int32_t uid)
 {
-    auto audioOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
+    auto bss = BatteryStatsService::GetInstance();
+    auto audioOnAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     auto audioOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON);
     auto audioOnPowerMah = audioOnAverageMa * audioOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = audioPowerMap_.find(uid);

@@ -21,7 +21,6 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-    auto g_statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
 }
 
 CameraEntity::CameraEntity()
@@ -48,7 +47,8 @@ int64_t CameraEntity::GetActiveTimeMs(int32_t uid, StatsUtils::StatsType statsTy
 
 void CameraEntity::Calculate(int32_t uid)
 {
-    auto cameraOnAverageMa = g_statsService->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
+    auto bss = BatteryStatsService::GetInstance();
+    auto cameraOnAverageMa = bss->GetBatteryStatsParser()->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     auto cameraOnTimeMs = GetActiveTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON);
     auto cameraOnPowerMah = cameraOnAverageMa * cameraOnTimeMs / StatsUtils::MS_IN_HOUR;
     auto iter = cameraPowerMap_.find(uid);

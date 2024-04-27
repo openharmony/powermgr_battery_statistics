@@ -84,7 +84,7 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_002, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->OnStart();
     statsService->OnStart();
     bool ret = statsService->IsServiceReady();
@@ -98,7 +98,7 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_003, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     statsService->OnAddSystemAbility(DFX_SYS_EVENT_SERVICE_ABILITY_ID, "");
     statsService->OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
     statsService->OnStart();
@@ -114,7 +114,7 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
 {
-    auto statsService = DelayedStatsSpSingleton<BatteryStatsService>::GetInstance();
+    auto statsService = BatteryStatsService::GetInstance();
     int32_t fd = 1;
     std::vector<std::u16string> vec;
     statsService->isBootCompleted_ = true;
