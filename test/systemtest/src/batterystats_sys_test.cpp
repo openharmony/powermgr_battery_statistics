@@ -212,6 +212,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED,
         HiSysEvent::EventType::STATISTIC, "LEVEL", batteryLevel, "CHARGER", batteryChargerType);
+    usleep(POWER_CONSUMPTION_DURATION_US);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Battery level = ")
@@ -240,6 +241,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
 
     HiSysEventWrite(HiSysEvent::Domain::THERMAL, StatsHiSysEvent::POWER_TEMPERATURE,
         HiSysEvent::EventType::STATISTIC, "NAME", partName, "TEMPERATURE", temperature);
+    usleep(POWER_CONSUMPTION_DURATION_US);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("Additional debug info: ")
@@ -272,6 +274,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
     HiSysEventWrite(HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "TYPE", type,
         "INTERVAL", interval, "STATE", state);
+    usleep(POWER_CONSUMPTION_DURATION_US);
 
     std::string expectedDebugInfo;
     expectedDebugInfo.append("UID = ")
