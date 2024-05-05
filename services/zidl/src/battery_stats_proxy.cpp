@@ -55,7 +55,7 @@ BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
         infoList.emplace_back(info);
     }
     int32_t error;
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, infoList);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Int32, error, infoList);
     lastError_ = static_cast<StatsError>(error);
     return infoList;
 }
@@ -76,8 +76,9 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& stat
     }
 
     uint64_t time = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, data, Int32, static_cast<int32_t>(statsType),
+        StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETTIME),
@@ -86,7 +87,7 @@ uint64_t BatteryStatsProxy::GetTotalTimeSecond(const StatsUtils::StatsType& stat
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
     return time;
 }
 
@@ -106,8 +107,9 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& stats
     }
 
     uint64_t count = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, data, Int32, static_cast<int32_t>(statsType),
+        StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = remote->SendRequest(
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETDATA),
@@ -116,7 +118,7 @@ uint64_t BatteryStatsProxy::GetTotalDataBytes(const StatsUtils::StatsType& stats
         STATS_HILOGE(COMP_FWK, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
     return count;
 }
 
@@ -147,7 +149,7 @@ double BatteryStatsProxy::GetAppStatsMah(const int32_t& uid)
     double appStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     int32_t error;
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, appStatsMah);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Int32, error, appStatsMah);
     lastError_ = static_cast<StatsError>(error);
     return appStatsMah;
 }
@@ -204,7 +206,7 @@ double BatteryStatsProxy::GetAppStatsPercent(const int32_t& uid)
     double appStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     int32_t error;
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, appStatsPercent);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Int32, error, appStatsPercent);
     lastError_ = static_cast<StatsError>(error);
     return appStatsPercent;
 }
@@ -236,7 +238,7 @@ double BatteryStatsProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTyp
     double partStatsMah = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     int32_t error;
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, partStatsMah);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Int32, error, partStatsMah);
     lastError_ = static_cast<StatsError>(error);
     return partStatsMah;
 }
@@ -268,7 +270,7 @@ double BatteryStatsProxy::GetPartStatsPercent(const BatteryStatsInfo::Consumptio
     double partStatsPercent = reply.ReadDouble();
     STATS_HILOGD(COMP_FWK, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     int32_t error;
-    STATS_READ_PARCEL_WITH_RET(COMP_FWK, reply, Int32, error, partStatsPercent);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(COMP_FWK, reply, Int32, error, partStatsPercent);
     lastError_ = static_cast<StatsError>(error);
     return partStatsPercent;
 }
