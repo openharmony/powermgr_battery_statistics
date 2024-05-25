@@ -30,7 +30,6 @@
                 "ability_runtime",
                 "battery_manager",
                 "bluetooth",
-                "bundle_framework",
                 "call_manager",
                 "common_event_service",
                 "config_policy",
@@ -47,9 +46,6 @@
                 "safwk",
                 "samgr",
                 "wifi"
-            ],
-            "third_party": [
-                "jsoncpp"
             ]
         },
         "build": {

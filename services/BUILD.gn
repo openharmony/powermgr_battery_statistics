@@ -72,7 +72,6 @@ ohos_shared_library("batterystats_service") {
   external_deps += [
     "ability_base:want",
     "battery_manager:batterysrv_client",
-    "bundle_framework:appexecfwk_core",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
