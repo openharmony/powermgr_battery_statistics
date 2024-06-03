@@ -78,8 +78,9 @@ uint64_t StatsServiceTestProxy::GetTotalTimeSecond(const StatsUtils::StatsType& 
     }
 
     uint64_t time = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType),
+        StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = stub_->OnRemoteRequest(
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETTIME),
@@ -88,7 +89,7 @@ uint64_t StatsServiceTestProxy::GetTotalTimeSecond(const StatsUtils::StatsType& 
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(LABEL_TEST, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(LABEL_TEST, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
     return time;
 }
 
@@ -106,8 +107,9 @@ uint64_t StatsServiceTestProxy::GetTotalDataBytes(const StatsUtils::StatsType& s
     }
 
     uint64_t count = StatsUtils::DEFAULT_VALUE;
-    STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType), StatsUtils::DEFAULT_VALUE);
-    STATS_WRITE_PARCEL_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType),
+        StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
 
     int ret = stub_->OnRemoteRequest(
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETDATA),
@@ -116,7 +118,7 @@ uint64_t StatsServiceTestProxy::GetTotalDataBytes(const StatsUtils::StatsType& s
         STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
     }
 
-    STATS_READ_PARCEL_WITH_RET(LABEL_TEST, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
+    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(LABEL_TEST, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
     return count;
 }
 
