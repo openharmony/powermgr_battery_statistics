@@ -121,7 +121,7 @@ int32_t BatteryStatsStub::GetBatteryStatsStub(MessageParcel& reply)
         templateVal->Marshalling(reply);
     }
     int32_t error = static_cast<int32_t>(GetLastError());
-    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -163,7 +163,7 @@ int32_t BatteryStatsStub::GetAppStatsMahStub(MessageParcel &data, MessageParcel&
         return false;
     }
     int32_t error = static_cast<int32_t>(GetLastError());
-    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -177,7 +177,7 @@ int32_t BatteryStatsStub::GetAppStatsPercentStub(MessageParcel &data, MessagePar
         return false;
     }
     int32_t error = static_cast<int32_t>(GetLastError());
-    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -192,7 +192,7 @@ int32_t BatteryStatsStub::GetPartStatsMahStub(MessageParcel &data, MessageParcel
         return false;
     }
     int32_t error = static_cast<int32_t>(GetLastError());
-    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
@@ -207,7 +207,7 @@ int32_t BatteryStatsStub::GetPartStatsPercentStub(MessageParcel &data, MessagePa
         return false;
     }
     int32_t error = static_cast<int32_t>(GetLastError());
-    STATS_WRITE_PARCEL_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_SVC, reply, Int32, error, E_STATS_WRITE_PARCEL_ERROR);
     return ERR_OK;
 }
 
