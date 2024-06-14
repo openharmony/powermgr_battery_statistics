@@ -86,9 +86,9 @@
                 }
             ],
             "test": [
-                "//base/powermgr/battery_statistics/test/:unittest",
-                "//base/powermgr/battery_statistics/test/:fuzztest",
-                "//base/powermgr/battery_statistics/test/:systemtest"
+                "//base/powermgr/battery_statistics/test:unittest",
+                "//base/powermgr/battery_statistics/test:fuzztest",
+                "//base/powermgr/battery_statistics/test:systemtest"
             ]
         }
     }
