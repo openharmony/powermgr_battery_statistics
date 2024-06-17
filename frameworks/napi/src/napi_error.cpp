@@ -21,7 +21,7 @@
 namespace OHOS {
 namespace PowerMgr {
 std::map<StatsError, std::string> NapiError::errorTable_ = {
-    {StatsError::ERR_CONNECTION_FAIL,   "Connecting to the service failed."},
+    {StatsError::ERR_CONNECTION_FAIL,   "Failed to connect to the service."},
     {StatsError::ERR_PERMISSION_DENIED, "Permission is denied"             },
     {StatsError::ERR_SYSTEM_API_DENIED, "System permission is denied"      },
     {StatsError::ERR_PARAM_INVALID,     "Invalid input parameter."         }
