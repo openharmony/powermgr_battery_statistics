@@ -327,7 +327,7 @@ void BatteryStatsCore::UpdateScreenStats(StatsUtils::StatsType statsType, StatsU
         UpdateScreenTimer(state);
     } else if (statsType == StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS) {
         if (!isScreenOn_) {
-            STATS_HILOGW(COMP_SVC, "Screen is off, return");
+            STATS_HILOGD(COMP_SVC, "Screen is off, return");
             return;
         }
         UpdateBrightnessTimer(state, level);
