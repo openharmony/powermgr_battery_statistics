@@ -43,6 +43,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
     if (descriptor != remoteDescriptor) {
         STATS_HILOGE(COMP_SVC, "Remote request failed, descriptor is not matched");
+        HiviewDFX::XCollie::GetInstance().CancelTimer(id);
         return E_STATS_GET_SERVICE_FAILED;
     }
     int ret = ChooseCodeStub(code, data, reply, option);
