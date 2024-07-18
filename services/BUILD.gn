@@ -84,7 +84,7 @@ ohos_shared_library("batterystats_service") {
     "os_account:libaccountkits",
     "power_manager:power_sysparam",
     "safwk:system_ability_fwk",
-    "samgr:samgr_proxy"
+    "samgr:samgr_proxy",
   ]
 
   if (has_batterystats_bluetooth_part) {
