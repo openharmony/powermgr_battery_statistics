@@ -75,6 +75,7 @@ ohos_shared_library("batterystats_service") {
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
+    "eventhandler:libeventhandler",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
@@ -83,6 +84,7 @@ ohos_shared_library("batterystats_service") {
     "os_account:libaccountkits",
     "power_manager:power_sysparam",
     "safwk:system_ability_fwk",
+    "samgr:samgr_proxy"
   ]
 
   if (has_batterystats_bluetooth_part) {
