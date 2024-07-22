@@ -43,7 +43,6 @@ ohos_shared_library("batterystats_client") {
     "ipc:ipc_core",
     "samgr:samgr_proxy",
   ]
-  innerapi_tags = [ "platformsdk" ]
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
