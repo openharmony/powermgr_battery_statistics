@@ -163,6 +163,7 @@ void BatteryStatsCore::ComputePower()
 
 BatteryStatsInfoList BatteryStatsCore::GetBatteryStats()
 {
+    std::lock_guard lock(mutex_);
     return BatteryStatsEntity::GetStatsInfoList();
 }
 
@@ -708,7 +709,6 @@ int64_t BatteryStatsCore::GetTotalConsumptionCount(StatsUtils::StatsType statsTy
 
 double BatteryStatsCore::GetAppStatsMah(const int32_t& uid)
 {
-    std::lock_guard lock(mutex_);
     double appStatsMah = StatsUtils::DEFAULT_VALUE;
     auto statsInfoList = GetBatteryStats();
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
