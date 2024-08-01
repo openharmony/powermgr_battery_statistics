@@ -152,7 +152,6 @@ bool BatteryStatsService::SubscribeCommonEvent()
     bool result = false;
     MatchingSkills matchingSkills;
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_SHUTDOWN);
-    matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_BOOT_COMPLETED);
     matchingSkills.AddEvent(CommonEventSupport::COMMON_EVENT_BATTERY_CHANGED);
     CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscribeInfo.SetThreadMode(CommonEventSubscribeInfo::ThreadMode::COMMON);
