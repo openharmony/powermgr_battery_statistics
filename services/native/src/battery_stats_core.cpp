@@ -491,13 +491,17 @@ void BatteryStatsCore::UpdateScreenTimer(StatsUtils::StatsState state)
             lastBrightnessLevel_);
     }
     if (state == StatsUtils::STATS_STATE_ACTIVATED) {
-        screenOnTimer->StartRunning();
+        if (screenOnTimer != nullptr) {
+            screenOnTimer->StartRunning();
+        }
         if (brightnessTimer != nullptr) {
             brightnessTimer->StartRunning();
         }
         isScreenOn_ = true;
     } else if (state == StatsUtils::STATS_STATE_DEACTIVATED) {
-        screenOnTimer->StopRunning();
+        if (screenOnTimer != nullptr) {
+            screenOnTimer->StopRunning();
+        }
         if (brightnessTimer != nullptr) {
             brightnessTimer->StopRunning();
         }
@@ -516,7 +520,9 @@ void BatteryStatsCore::UpdateBrightnessTimer(StatsUtils::StatsState state, int16
         (level > StatsUtils::INVALID_VALUE && level == lastBrightnessLevel_)) {
         auto brightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
             level);
-        brightnessTimer->StartRunning();
+        if (brightnessTimer != nullptr) {
+            brightnessTimer->StartRunning();
+        }
     } else if (level != lastBrightnessLevel_) {
         auto oldBrightnessTimer = screenEntity_->GetOrCreateTimer(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS,
             lastBrightnessLevel_);
