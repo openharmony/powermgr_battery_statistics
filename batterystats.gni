@@ -45,6 +45,13 @@ if (!defined(global_parts_info) ||
   has_batterystats_call_manager_part = false
 }
 
+if (!defined(global_parts_info) ||
+    defined(global_parts_info.customization_config_policy)) {
+  has_batterystats_config_policy_part = true
+} else {
+  has_batterystats_config_policy_part = false
+}
+
 ability_runtime_path = "//foundation/ability/ability_runtime"
 ability_runtime_services_path = "${ability_runtime_path}/services"
 ability_runtime_kits_path = "${ability_runtime_path}/frameworks/kits"
