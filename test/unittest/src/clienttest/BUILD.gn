@@ -47,6 +47,7 @@ deps_ex = [
   "hisysevent:libhisyseventmanager",
   "hilog:libhilog",
   "ipc:ipc_core",
+  "jsoncpp:jsoncpp",
   "power_manager:powermgr_client",
   "safwk:system_ability_fwk",
   "samgr:samgr_proxy",
