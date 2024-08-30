@@ -55,6 +55,7 @@ deps_ex = [
 if (has_batterystats_call_manager_part) {
   deps_ex += [ "call_manager:tel_call_manager_api" ]
 }
+
 ############################service_alarm_test#############################
 ohos_unittest("stats_service_alarm_test") {
   module_out_path = module_output_path
