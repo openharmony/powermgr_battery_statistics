@@ -40,7 +40,6 @@ deps_ex = [
   "ability_base:base",
   "ability_base:want",
   "battery_manager:batterysrv_client",
-  "call_manager:tel_call_manager_api",
   "common_event_service:cesfwk_innerkits",
   "config_policy:configpolicy_util",
   "c_utils:utils",
@@ -53,6 +52,9 @@ deps_ex = [
   "safwk:system_ability_fwk",
   "samgr:samgr_proxy",
 ]
+if (has_batterystats_call_manager_part) {
+  deps_ex += [ "call_manager:tel_call_manager_api" ]
+}
 
 ############################service_alarm_test#############################
 ohos_unittest("stats_service_alarm_test") {
@@ -71,7 +73,7 @@ ohos_unittest("stats_service_alarm_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -101,7 +103,7 @@ ohos_unittest("stats_service_audio_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -131,7 +133,7 @@ ohos_unittest("stats_service_bluetooth_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -162,7 +164,7 @@ ohos_unittest("stats_service_camera_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -192,7 +194,7 @@ ohos_unittest("stats_service_display_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -222,7 +224,7 @@ ohos_unittest("stats_service_dump_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -252,7 +254,7 @@ ohos_unittest("stats_service_location_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -282,7 +284,7 @@ ohos_unittest("stats_service_phone_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -312,7 +314,7 @@ ohos_unittest("stats_service_powermgr_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -342,7 +344,7 @@ ohos_unittest("stats_service_wifi_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -373,7 +375,7 @@ ohos_unittest("stats_service_subscriber_test") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "STATS_SERVICE_UT_TEST" ]
+  defines += [ "STATS_SERVICE_UT_TEST" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -447,7 +449,7 @@ ohos_unittest("stats_service_test_mock_parcel") {
     "${batterystats_utils_path}:coverage_flags",
   ]
 
-  defines = [ "MESSAGE_PARCEL_WRITE_TOKEN_NORMAL" ]
+  defines += [ "MESSAGE_PARCEL_WRITE_TOKEN_NORMAL" ]
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
@@ -465,17 +467,25 @@ group("unittest") {
   deps = [
     ":stats_service_alarm_test",
     ":stats_service_audio_test",
-    ":stats_service_bluetooth_test",
     ":stats_service_camera_test",
     ":stats_service_core_test",
     ":stats_service_display_test",
     ":stats_service_dump_test",
     ":stats_service_location_test",
-    ":stats_service_phone_test",
     ":stats_service_powermgr_test",
     ":stats_service_stub_test",
     ":stats_service_subscriber_test",
     ":stats_service_test_mock_parcel",
-    ":stats_service_wifi_test",
   ]
+  if (has_batterystats_wifi_part) {
+    deps += [ ":stats_service_wifi_test" ]
+  }
+
+  if (has_batterystats_call_manager_part) {
+    deps += [ ":stats_service_phone_test" ]
+  }
+
+  if (has_batterystats_bluetooth_part) {
+    deps += [ ":stats_service_bluetooth_test" ]
+  }
 }

@@ -19,9 +19,12 @@
 #include <csignal>
 #include <iostream>
 #include <unistd.h>
-
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
 #include <bluetooth_def.h>
+#endif
+#ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
 #include <call_manager_inner_type.h>
+#endif
 #include <display_power_info.h>
 #include <hisysevent.h>
 #include <if_system_ability_manager.h>
@@ -30,8 +33,9 @@
 #include <running_lock_info.h>
 #include <string_ex.h>
 #include <system_ability_definition.h>
+#ifdef HAS_BATTERYSTATS_WIFI_PART
 #include "wifi_msg.h"
-
+#endif
 #include "battery_stats_client.h"
 #include "battery_stats_parser.h"
 #include "stats_common.h"
@@ -42,7 +46,9 @@ using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::HiviewDFX;
 using namespace OHOS::PowerMgr;
+#ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
 using namespace OHOS::Telephony;
+#endif
 
 namespace {
 constexpr int64_t US_PER_HOUR = 3600000000;
@@ -319,7 +325,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
-
+#ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
@@ -337,6 +343,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+#endif
 }
 
 /**
@@ -349,7 +356,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
-
+#ifdef HAS_BATTERYSTATS_WIFI_PART
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -365,6 +372,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+#endif
 }
 
 /**
@@ -377,7 +385,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
 {
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
-
+#ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
     int16_t level = 0;
@@ -395,6 +403,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+#endif
 }
 
 /**
