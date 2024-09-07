@@ -22,7 +22,9 @@
 #include "string_ex.h"
 
 #include "stats_utils.h"
+#ifdef HAS_BATTERYSTATS_CONFIG_POLICY_PART
 #include "config_policy_utils.h"
+#endif
 
 namespace OHOS {
 namespace PowerMgr {
@@ -33,6 +35,7 @@ static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/profile/power_
 } // namespace
 bool BatteryStatsParser::Init()
 {
+#ifdef HAS_BATTERYSTATS_CONFIG_POLICY_PART
     char buf[MAX_PATH_LEN];
     char* path = GetOneCfgFile(POWER_AVERAGE_FILE.c_str(), buf, MAX_PATH_LEN);
     if (path != nullptr && *path != '\0') {
@@ -41,6 +44,7 @@ bool BatteryStatsParser::Init()
         }
         return false;
     }
+#endif
     if (!LoadAveragePowerFromFile(VENDOR_POWER_AVERAGE_FILE)) {
         STATS_HILOGE(COMP_SVC, "Failed to load vendor average power file");
         if (!LoadAveragePowerFromFile(SYSTEM_POWER_AVERAGE_FILE)) {
