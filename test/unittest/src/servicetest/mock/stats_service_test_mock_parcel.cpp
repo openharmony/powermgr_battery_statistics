@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_test_mock_parcel.h"
+#include "stats_log.h"
 
 #include "battery_stats_service.h"
 #include "stats_service_test_proxy.h"
@@ -53,6 +54,7 @@ namespace {
  */
 HWTEST_F (StatsServiceTestMockParcel, StatsServiceTestMockParcel_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceTestMockParcel_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     EXPECT_TRUE(g_statsServiceProxy->Reset());
     EXPECT_TRUE(g_statsServiceProxy->SetOnBattery(true));
@@ -70,5 +72,6 @@ HWTEST_F (StatsServiceTestMockParcel, StatsServiceTestMockParcel_001, TestSize.L
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size()));
+    STATS_HILOGD(LABEL_TEST, "StatsServiceTestMockParcel_001 end");
 }
 }

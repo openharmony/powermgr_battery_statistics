@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_util_test.h"
+#include "stats_log.h"
 
 #include "battery_stats_parser.h"
 #include "stats_helper.h"
@@ -51,8 +52,10 @@ namespace {
  */
 HWTEST_F (StatsUtilTest, StatsHiSysEvent_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHiSysEvent_001 start");
     EXPECT_TRUE(StatsHiSysEvent::CheckHiSysEvent(StatsHiSysEvent::POWER_RUNNINGLOCK));
     EXPECT_FALSE(StatsHiSysEvent::CheckHiSysEvent("POWER_RUNNINGLOCK_WRONG"));
+    STATS_HILOGD(LABEL_TEST, "StatsHiSysEvent_001 end");
 }
 
 /**
@@ -63,6 +66,7 @@ HWTEST_F (StatsUtilTest, StatsHiSysEvent_001, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsUtils_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsUtils_001 start");
     EXPECT_EQ("", StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_INVALID));
     EXPECT_EQ(GET_VARIABLE_NAME(STATS_TYPE_BLUETOOTH_BR_ON),
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_BLUETOOTH_BR_ON));
@@ -88,6 +92,7 @@ HWTEST_F (StatsUtilTest, StatsUtils_001, TestSize.Level0)
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_THERMAL));
     EXPECT_EQ(GET_VARIABLE_NAME(STATS_TYPE_DISTRIBUTEDSCHEDULER),
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_DISTRIBUTEDSCHEDULER));
+    STATS_HILOGD(LABEL_TEST, "StatsUtils_001 end");
 }
 
 /**
@@ -98,6 +103,7 @@ HWTEST_F (StatsUtilTest, StatsUtils_001, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsUtils_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsUtils_002 start");
     EXPECT_EQ(GET_VARIABLE_NAME(STATS_TYPE_CAMERA_ON),
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_CAMERA_ON));
     EXPECT_EQ(GET_VARIABLE_NAME(STATS_TYPE_CAMERA_FLASHLIGHT_ON),
@@ -130,6 +136,7 @@ HWTEST_F (StatsUtilTest, StatsUtils_002, TestSize.Level0)
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_CPU_ACTIVE));
     EXPECT_EQ(GET_VARIABLE_NAME(STATS_TYPE_CPU_SUSPEND),
         StatsUtils::ConvertStatsType(StatsUtils::StatsType::STATS_TYPE_CPU_SUSPEND));
+    STATS_HILOGD(LABEL_TEST, "StatsUtils_002 end");
 }
 
 /**
@@ -140,6 +147,7 @@ HWTEST_F (StatsUtilTest, StatsUtils_002, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_001 start");
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     int64_t devTimeMs = StatsUtils::DEFAULT_VALUE;
     std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
@@ -162,6 +170,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_001, TestSize.Level0)
     timer->Reset();
     activeTimeMs = timer->GetRunningTimeMs();
     EXPECT_EQ(activeTimeMs, StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_001 end");
 }
 
 /**
@@ -172,6 +181,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_001, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_002 start");
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     int64_t devTimeMs = StatsUtils::DEFAULT_VALUE;
     std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
@@ -185,6 +195,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_002, TestSize.Level0)
     timer->Reset();
     activeTimeMs = timer->GetRunningTimeMs();
     EXPECT_EQ(activeTimeMs, StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_002 end");
 }
 
 /**
@@ -195,6 +206,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_002, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_003 start");
     int64_t activeTimeMs = StatsUtils::DEFAULT_VALUE;
     int64_t devTimeMs = StatsUtils::DEFAULT_VALUE;
     std::shared_ptr<StatsHelper::ActiveTimer> timer = std::make_shared<StatsHelper::ActiveTimer>();
@@ -214,6 +226,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_003, TestSize.Level0)
     timer->Reset();
     activeTimeMs = timer->GetRunningTimeMs();
     EXPECT_EQ(activeTimeMs, StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_003 end");
 }
 
 /**
@@ -224,6 +237,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_003, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_004 start");
     int64_t activeCount = StatsUtils::DEFAULT_VALUE;
     int64_t addCount = 20;
     std::shared_ptr<StatsHelper::Counter> counter = std::make_shared<StatsHelper::Counter>();
@@ -241,6 +255,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_004, TestSize.Level0)
     counter->Reset();
     activeCount = counter->GetCount();
     EXPECT_EQ(activeCount, StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_004 end");
 }
 
 /**
@@ -251,6 +266,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_004, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_005 start");
     StatsHelper::SetOnBattery(false);
     EXPECT_FALSE(StatsHelper::IsOnBattery());
     StatsHelper::SetScreenOff(false);
@@ -272,6 +288,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_005, TestSize.Level0)
     EXPECT_TRUE(StatsHelper::IsOnBatteryScreenOff());
 
     StatsHelper::SetScreenOff(false);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_005 end");
 }
 
 /**
@@ -282,6 +299,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_005, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsHelper_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_006 start");
     int64_t timeMs = StatsUtils::DEFAULT_VALUE;
     int64_t durationTimeMs = StatsUtils::DEFAULT_VALUE;
     int64_t devTimeMs = StatsUtils::DEFAULT_VALUE;
@@ -299,6 +317,7 @@ HWTEST_F (StatsUtilTest, StatsHelper_006, TestSize.Level0)
     durationTimeMs = abs(StatsHelper::GetOnBatteryUpTimeMs() - timeMs);
     devTimeMs = abs(durationTimeMs - TIMER_DURATION_MS);
     EXPECT_LE(devTimeMs, DEVIATION_TIMER_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsHelper_006 end");
 }
 
 /**
@@ -308,8 +327,10 @@ HWTEST_F (StatsUtilTest, StatsHelper_006, TestSize.Level0)
  */
 HWTEST_F (StatsUtilTest, StatsParserTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 start");
     auto parser = std::make_shared<BatteryStatsParser>();
     bool ret = parser->Init();
     EXPECT_TRUE(ret);
+    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 end");
 }
 }

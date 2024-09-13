@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_alarm_test.h"
+#include "stats_log.h"
 
 #include <hisysevent.h>
 
@@ -57,6 +58,7 @@ namespace {
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -76,6 +78,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_001 end");
 }
 
 /**
@@ -86,6 +89,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -106,6 +110,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_002 end");
 }
 
 /**
@@ -116,6 +121,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -133,6 +139,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_003 end");
 }
 
 /**
@@ -143,6 +150,7 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
@@ -163,5 +171,6 @@ HWTEST_F (StatsAlarmTest, StatsAlarmTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
+    STATS_HILOGD(LABEL_TEST, "StatsAlarmTest_004 end");
 }
 }

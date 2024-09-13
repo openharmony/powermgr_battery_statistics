@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_death_test.h"
+#include "stats_log.h"
 
 #include "battery_stats_client.h"
 #include "battery_stats_parser.h"
@@ -41,6 +42,7 @@ namespace {
  */
 HWTEST_F (StatsServiceDeathTest, StatsServiceDeathTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDeathTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     EXPECT_EQ(statsClient.Connect(), ERR_OK);
 
@@ -50,6 +52,7 @@ HWTEST_F (StatsServiceDeathTest, StatsServiceDeathTest_001, TestSize.Level0)
     EXPECT_NE(deathRecipient, nullptr);
     deathRecipient->OnRemoteDied(remoteObj);
     EXPECT_NE(statsClient.proxy_, nullptr);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDeathTest_001 end");
 }
 
 /**
@@ -59,9 +62,11 @@ HWTEST_F (StatsServiceDeathTest, StatsServiceDeathTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDeathTest, StatsParserTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 start");
     auto parser = std::make_shared<BatteryStatsParser>();
     bool ret = parser->Init();
     EXPECT_FALSE(ret);
+    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 end");
 }
 
 /**
@@ -71,9 +76,11 @@ HWTEST_F (StatsServiceDeathTest, StatsParserTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDeathTest, StatsServiceTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_001 start");
     auto statsService = BatteryStatsService::GetInstance();
     statsService->OnStart();
     bool ret = statsService->IsServiceReady();
     EXPECT_FALSE(ret);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_001 end");
 }
 }

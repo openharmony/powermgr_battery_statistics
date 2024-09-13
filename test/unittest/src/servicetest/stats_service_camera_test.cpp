@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_camera_test.h"
+#include "stats_log.h"
 
 #include <hisysevent.h>
 
@@ -77,6 +78,7 @@ namespace {
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -99,6 +101,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_001 end");
 }
 
 /**
@@ -109,6 +112,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -132,6 +136,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_002 end");
 }
 
 /**
@@ -142,6 +147,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -162,6 +168,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_003, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_003 end");
 }
 
 /**
@@ -172,6 +179,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -200,6 +208,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_004 end");
 }
 
 /**
@@ -210,6 +219,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -241,6 +251,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_005 end");
 }
 
 /**
@@ -251,6 +262,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -278,6 +290,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_006, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_006 end");
 }
 
 /**
@@ -288,6 +301,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -318,6 +332,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_007 end");
 }
 
 /**
@@ -328,6 +343,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -359,6 +375,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_008 end");
 }
 
 /**
@@ -369,6 +386,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_009, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -398,6 +416,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_009, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_009 end");
 }
 
 /**
@@ -408,6 +427,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_010, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -440,6 +460,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_010 end");
 }
 
 /**
@@ -450,6 +471,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_011, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -483,6 +505,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_011, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_011 end");
 }
 
 /**
@@ -493,6 +516,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -508,6 +532,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
     double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_012 end");
 }
 
 /**
@@ -518,6 +543,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_013, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -547,6 +573,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_013, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_013 end");
 }
 
 /**
@@ -557,6 +584,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -580,6 +608,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_014 end");
 }
 
 /**
@@ -590,6 +619,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_015, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -614,6 +644,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_015 end");
 }
 
 /**
@@ -624,6 +655,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_016, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -645,6 +677,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_016, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_016 end");
 }
 
 /**
@@ -655,6 +688,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -696,6 +730,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_017 end");
 }
 
 /**
@@ -706,6 +741,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -747,6 +783,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_018 end");
 }
 
 /**
@@ -757,6 +794,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_019, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -787,6 +825,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_019, TestSize.Level0)
 
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, cameraEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CAMERA_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, cameraEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_019 end");
 }
 
 /**
@@ -797,6 +836,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_019, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_020, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_020 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -828,6 +868,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_020, TestSize.Level0)
 
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, flashlightEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, flashlightEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_020 end");
 }
 
 /**
@@ -838,6 +879,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_020, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_021, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_021 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -860,5 +902,6 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_021, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceCameraTest_021 end");
 }
 }
