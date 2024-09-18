@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_powermgr_test.h"
+#include "stats_log.h"
 #ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
 #include <call_manager_inner_type.h>
 #endif
@@ -57,12 +58,13 @@ void StatsPowerMgrTest::TearDown()
 
 namespace {
 /**
- * @tc.name: StatsPowerMgrTest_009
+ * @tc.name: StatsPowerMgrTest_001
  * @tc.desc: test GetTotalTimeSecond function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -82,15 +84,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_009, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_001 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_010
+ * @tc.name: StatsPowerMgrTest_002
  * @tc.desc: test GetAppStatsMah function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -112,15 +116,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_002 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_011
+ * @tc.name: StatsPowerMgrTest_003
  * @tc.desc: test GetAppStatsPercent function(Sensor Gravity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -139,15 +145,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_011, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_003 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_012
+ * @tc.name: StatsPowerMgrTest_004
  * @tc.desc: test GetAppStatsMah(Sensor Gravity) and GetAppStatsPercent(Sensor Proximity) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -185,15 +193,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_012, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_004 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_013
+ * @tc.name: StatsPowerMgrTest_005
  * @tc.desc: test GetTotalTimeSecond function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -213,15 +223,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_013, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_005 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_014
+ * @tc.name: StatsPowerMgrTest_006
  * @tc.desc: test GetAppStatsMah function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -243,15 +255,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_006 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_015
+ * @tc.name: StatsPowerMgrTest_007
  * @tc.desc: test GetAppStatsPercent function(Sensor Proximity)
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -270,15 +284,17 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_015, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_007 end");
 }
 
 /**
- * @tc.name: StatsPowerMgrTest_016
+ * @tc.name: StatsPowerMgrTest_008
  * @tc.desc: test GetAppStatsMah(Sensor Proximity) and GetAppStatsPercent(Torch) function
  * @tc.type: FUNC
  */
-HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
+HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -316,6 +332,7 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsPowerMgrTest_008 end");
 }
 
 /**
@@ -326,6 +343,7 @@ HWTEST_F (StatsPowerMgrTest, StatsPowerMgrTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsInfo_001 start");
     std::shared_ptr<BatteryStatsInfo> sptrStatsInfo = std::make_shared<BatteryStatsInfo>();
     EXPECT_NE(sptrStatsInfo, nullptr);
     int32_t uid = 1004;
@@ -360,6 +378,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_001, TestSize.Level0)
     EXPECT_EQ(uid, unmarshalInfo->GetUid());
     EXPECT_EQ(consumptionType, unmarshalInfo->GetConsumptionType());
     EXPECT_EQ(totalPowerMah, unmarshalInfo->GetPower());
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsInfo_001 end");
 }
 
 /**
@@ -370,6 +389,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_001, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsInfo_002 start");
     EXPECT_EQ("", BatteryStatsInfo::ConvertConsumptionType(BatteryStatsInfo::CONSUMPTION_TYPE_INVALID));
     EXPECT_EQ(GET_VARIABLE_NAME(CONSUMPTION_TYPE_APP),
         BatteryStatsInfo::ConvertConsumptionType(BatteryStatsInfo::CONSUMPTION_TYPE_APP));
@@ -401,6 +421,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_002, TestSize.Level0)
         BatteryStatsInfo::ConvertConsumptionType(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK));
     EXPECT_EQ(GET_VARIABLE_NAME(CONSUMPTION_TYPE_ALARM),
         BatteryStatsInfo::ConvertConsumptionType(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM));
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsInfo_002 end");
 }
 
 /**
@@ -411,6 +432,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsInfo_002, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, BatteryStatsParser_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsParser_001 start");
     uint16_t normalLevel = 0;
     uint16_t errorRadioOnLevel = 10;
     EXPECT_EQ(0.0, g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_INVALID));
@@ -425,6 +447,7 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsParser_001, TestSize.Level0)
     uint16_t errorSpeedCluster = 3;
     EXPECT_EQ(expectSpeedCluster0Num, g_statsParser->GetSpeedNum(speedClusterZero));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsParser->GetSpeedNum(errorSpeedCluster));
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsParser_001 end");
 }
 
 /**
@@ -435,11 +458,13 @@ HWTEST_F (StatsPowerMgrTest, BatteryStatsParser_001, TestSize.Level0)
  */
 HWTEST_F (StatsPowerMgrTest, BatteryStatsRadio_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsRadio_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_RADIO);
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE && actualPercent >= StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsRadio_001 end");
 }
 }

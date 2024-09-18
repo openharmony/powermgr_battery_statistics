@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "batterystats_sys_test.h"
+#include "stats_log.h"
 
 #include <cmath>
 #include <csignal>
@@ -101,6 +102,7 @@ void BatterystatsSysTest::TearDown()
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -148,6 +150,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
     EXPECT_EQ(expectedTimeSec,  actualTimeSec);
     EXPECT_TRUE(index != string::npos);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_001 end");
 }
 
 /**
@@ -158,6 +161,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_001, TestSize.Level0)
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -200,6 +204,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
     EXPECT_EQ(expectedTimeSec,  actualTimeSec);
     EXPECT_TRUE(index != string::npos);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_002 end");
 }
 
 /**
@@ -210,6 +215,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_002, TestSize.Level0)
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -229,6 +235,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_003 end");
 }
 
 /**
@@ -239,6 +246,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_003, TestSize.Level0)
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -258,6 +266,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_004 end");
 }
 
 /**
@@ -268,6 +277,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_004, TestSize.Level0)
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -297,6 +307,7 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
     std::string actualDebugInfo = statsClient.Dump(dumpArgs);
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_005 end");
 }
 
 /**
@@ -307,22 +318,25 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_005, TestSize.Level0)
  */
 HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     std::string result;
     result.clear();
     result = statsClient.Dump(dumpArgs);
     EXPECT_TRUE(result != "");
     statsClient.Reset();
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_006 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_008
+ * @tc.name: BatteryStatsSysTest_007
  * @tc.desc: test Bluetooth consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 #ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
@@ -344,16 +358,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 #endif
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_007 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_009
+ * @tc.name: BatteryStatsSysTest_008
  * @tc.desc: test Wifi consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 #ifdef HAS_BATTERYSTATS_WIFI_PART
@@ -373,16 +389,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 #endif
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_008 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_010
+ * @tc.name: BatteryStatsSysTest_009
  * @tc.desc: test Phone Call consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_009, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_009 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 #ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
@@ -404,32 +422,36 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 #endif
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_009 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_011
+ * @tc.name: BatteryStatsSysTest_010
  * @tc.desc: test Idle consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_011, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_010, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_010 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
     double actualPower = statsClient.GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_IDLE);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_010 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_012
+ * @tc.name: BatteryStatsSysTest_011
  * @tc.desc: test User consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_012, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_011, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_011 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -438,16 +460,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_012, TestSize.Level0)
     double actualPower = statsClient.GetAppStatsMah(uerId);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_011 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_013
+ * @tc.name: BatteryStatsSysTest_012
  * @tc.desc: test Audio consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_012 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -469,16 +493,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_012 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_014
+ * @tc.name: BatteryStatsSysTest_013
  * @tc.desc: test GNSS consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_013, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_013 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -500,16 +526,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_013 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_015
+ * @tc.name: BatteryStatsSysTest_014
  * @tc.desc: test Sensor consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_014, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_014 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -531,16 +559,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_014 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_016
+ * @tc.name: BatteryStatsSysTest_015
  * @tc.desc: test Camera consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_015, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_015 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -561,16 +591,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_015 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_017
+ * @tc.name: BatteryStatsSysTest_016
  * @tc.desc: test Flashlight consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_016, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_016 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -592,16 +624,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_016 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_018
+ * @tc.name: BatteryStatsSysTest_017
  * @tc.desc: test Bluetooth and Wifi consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_017, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_017 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -638,16 +672,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_017 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_019
+ * @tc.name: BatteryStatsSysTest_018
  * @tc.desc: test Flashlight and Camera consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_018, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_018 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -687,16 +723,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_018 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_020
+ * @tc.name: BatteryStatsSysTest_019
  * @tc.desc: test Audio, Sensor and Gnss consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_019, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_019 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -746,16 +784,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
     actualPower = statsClient.GetAppStatsMah(uid);
     devPrecent = abs(expectedPower - actualPower) / expectedPower;
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_019 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_021
+ * @tc.name: BatteryStatsSysTest_020
  * @tc.desc: test Phone data and Audio consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_020, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_020 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -796,16 +836,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_020 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_022
+ * @tc.name: BatteryStatsSysTest_021
  * @tc.desc: test Idle and consumption, Dump function
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_022, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_021, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_021 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -824,16 +866,18 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_022, TestSize.Level0)
     result.clear();
     result = statsClient.Dump(dumpArgs);
     EXPECT_TRUE(result != "");
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_021 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_023
+ * @tc.name: BatteryStatsSysTest_022
  * @tc.desc: test Camera and Camera Flashlight consumption
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_022, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_022 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -860,17 +904,20 @@ HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_022 end");
 }
 
 /**
  *
- * @tc.name: BatteryStatsSysTest_024
+ * @tc.name: BatteryStatsSysTest_023
  * @tc.desc: test GetLastError interface
  * @tc.type: FUNC
  */
-HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_024, TestSize.Level0)
+HWTEST_F (BatterystatsSysTest,  BatteryStatsSysTest_023, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_023 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     StatsError error = statsClient.GetLastError();
     EXPECT_TRUE(error == StatsError::ERR_OK) << "last error is " << static_cast<int32_t>(error);
+    STATS_HILOGD(LABEL_TEST, "BatteryStatsSysTest_023 end");
 }

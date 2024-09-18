@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_client_test_mock_object.h"
+#include "stats_log.h"
 
 #include "battery_stats_proxy.h"
 #include "mock_stats_remote_object.h"
@@ -32,6 +33,7 @@ namespace {
  */
 HWTEST_F (StatsClientTestMockObject, StatsClientTestMockObject_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockObject_001 start");
     sptr<MockStatsRemoteObject> sptrRemoteObj = new MockStatsRemoteObject();
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(sptrRemoteObj);
     sptrStatsProxy->Reset();
@@ -50,5 +52,6 @@ HWTEST_F (StatsClientTestMockObject, StatsClientTestMockObject_001, TestSize.Lev
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", sptrStatsProxy->ShellDump(dumpArgs, dumpArgs.size()));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockObject_001 end");
 }
 }

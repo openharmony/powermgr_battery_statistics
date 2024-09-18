@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_wifi_test.h"
+#include "stats_log.h"
 
 #include <hisysevent.h>
 #include "wifi_msg.h"
@@ -78,6 +79,7 @@ namespace {
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -98,6 +100,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_001 end");
 }
 
 /**
@@ -108,6 +111,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -129,6 +133,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_002 end");
 }
 
 /**
@@ -139,6 +144,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -159,6 +165,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_003 end");
 }
 
 /**
@@ -169,6 +176,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -197,6 +205,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_004 end");
 }
 
 /**
@@ -207,6 +216,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -237,6 +247,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_005 end");
 }
 
 /**
@@ -247,6 +258,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -267,6 +279,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_006 end");
 }
 
 /**
@@ -277,6 +290,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -309,6 +323,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_007 end");
 }
 
 /**
@@ -319,6 +334,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -339,16 +355,18 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_008 end");
 }
 
 /**
- * @tc.name: StatsServiceWifiTest_09
+ * @tc.name: StatsServiceWifiTest_009
  * @tc.desc: test Reset function(Wifi scan)
  * @tc.type: FUNC
  * @tc.require: issueI663DX
  */
-HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
+HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_009, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -366,6 +384,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_009 end");
 }
 
 /**
@@ -376,6 +395,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_09, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -394,6 +414,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_010 end");
 }
 
 /**
@@ -404,6 +425,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -420,6 +442,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_011 end");
 }
 
 /**
@@ -430,6 +453,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -454,6 +478,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_012 end");
 }
 
 /**
@@ -464,6 +489,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -477,6 +503,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
     long expectValue = StatsUtils::DEFAULT_VALUE;
     long data = g_statsServiceProxy->GetTotalDataBytes(StatsUtils::STATS_TYPE_WIFI_SCAN);
     EXPECT_EQ(data, expectValue);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_013 end");
 }
 
 /**
@@ -487,6 +514,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -519,6 +547,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_014 end");
 }
 
 /**
@@ -529,6 +558,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -557,6 +587,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
     g_statsServiceProxy->SetOnBattery(true);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_015 end");
 }
 
 /**
@@ -567,6 +598,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -593,6 +625,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_016 end");
 }
 
 /**
@@ -603,6 +636,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -629,6 +663,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_017 end");
 }
 
 /**
@@ -639,6 +674,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -674,6 +710,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
     actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_018 end");
 }
 
 /**
@@ -684,6 +721,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
  */
 HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -699,5 +737,6 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceWifiTest_019 end");
 }
 }

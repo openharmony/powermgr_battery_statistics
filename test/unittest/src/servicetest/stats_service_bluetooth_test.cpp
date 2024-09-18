@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_bluetooth_test.h"
+#include "stats_log.h"
 
 #include <bluetooth_def.h>
 #include <hisysevent.h>
@@ -119,6 +120,7 @@ namespace {
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -141,6 +143,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_001 end");
 }
 
 /**
@@ -151,6 +154,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -175,6 +179,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_002 end");
 }
 
 /**
@@ -185,6 +190,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -207,6 +213,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Lev
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_003 end");
 }
 
 /**
@@ -217,6 +224,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -247,6 +255,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_004 end");
 }
 
 /**
@@ -257,6 +266,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -289,6 +299,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_005 end");
 }
 
 /**
@@ -299,6 +310,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -333,6 +345,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_006 end");
 }
 
 /**
@@ -343,6 +356,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -365,6 +379,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_007 end");
 }
 
 /**
@@ -375,6 +390,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -409,6 +425,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_008 end");
 }
 
 /**
@@ -419,6 +436,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -441,6 +459,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_009 end");
 }
 
 /**
@@ -451,6 +470,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -473,6 +493,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_010 end");
 }
 
 /**
@@ -483,6 +504,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -508,6 +530,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_011 end");
 }
 
 /**
@@ -518,6 +541,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -540,6 +564,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Lev
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_012 end");
 }
 
 /**
@@ -550,6 +575,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -580,6 +606,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_013 end");
 }
 
 /**
@@ -590,6 +617,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -622,6 +650,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_014 end");
 }
 
 /**
@@ -632,6 +661,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -666,6 +696,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_015 end");
 }
 
 /**
@@ -676,6 +707,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -698,6 +730,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_016 end");
 }
 
 /**
@@ -708,6 +741,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -742,6 +776,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_017 end");
 }
 
 /**
@@ -752,6 +787,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -774,6 +810,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_018 end");
 }
 
 /**
@@ -784,6 +821,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -807,6 +845,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_019 end");
 }
 
 /**
@@ -817,6 +856,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_020 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -841,6 +881,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_020 end");
 }
 
 /**
@@ -851,6 +892,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_021 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -873,6 +915,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Lev
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_021 end");
 }
 
 /**
@@ -883,6 +926,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_022 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -915,6 +959,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_022 end");
 }
 
 /**
@@ -925,6 +970,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_023 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -958,6 +1004,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_023 end");
 }
 
 /**
@@ -968,6 +1015,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_024 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -990,6 +1038,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_024 end");
 }
 
 /**
@@ -1000,6 +1049,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_025 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1034,6 +1084,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_025 end");
 }
 
 /**
@@ -1044,6 +1095,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_026 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1066,6 +1118,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_026 end");
 }
 
 /**
@@ -1076,6 +1129,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_027 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1117,6 +1171,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
     EXPECT_LE(devPrecentTwo, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_027 end");
 }
 
 /**
@@ -1127,6 +1182,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_028 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1148,6 +1204,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_028 end");
 }
 
 /**
@@ -1158,6 +1215,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_029 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1180,6 +1238,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_029 end");
 }
 
 /**
@@ -1190,6 +1249,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_030 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1210,6 +1270,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Lev
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_030 end");
 }
 
 /**
@@ -1220,6 +1281,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_031 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1250,6 +1312,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_031 end");
 }
 
 /**
@@ -1260,6 +1323,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_032 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1280,6 +1344,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_032 end");
 }
 
 /**
@@ -1290,6 +1355,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_033 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1329,6 +1395,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
     EXPECT_LE(devPrecentTwo, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_033 end");
 }
 
 /**
@@ -1339,6 +1406,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_034 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1366,6 +1434,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedSoftPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_LE(devPrecentSoft, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_034 end");
 }
 
 /**
@@ -1376,6 +1445,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_035 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1398,6 +1468,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_EQ(expectedPower, actualSoftPower);
     g_statsServiceProxy->SetOnBattery(true);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_035 end");
 }
 
 /**
@@ -1408,6 +1479,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_036 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1436,6 +1508,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_036 end");
 }
 
 /**
@@ -1446,6 +1519,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_037 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1483,6 +1557,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Lev
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, bluetoothEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_037 end");
 }
 
 /**
@@ -1493,6 +1568,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Lev
  */
 HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_038, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_038 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -1533,5 +1609,6 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_038, TestSize.Lev
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedSoftPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_EQ(expectedSoftPower, actualSoftPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceBluetoothTest_038 end");
 }
 }

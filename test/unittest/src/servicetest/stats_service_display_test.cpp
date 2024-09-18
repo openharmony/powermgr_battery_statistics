@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_service_display_test.h"
+#include "stats_log.h"
 
 #include <display_power_info.h>
 #include <hisysevent.h>
@@ -104,6 +105,7 @@ namespace {
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -129,6 +131,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_001 end");
 }
 
 /**
@@ -139,6 +142,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -165,6 +169,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
     g_statsServiceProxy->SetOnBattery(true);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_002 end");
 }
 
 /**
@@ -175,6 +180,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -204,6 +210,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_003 end");
 }
 
 /**
@@ -214,6 +221,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -238,6 +246,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_004 end");
 }
 
 /**
@@ -248,6 +257,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -283,6 +293,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_005 end");
 }
 
 /**
@@ -293,6 +304,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -321,6 +333,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_006 end");
 }
 
 /**
@@ -331,6 +344,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -367,6 +381,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_007 end");
 }
 
 /**
@@ -377,6 +392,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -393,6 +409,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_008 end");
 }
 
 /**
@@ -403,6 +420,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -436,6 +454,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_009 end");
 }
 
 /**
@@ -446,6 +465,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -481,6 +501,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_010 end");
 }
 
 /**
@@ -491,6 +512,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -527,6 +549,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_011 end");
 }
 
 /**
@@ -537,6 +560,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -554,5 +578,6 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
+    STATS_HILOGD(LABEL_TEST, "StatsServiceDisplayTest_012 end");
 }
 }

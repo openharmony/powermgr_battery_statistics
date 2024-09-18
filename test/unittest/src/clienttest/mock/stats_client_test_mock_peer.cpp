@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_client_test_mock_peer.h"
+#include "stats_log.h"
 
 #include "battery_stats_client.h"
 #include "battery_stats_proxy.h"
@@ -32,6 +33,7 @@ namespace {
  */
 HWTEST_F (StatsClientTestMockPeer, StatsClientTestMockPeer_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockPeer_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(true);
@@ -49,5 +51,6 @@ HWTEST_F (StatsClientTestMockPeer, StatsClientTestMockPeer_001, TestSize.Level0)
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("can't connect service", statsClient.Dump(dumpArgs));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockPeer_001 end");
 }
 }

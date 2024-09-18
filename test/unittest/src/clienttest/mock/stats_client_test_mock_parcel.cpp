@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,7 @@
  */
 
 #include "stats_client_test_mock_parcel.h"
+#include "stats_log.h"
 
 #include <hisysevent.h>
 
@@ -37,6 +38,7 @@ namespace {
  */
 HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_001, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(true);
@@ -54,6 +56,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_001, TestSize.Lev
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("can't connect service", statsClient.Dump(dumpArgs));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_001 end");
 }
 
 /**
@@ -64,6 +67,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_001, TestSize.Lev
  */
 HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_002, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_002 start");
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(nullptr);
     sptrStatsProxy->Reset();
     sptrStatsProxy->SetOnBattery(true);
@@ -81,6 +85,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_002, TestSize.Lev
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", sptrStatsProxy->ShellDump(dumpArgs, dumpArgs.size()));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_002 end");
 }
 
 /**
@@ -91,6 +96,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_002, TestSize.Lev
  */
 HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_003, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_003 start");
     sptr<IPCObjectStub> sptrRemoteObj = new IPCObjectStub();
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(sptrRemoteObj);
     sptrStatsProxy->Reset();
@@ -109,6 +115,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_003, TestSize.Lev
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", sptrStatsProxy->ShellDump(dumpArgs, dumpArgs.size()));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_003 end");
 }
 
 /**
@@ -119,6 +126,7 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_003, TestSize.Lev
  */
 HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_004, TestSize.Level0)
 {
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_004 start");
     std::shared_ptr<BatteryStatsInfo> sptrStatsInfo = std::make_shared<BatteryStatsInfo>();
     EXPECT_NE(sptrStatsInfo, nullptr);
     int32_t uid = 1004;
@@ -136,5 +144,6 @@ HWTEST_F (StatsClientTestMockParcel, StatsClientTestMockParcel_004, TestSize.Lev
 
     Parcel infoParcel = {};
     EXPECT_FALSE(sptrStatsInfo->Marshalling(infoParcel));
+    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockParcel_004 end");
 }
 }
