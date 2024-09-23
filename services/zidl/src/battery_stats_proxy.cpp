@@ -312,6 +312,10 @@ std::string BatteryStatsProxy::ShellDump(const std::vector<std::string>& args, u
         STATS_HILOGE(COMP_FWK, "Write descriptor failed");
         return result;
     }
+    if (argc > args.size()) {
+        STATS_HILOGE(COMP_FWK, "argc is greater than args size!");
+        return result;
+    }
 
     data.WriteUint32(argc);
     for (uint32_t i = 0; i < argc; i++) {
