@@ -292,7 +292,7 @@ std::string StatsServiceTestProxy::ShellDump(const std::vector<std::string>& arg
         return result;
     }
     if (argc > args.size()) {
-        STATS_HILOGE(COMP_FWK, "argc is greater than args size!");
+        STATS_HILOGE(LABEL_TEST, "argc is greater than args size!");
         return result;
     }
 
