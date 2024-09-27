@@ -293,7 +293,7 @@ std::string StatsServiceTestProxy::ShellDump(const std::vector<std::string>& arg
     }
     if (argc > args.size()) {
         STATS_HILOGE(LABEL_TEST, "argc is greater than args size!");
-        return result;
+        return result;  
     }
 
     data.WriteUint32(argc);
