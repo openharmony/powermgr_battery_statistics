@@ -84,7 +84,7 @@ namespace {
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -107,7 +107,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_001 end");
 }
 
 /**
@@ -118,7 +118,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -143,7 +143,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_002 end");
 }
 
 /**
@@ -154,7 +154,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -176,7 +176,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_003 end");
 }
 
 /**
@@ -187,7 +187,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -230,7 +230,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_004 end");
 }
 
 /**
@@ -241,7 +241,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -264,7 +264,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_005 end");
 }
 
 /**
@@ -275,7 +275,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -300,7 +300,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_006 end");
 }
 
 /**
@@ -311,7 +311,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -333,7 +333,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_007 end");
 }
 
 /**
@@ -344,7 +344,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -387,7 +387,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_008 end");
 }
 
 /**
@@ -398,7 +398,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -442,7 +442,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, sensorEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, sensorEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, sensorEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_009 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_009 end");
 }
 
 /**
@@ -454,7 +454,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level
  */
 HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_010 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -488,7 +488,7 @@ HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Leve
 
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, wakelockEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_WAKELOCK_HOLD));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, wakelockEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_010 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_010 end");
 }
 
 /**
@@ -499,7 +499,7 @@ HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Leve
  */
 HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_011, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_011 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -523,6 +523,25 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_011, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsServicePowerMgrTest_011 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_011 end");
 }
+
+/**
+ * @tc.name: StatsServicePowerMgrTest_012
+ * @tc.desc: test batteryStatics Start
+ * @tc.type: FUNC
+ * @tc.require: issueI663DX
+ */
+HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_012, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_012 start");
+    auto statsService = BatteryStatsService::GetInstance();
+    EXPECT_TRUE(statsService != nullptr);
+    statsService->OnStart();
+    statsService->RegisterBootCompletedCallback();
+    statsService->OnStop();
+    statsService->DestroyInstance();
+    STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_012 end");
+}
+
 }

@@ -145,7 +145,7 @@ double StatsServiceTestProxy::GetAppStatsMah(const int32_t& uid)
     }
 
     double appStatsMah = reply.ReadDouble();
-    STATS_HILOGD(LABEL_TEST, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
+    STATS_HILOGI(LABEL_TEST, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
     return appStatsMah;
 }
 
@@ -197,7 +197,7 @@ double StatsServiceTestProxy::GetAppStatsPercent(const int32_t& uid)
     }
 
     double appStatsPercent = reply.ReadDouble();
-    STATS_HILOGD(LABEL_TEST, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
+    STATS_HILOGI(LABEL_TEST, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
     return appStatsPercent;
 }
 
@@ -224,7 +224,7 @@ double StatsServiceTestProxy::GetPartStatsMah(const BatteryStatsInfo::Consumptio
     }
 
     double partStatsMah = reply.ReadDouble();
-    STATS_HILOGD(LABEL_TEST, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
+    STATS_HILOGI(LABEL_TEST, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
     return partStatsMah;
 }
 
@@ -251,7 +251,7 @@ double StatsServiceTestProxy::GetPartStatsPercent(const BatteryStatsInfo::Consum
     }
 
     double partStatsPercent = reply.ReadDouble();
-    STATS_HILOGD(LABEL_TEST, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
+    STATS_HILOGI(LABEL_TEST, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
     return partStatsPercent;
 }
 

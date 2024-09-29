@@ -92,7 +92,7 @@ namespace {
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -112,7 +112,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_001 end");
 }
 
 /**
@@ -123,7 +123,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -145,7 +145,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_002 end");
 }
 
 /**
@@ -156,7 +156,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -176,7 +176,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_003, TestSize.Level0)
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_003 end");
 }
 
 /**
@@ -187,7 +187,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -215,7 +215,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_004 end");
 }
 
 /**
@@ -226,7 +226,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -254,7 +254,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_005 end");
 }
 
 /**
@@ -265,7 +265,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -295,7 +295,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_006, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_006 end");
 }
 
 /**
@@ -306,7 +306,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -326,7 +326,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_007 end");
 }
 
 /**
@@ -337,7 +337,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -367,7 +367,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_008 end");
 }
 
 /**
@@ -378,7 +378,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_009, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_009 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -398,7 +398,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_009, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_009 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_009 end");
 }
 
 /**
@@ -409,7 +409,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_010, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_010 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_010 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -429,7 +429,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_010 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_010 end");
 }
 
 /**
@@ -440,7 +440,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_011, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_011 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_011 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -463,7 +463,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_011, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_011 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_011 end");
 }
 
 /**
@@ -474,7 +474,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_012, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_012 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_012 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -494,7 +494,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_012, TestSize.Level0)
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_012 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_012 end");
 }
 
 /**
@@ -505,7 +505,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_013, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_013 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_013 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -533,7 +533,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_013, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_013 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_013 end");
 }
 
 /**
@@ -544,7 +544,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_014, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_014 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_014 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -572,7 +572,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_014 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_014 end");
 }
 
 /**
@@ -583,7 +583,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_015, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_015 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_015 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -613,7 +613,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_015 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_015 end");
 }
 
 /**
@@ -624,7 +624,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_016, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_016 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_016 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -644,7 +644,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_016, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_016 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_016 end");
 }
 
 /**
@@ -655,7 +655,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_017, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_017 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_017 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -685,7 +685,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_017, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_017 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_017 end");
 }
 
 /**
@@ -696,7 +696,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_018, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_018 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_018 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -716,7 +716,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_018, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_018 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_018 end");
 }
 
 /**
@@ -727,7 +727,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_018, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_019, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_019 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_019 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -748,7 +748,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_019, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_019 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_019 end");
 }
 
 /**
@@ -759,7 +759,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_019, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_020, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_020 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_020 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -781,7 +781,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_020, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_020 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_020 end");
 }
 
 /**
@@ -792,7 +792,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_020, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_021, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_021 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_021 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -812,7 +812,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_021, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_021 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_021 end");
 }
 
 /**
@@ -823,7 +823,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_021, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_022, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_022 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_022 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -851,7 +851,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_022, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_022 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_022 end");
 }
 
 /**
@@ -862,7 +862,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_022, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_023, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_023 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_023 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -891,7 +891,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_023, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_023 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_023 end");
 }
 
 /**
@@ -902,7 +902,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_023, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_024, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_024 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_024 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -922,7 +922,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_024, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_024 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_024 end");
 }
 
 /**
@@ -933,7 +933,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_024, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_025, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_025 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_025 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -963,7 +963,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_025, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_025 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_025 end");
 }
 
 /**
@@ -974,7 +974,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_025, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_026, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_026 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_026 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -994,7 +994,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_026, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_026 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_026 end");
 }
 
 /**
@@ -1005,7 +1005,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_026, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_027, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_027 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_027 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1042,7 +1042,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_027, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
     EXPECT_LE(devPrecentTwo, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_027 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_027 end");
 }
 
 /**
@@ -1053,7 +1053,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_027, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_028, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_028 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_028 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1072,7 +1072,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_028, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_028 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_028 end");
 }
 
 /**
@@ -1083,7 +1083,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_028, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_029, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_029 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_029 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1103,7 +1103,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_029, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_029 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_029 end");
 }
 
 /**
@@ -1114,7 +1114,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_029, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_030, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_030 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_030 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1132,7 +1132,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_030, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_030 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_030 end");
 }
 
 /**
@@ -1143,7 +1143,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_030, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_031, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_031 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_031 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1169,7 +1169,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_031, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_031 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_031 end");
 }
 
 /**
@@ -1180,7 +1180,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_031, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_032, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_032 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_032 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1198,7 +1198,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_032, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_032 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_032 end");
 }
 
 /**
@@ -1209,7 +1209,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_032, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_033, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_033 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_033 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1244,7 +1244,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_033, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
     EXPECT_LE(devPrecentTwo, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_033 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_033 end");
 }
 
 /**
@@ -1255,7 +1255,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_033, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_034, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_034 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_034 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1282,7 +1282,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_034, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedSoftPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_LE(devPrecentSoft, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_034 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_034 end");
 }
 
 /**
@@ -1293,7 +1293,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_034, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_035, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_035 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_035 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
@@ -1315,7 +1315,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_035, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_EQ(expectedPower, actualSoftPower);
     statsClient.SetOnBattery(true);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_035 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_035 end");
 }
 
 /**
@@ -1326,7 +1326,7 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_035, TestSize.Level0)
  */
 HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_036, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_036 start");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_036 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -1352,6 +1352,6 @@ HWTEST_F (StatsBluetoothTest, StatsBluetoothTest_036, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsBluetoothTest_036 end");
+    STATS_HILOGI(LABEL_TEST, "StatsBluetoothTest_036 end");
 }
 }

@@ -39,7 +39,7 @@ namespace {
  */
 HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_001 start");
     sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
     sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
 
@@ -51,7 +51,7 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET),
         data, reply, option);
     EXPECT_EQ(ret, E_STATS_GET_SERVICE_FAILED);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_001 end");
 }
 
 /**
@@ -62,7 +62,7 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_002 start");
     sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
     sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
 
@@ -75,7 +75,7 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
         static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET) + 100;
     int ret = statsStub->OnRemoteRequest(invalidCode, data, reply, option);
     EXPECT_NE(ret, ERR_OK);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_002 end");
 }
 
 /**
@@ -86,7 +86,7 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_003 start.");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_003 start.");
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
@@ -105,6 +105,6 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
     data.WriteString("");
     ret = statsStub->OnRemoteRequest(code, data, reply, option);
     EXPECT_EQ(ret, E_STATS_READ_PARCEL_ERROR) << " ret:" << ret;
-    STATS_HILOGD(LABEL_TEST, "StatsServiceStubTest_003 end.");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_003 end.");
 }
 }

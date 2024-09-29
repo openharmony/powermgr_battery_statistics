@@ -31,10 +31,10 @@ bool HiSysEventOperation::IsError(HiSysEventOperation::EventBase &eventBase)
 void HiSysEventOperation::ExplainRetCode(HiSysEventOperation::EventBase &eventBase)
 {
     if (eventBase.retCode_ > SUCCESS) {
-        STATS_HILOGD(LABEL_TEST, "invalid data, error=%{public}d, message=%{public}s",
+        STATS_HILOGI(LABEL_TEST, "invalid data, error=%{public}d, message=%{public}s",
             eventBase.retCode_, ERR_MSG_LEVEL1[eventBase.retCode_ - 1]);
     } else if (eventBase.retCode_ < SUCCESS) {
-        STATS_HILOGD(LABEL_TEST, "discard data, error=%{public}d, message=%{public}s",
+        STATS_HILOGI(LABEL_TEST, "discard data, error=%{public}d, message=%{public}s",
             eventBase.retCode_, ERR_MSG_LEVEL0[-eventBase.retCode_ - 1]);
     }
 }

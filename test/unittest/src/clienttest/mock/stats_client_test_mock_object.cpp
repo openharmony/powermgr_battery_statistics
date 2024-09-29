@@ -33,9 +33,11 @@ namespace {
  */
 HWTEST_F (StatsClientTestMockObject, StatsClientTestMockObject_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockObject_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsClientTestMockObject_001 start");
     sptr<MockStatsRemoteObject> sptrRemoteObj = new MockStatsRemoteObject();
+    EXPECT_TRUE(sptrRemoteObj != nullptr);
     std::shared_ptr<BatteryStatsProxy> sptrStatsProxy = std::make_shared<BatteryStatsProxy>(sptrRemoteObj);
+    EXPECT_TRUE(sptrStatsProxy != nullptr);
     sptrStatsProxy->Reset();
     sptrStatsProxy->SetOnBattery(true);
     auto infoList = sptrStatsProxy->GetBatteryStats();
@@ -52,6 +54,6 @@ HWTEST_F (StatsClientTestMockObject, StatsClientTestMockObject_001, TestSize.Lev
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", sptrStatsProxy->ShellDump(dumpArgs, dumpArgs.size()));
-    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockObject_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsClientTestMockObject_001 end");
 }
 }

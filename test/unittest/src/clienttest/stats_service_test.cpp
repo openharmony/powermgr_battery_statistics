@@ -72,12 +72,12 @@ namespace {
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_001 start");
     sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     ASSERT_TRUE(sam != nullptr) << "StatsServiceTest_001 fail to get GetSystemAbilityManager";
     sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     ASSERT_TRUE(remoteObject_ != nullptr) << "GetSystemAbility failed.";
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_001 end");
 }
 
 /**
@@ -87,13 +87,15 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_002 start");
     auto statsService = BatteryStatsService::GetInstance();
+    EXPECT_TRUE(statsService != nullptr);
+
     statsService->OnStart();
     statsService->OnStart();
     bool ret = statsService->IsServiceReady();
     EXPECT_FALSE(ret);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_002 end");
 }
 
 /**
@@ -103,15 +105,17 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_003 start");
     auto statsService = BatteryStatsService::GetInstance();
+    EXPECT_TRUE(statsService != nullptr);
+
     statsService->OnAddSystemAbility(DFX_SYS_EVENT_SERVICE_ABILITY_ID, "");
     statsService->OnAddSystemAbility(COMMON_EVENT_SERVICE_ID, "");
     statsService->OnStart();
     statsService->OnStop();
     bool ret = statsService->IsServiceReady();
     EXPECT_FALSE(ret);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_003 end");
 }
 
 /**
@@ -121,14 +125,16 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_004 start");
     auto statsService = BatteryStatsService::GetInstance();
+    EXPECT_TRUE(statsService != nullptr);
+
     int32_t fd = 1;
     std::vector<std::u16string> vec;
     statsService->isBootCompleted_ = true;
     int32_t ret = statsService->Dump(fd, vec);
     EXPECT_EQ(ret, OHOS::ERR_OK);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_004 end");
 }
 
 /**
@@ -138,11 +144,13 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsParserTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsParserTest_001 start");
     auto parser = std::make_shared<BatteryStatsParser>();
+    EXPECT_TRUE(parser != nullptr);
+
     bool ret = parser->Init();
     EXPECT_TRUE(ret);
-    STATS_HILOGD(LABEL_TEST, "StatsParserTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsParserTest_001 end");
 }
 
 /**
@@ -152,12 +160,14 @@ HWTEST_F (StatsServiceTest, StatsParserTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceTest, StatsParserTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsParserTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsParserTest_002 start");
     auto parser = std::make_shared<BatteryStatsParser>();
+    EXPECT_TRUE(parser != nullptr);
+
     parser->Init();
     std::string result = "";
     parser->DumpInfo(result);
     EXPECT_TRUE(result != "");
-    STATS_HILOGD(LABEL_TEST, "StatsParserTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsParserTest_002 end");
 }
 }

@@ -62,7 +62,7 @@ namespace {
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_001 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     EXPECT_EQ(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_INVALID));
@@ -81,7 +81,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_001, TestSize.Level0)
     EXPECT_NE(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU));
     EXPECT_NE(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_WAKELOCK));
     EXPECT_NE(nullptr, statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_ALARM));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_001 end");
 }
 
 /**
@@ -92,7 +92,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_002 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     statsService->SetOnBattery(true);
@@ -111,7 +111,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_002, TestSize.Level0)
     EXPECT_GT(wifiEntity->GetActiveTimeMs(StatsUtils::STATS_TYPE_WIFI_ON),
         ((2 * SERVICE_POWER_CONSUMPTION_DURATION_US) / 3) * 2 / US_PER_MS);
     statsService->SetOnBattery(false);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_002 end");
 }
 
 /**
@@ -122,7 +122,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_003 start");
     std::shared_ptr<BatteryStatsCore> statsCore = std::make_shared<BatteryStatsCore>();
     std::string expectedDebugInfo;
     expectedDebugInfo.append("BATTERY STATS DUMP:\n").append("\n");
@@ -130,7 +130,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_003, TestSize.Level0)
     statsCore->DumpInfo(actualDebugInfo);
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_003 end");
 }
 
 /**
@@ -141,7 +141,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_004 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     int32_t uid = 1003;
@@ -191,7 +191,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_004, TestSize.Level0)
         BatteryStatsInfo::CONSUMPTION_TYPE_GNSS)->GetEntityPowerMah());
     EXPECT_EQ(nullptr, statsCore->GetEntity(
         BatteryStatsInfo::CONSUMPTION_TYPE_GNSS)->GetOrCreateTimer(uid, StatsUtils::STATS_TYPE_INVALID));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_004 end");
 }
 
 /**
@@ -202,7 +202,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_005 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     int32_t uid = 1003;
@@ -242,7 +242,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_005, TestSize.Level0)
         BatteryStatsInfo::CONSUMPTION_TYPE_WIFI)->GetConsumptionCount(StatsUtils::STATS_TYPE_INVALID));
     EXPECT_EQ(nullptr, statsCore->GetEntity(
         BatteryStatsInfo::CONSUMPTION_TYPE_WIFI)->GetOrCreateCounter(StatsUtils::STATS_TYPE_INVALID));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_005 end");
 }
 
 /**
@@ -253,7 +253,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_006 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     auto cpuEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_CPU);
@@ -273,7 +273,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_006, TestSize.Level0)
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, idleEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_PHONE_IDLE));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, idleEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CPU_SUSPEND));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, idleEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_006 end");
 }
 
 /**
@@ -284,7 +284,7 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_007 start");
     auto statsService = BatteryStatsService::GetInstance();
     auto statsCore = statsService->GetBatteryStatsCore();
     auto uidEntity = statsCore->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
@@ -305,6 +305,6 @@ HWTEST_F (StatsServiceCoreTest, StatsServiceCoreTest_007, TestSize.Level0)
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, uidEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_CPU_ACTIVE));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, uidEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_ALARM));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, uidEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceCoreTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceCoreTest_007 end");
 }
 }

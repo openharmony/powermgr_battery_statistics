@@ -33,7 +33,7 @@ namespace {
  */
 HWTEST_F (StatsClientTestMockPeer, StatsClientTestMockPeer_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockPeer_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsClientTestMockPeer_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(true);
@@ -51,6 +51,6 @@ HWTEST_F (StatsClientTestMockPeer, StatsClientTestMockPeer_001, TestSize.Level0)
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("can't connect service", statsClient.Dump(dumpArgs));
-    STATS_HILOGD(LABEL_TEST, "StatsClientTestMockPeer_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsClientTestMockPeer_001 end");
 }
 }
