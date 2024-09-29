@@ -291,6 +291,10 @@ std::string StatsServiceTestProxy::ShellDump(const std::vector<std::string>& arg
         STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
         return result;
     }
+    if (argc > args.size()) {
+        STATS_HILOGE(LABEL_TEST, "argc is greater than args size!");
+        return result;
+    }
 
     data.WriteUint32(argc);
     for (uint32_t i = 0; i < argc; i++) {
