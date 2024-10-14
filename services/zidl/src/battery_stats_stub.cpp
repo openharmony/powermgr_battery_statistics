@@ -35,7 +35,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
 {
     STATS_HILOGD(COMP_SVC, "Remote request, cmd = %{public}d, flags = %{public}d",
         code, option.GetFlags());
-    const uint32_t DFX_DELAY_S = 10;
+    const uint32_t DFX_DELAY_S = 60;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_S, nullptr, nullptr,
         HiviewDFX::XCOLLIE_FLAG_LOG);
 
