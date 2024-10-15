@@ -63,7 +63,7 @@ namespace {
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -84,7 +84,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_001 end");
 }
 
 /**
@@ -94,7 +94,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -126,7 +126,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_002 end");
 }
 
 /**
@@ -136,7 +136,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -157,7 +157,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_003 end");
 }
 
 /**
@@ -167,7 +167,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -197,7 +197,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_004 end");
 }
 
 /**
@@ -207,7 +207,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -228,7 +228,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_005 end");
 }
 
 /**
@@ -238,7 +238,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -266,7 +266,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_006 end");
 }
 
 /**
@@ -276,7 +276,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -304,7 +304,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_007 end");
 }
 
 /**
@@ -314,7 +314,7 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -338,6 +338,6 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(index != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsDumpTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_008 end");
 }
 }

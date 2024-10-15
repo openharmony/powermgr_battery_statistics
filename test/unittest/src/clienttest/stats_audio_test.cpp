@@ -57,7 +57,7 @@ namespace {
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -78,7 +78,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_001 end");
 }
 
 /**
@@ -88,7 +88,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -110,7 +110,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_002 end");
 }
 
 /**
@@ -120,7 +120,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -140,7 +140,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_003, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_003 end");
 }
 
 /**
@@ -150,7 +150,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -186,7 +186,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_004 end");
 }
 
 /**
@@ -196,7 +196,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -226,7 +226,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_005 end");
 }
 
 /**
@@ -236,7 +236,7 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsAudioTest, StatsAudioTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -275,6 +275,6 @@ HWTEST_F (StatsAudioTest, StatsAudioTest_006, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsAudioTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsAudioTest_006 end");
 }
 }

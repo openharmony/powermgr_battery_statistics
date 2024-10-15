@@ -58,7 +58,7 @@ namespace {
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -78,7 +78,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_001 end");
 }
 
 /**
@@ -88,7 +88,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -109,7 +109,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_002 end");
 }
 
 /**
@@ -119,7 +119,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -137,7 +137,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_003, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_003 end");
 }
 
 /**
@@ -147,7 +147,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -171,7 +171,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_004 end");
 }
 
 /**
@@ -181,7 +181,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -208,7 +208,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_005 end");
 }
 
 /**
@@ -218,7 +218,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -241,7 +241,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_006, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_006 end");
 }
 
 /**
@@ -251,7 +251,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -277,7 +277,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_007 end");
 }
 
 /**
@@ -287,7 +287,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -314,7 +314,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_008 end");
 }
 
 /**
@@ -324,7 +324,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_009, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_009 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -349,7 +349,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_009, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_009 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_009 end");
 }
 
 /**
@@ -359,7 +359,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_009, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_010, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_010 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_010 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -387,7 +387,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_010 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_010 end");
 }
 
 /**
@@ -397,7 +397,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_011, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_011 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_011 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -426,7 +426,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_011, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_011 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_011 end");
 }
 
 /**
@@ -436,7 +436,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_012, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_012 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_012 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -449,7 +449,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_012, TestSize.Level0)
     double actualPower = statsClient.GetAppStatsMah(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_012 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_012 end");
 }
 
 /**
@@ -459,7 +459,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_013, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_013 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_013 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -485,7 +485,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_013, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_013 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_013 end");
 }
 
 /**
@@ -495,7 +495,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_014, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_014 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_014 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -516,7 +516,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_014 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_014 end");
 }
 
 /**
@@ -526,7 +526,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_015, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_015 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_015 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -548,7 +548,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_015 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_015 end");
 }
 
 /**
@@ -558,7 +558,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_016, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_016 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_016 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -577,7 +577,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_016, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_016 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_016 end");
 }
 
 /**
@@ -587,7 +587,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_017 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_017 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -624,7 +624,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_017 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_017 end");
 }
 
 /**
@@ -634,7 +634,7 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsCameraTest, StatsCameraTest_018, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_018 start");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_018 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -671,6 +671,6 @@ HWTEST_F (StatsCameraTest, StatsCameraTest_018, TestSize.Level0)
     double actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsCameraTest_018 end");
+    STATS_HILOGI(LABEL_TEST, "StatsCameraTest_018 end");
 }
 }

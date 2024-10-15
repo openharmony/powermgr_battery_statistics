@@ -84,7 +84,7 @@ namespace {
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -115,7 +115,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_001 end");
 }
 
 /**
@@ -126,7 +126,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -169,7 +169,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_002 end");
 }
 
 /**
@@ -180,7 +180,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -210,7 +210,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_003 end");
 }
 
 /**
@@ -221,7 +221,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -262,7 +262,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_004 end");
 }
 
 /**
@@ -273,7 +273,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -307,7 +307,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_005 end");
 }
 
 /**
@@ -318,7 +318,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -360,7 +360,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_006 end");
 }
 
 /**
@@ -371,7 +371,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -412,7 +412,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_007 end");
 }
 
 /**
@@ -423,7 +423,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -461,7 +461,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
     std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_008 end");
 }
 
 /**
@@ -472,7 +472,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_009, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -491,6 +491,6 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_009, TestSize.Level0)
     std::string helpDebugInfo = g_statsServiceProxy->ShellDump(dumpArgsHelp, dumpArgsHelp.size());
     auto helpIndex = helpDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(helpIndex != string::npos);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceDumpTest_009 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_009 end");
 }
 }

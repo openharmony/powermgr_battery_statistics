@@ -78,7 +78,7 @@ namespace {
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -102,7 +102,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_001 end");
 }
 
 /**
@@ -113,7 +113,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -138,7 +138,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_002 end");
 }
 
 /**
@@ -149,7 +149,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -172,7 +172,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_003 end");
 }
 
 /**
@@ -183,7 +183,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -216,7 +216,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_004 end");
 }
 
 /**
@@ -227,7 +227,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -250,7 +250,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_005 end");
 }
 
 /**
@@ -261,7 +261,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -296,7 +296,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_006 end");
 }
 
 /**
@@ -307,7 +307,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -330,7 +330,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_007 end");
 }
 
 /**
@@ -341,7 +341,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -383,7 +383,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected second uid consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual second uid consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_008 end");
 }
 
 /**
@@ -394,7 +394,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -419,7 +419,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
     g_statsServiceProxy->SetOnBattery(true);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_009 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_009 end");
 }
 
 /**
@@ -430,7 +430,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_010 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -459,7 +459,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_010 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_010 end");
 }
 
 /**
@@ -470,7 +470,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_011 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -502,7 +502,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level
 
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, gnssEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_GNSS_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, gnssEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_011 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_011 end");
 }
 
 /**
@@ -513,7 +513,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level
  */
 HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_012 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -530,6 +530,6 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceLocationTest_012 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_012 end");
 }
 }

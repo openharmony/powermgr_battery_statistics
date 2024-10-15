@@ -54,7 +54,7 @@ namespace {
  */
 HWTEST_F (StatsServiceTestMockParcel, StatsServiceTestMockParcel_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTestMockParcel_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTestMockParcel_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     EXPECT_TRUE(g_statsServiceProxy->Reset());
     EXPECT_TRUE(g_statsServiceProxy->SetOnBattery(true));
@@ -72,6 +72,6 @@ HWTEST_F (StatsServiceTestMockParcel, StatsServiceTestMockParcel_001, TestSize.L
     std::vector<std::string> dumpArgs;
     dumpArgs.push_back("-batterystats");
     EXPECT_EQ("remote error", g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size()));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceTestMockParcel_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceTestMockParcel_001 end");
 }
 }

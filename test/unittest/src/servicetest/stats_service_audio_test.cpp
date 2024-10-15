@@ -78,7 +78,7 @@ namespace {
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -102,7 +102,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_001 end");
 }
 
 /**
@@ -113,7 +113,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -138,7 +138,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_002 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_002 end");
 }
 
 /**
@@ -149,7 +149,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -172,7 +172,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_003 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_003 end");
 }
 
 /**
@@ -183,7 +183,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -226,7 +226,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_004 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_004 end");
 }
 
 /**
@@ -237,7 +237,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -272,7 +272,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_005 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_005 end");
 }
 
 /**
@@ -283,7 +283,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -327,7 +327,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_006 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_006 end");
 }
 
 /**
@@ -338,7 +338,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -370,7 +370,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_007, TestSize.Level0)
 
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, audioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_AUDIO_ON));
     EXPECT_EQ(StatsUtils::DEFAULT_VALUE, audioEntity->GetStatsPowerMah(StatsUtils::STATS_TYPE_INVALID, uid));
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_007 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_007 end");
 }
 
 /**
@@ -381,7 +381,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
     g_statsServiceProxy->Reset();
@@ -398,6 +398,6 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsServiceAudioTest_008 end");
+    STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_008 end");
 }
 }

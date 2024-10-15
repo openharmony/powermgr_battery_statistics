@@ -62,7 +62,7 @@ namespace {
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_001 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_001 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -80,7 +80,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_001 end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_001 end");
 }
 
 /**
@@ -91,7 +91,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_001, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_002, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_002 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_002 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -110,7 +110,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_002, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_002 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_002 is end");
 }
 
 /**
@@ -121,7 +121,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_002, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_003, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_003 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_003 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -139,7 +139,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_003, TestSize.Level0)
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_003 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_003 is end");
 }
 
 /**
@@ -150,7 +150,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_003, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_004, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_004 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_004 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -176,7 +176,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_004, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_004 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_004 is end");
 }
 
 /**
@@ -187,7 +187,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_004, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_005, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_005 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_005 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -213,7 +213,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_005, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_005 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_005 is end");
 }
 
 /**
@@ -224,7 +224,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_005, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_006, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_006 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_006 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -242,7 +242,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_006, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_006 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_006 is end");
 }
 
 /**
@@ -253,7 +253,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_006, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_007 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_007 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -281,7 +281,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_007 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_007 is end");
 }
 
 /**
@@ -292,7 +292,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_007, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_008, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_008 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_008 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -310,7 +310,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_008, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_008 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_008 is end");
 }
 
 /**
@@ -321,7 +321,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_008, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_09, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_009 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_009 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -339,7 +339,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_09, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_009 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_009 is end");
 }
 
 /**
@@ -350,7 +350,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_09, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_010, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_010 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_010 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -369,7 +369,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_010, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_010 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_010 is end");
 }
 
 /**
@@ -380,7 +380,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_010, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_011, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_011 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_011 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -397,7 +397,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_011, TestSize.Level0)
     double actualPercent = statsClient.GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_011 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_011 is end");
 }
 
 /**
@@ -408,7 +408,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_011, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_012, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_012 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_012 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -433,7 +433,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_012, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_012 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_012 is end");
 }
 
 /**
@@ -444,7 +444,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_012, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_013, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_013 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_013 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -458,7 +458,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_013, TestSize.Level0)
     long expectValue = StatsUtils::DEFAULT_VALUE;
     long data = statsClient.GetTotalDataBytes(StatsUtils::STATS_TYPE_WIFI_SCAN);
     EXPECT_EQ(data, expectValue);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_013 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_013 is end");
 }
 
 /**
@@ -469,7 +469,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_013, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_014 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_014 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -500,7 +500,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_014 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_014 is end");
 }
 
 
@@ -512,7 +512,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_014, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_015 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_015 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
     statsClient.SetOnBattery(false);
@@ -539,7 +539,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
     statsClient.SetOnBattery(true);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_015 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_015 is end");
 }
 
 /**
@@ -550,7 +550,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_015, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_016 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_016 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -574,7 +574,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_016 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_016 is end");
 }
 
 /**
@@ -585,7 +585,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_016, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_017 is start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_017 is start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -597,7 +597,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
     for (int16_t i = 0; i < totalCount; i++) {
         auto ret =  HiSysEventWrite(HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN,
             HiSysEvent::EventType::STATISTIC);
-        STATS_HILOGD(LABEL_TEST, "HiSysEventWrite return: %{public}d", ret);
+        STATS_HILOGI(LABEL_TEST, "HiSysEventWrite return: %{public}d", ret);
         usleep(POWER_CONSUMPTION_TRIGGERED_US);
         if (i == startDelayPos) {
             statsClient.SetOnBattery(false);
@@ -615,7 +615,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_017 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_017 is end");
 }
 
 /**
@@ -626,7 +626,7 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_017, TestSize.Level0)
  */
 HWTEST_F (StatsWifiTest, StatsWifiTest_018, TestSize.Level0)
 {
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_018 start");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_018 start");
     auto& statsClient = BatteryStatsClient::GetInstance();
     statsClient.Reset();
 
@@ -657,6 +657,6 @@ HWTEST_F (StatsWifiTest, StatsWifiTest_018, TestSize.Level0)
     actualPercent = statsClient.GetAppStatsPercent(uid);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
-    STATS_HILOGD(LABEL_TEST, "StatsWifiTest_018 is end");
+    STATS_HILOGI(LABEL_TEST, "StatsWifiTest_018 is end");
 }
 }
