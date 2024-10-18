@@ -37,7 +37,7 @@ int BatteryStatsStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
         code, option.GetFlags());
     const uint32_t DFX_DELAY_S = 10;
     int id = HiviewDFX::XCollie::GetInstance().SetTimer("BatteryStatsStub", DFX_DELAY_S, nullptr, nullptr,
-        HiviewDFX::XCOLLIE_FLAG_NOOP);
+        HiviewDFX::XCOLLIE_FLAG_LOG);
 
     std::u16string descriptor = BatteryStatsStub::GetDescriptor();
     std::u16string remoteDescriptor = data.ReadInterfaceToken();
