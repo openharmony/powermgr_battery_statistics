@@ -25,6 +25,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
+constexpr int32_t PARAM_MAX_NUM = 2000;
 BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
 {
     STATS_HILOGD(COMP_FWK, "Enter");
@@ -49,6 +50,10 @@ BatteryStatsInfoList BatteryStatsProxy::GetBatteryStats()
         return infoList;
     }
     int32_t size = reply.ReadInt32();
+    if (size < 0 || size > PARAM_MAX_NUM) {
+        STATS_HILOGE(COMP_FWK, "size exceed limit, size=%{public}d", size);
+        return infoList;
+    }
     for (int32_t i = 0; i < size; ++i) {
         std::shared_ptr<BatteryStatsInfo> info = std::make_shared<BatteryStatsInfo>();
         info->ReadFromParcel(reply);
