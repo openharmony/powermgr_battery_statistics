@@ -56,7 +56,7 @@
                     "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client"
                 ],
                 "service_group": [
-                    "//base/powermgr/battery_statistics/sa_profile:batterystats_sa_profile",
+                    "//base/powermgr/battery_statistics/sa_profile:batterystats_service_profile",
                     "//base/powermgr/battery_statistics/services:service"
                 ]
             },
