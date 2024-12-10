@@ -12,6 +12,11 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+
+declare_args() {
+  battery_statistics_feature_enable_batterystat_service = true
+}
+
 defines = []
 if (!defined(global_parts_info) ||
     defined(global_parts_info.communication_bluetooth)) {
