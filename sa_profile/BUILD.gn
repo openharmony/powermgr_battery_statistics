@@ -18,11 +18,3 @@ ohos_sa_profile("batterystats_sa_profile") {
   sources = [ "3304.json" ]
   part_name = "${batterystats_part_name}"
 }
-
-group("batterystats_service_profile") {
-  if (battery_statistics_feature_enable_batterystat_service) {
-    deps = [ ":batterystats_sa_profile" ]
-  } else {
-    deps = []
-  }
-}

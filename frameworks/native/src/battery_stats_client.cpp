@@ -42,7 +42,7 @@ ErrCode BatteryStatsClient::Connect()
         STATS_HILOGE(COMP_FWK, "Fail to get registry");
         return E_STATS_GET_SYSTEM_ABILITY_MANAGER_FAILED;
     }
-    sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
+    sptr<IRemoteObject> remoteObject_ = sam->GetSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
     if (remoteObject_ == nullptr) {
         STATS_HILOGE(COMP_FWK, "Get batterystats service failed");
         return E_STATS_GET_SERVICE_FAILED;
