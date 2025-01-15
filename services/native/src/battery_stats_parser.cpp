@@ -29,9 +29,9 @@
 namespace OHOS {
 namespace PowerMgr {
 namespace {
-static const std::string POWER_AVERAGE_FILE = "etc/profile/power_average.json";
-static const std::string VENDOR_POWER_AVERAGE_FILE = "/vendor/etc/profile/power_average.json";
-static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/profile/power_average.json";
+static const std::string POWER_AVERAGE_FILE = "etc/power_config/power_average.json";
+static const std::string VENDOR_POWER_AVERAGE_FILE = "/vendor/etc/power_config/power_average.json";
+static const std::string SYSTEM_POWER_AVERAGE_FILE = "/system/etc/power_config/power_average.json";
 } // namespace
 bool BatteryStatsParser::Init()
 {

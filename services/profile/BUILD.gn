@@ -13,10 +13,10 @@
 
 import("../../batterystats.gni")
 
-## Install power_average.json to /system/etc/profile/power_average.json
+## Install power_average.json to /system/etc/power_config/power_average.json
 ohos_prebuilt_etc("power_average.json") {
   source = "power_average.json"
-  relative_install_dir = "profile"
+  relative_install_dir = "power_config"
   part_name = "${batterystats_part_name}"
   subsystem_name = "powermgr"
 }
