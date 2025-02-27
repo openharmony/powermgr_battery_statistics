@@ -85,11 +85,21 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
     }
     ifs.close();
 
+    if (root.isNull() || !root.isObject()) {
+        STATS_HILOGE(COMP_SVC, "json root invalid[%{public}s]", path.c_str());
+        return false;
+    }
+
     Json::Value::Members members = root.getMemberNames();
     for (auto iter = members.begin(); iter != members.end(); iter++) {
         std::string type = *iter;
         Json::Value value = root[type];
 
+        if (value.isNull() || !value.isObject()) {
+            STATS_HILOGE(COMP_SVC, "json value invalid[%{public}s]", type.c_str());
+            continue;
+        }
+        
         if (type == StatsUtils::CURRENT_CPU_CLUSTER) {
             clusterNum_ = value.size();
             STATS_HILOGD(COMP_SVC, "Read cluster num: %{public}d", clusterNum_);
