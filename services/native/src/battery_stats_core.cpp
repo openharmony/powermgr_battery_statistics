@@ -975,6 +975,10 @@ bool BatteryStatsCore::LoadBatteryStatsData()
         return false;
     }
     ifs.close();
+    if (root.isNull() || !root.isObject()) {
+        STATS_HILOGE(COMP_SVC, "root invalid");
+        return false;
+    }
     UpdateStatsEntity(root);
     return true;
 }
