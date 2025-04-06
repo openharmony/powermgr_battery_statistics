@@ -70,6 +70,7 @@ ohos_shared_library("batterystats_service") {
 
   external_deps = [ "power_manager:power_permission" ]
   external_deps += [
+    "ability_base:want",
     "battery_manager:batterysrv_client",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
@@ -86,7 +87,6 @@ ohos_shared_library("batterystats_service") {
   ]
 
   defines = []
-  public_external_deps = [ "ability_base:want" ]
 
   if (has_batterystats_bluetooth_part) {
     external_deps += [ "bluetooth:btframework" ]
@@ -110,7 +110,7 @@ ohos_shared_library("batterystats_service") {
   }
   if (false) {
     defines += [ "SYS_MGR_CLIENT_ENABLE" ]
-    public_external_deps = [ "ability_runtime:appkit_native" ]
+    external_deps += [ "ability_runtime:appkit_native" ]
   }
 
   subsystem_name = "powermgr"
@@ -141,7 +141,7 @@ ohos_shared_library("batterystats_stub") {
   if (has_batterystats_display_manager_part) {
     external_deps += [ "display_manager:displaymgr" ]
   }
-  public_external_deps = [ "ability_runtime:appkit_native" ]
+  external_deps += [ "ability_runtime:appkit_native" ]
 
   subsystem_name = "powermgr"
   part_name = "${batterystats_part_name}"
