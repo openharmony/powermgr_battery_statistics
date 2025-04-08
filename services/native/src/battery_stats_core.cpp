@@ -921,6 +921,7 @@ bool BatteryStatsCore::SaveBatteryStatsData()
 
 void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
 {
+    constexpr int PARAMETER_TEN = 10;
     BatteryStatsEntity::ResetStatsEntity();
     Json::Value::Members member = root["Power"].getMemberNames();
     std::map<int32_t, double> tmpUserPowerMap;
@@ -928,7 +929,18 @@ void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
         if (!root["Power"][*iter].isDouble()) {
             continue;
         }
-        auto id = std::stoi(*iter);
+        errno = 0;
+        char* endptr = nullptr;
+        int64_t tempId = strtoll((*iter).c_str(), &endptr, PARAMETER_TEN);
+        if (endptr == (*iter).c_str() || endptr == nullptr || *endptr != '\0') {
+            STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", (*iter).c_str());
+            return;
+        }
+        if (errno == ERANGE && (tempId == LLONG_MAX || tempId == LLONG_MIN)) {
+            STATS_HILOGE(COMP_SVC, "Transit result out of range");
+            return;
+        }
+        auto id = static_cast<int32_t>(tempId);
         int32_t usr = StatsUtils::INVALID_VALUE;
         std::shared_ptr<BatteryStatsInfo> info = std::make_shared<BatteryStatsInfo>();
         if (id > StatsUtils::INVALID_VALUE) {
