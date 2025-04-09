@@ -47,6 +47,7 @@ private:
     bool ReadUidCpuActiveTime();
     bool ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid);
     bool ReadUidCpuClusterTime();
+    bool ParseUid(const std::string& strUid, int32_t& uid);
     void AddIncrementsToClusterTime(std::vector<int64_t>& clusterTime,
         const std::vector<int64_t>& increments, const std::vector<uint16_t>& clusters);
     void ReadPolicy(std::vector<uint16_t>& clusters, std::string& line);
