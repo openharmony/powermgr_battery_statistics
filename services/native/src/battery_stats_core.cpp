@@ -928,7 +928,11 @@ void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
         if (!root["Power"][*iter].isDouble()) {
             continue;
         }
-        auto id = std::stoi(*iter);
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(*iter, result)) {
+            continue;
+        }
+        auto id = static_cast<int32_t>(result);
         int32_t usr = StatsUtils::INVALID_VALUE;
         std::shared_ptr<BatteryStatsInfo> info = std::make_shared<BatteryStatsInfo>();
         if (id > StatsUtils::INVALID_VALUE) {
