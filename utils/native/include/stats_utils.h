@@ -115,6 +115,7 @@ public:
     };
 
     static std::string ConvertStatsType(StatsType statsType);
+    static bool ParseStrtollResult(const std::string& str, int64_t& result);
 private:
     static std::string ConvertTypeForConn(StatsType statsType);
     static std::string ConvertTypeForCpu(StatsType statsType);

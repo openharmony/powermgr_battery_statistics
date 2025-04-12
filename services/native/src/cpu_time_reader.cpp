@@ -170,7 +170,11 @@ bool CpuTimeReader::ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid)
     std::vector<std::string> splitedTime;
     Split(line, ' ', splitedTime);
     for (uint16_t i = 0; i < splitedTime.size(); i++) {
-        timeMs += stoll(splitedTime[i]) * 10; // Unit is 10ms
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedTime[i], result)) {
+            continue;
+        }
+        timeMs += result * 10; // Unit is 10ms
     }
 
     int64_t increment = 0;
@@ -222,7 +226,11 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
         if (splitedLine[INDEX_0] == "cpus") {
             continue;
         } else {
-            uid = stoi(splitedLine[INDEX_0]);
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedLine[INDEX_0], result)) {
+                continue;
+            }
+            uid = static_cast<int32_t>(result);
         }
 
         if (uid > StatsUtils::INVALID_VALUE) {
@@ -249,7 +257,11 @@ void CpuTimeReader::ReadPolicy(std::vector<uint16_t>& clusters, std::string& lin
     Split(line, ' ', splitedPolicy);
     uint32_t step = 2;
     for (uint32_t i = 0; i < splitedPolicy.size(); i += step) {
-        uint16_t coreNum = static_cast<uint16_t>(stoi(splitedPolicy[i + 1]));
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedPolicy[i + 1], result)) {
+            continue;
+        }
+        uint16_t coreNum = static_cast<uint16_t>(result);
         clusters.push_back(coreNum);
         clustersMap_.insert(std::pair<uint16_t, uint16_t>(i, coreNum));
     }
@@ -264,7 +276,11 @@ bool CpuTimeReader::ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, 
     for (uint16_t i = 0; i < clusters.size(); i++) {
         int64_t tempTimeMs = 0;
         for (uint16_t j = 0; j < clusters[i]; j++) {
-            tempTimeMs += stoll(splitedTime[count++]) * 10; // Unit is 10ms
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedTime[count++], result)) {
+                continue;
+            }
+            tempTimeMs += result * 10; // Unit is 10ms
         }
         clusterTime.push_back(tempTimeMs);
     }
@@ -309,7 +325,11 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
 
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        uid = stoi(splitedLine[0]);
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+            continue;
+        }
+        uid = static_cast<int32_t>(result);
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity = bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
@@ -379,7 +399,11 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
         std::vector<int64_t> tempSpeedTimes;
         tempSpeedTimes.clear();
         for (uint16_t j = 0; j < parser->GetSpeedNum(i); j++) {
-            int64_t tempTimeMs = stoll(splitedTime[count++]) * 10; // Unit is 10ms
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedTime[count++], result)) {
+                continue;
+            }
+            int64_t tempTimeMs = result * 10; // Unit is 10ms
             tempSpeedTimes.push_back(tempTimeMs);
         }
         speedTime.insert(std::pair<uint32_t, std::vector<int64_t>>(i, tempSpeedTimes));
@@ -454,9 +478,12 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
         if (splitedLine[0] == "uid") {
             continue;
         } else {
-            uid = stoi(splitedLine[0]);
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+                continue;
+            }
+            uid = static_cast<int32_t>(result);
         }
-
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
@@ -465,7 +492,6 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
                 uidEntity->UpdateUidMap(uid);
             }
         }
-
         std::vector<std::string> splitedTime;
         Split(splitedLine[1], ' ', splitedTime);
 
@@ -493,7 +519,11 @@ bool CpuTimeReader::ReadUidTimeIncrement(std::vector<int64_t>& cpuTime, std::vec
     Split(timeLine, ' ', splitedTime);
     for (uint16_t i = 0; i < splitedTime.size(); i++) {
         int64_t tempTime = 0;
-        tempTime = stoll(splitedTime[i]);
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedTime[i], result)) {
+            continue;
+        }
+        tempTime = result;
         cpuTime.push_back(tempTime);
     }
 
@@ -541,7 +571,11 @@ bool CpuTimeReader::ReadUidCpuTime()
         cpuTime.clear();
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        int32_t uid = stoi(splitedLine[0]);
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+            continue;
+        }
+        int32_t uid = static_cast<int32_t>(result);
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
