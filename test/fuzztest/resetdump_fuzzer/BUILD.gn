@@ -47,6 +47,7 @@ ohos_fuzztest("ResetDumpFuzzTest") {
   ]
 
   external_deps = [
+    "ability_base:want",
     "c_utils:utils",
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
