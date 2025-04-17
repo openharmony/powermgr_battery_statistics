@@ -17,13 +17,15 @@
 
 #include <message_parcel.h>
 
-#include "battery_stats_ipc_interface_code.h"
+#include "ibattery_stats.h"
 #include "battery_stats_proxy.h"
 #include "errors.h"
 #include "message_option.h"
 #include "stats_common.h"
-#include "stats_log.h"
+#include "hilog/log.h"
 #include "stats_utils.h"
+
+using OHOS::HiviewDFX::HiLog;
 
 namespace OHOS {
 namespace PowerMgr {
@@ -34,282 +36,404 @@ StatsServiceTestProxy::StatsServiceTestProxy(const sptr<BatteryStatsService>& se
     }
 }
 
-BatteryStatsInfoList StatsServiceTestProxy::GetBatteryStats()
-{
-    BatteryStatsInfoList infoList;
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, infoList);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return infoList;
-    }
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Send request is failed, error code: %{public}d", ret);
-        return infoList;
-    }
-    int32_t size = reply.ReadInt32();
-    for (int32_t i = 0; i < size; ++i) {
-        std::shared_ptr<BatteryStatsInfo> info = std::make_shared<BatteryStatsInfo>();
-        info->ReadFromParcel(reply);
-        infoList.emplace_back(info);
-    }
-    return infoList;
-}
-
-uint64_t StatsServiceTestProxy::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
+ErrCode StatsServiceTestProxy::GetBatteryStatsIpc(
+    ParcelableBatteryStatsList& batteryStats,
+    int32_t& tempError)
 {
     STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
 
     MessageParcel data;
     MessageParcel reply;
-    MessageOption option;
+    MessageOption option(MessageOption::TF_SYNC);
 
     if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
     }
 
-    uint64_t time = StatsUtils::DEFAULT_VALUE;
-    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType),
-        StatsUtils::DEFAULT_VALUE);
-    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETTIME),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(LABEL_TEST, reply, Uint64, time, StatsUtils::DEFAULT_VALUE);
-    return time;
-}
-
-uint64_t StatsServiceTestProxy::GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
-    }
-
-    uint64_t count = StatsUtils::DEFAULT_VALUE;
-    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, static_cast<int32_t>(statsType),
-        StatsUtils::DEFAULT_VALUE);
-    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(LABEL_TEST, data, Int32, uid, StatsUtils::DEFAULT_VALUE);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETDATA),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    STATS_RETURN_IF_READ_PARCEL_FAILED_WITH_RET(LABEL_TEST, reply, Uint64, count, StatsUtils::DEFAULT_VALUE);
-    return count;
-}
-
-double StatsServiceTestProxy::GetAppStatsMah(const int32_t& uid)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
-    }
-
-    data.WriteInt32(uid);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPMAH),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    double appStatsMah = reply.ReadDouble();
-    STATS_HILOGI(LABEL_TEST, "Get stats mah: %{public}lf for uid: %{public}d", appStatsMah, uid);
-    return appStatsMah;
-}
-
-bool StatsServiceTestProxy::SetOnBattery(bool isOnBattery)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, false);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return false;
-    }
-
-    data.WriteBool(isOnBattery);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_SETONBATT),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-        return false;
-    }
-    return true;
-}
-
-double StatsServiceTestProxy::GetAppStatsPercent(const int32_t& uid)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
-    }
-
-    data.WriteInt32(uid);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETAPPPER),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    double appStatsPercent = reply.ReadDouble();
-    STATS_HILOGI(LABEL_TEST, "Get stats percent: %{public}lf for uid: %{public}d", appStatsPercent, uid);
-    return appStatsPercent;
-}
-
-double StatsServiceTestProxy::GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
-    }
-
-    data.WriteInt32(type);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTMAH),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    double partStatsMah = reply.ReadDouble();
-    STATS_HILOGI(LABEL_TEST, "Get stats mah: %{public}lf for type: %{public}d", partStatsMah, type);
-    return partStatsMah;
-}
-
-double StatsServiceTestProxy::GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type)
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return StatsUtils::DEFAULT_VALUE;
-    }
-
-    data.WriteInt32(type);
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTPER),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-    }
-
-    double partStatsPercent = reply.ReadDouble();
-    STATS_HILOGI(LABEL_TEST, "Get stats percent: %{public}lf for type: %{public}d", partStatsPercent, type);
-    return partStatsPercent;
-}
-
-bool StatsServiceTestProxy::Reset()
-{
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, false);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return false;
-    }
-
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_RESET),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "Transact is failed, error code: %{public}d", ret);
-        return false;
-    }
-    return true;
-}
-
-std::string StatsServiceTestProxy::ShellDump(const std::vector<std::string>& args, uint32_t argc)
-{
-    std::string result = "remote error";
-    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, result);
-
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
-        STATS_HILOGE(LABEL_TEST, "Write descriptor failed");
-        return result;
-    }
-    if (argc > args.size()) {
-        STATS_HILOGE(LABEL_TEST, "argc is greater than args size!");
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_BATTERY_STATS_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
         return result;
     }
 
-    data.WriteUint32(argc);
-    for (uint32_t i = 0; i < argc; i++) {
-        data.WriteString(args[i]);
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_BATTERY_STATS_IPC));
+        return errCode;
     }
-    int ret = stub_->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_DUMP),
-        data, reply, option);
-    if (ret != ERR_OK) {
-        STATS_HILOGE(LABEL_TEST, "SendRequest is failed, error code: %{public}d", ret);
+
+    std::unique_ptr<ParcelableBatteryStatsList> batteryStatsInfo(reply.ReadParcelable<ParcelableBatteryStatsList>());
+    if (batteryStatsInfo != nullptr) {
+        batteryStats = *batteryStatsInfo;
+    }
+
+    tempError = reply.ReadInt32();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::SetOnBatteryIpc(
+    bool isOnBattery)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(isOnBattery ? 1 : 0)) {
+        HiLog::Error(LABEL, "Write [isOnBattery] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SET_ON_BATTERY_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
         return result;
     }
-    result = reply.ReadString();
 
-    return result;
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SET_ON_BATTERY_IPC));
+        return errCode;
+    }
+
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetAppStatsMahIpc(
+    int32_t uid,
+    double& appStatsMah,
+    int32_t& tempError)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(uid)) {
+        HiLog::Error(LABEL, "Write [uid] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_APP_STATS_MAH_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_APP_STATS_MAH_IPC));
+        return errCode;
+    }
+
+    appStatsMah = reply.ReadDouble();
+    tempError = reply.ReadInt32();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetAppStatsPercentIpc(
+    int32_t uid,
+    double& appStatsPercent,
+    int32_t& tempError)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(uid)) {
+        HiLog::Error(LABEL, "Write [uid] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_APP_STATS_PERCENT_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_APP_STATS_PERCENT_IPC));
+        return errCode;
+    }
+
+    appStatsPercent = reply.ReadDouble();
+    tempError = reply.ReadInt32();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetPartStatsMahIpc(
+    int32_t type,
+    double& partStatsMah,
+    int32_t& tempError)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(type)) {
+        HiLog::Error(LABEL, "Write [type] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_PART_STATS_MAH_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_PART_STATS_MAH_IPC));
+        return errCode;
+    }
+
+    partStatsMah = reply.ReadDouble();
+    tempError = reply.ReadInt32();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetPartStatsPercentIpc(
+    int32_t type,
+    double& partStatsPercent,
+    int32_t& tempError)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(type)) {
+        HiLog::Error(LABEL, "Write [type] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_PART_STATS_PERCENT_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_PART_STATS_PERCENT_IPC));
+        return errCode;
+    }
+
+    partStatsPercent = reply.ReadDouble();
+    tempError = reply.ReadInt32();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetTotalTimeSecondIpc(
+    int32_t statsType,
+    int32_t uid,
+    uint64_t& totalTimeSecond)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(statsType)) {
+        HiLog::Error(LABEL, "Write [statsType] failed!");
+        return ERR_INVALID_DATA;
+    }
+    if (!data.WriteInt32(uid)) {
+        HiLog::Error(LABEL, "Write [uid] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_TOTAL_TIME_SECOND_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_TOTAL_TIME_SECOND_IPC));
+        return errCode;
+    }
+
+    totalTimeSecond = reply.ReadUint64();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::GetTotalDataBytesIpc(
+    int32_t statsType,
+    int32_t uid,
+    uint64_t& totalDataBytes)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (!data.WriteInt32(statsType)) {
+        HiLog::Error(LABEL, "Write [statsType] failed!");
+        return ERR_INVALID_DATA;
+    }
+    if (!data.WriteInt32(uid)) {
+        HiLog::Error(LABEL, "Write [uid] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_TOTAL_DATA_BYTES_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_TOTAL_DATA_BYTES_IPC));
+        return errCode;
+    }
+
+    totalDataBytes = reply.ReadUint64();
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::ResetIpc()
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC));
+        return errCode;
+    }
+
+    return ERR_OK;
+}
+
+ErrCode StatsServiceTestProxy::ShellDumpIpc(
+    const std::vector<std::string>& args,
+    uint32_t argc,
+    std::string& dumpShell)
+{
+    STATS_RETURN_IF_WITH_RET(stub_ == nullptr, StatsUtils::DEFAULT_VALUE);
+
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    if (!data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor())) {
+        HiLog::Error(LABEL, "Write interface token failed!");
+        return ERR_INVALID_VALUE;
+    }
+
+    if (args.size() > static_cast<size_t>(VECTOR_MAX_SIZE)) {
+        HiLog::Error(LABEL, "The vector/array size exceeds the security limit!");
+        return ERR_INVALID_DATA;
+    }
+    data.WriteInt32(args.size());
+    for (auto it1 = args.begin(); it1 != args.end(); ++it1) {
+        if (!data.WriteString16(Str8ToStr16((*it1)))) {
+            HiLog::Error(LABEL, "Write [(*it1)] failed!");
+            return ERR_INVALID_DATA;
+        }
+    }
+    if (!data.WriteUint32(argc)) {
+        HiLog::Error(LABEL, "Write [argc] failed!");
+        return ERR_INVALID_DATA;
+    }
+
+    int32_t result = stub_->SendRequest(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC), data, reply, option);
+    if (FAILED(result)) {
+        HiLog::Error(LABEL, "Send request failed!");
+        return result;
+    }
+
+    ErrCode errCode = reply.ReadInt32();
+    if (FAILED(errCode)) {
+        HiLog::Error(LABEL, "Read result failed, code is: %{public}d.",
+            static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC));
+        return errCode;
+    }
+
+    dumpShell = Str16ToStr8(reply.ReadString16());
+    return ERR_OK;
 }
 } // namespace PowerMgr
 } // namespace OHOS

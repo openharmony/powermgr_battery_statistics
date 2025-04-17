@@ -60,6 +60,12 @@ if (has_batterystats_call_manager_part) {
 ohos_unittest("stats_service_alarm_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_alarm_test.cpp",
@@ -90,6 +96,12 @@ ohos_unittest("stats_service_alarm_test") {
 ohos_unittest("stats_service_audio_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_audio_test.cpp",
@@ -119,6 +131,12 @@ ohos_unittest("stats_service_audio_test") {
 ############################service_bluetooth_test#############################
 ohos_unittest("stats_service_bluetooth_test") {
   module_out_path = module_output_path
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
@@ -151,6 +169,12 @@ ohos_unittest("stats_service_bluetooth_test") {
 ohos_unittest("stats_service_camera_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_camera_test.cpp",
@@ -180,6 +204,12 @@ ohos_unittest("stats_service_camera_test") {
 ############################service_display_test#############################
 ohos_unittest("stats_service_display_test") {
   module_out_path = module_output_path
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
@@ -211,6 +241,12 @@ ohos_unittest("stats_service_display_test") {
 ohos_unittest("stats_service_dump_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_dump_test.cpp",
@@ -240,6 +276,12 @@ ohos_unittest("stats_service_dump_test") {
 ############################service_location_test#############################
 ohos_unittest("stats_service_location_test") {
   module_out_path = module_output_path
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
@@ -271,6 +313,12 @@ ohos_unittest("stats_service_location_test") {
 ohos_unittest("stats_service_phone_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_phone_test.cpp",
@@ -301,6 +349,12 @@ ohos_unittest("stats_service_phone_test") {
 ohos_unittest("stats_service_powermgr_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_powermgr_test.cpp",
@@ -330,6 +384,12 @@ ohos_unittest("stats_service_powermgr_test") {
 ############################service_wifi_test#############################
 ohos_unittest("stats_service_wifi_test") {
   module_out_path = module_output_path
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
@@ -362,6 +422,12 @@ ohos_unittest("stats_service_wifi_test") {
 ohos_unittest("stats_service_subscriber_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "stats_service_subscriber_test.cpp",
@@ -392,6 +458,12 @@ ohos_unittest("stats_service_subscriber_test") {
 ohos_unittest("stats_service_stub_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [ "stats_service_stub_test.cpp" ]
 
   configs = [
@@ -414,6 +486,12 @@ ohos_unittest("stats_service_stub_test") {
 ohos_unittest("stats_service_core_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [ "stats_service_core_test.cpp" ]
 
   configs = [
@@ -435,6 +513,12 @@ ohos_unittest("stats_service_core_test") {
 ############################service_test_mock_parcel#############################
 ohos_unittest("stats_service_test_mock_parcel") {
   module_out_path = module_output_path
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
   sources = [
     "${batterystats_root_path}/test/unittest/mock/source/mock_message_parcel.cpp",

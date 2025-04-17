@@ -17,7 +17,7 @@
 
 #define FUZZ_PROJECT_NAME "getbatterystats_fuzzer"
 
-#include "battery_stats_ipc_interface_code.h"
+#include "ibattery_stats.h"
 #include "batterystats_fuzzer.h"
 
 using namespace OHOS::PowerMgr;
@@ -30,6 +30,7 @@ BatteryStatsFuzzerTest g_serviceTest;
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
-    g_serviceTest.TestStatsServiceStub(static_cast<uint32_t>(BatteryStatsInterfaceCode::BATTERY_STATS_GET), data, size);
+    g_serviceTest.TestStatsServiceStub(
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_BATTERY_STATS_IPC), data, size);
     return 0;
 }

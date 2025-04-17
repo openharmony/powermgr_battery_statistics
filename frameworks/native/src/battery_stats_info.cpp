@@ -20,6 +20,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
+constexpr int32_t PARAM_MAX_NUM = 2000;
 bool BatteryStatsInfo::Marshalling(Parcel& parcel) const
 {
     STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, parcel, Int32, uid_, false);
@@ -207,6 +208,42 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
             break;
     }
     return result;
+}
+
+bool ParcelableBatteryStatsList::Marshalling(Parcel& parcel) const
+{
+    int32_t size = static_cast<int32_t>(statsList_.size());
+    if (!parcel.WriteInt32(size)) {
+        STATS_HILOGE(COMP_SVC, "Write size failed");
+        return false;
+    }
+    bool res = true;
+    for (const auto& templateVal : statsList_) {
+        if (templateVal == nullptr) {
+            continue;
+        }
+        res = templateVal->Marshalling(parcel);
+    }
+    return res;
+}
+
+ParcelableBatteryStatsList* ParcelableBatteryStatsList::Unmarshalling(Parcel& parcel)
+{
+    auto listPtr = std::make_unique<ParcelableBatteryStatsList>();
+
+    int32_t size = parcel.ReadInt32();
+    if (size < 0 || size > PARAM_MAX_NUM) {
+        STATS_HILOGE(COMP_FWK, "size exceed limit, size=%{public}d", size);
+        return nullptr;
+    }
+
+    for (int32_t i = 0; i < size; ++i) {
+        auto info = std::make_shared<BatteryStatsInfo>();
+        info->ReadFromParcel(parcel);
+        listPtr->statsList_.emplace_back(info);
+    }
+
+    return listPtr.release();
 }
 } // namespace PowerMgr
 } // namespace OHOS

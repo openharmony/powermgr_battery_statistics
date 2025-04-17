@@ -37,6 +37,7 @@
 #include "battery_stats_subscriber.h"
 #include "stats_common.h"
 #include "stats_hisysevent.h"
+#include "stats_xcollie.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -111,8 +112,7 @@ void BatteryStatsService::RegisterBootCompletedCallback()
 
 void BatteryStatsService::OnAddSystemAbility(int32_t systemAbilityId, const std::string& deviceId)
 {
-    STATS_HILOGI(COMP_SVC, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId,
-                 deviceId.c_str());
+    STATS_HILOGI(COMP_SVC, "systemAbilityId=%{public}d, deviceId=%{private}s", systemAbilityId, deviceId.c_str());
     if (systemAbilityId == DFX_SYS_EVENT_SERVICE_ABILITY_ID) {
         AddHiSysEventListener();
     }
@@ -274,7 +274,7 @@ uint64_t BatteryStatsService::GetTotalTimeSecond(const StatsUtils::StatsType& st
 {
     if (!Permission::IsSystem()) {
         lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-        return 0;
+        return ERR_OK;
     }
     STATS_HILOGD(COMP_SVC, "statsType: %{public}d, uid: %{public}d", statsType, uid);
     uint64_t timeSecond;
@@ -292,7 +292,7 @@ uint64_t BatteryStatsService::GetTotalDataBytes(const StatsUtils::StatsType& sta
 {
     if (!Permission::IsSystem()) {
         lastError_ = StatsError::ERR_SYSTEM_API_DENIED;
-        return 0;
+        return ERR_OK;
     }
     return core_->GetTotalDataCount(statsType, uid);
 }
@@ -341,11 +341,84 @@ std::string BatteryStatsService::ShellDump(const std::vector<std::string>& args,
     return result;
 }
 
-StatsError BatteryStatsService::GetLastError()
+int32_t BatteryStatsService::GetBatteryStatsIpc(ParcelableBatteryStatsList& batteryStats, int32_t& tempError)
 {
-    StatsError tmpError = lastError_;
+    StatsXCollie statsXCollie("BatteryStatsService::GetBatteryStatsIpc", false);
+    batteryStats.statsList_ = GetBatteryStats();
+    tempError = static_cast<int32_t>(lastError_);
     lastError_ = StatsError::ERR_OK;
-    return tmpError;
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetAppStatsMahIpc(int32_t uid, double& appStatsMah, int32_t& tempError)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetAppStatsMahIpc", false);
+    appStatsMah = GetAppStatsMah(uid);
+    tempError = static_cast<int32_t>(lastError_);
+    lastError_ = StatsError::ERR_OK;
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetAppStatsPercentIpc(int32_t uid, double& appStatsPercent, int32_t& tempError)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetAppStatsPercentIpc", false);
+    appStatsPercent = GetAppStatsPercent(uid);
+    tempError = static_cast<int32_t>(lastError_);
+    lastError_ = StatsError::ERR_OK;
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetPartStatsMahIpc(int32_t type, double& partStatsMah, int32_t& tempError)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetPartStatsMahIpc", false);
+    partStatsMah = GetPartStatsMah(static_cast<BatteryStatsInfo::ConsumptionType>(type));
+    tempError = static_cast<int32_t>(lastError_);
+    lastError_ = StatsError::ERR_OK;
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetPartStatsPercentIpc(int32_t type, double& partStatsPercent, int32_t& tempError)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetPartStatsPercentIpc", false);
+    partStatsPercent = GetPartStatsPercent(static_cast<BatteryStatsInfo::ConsumptionType>(type));
+    tempError = static_cast<int32_t>(lastError_);
+    lastError_ = StatsError::ERR_OK;
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetTotalTimeSecondIpc(int32_t statsType, int32_t uid, uint64_t& totalTimeSecond)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetTotalTimeSecondIpc", false);
+    totalTimeSecond = GetTotalTimeSecond(static_cast<StatsUtils::StatsType>(statsType), uid);
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::GetTotalDataBytesIpc(int32_t statsType, int32_t uid, uint64_t& totalDataBytes)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::GetTotalDataBytesIpc", false);
+    totalDataBytes = GetTotalDataBytes(static_cast<StatsUtils::StatsType>(statsType), uid);
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::ResetIpc()
+{
+    StatsXCollie statsXCollie("BatteryStatsService::ResetIpc", false);
+    Reset();
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::SetOnBatteryIpc(bool isOnBattery)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::SetOnBatteryIpc", false);
+    SetOnBattery(isOnBattery);
+    return ERR_OK;
+}
+
+int32_t BatteryStatsService::ShellDumpIpc(const std::vector<std::string>& args, uint32_t argc, std::string& dumpShell)
+{
+    StatsXCollie statsXCollie("BatteryStatsService::ShellDumpIpc", false);
+    dumpShell = ShellDump(args, argc);
+    return ERR_OK;
 }
 
 void BatteryStatsService::DestroyInstance()

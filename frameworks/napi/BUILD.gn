@@ -34,6 +34,7 @@ ohos_shared_library("batterystatistics") {
 
   deps = [
     "${batterystats_inner_api}:batterystats_client",
+    "${batterystats_service_path}:batterystats_proxy",
     "${batterystats_utils_path}:batterystats_utils",
   ]
 

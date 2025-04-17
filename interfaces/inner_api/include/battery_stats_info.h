@@ -25,7 +25,7 @@
 
 namespace OHOS {
 namespace PowerMgr {
-class BatteryStatsInfo : Parcelable {
+class BatteryStatsInfo : public Parcelable {
 public:
     enum ConsumptionType {
         CONSUMPTION_TYPE_INVALID = -17,
@@ -68,6 +68,14 @@ private:
     static std::string ConvertTypeForApp(ConsumptionType type);
 };
 using BatteryStatsInfoList = std::list<std::shared_ptr<BatteryStatsInfo>>;
+
+class ParcelableBatteryStatsList : public Parcelable {
+public:
+    BatteryStatsInfoList statsList_;
+
+    virtual bool Marshalling(Parcel &parcel) const override;
+    static ParcelableBatteryStatsList* Unmarshalling(Parcel &parcel);
+};
 } // namespace PowerMgr
 } // namespace OHOS
 #endif // BATTERY_STATS_INFO_H

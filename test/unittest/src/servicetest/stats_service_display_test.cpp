@@ -57,7 +57,7 @@ static void SetLastBrightness(int32_t lastBrightness)
         HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     GTEST_LOG_(INFO) << __func__ << ": Battery stats client reset";
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 }
 
 void StatsServiceDisplayTest::SetUpTestCase()
@@ -108,7 +108,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -124,10 +124,12 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_001, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
         HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -145,8 +147,8 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -164,11 +166,13 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_002, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_002 end");
 }
 
@@ -183,7 +187,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -205,7 +209,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_003, TestSize.Level0)
     double average = screenBrightnessAverage * brightness + screenOnAverage;
 
     double expectedPower = average * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -224,7 +230,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -242,8 +248,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_004, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::SCREEN_STATE,
         HiSysEvent::EventType::STATISTIC, "STATE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_004 end");
@@ -260,7 +267,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -283,7 +290,10 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_005, TestSize.Level0)
 
     double expectedPower = average * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN) {
             actualPower = (*it).GetPower();
@@ -307,7 +317,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -328,7 +338,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_006, TestSize.Level0)
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
     double expectedPower = average * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -347,7 +359,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -376,7 +388,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_007, TestSize.Level0)
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
     double expectedPower = average * 2 * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -395,7 +409,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t brightness = 100;
 
@@ -405,7 +419,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_008, TestSize.Level0)
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -423,7 +439,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -449,7 +465,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_009, TestSize.Level0)
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
     double expectedPower = average * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -468,7 +486,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -496,7 +514,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_010, TestSize.Level0)
     double curBrightnessPower = screenBrightnessAverage * currentBrightness * SERVICE_POWER_CONSUMPTION_DURATION_US;
 
     double expectedPower = (screenOnPower + lastBrightnessPower + curBrightnessPower) / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -515,7 +535,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_ON);
     int32_t stateOff = static_cast<int32_t>(OHOS::DisplayPowerMgr::DisplayState::DISPLAY_OFF);
@@ -544,7 +564,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_011, TestSize.Level0)
     double average = screenBrightnessAverage * lastBrightness + screenOnAverage;
 
     double expectedPower = average * 3 * SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -563,7 +585,7 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDisplayTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::DISPLAY,
     StatsHiSysEvent::SCREEN_STATE, HiSysEvent::EventType::STATISTIC);
@@ -574,7 +596,9 @@ HWTEST_F (StatsServiceDisplayTest, StatsServiceDisplayTest_012, TestSize.Level0)
     StatsHiSysEvent::SCREEN_STATE, HiSysEvent::EventType::STATISTIC);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_SCREEN, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

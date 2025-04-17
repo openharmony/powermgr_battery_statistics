@@ -81,7 +81,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -95,10 +95,12 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_001, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -116,7 +118,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     int32_t uid = 10003;
@@ -133,7 +135,9 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_002, TestSize.Level
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -152,7 +156,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -169,7 +173,9 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_003, TestSize.Level
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_003 end");
@@ -186,7 +192,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     int32_t uid = 10003;
@@ -211,7 +217,9 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_004, TestSize.Level
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -230,7 +238,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -244,9 +252,10 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_005, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -264,7 +273,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     int32_t uid = 10003;
@@ -291,7 +300,9 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_006, TestSize.Level
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -310,7 +321,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     std::string stateOn = "start";
     std::string stateOff = "stop";
@@ -325,8 +336,9 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_007, TestSize.Level
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_GNSS_ON, uid);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_GNSS_ON, uid, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -344,7 +356,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     std::string stateOn = "start";
@@ -369,16 +381,17 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_008, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pidOne, "UID", uidOne, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uidOne);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uidOne, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected first uid consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual first uid consumption = " << actualPower << " mAh";
     EXPECT_LE(devPrecent, DEVIATION_PERCENT_THRESHOLD);
 
     expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    actualPower = g_statsServiceProxy->GetAppStatsMah(uidTwo);
+    g_statsServiceProxy->GetAppStatsMahIpc(uidTwo, actualPower, tempError);
     devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected second uid consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual second uid consumption = " << actualPower << " mAh";
@@ -397,8 +410,8 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -412,13 +425,14 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_009, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_009 end");
 }
 
@@ -433,7 +447,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     int32_t uid = 10003;
@@ -445,16 +459,18 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_010, TestSize.Level
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->SetOnBatteryIpc(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * gnssOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -473,7 +489,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_011, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double gnssOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_GNSS_ON);
     int32_t uid = 10003;
@@ -516,7 +532,7 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServiceLocationTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     StatsWriteHiSysEvent(statsService,
@@ -524,9 +540,10 @@ HWTEST_F (StatsServiceLocationTest, StatsServiceLocationTest_012, TestSize.Level
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::LOCATION, StatsHiSysEvent::GNSS_STATE, HiSysEvent::EventType::STATISTIC);
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

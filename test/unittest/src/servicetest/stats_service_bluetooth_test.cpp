@@ -123,7 +123,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -136,10 +136,12 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_001, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -157,7 +159,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t uid = 10003;
@@ -172,9 +174,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_002, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -193,7 +196,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
@@ -209,8 +212,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_003, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_003 end");
@@ -227,7 +231,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -245,7 +249,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_004, TestSize.Lev
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH) {
             actualPower = (*it).GetPower();
@@ -269,7 +276,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -292,9 +299,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_005, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -313,7 +321,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -339,8 +347,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_006, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
+    int32_t tempError;
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -359,7 +369,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -374,8 +384,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_007, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -393,7 +405,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t uid = 10003;
@@ -419,8 +431,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_008, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
+    int32_t tempError;
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -439,7 +453,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -454,8 +468,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_009, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON, -1, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -473,7 +488,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -487,9 +502,12 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_010, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -507,7 +525,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
 
@@ -523,9 +541,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_011, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -544,7 +563,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
     int32_t stateOff = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_OFF);
@@ -560,8 +579,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_012, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_012 end");
@@ -578,7 +598,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -596,7 +616,10 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_013, TestSize.Lev
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH) {
             actualPower = (*it).GetPower();
@@ -620,7 +643,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -645,7 +668,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_014, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -664,7 +689,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::BTStateID::STATE_TURN_ON);
@@ -691,7 +716,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_015, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -710,7 +737,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -726,7 +753,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_016, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -744,7 +773,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
     int32_t uid = 10003;
@@ -771,7 +800,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_017, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -790,7 +821,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -805,8 +836,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_018, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON, -1, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -824,7 +856,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -838,10 +870,12 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_019, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -859,7 +893,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_020 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     int32_t uid = 10003;
@@ -876,7 +910,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_020, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -895,7 +931,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_021 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -911,8 +947,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_021, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_021 end");
@@ -929,7 +966,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_022 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
@@ -954,7 +991,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_022, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -973,7 +1012,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_023 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     int32_t stateOn = static_cast<int32_t>(Bluetooth::DISCOVERY_STARTED);
@@ -999,7 +1038,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_023, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -1018,7 +1059,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_024 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -1034,7 +1075,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_024, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -1052,7 +1095,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_025 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     int32_t uid = 10003;
@@ -1079,7 +1122,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_025, TestSize.Lev
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -1098,7 +1143,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_026 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -1113,8 +1158,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_026, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN, uid);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON, uid, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -1132,7 +1178,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_027 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_SCAN);
     int32_t uidOne = 10003;
@@ -1157,16 +1203,18 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_027, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pidOne, "UID", uidOne, "STATE", stateOff);
-
+    int32_t tempError;
     double expectedPowerOne = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
-    double actualPowerOne = g_statsServiceProxy->GetAppStatsMah(uidOne);
+    double actualPowerOne;
+    g_statsServiceProxy->GetAppStatsMahIpc(uidOne, actualPowerOne, tempError);
     double devPrecentOne = abs(expectedPowerOne - actualPowerOne) / expectedPowerOne;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption One = " << expectedPowerOne << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption One = " << actualPowerOne << " mAh";
     EXPECT_LE(devPrecentOne, DEVIATION_PERCENT_THRESHOLD);
 
     double expectedPowerTwo = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrScanAverageMa / US_PER_HOUR;
-    double actualPowerTwo = g_statsServiceProxy->GetAppStatsMah(uidTwo);
+    double actualPowerTwo;
+    g_statsServiceProxy->GetAppStatsMahIpc(uidTwo, actualPowerTwo, tempError);
     double devPrecentTwo = abs(expectedPowerTwo - actualPowerTwo) / expectedPowerTwo;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
@@ -1185,7 +1233,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_028 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -1197,10 +1245,12 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_028, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -1218,7 +1268,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_029 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
     int32_t uid = 10003;
@@ -1233,7 +1283,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_029, TestSize.Lev
         "PID", pid, "UID", uid);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -1252,7 +1304,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_030 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -1267,7 +1319,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_030, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid);
 
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_030 end");
@@ -1284,7 +1338,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_031 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
     int32_t uid = 10003;
@@ -1307,7 +1361,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_031, TestSize.Lev
         "PID", pid, "UID", uid);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -1326,7 +1382,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_032 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -1339,8 +1395,9 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_032, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN, uid);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON, uid, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -1358,7 +1415,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_033 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBleScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_SCAN);
     int32_t uidOne = 10003;
@@ -1381,16 +1438,18 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_033, TestSize.Lev
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BLE_SCAN_STOP, HiSysEvent::EventType::STATISTIC,
         "PID", pidOne, "UID", uidOne);
-
+    int32_t tempError;
     double expectedPowerOne = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
-    double actualPowerOne = g_statsServiceProxy->GetAppStatsMah(uidOne);
+    double actualPowerOne;
+    g_statsServiceProxy->GetAppStatsMahIpc(uidOne, actualPowerOne, tempError);
     double devPrecentOne = abs(expectedPowerOne - actualPowerOne) / expectedPowerOne;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption One = " << expectedPowerOne << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption One = " << actualPowerOne << " mAh";
     EXPECT_LE(devPrecentOne, DEVIATION_PERCENT_THRESHOLD);
 
     double expectedPowerTwo = SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBleScanAverageMa / US_PER_HOUR;
-    double actualPowerTwo = g_statsServiceProxy->GetAppStatsMah(uidTwo);
+    double actualPowerTwo;
+    g_statsServiceProxy->GetAppStatsMahIpc(uidTwo, actualPowerTwo, tempError);
     double devPrecentTwo = abs(expectedPowerTwo - actualPowerTwo) / expectedPowerTwo;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption Two = " << expectedPowerTwo << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption Two = " << actualPowerTwo << " mAh";
@@ -1409,7 +1468,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_034 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -1420,16 +1479,18 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_034, TestSize.Lev
     int32_t pid = 3458;
 
     WriteBluetoothEvent(pid, uid, testTimeMs);
-
+    int32_t tempError;
     double expectedPartPower = testTimeMs * (bluetoothBrOnAverageMa + bluetoothBleOnAverageMa) / MS_PER_HOUR;
-    double actualPartPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPartPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPartPower, tempError);
     double devPrecentPart = abs(expectedPartPower - actualPartPower) / expectedPartPower;
     GTEST_LOG_(INFO) << __func__ << ": expected part consumption = " << expectedPartPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual part consumption = " << actualPartPower << " mAh";
     EXPECT_LE(devPrecentPart, DEVIATION_PERCENT_THRESHOLD);
 
     double expectedSoftPower = testTimeMs * (bluetoothBrScanAverageMa + bluetoothBleScanAverageMa) / MS_PER_HOUR;
-    double actualSoftPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualSoftPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualSoftPower, tempError);
     double devPrecentSoft = abs(expectedSoftPower - actualSoftPower) / expectedSoftPower;
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedSoftPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
@@ -1448,26 +1509,28 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_035, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_035 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     long testTimeMs = 200;
     int32_t uid = 10003;
     int32_t pid = 3458;
 
     WriteBluetoothEvent(pid, uid, testTimeMs);
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPartPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPartPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPartPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected part consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual part consumption = " << actualPartPower << " mAh";
     EXPECT_EQ(expectedPower, actualPartPower);
 
-    double actualSoftPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualSoftPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualSoftPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_EQ(expectedPower, actualSoftPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_035 end");
 }
 
@@ -1482,7 +1545,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_036 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     int32_t uid = 10003;
@@ -1494,16 +1557,18 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_036, TestSize.Lev
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->SetOnBatteryIpc(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::BR_SWITCH_STATE, HiSysEvent::EventType::STATISTIC,
         "PID", pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * bluetoothBrOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -1522,7 +1587,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_037, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_037 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double bluetoothBrOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BR_ON);
     double bluetoothBleOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_BLUETOOTH_BLE_ON);
@@ -1571,7 +1636,7 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_038, TestSize.Lev
     STATS_HILOGI(LABEL_TEST, "StatsServiceBluetoothTest_038 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
     int32_t uid = 10003;
 
     StatsWriteHiSysEvent(statsService,
@@ -1597,15 +1662,17 @@ HWTEST_F (StatsServiceBluetoothTest, StatsServiceBluetoothTest_038, TestSize.Lev
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::BT_SERVICE, StatsHiSysEvent::DISCOVERY_STATE, HiSysEvent::EventType::STATISTIC);
-        
+    int32_t tempError;
     double expectedPartPower = StatsUtils::DEFAULT_VALUE;
-    double actualPartPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH);
+    double actualPartPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_BLUETOOTH, actualPartPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected part consumption = " << expectedPartPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual part consumption = " << actualPartPower << " mAh";
     EXPECT_EQ(expectedPartPower, actualPartPower);
 
     double expectedSoftPower = StatsUtils::DEFAULT_VALUE;
-    double actualSoftPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualSoftPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualSoftPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected soft consumption = " << expectedSoftPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual soft consumption = " << actualSoftPower << " mAh";
     EXPECT_EQ(expectedSoftPower, actualSoftPower);

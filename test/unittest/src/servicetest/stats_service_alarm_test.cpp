@@ -81,7 +81,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -92,10 +92,12 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_001, TestSize.Level0)
             HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -113,7 +115,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     int32_t uid = 10003;
@@ -125,9 +127,10 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_002, TestSize.Level0)
             HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
-
+    int32_t tempError;
     double expectedPower = count * alarmOnAverageMa;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -146,7 +149,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -159,8 +162,9 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_003, TestSize.Level0)
             HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
-
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_003 end");
@@ -177,8 +181,8 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -189,13 +193,14 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_004, TestSize.Level0)
             HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC,
             "CALLER_PID", pid, "CALLER_UID", uid);
     }
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_004 end");
 }
 
@@ -210,7 +215,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     int32_t uid = 10003;
@@ -250,7 +255,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double alarmOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_ALARM_ON);
     int32_t uid = 10003;
@@ -287,7 +292,7 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAlarmTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int16_t count = 10;
@@ -296,9 +301,10 @@ HWTEST_F (StatsServiceAlarmTest, StatsServiceAlarmTest_007, TestSize.Level0)
         StatsWriteHiSysEvent(statsService,
             HiSysEvent::Domain::TIME, StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT, HiSysEvent::EventType::STATISTIC);
     }
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

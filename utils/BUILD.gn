@@ -39,6 +39,7 @@ ohos_static_library("batterystats_utils") {
     "native/src/stats_helper.cpp",
     "native/src/stats_hisysevent.cpp",
     "native/src/stats_utils.cpp",
+    "native/src/stats_xcollie.cpp",
   ]
 
   configs = [ "${batterystats_utils_path}:coverage_flags" ]
@@ -46,6 +47,7 @@ ohos_static_library("batterystats_utils") {
   public_configs = [ ":batterystats_utils_config" ]
   external_deps = [
     "c_utils:utils",
+    "hicollie:libhicollie",
     "hilog:libhilog",
   ]
   subsystem_name = "powermgr"

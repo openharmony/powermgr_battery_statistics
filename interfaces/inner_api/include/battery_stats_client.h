@@ -61,6 +61,7 @@ private:
 
     ErrCode Connect();
     StatsError lastError_ {StatsError::ERR_OK};
+    StatsError tempError_ {StatsError::ERR_OK};
     sptr<IBatteryStats> proxy_ {nullptr};
     sptr<IRemoteObject::DeathRecipient> deathRecipient_ {nullptr};
     void ResetProxy(const wptr<IRemoteObject>& remote);

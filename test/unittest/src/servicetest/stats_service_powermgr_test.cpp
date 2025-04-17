@@ -87,7 +87,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -102,8 +102,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_001, TestSize.Level
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY,
         HiSysEvent::EventType::STATISTIC, "PID", pid, "UID", uid, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON, uid, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -121,7 +122,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     int32_t uid = 10003;
@@ -138,7 +139,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_002, TestSize.Level
         pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -157,7 +160,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -173,7 +176,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_003, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_003 end");
@@ -190,7 +195,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     int32_t uid = 10003;
@@ -207,7 +212,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
         pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * sensorGravityOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -227,7 +234,8 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_004, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_PROXIMITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_004 end");
@@ -244,7 +252,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -259,8 +267,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_005, TestSize.Level
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_PROXIMITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
 
-    double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON, uid);
+    uint64_t expectedPower = StatsUtils::DEFAULT_VALUE;
+    uint64_t actualPower;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON, uid, actualPower);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -278,7 +287,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     int32_t uid = 10003;
@@ -295,7 +304,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_006, TestSize.Level
         pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -314,7 +325,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -330,7 +341,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_007, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_PROXIMITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_007 end");
@@ -347,7 +360,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
     int32_t uid = 10003;
@@ -364,7 +377,9 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
         pid, "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * sensorProximityOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -384,7 +399,8 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_008, TestSize.Level
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_008 end");
@@ -401,7 +417,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_009, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double sensorGravityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_GRAVITY);
     double sensorProximityOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_SENSOR_PROXIMITY);
@@ -457,7 +473,7 @@ HWTEST_F (StatsServicePowerMgrTest,  StatsServicePowerMgrTest_010, TestSize.Leve
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wakelockAverage = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CPU_AWAKE);
     int32_t uid = 10001;
@@ -502,7 +518,7 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_011, TestSize.Level
     STATS_HILOGI(LABEL_TEST, "StatsServicePowerMgrTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
 
@@ -517,9 +533,10 @@ HWTEST_F (StatsServicePowerMgrTest, StatsServicePowerMgrTest_011, TestSize.Level
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_PROXIMITY, HiSysEvent::EventType::STATISTIC);
-
+    int32_t tempError;
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

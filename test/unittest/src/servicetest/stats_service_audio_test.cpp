@@ -81,7 +81,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -95,10 +95,12 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_001, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -116,7 +118,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -131,9 +133,10 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_002, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-
+    int32_t tempError;
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -152,7 +155,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -168,8 +171,9 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_003, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_003 end");
@@ -186,7 +190,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -219,9 +223,10 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_004, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", statePaused);
-
+    int32_t tempError;
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -240,7 +245,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -265,9 +270,10 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_005, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-
+    int32_t tempError;
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -286,7 +292,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -301,9 +307,10 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-
+    int32_t tempError;
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -324,7 +331,8 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_006, TestSize.Level0)
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_SENSOR_GRAVITY, HiSysEvent::EventType::STATISTIC, "PID",
         pid, "UID", uid, "STATE", stateOff);
 
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_006 end");
@@ -341,7 +349,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double audioOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_AUDIO_ON);
     int32_t uid = 10003;
@@ -384,7 +392,7 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceAudioTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     StatsWriteHiSysEvent(statsService,
@@ -394,7 +402,9 @@ HWTEST_F (StatsServiceAudioTest, StatsServiceAudioTest_008, TestSize.Level0)
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

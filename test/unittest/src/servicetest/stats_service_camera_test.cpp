@@ -81,7 +81,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -94,10 +94,12 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_001, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -115,7 +117,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid = 10003;
@@ -131,7 +133,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_002, TestSize.Level0)
         "ID", cameraId);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -150,7 +154,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -165,7 +169,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_003, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_003 end");
@@ -182,7 +188,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -201,10 +207,12 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_004, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -222,7 +230,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
@@ -246,7 +254,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_005, TestSize.Level0)
 
     double expectedPower = (3 * SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR) +
         (SERVICE_POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR);
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -265,7 +275,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -287,7 +297,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_006, TestSize.Level0)
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId);
 
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_006 end");
@@ -304,7 +316,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -325,10 +337,12 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_007, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -346,7 +360,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid = 10003;
@@ -370,7 +384,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_008, TestSize.Level0)
         "ID", cameraId1);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -389,7 +405,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_009, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -413,7 +429,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_009, TestSize.Level0)
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", cameraId1);
 
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_009 end");
@@ -430,7 +448,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_010, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid = 10003;
@@ -455,7 +473,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_010, TestSize.Level0)
         "ID", cameraId0);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -474,7 +494,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_011, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid1 = 10003;
@@ -500,7 +520,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_011, TestSize.Level0)
         "ID", cameraId);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid1);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid1, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -519,7 +541,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
 
@@ -529,7 +551,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_012, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::FLASHLIGHT_OFF, HiSysEvent::EventType::STATISTIC);
 
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_TRUE(actualPower >= StatsUtils::DEFAULT_VALUE);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_012 end");
@@ -546,7 +570,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_013, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
@@ -568,7 +592,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_013, TestSize.Level0)
 
     double expectedPower = (2 * SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR) +
         (SERVICE_POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR);
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -587,7 +613,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -601,10 +627,12 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_014, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetAppStatsMah(uid);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -622,7 +650,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_015, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     int32_t uid = 10003;
@@ -639,7 +667,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_015, TestSize.Level0)
         "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -658,7 +688,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_016, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     int32_t pid = 3458;
@@ -674,7 +704,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_016, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::TORCH_STATE, HiSysEvent::EventType::STATISTIC, "PID", pid,
         "UID", uid, "STATE", stateOff);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_016 end");
@@ -691,7 +723,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     int32_t uid = 10003;
@@ -708,7 +740,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
         "UID", uid, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * flashlightOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -727,7 +761,8 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_017, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_017 end");
@@ -744,7 +779,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid = 10003;
@@ -760,7 +795,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
         "ID", deviceId);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * cameraOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -780,7 +817,8 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_018, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::AUDIO, StatsHiSysEvent::STREAM_CHANGE, HiSysEvent::EventType::BEHAVIOR, "PID", pid,
         "UID", uid, "STATE", stateStopped);
-    double actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    double actualPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_018 end");
@@ -797,7 +835,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_019, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double cameraOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_CAMERA_ON);
     int32_t uid = 10003;
@@ -839,7 +877,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_020, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_020 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double flashlightOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_FLASHLIGHT_ON);
     int32_t uid = 10003;
@@ -882,7 +920,7 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_021, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceCameraTest_021 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10003;
     StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_CONNECT,
@@ -898,7 +936,9 @@ HWTEST_F (StatsServiceCameraTest, StatsServiceCameraTest_021, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

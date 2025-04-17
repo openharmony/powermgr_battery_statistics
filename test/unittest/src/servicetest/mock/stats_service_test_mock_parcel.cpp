@@ -56,22 +56,34 @@ HWTEST_F (StatsServiceTestMockParcel, StatsServiceTestMockParcel_001, TestSize.L
 {
     STATS_HILOGI(LABEL_TEST, "StatsServiceTestMockParcel_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
-    EXPECT_TRUE(g_statsServiceProxy->Reset());
-    EXPECT_TRUE(g_statsServiceProxy->SetOnBattery(true));
-    auto infoList = g_statsServiceProxy->GetBatteryStats();
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(true);
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto infoList = parcelableEntityList.statsList_;
     EXPECT_TRUE(infoList.empty());
     int32_t uid = 1004;
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetAppStatsMah(uid));
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetAppStatsPercent(uid));
+    double appStatsMah;
+    g_statsServiceProxy->GetAppStatsMahIpc(uid, appStatsMah, tempError);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, appStatsMah);
+    double appStatsPercent;
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, appStatsPercent, tempError);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, appStatsPercent);
     BatteryStatsInfo::ConsumptionType consumptionType = BatteryStatsInfo::CONSUMPTION_TYPE_APP;
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetPartStatsMah(consumptionType));
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetPartStatsPercent(consumptionType));
+    double partStatsMah;
+    g_statsServiceProxy->GetPartStatsMahIpc(consumptionType, partStatsMah, tempError);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, partStatsMah);
+    double partStatsPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(consumptionType, partStatsPercent, tempError);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, partStatsPercent);
     StatsUtils::StatsType statsType = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetTotalTimeSecond(statsType, StatsUtils::INVALID_VALUE));
-    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, g_statsServiceProxy->GetTotalDataBytes(statsType, StatsUtils::INVALID_VALUE));
-    std::vector<std::string> dumpArgs;
-    dumpArgs.push_back("-batterystats");
-    EXPECT_EQ("remote error", g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size()));
+    uint64_t totalTimeSecond;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(statsType, StatsUtils::INVALID_VALUE, totalTimeSecond);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, totalTimeSecond);
+    uint64_t totalDataBytes;
+    g_statsServiceProxy->GetTotalDataBytesIpc(statsType, StatsUtils::INVALID_VALUE, totalDataBytes);
+    EXPECT_EQ(StatsUtils::DEFAULT_VALUE, totalDataBytes);
     STATS_HILOGI(LABEL_TEST, "StatsServiceTestMockParcel_001 end");
 }
 }
