@@ -30,7 +30,6 @@ static const std::string UID_CPU_ACTIVE_TIME_FILE = "/proc/uid_concurrent_active
 static const std::string UID_CPU_CLUSTER_TIME_FILE = "/proc/uid_concurrent_policy_time";
 static const std::string UID_CPU_FREQ_TIME_FILE = "/proc/uid_time_in_state";
 static const std::string UID_CPU_TIME_FILE = "/proc/uid_cputime/show_uid_stat";
-static constexpr int PARAMETER_TEN = 10;
 } // namespace
 bool CpuTimeReader::Init()
 {
@@ -170,19 +169,12 @@ bool CpuTimeReader::ReadUidCpuActiveTimeImpl(std::string& line, int32_t uid)
     int64_t timeMs = 0;
     std::vector<std::string> splitedTime;
     Split(line, ' ', splitedTime);
-    errno = 0;
-    char* endptr = nullptr;
     for (uint16_t i = 0; i < splitedTime.size(); i++) {
-        int64_t tempTime = strtoll(splitedTime[i].c_str(), &endptr, PARAMETER_TEN);
-        if (endptr == splitedTime[i].c_str() || endptr == nullptr || *endptr != '\0') {
-            STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedTime[i].c_str());
-            return false;
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedTime[i], result)) {
+            continue;
         }
-        if (errno == ERANGE && (tempTime == LLONG_MAX || tempTime == LLONG_MIN)) {
-            STATS_HILOGE(COMP_SVC, "Transit result out of range");
-            return false;
-        }
-        timeMs += tempTime * 10; // Unit is 10ms
+        timeMs += result * 10; // Unit is 10ms
     }
 
     int64_t increment = 0;
@@ -234,18 +226,11 @@ bool CpuTimeReader::ReadUidCpuActiveTime()
         if (splitedLine[INDEX_0] == "cpus") {
             continue;
         } else {
-            errno = 0;
-            char* endptr = nullptr;
-            int64_t tempUid = strtoll(splitedLine[INDEX_0].c_str(), &endptr, PARAMETER_TEN);
-            if (endptr == splitedLine[INDEX_0].c_str() || endptr == nullptr || *endptr != '\0') {
-                STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedLine[INDEX_0].c_str());
-                return false;
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedLine[INDEX_0], result)) {
+                continue;
             }
-            if (errno == ERANGE && (tempUid == LLONG_MAX || tempUid == LLONG_MIN)) {
-                STATS_HILOGE(COMP_SVC, "Transit result out of range");
-                return false;
-            }
-            uid = static_cast<int32_t>(tempUid);
+            uid = static_cast<int32_t>(result);
         }
 
         if (uid > StatsUtils::INVALID_VALUE) {
@@ -272,18 +257,11 @@ void CpuTimeReader::ReadPolicy(std::vector<uint16_t>& clusters, std::string& lin
     Split(line, ' ', splitedPolicy);
     uint32_t step = 2;
     for (uint32_t i = 0; i < splitedPolicy.size(); i += step) {
-        errno = 0;
-        char* endptr = nullptr;
-        int64_t tempValue = strtoll(splitedPolicy[i + 1].c_str(), &endptr, PARAMETER_TEN);
-        if (endptr == splitedPolicy[i + 1].c_str() || endptr == nullptr || *endptr != '\0') {
-            STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedPolicy[i + 1].c_str());
-            return;
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedPolicy[i + 1], result)) {
+            continue;
         }
-        if (errno == ERANGE && (tempValue == LLONG_MAX || tempValue == LLONG_MIN)) {
-            STATS_HILOGE(COMP_SVC, "Transit result out of range");
-            return;
-        }
-        uint16_t coreNum = static_cast<uint16_t>(tempValue);
+        uint16_t coreNum = static_cast<uint16_t>(result);
         clusters.push_back(coreNum);
         clustersMap_.insert(std::pair<uint16_t, uint16_t>(i, coreNum));
     }
@@ -298,18 +276,11 @@ bool CpuTimeReader::ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, 
     for (uint16_t i = 0; i < clusters.size(); i++) {
         int64_t tempTimeMs = 0;
         for (uint16_t j = 0; j < clusters[i]; j++) {
-            errno = 0;
-            char* endptr = nullptr;
-            int64_t tempTime = strtoll(splitedTime[count++].c_str(), &endptr, PARAMETER_TEN);
-            if (endptr == splitedTime[count++].c_str() || endptr == nullptr || *endptr != '\0') {
-                STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedTime[count++].c_str());
-                return false;
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedTime[count++], result)) {
+                continue;
             }
-            if (errno == ERANGE && (tempTime == LLONG_MAX || tempTime == LLONG_MIN)) {
-                STATS_HILOGE(COMP_SVC, "Transit result out of range");
-                return false;
-            }
-            tempTimeMs += tempTime * 10; // Unit is 10ms
+            tempTimeMs += result * 10; // Unit is 10ms
         }
         clusterTime.push_back(tempTimeMs);
     }
@@ -334,23 +305,6 @@ bool CpuTimeReader::ReadClusterTimeIncrement(std::vector<int64_t>& clusterTime, 
     return true;
 }
 
-bool CpuTimeReader::ParseUid(const std::string& strUid, int32_t& uid)
-{
-    errno = 0;
-    char* endptr = nullptr;
-    int64_t tempUid = strtoll(strUid.c_str(), &endptr, PARAMETER_TEN);
-    if (endptr == strUid.c_str() || endptr == nullptr || *endptr != '\0') {
-        STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", strUid.c_str());
-        return false;
-    }
-    if (errno == ERANGE && (tempUid == LLONG_MAX || tempUid == LLONG_MIN)) {
-        STATS_HILOGE(COMP_SVC, "Transit result out of range");
-        return false;
-    }
-    uid = static_cast<int32_t>(tempUid);
-    return true;
-}
-
 bool CpuTimeReader::ReadUidCpuClusterTime()
 {
     std::ifstream input(UID_CPU_CLUSTER_TIME_FILE);
@@ -371,9 +325,11 @@ bool CpuTimeReader::ReadUidCpuClusterTime()
 
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        if (!ParseUid(splitedLine[0], uid)) {
-            return false;
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+            continue;
         }
+        uid = static_cast<int32_t>(result);
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity = bss->GetBatteryStatsCore()->GetEntity(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
@@ -443,18 +399,11 @@ bool CpuTimeReader::ReadFreqTimeIncrement(std::map<uint32_t, std::vector<int64_t
         std::vector<int64_t> tempSpeedTimes;
         tempSpeedTimes.clear();
         for (uint16_t j = 0; j < parser->GetSpeedNum(i); j++) {
-            errno = 0;
-            char* endptr = nullptr;
-            int64_t tempTime = strtoll(splitedTime[count++].c_str(), &endptr, PARAMETER_TEN);
-            if (endptr == splitedTime[count++].c_str() || endptr == nullptr || *endptr != '\0') {
-                STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedTime[count++].c_str());
-                return false;
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedTime[count++], result)) {
+                continue;
             }
-            if (errno == ERANGE && (tempTime == LLONG_MAX || tempTime == LLONG_MIN)) {
-                STATS_HILOGE(COMP_SVC, "Transit result out of range");
-                return false;
-            }
-            int64_t tempTimeMs = tempTime * 10; // Unit is 10ms
+            int64_t tempTimeMs = result * 10; // Unit is 10ms
             tempSpeedTimes.push_back(tempTimeMs);
         }
         speedTime.insert(std::pair<uint32_t, std::vector<int64_t>>(i, tempSpeedTimes));
@@ -529,11 +478,12 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
         if (splitedLine[0] == "uid") {
             continue;
         } else {
-            if (!ParseUid(splitedLine[0], uid)) {
-                return false;
+            int64_t result = 0;
+            if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+                continue;
             }
+            uid = static_cast<int32_t>(result);
         }
-
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
@@ -542,7 +492,6 @@ bool CpuTimeReader::ReadUidCpuFreqTime()
                 uidEntity->UpdateUidMap(uid);
             }
         }
-
         std::vector<std::string> splitedTime;
         Split(splitedLine[1], ' ', splitedTime);
 
@@ -570,16 +519,9 @@ bool CpuTimeReader::ReadUidTimeIncrement(std::vector<int64_t>& cpuTime, std::vec
     Split(timeLine, ' ', splitedTime);
     for (uint16_t i = 0; i < splitedTime.size(); i++) {
         int64_t tempTime = 0;
-        errno = 0;
-        char* endptr = nullptr;
-        int64_t result = strtoll(splitedTime[i].c_str(), &endptr, PARAMETER_TEN);
-        if (endptr == splitedTime[i].c_str() || endptr == nullptr || *endptr != '\0') {
-            STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedTime[i].c_str());
-            return false;
-        }
-        if (errno == ERANGE && (result == LLONG_MAX || result == LLONG_MIN)) {
-            STATS_HILOGE(COMP_SVC, "Transit result out of range");
-            return false;
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedTime[i], result)) {
+            continue;
         }
         tempTime = result;
         cpuTime.push_back(tempTime);
@@ -629,18 +571,11 @@ bool CpuTimeReader::ReadUidCpuTime()
         cpuTime.clear();
         std::vector<std::string> splitedLine;
         Split(line, ':', splitedLine);
-        errno = 0;
-        char* endptr = nullptr;
-        int64_t tempUid = strtoll(splitedLine[0].c_str(), &endptr, PARAMETER_TEN);
-        if (endptr == splitedLine[0].c_str() || endptr == nullptr || *endptr != '\0') {
-            STATS_HILOGE(COMP_SVC, "strtoll error, string:%{public}s", splitedLine[0].c_str());
-            return false;
+        int64_t result = 0;
+        if (!StatsUtils::ParseStrtollResult(splitedLine[0], result)) {
+            continue;
         }
-        if (errno == ERANGE && (tempUid == LLONG_MAX || tempUid == LLONG_MIN)) {
-            STATS_HILOGE(COMP_SVC, "Transit result out of range");
-            return false;
-        }
-        int32_t uid = static_cast<int32_t>(tempUid);
+        int32_t uid = static_cast<int32_t>(result);
         if (uid > StatsUtils::INVALID_VALUE) {
             auto bss = BatteryStatsService::GetInstance();
             auto uidEntity =
