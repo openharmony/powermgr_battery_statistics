@@ -140,6 +140,35 @@ HWTEST_F (StatsUtilTest, StatsUtils_002, TestSize.Level0)
 }
 
 /**
+ * @tc.name: StatsUtils_003
+ * @tc.desc: test ParseStrtollResult
+ * @tc.type: FUNC
+ */
+HWTEST_F(StatsUtilTest, StatsUtils_003, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsUtils_003 function start!");
+    int64_t result = 0;
+    std::string strfirst = "";
+    EXPECT_EQ(false, StatsUtils::ParseStrtollResult(strfirst, result));
+    result = 0;
+    std::string strsecond = "abc";
+    EXPECT_EQ(false, StatsUtils::ParseStrtollResult(strsecond, result));
+    result = 0;
+    std::string strthird = "abc123";
+    EXPECT_EQ(false, StatsUtils::ParseStrtollResult(strthird, result));
+    result = 0;
+    std::string strfourth = "123abc";
+    EXPECT_EQ(true, StatsUtils::ParseStrtollResult(strfourth, result));
+    result = 0;
+    std::string strfifth = "123";
+    EXPECT_EQ(true, StatsUtils::ParseStrtollResult(strfifth, result));
+    result = 0;
+    std::string strsixth = "12345678999987654321";
+    EXPECT_EQ(false, StatsUtils::ParseStrtollResult(strsixth, result));
+    STATS_HILOGI(LABEL_TEST, "StatsUtils_003 function end!");
+}
+
+/**
  * @tc.name: StatsHelper_001
  * @tc.desc: test class ActiveTimer function
  * @tc.type: FUNC
