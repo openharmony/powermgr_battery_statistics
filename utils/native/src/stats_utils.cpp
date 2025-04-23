@@ -192,5 +192,25 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
     }
     return result;
 }
+
+bool StatsUtils::ParseStrtollResult(const std::string& str, int64_t& result)
+{
+    constexpr int PARAMETER_TEN = 10;
+    errno = 0;
+    char* endptr = nullptr;
+    result = strtoll(str.c_str(), &endptr, PARAMETER_TEN);
+    if (endptr == str.c_str()) {
+        STATS_HILOGE(COMP_UTILS, "String have no numbers, string:%{public}s", str.c_str());
+        return false;
+    }
+    if (errno == ERANGE && (result == LLONG_MAX || result == LLONG_MIN)) {
+        STATS_HILOGE(COMP_UTILS, "Transit result out of range, string:%{public}s", str.c_str());
+        return false;
+    }
+    if (*endptr != '\0') {
+        STATS_HILOGE(COMP_UTILS, "String contain non-numeric characters, string:%{public}s", str.c_str());
+    }
+    return true;
+}
 } // namespace PowerMgr
 } // namespace OHOS
