@@ -87,7 +87,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t batteryLevel = 60;
     int32_t batteryChargerType = 2;
@@ -102,7 +102,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
         .append(", Charger type = ")
         .append(ToString(batteryChargerType));
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -112,7 +113,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_001, TestSize.Level0)
         HiSysEvent::Domain::BATTERY, StatsHiSysEvent::BATTERY_CHANGED, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append("Battery level = ").append(ToString(-1));
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_001 end");
@@ -129,7 +131,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t uid = 10001;
     int32_t pid = 3456;
@@ -156,7 +158,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
         .append(", wakelock name = ")
         .append(name);
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -166,7 +169,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_002, TestSize.Level0)
         HiSysEvent::Domain::POWER, StatsHiSysEvent::POWER_RUNNINGLOCK, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(", wakelock name = ").append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_002 end");
@@ -183,7 +187,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t ratio = 100;
 
@@ -197,7 +201,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
         .append(" Ratio = ")
         .append(ToString(ratio));
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -207,7 +212,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_003, TestSize.Level0)
         HiSysEvent::Domain::DISPLAY, StatsHiSysEvent::BACKLIGHT_DISCOUNT, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(" Ratio = ").append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_003 end");
@@ -224,7 +230,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t pid = 3457;
     int32_t uid = 10002;
@@ -249,7 +255,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
         .append(", work state = ")
         .append(ToString(state));
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -259,7 +266,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_004, TestSize.Level0)
         HiSysEvent::Domain::STATS, StatsHiSysEvent::POWER_WORKSCHEDULER, HiSysEvent::EventType::STATISTIC);
     std::string expectedMissInfo;
     expectedMissInfo.append(", work interval = ").append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_004 end");
@@ -276,7 +284,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     std::string partName = "Battery";
     int32_t temperature = 40;
@@ -291,7 +299,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
         .append(" Name = ")
         .append(partName);
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -304,7 +313,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_005, TestSize.Level0)
         .append("Event name = POWER_TEMPERATURE")
         .append(" Name = ")
         .append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_005 end");
@@ -321,7 +331,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     std::string callType = "DUBAI_TAG_DIST_SCHED_TO_REMOTE";
     int32_t callUid = 10003;
@@ -343,7 +353,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
         .append(" Calling Type = ")
         .append(callType);
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -357,7 +368,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_006, TestSize.Level0)
         .append("Event name = START_REMOTE_ABILITY")
         .append(" Calling Type = ")
         .append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_006 end");
@@ -374,7 +386,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     std::string actionName = "thermallevel";
     int32_t value = 3;
@@ -396,7 +408,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
         .append(" Ratio = ")
         .append(std::to_string(ratio).substr(beginPos, ratioLen));
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -409,7 +422,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_007, TestSize.Level0)
         .append("Event name = ACTION_TRIGGERED")
         .append(" Action name = ")
         .append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_007 end");
@@ -426,7 +440,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t type = 100;
     int32_t level = 101;
@@ -444,7 +458,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
         .append(" Ambient brightness = ")
         .append(ToString(level));
 
-    std::string actualDebugInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualDebugInfo);
     GTEST_LOG_(INFO) << __func__ << ": expected debug info: " << expectedDebugInfo;
     GTEST_LOG_(INFO) << __func__ << ": actual debug info: " << actualDebugInfo;
     auto index = actualDebugInfo.find(expectedDebugInfo);
@@ -458,7 +473,8 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_008, TestSize.Level0)
         .append(StatsHiSysEvent::AMBIENT_LIGHT)
         .append(" Ambient type = ")
         .append("");
-    std::string actualMissInfo = g_statsServiceProxy->ShellDump(dumpArgs, dumpArgs.size());
+    std::string actualMissInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgs, dumpArgs.size(), actualMissInfo);
     auto missIndex = actualMissInfo.find(expectedMissInfo);
     EXPECT_TRUE(missIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_008 end");
@@ -475,7 +491,7 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_009, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     std::vector<std::string> dumpArgsNone {};
     std::vector<std::string> dumpArgsHelp {};
@@ -484,11 +500,13 @@ HWTEST_F (StatsServiceDumpTest, StatsServiceDumpTest_009, TestSize.Level0)
     std::string expectedDebugInfo;
     expectedDebugInfo.append("usage: statistics <command> [<options>]\n");
 
-    std::string noneDebugInfo = g_statsServiceProxy->ShellDump(dumpArgsNone, dumpArgsNone.size());
+    std::string noneDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgsNone, dumpArgsNone.size(), noneDebugInfo);
     auto noneIndex = noneDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(noneIndex != string::npos);
 
-    std::string helpDebugInfo = g_statsServiceProxy->ShellDump(dumpArgsHelp, dumpArgsHelp.size());
+    std::string helpDebugInfo;
+    g_statsServiceProxy->ShellDumpIpc(dumpArgsHelp, dumpArgsHelp.size(), helpDebugInfo);
     auto helpIndex = helpDebugInfo.find(expectedDebugInfo);
     EXPECT_TRUE(helpIndex != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsServiceDumpTest_009 end");

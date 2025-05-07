@@ -82,7 +82,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -93,10 +93,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_001, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -114,7 +116,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -128,7 +130,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_002, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -147,7 +151,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -161,8 +165,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_003, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_003 end");
@@ -179,7 +184,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -195,7 +200,10 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_004, TestSize.Level0)
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_WIFI) {
             actualPower = (*it).GetPower();
@@ -219,7 +227,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -242,7 +250,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_005, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -261,7 +271,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 3;
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -275,7 +285,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_006, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -293,7 +305,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -318,7 +330,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_007, TestSize.Level0)
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -337,7 +351,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -350,8 +364,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_008, TestSize.Level0)
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_WIFI_ON);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_WIFI_ON, -1, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -369,7 +384,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_009, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int16_t count = 10;
 
@@ -378,9 +393,12 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_009, TestSize.Level0)
             HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -398,7 +416,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     int16_t count = 10;
@@ -409,7 +427,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_010, TestSize.Level0)
     }
 
     double expectedPower = count * wifiScanAverageMa;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -428,7 +448,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double fullPercent = 1;
     double zeroPercent = 0;
@@ -439,7 +459,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_011, TestSize.Level0)
             HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_011 end");
@@ -456,7 +478,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     int16_t count = 10;
@@ -468,7 +490,10 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_012, TestSize.Level0)
 
     double expectedPower = count * wifiScanAverageMa;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_WIFI) {
             actualPower = (*it).GetPower();
@@ -492,7 +517,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int16_t count = 10;
     for (int16_t i = 0; i < count; i++) {
@@ -500,8 +525,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_013, TestSize.Level0)
             HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
     }
 
-    long expectValue = StatsUtils::DEFAULT_VALUE;
-    long data = g_statsServiceProxy->GetTotalDataBytes(StatsUtils::STATS_TYPE_WIFI_SCAN);
+    uint64_t expectValue = StatsUtils::DEFAULT_VALUE;
+    uint64_t data;
+    g_statsServiceProxy->GetTotalDataBytesIpc(StatsUtils::STATS_TYPE_WIFI_SCAN, -1, data);
     EXPECT_EQ(data, expectValue);
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_013 end");
 }
@@ -517,7 +543,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
@@ -542,7 +568,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_014, TestSize.Level0)
     double wifiScanPower = count * wifiScanAverageMa;
 
     double expectedPower = wifiOnPower + wifiScanPower;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -561,8 +589,8 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -582,11 +610,13 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_015, TestSize.Level0)
     }
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_015 end");
 }
 
@@ -601,7 +631,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_ON);
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
@@ -611,16 +641,18 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_016, TestSize.Level0)
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->SetOnBatteryIpc(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * wifiOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -639,7 +671,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_017 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     double wifiScanAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_WIFI_SCAN);
     int16_t totalCount = 20;
@@ -650,15 +682,17 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_017, TestSize.Level0)
         StatsWriteHiSysEvent(statsService,
             HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_SCAN, HiSysEvent::EventType::STATISTIC);
         if (i == startDelayPos) {
-            g_statsServiceProxy->SetOnBattery(false);
+            g_statsServiceProxy->SetOnBatteryIpc(false);
         } else if (i == startDelayPos + delayCount)
         {
-            g_statsServiceProxy->SetOnBattery(true);
+            g_statsServiceProxy->SetOnBatteryIpc(true);
         }
     }
 
     double expectedPower = (totalCount - delayCount) * wifiScanAverageMa;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -677,7 +711,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(Wifi::ConnState::CONNECTED);
     int32_t stateOff = static_cast<int32_t>(Wifi::ConnState::DISCONNECTED);
@@ -692,7 +726,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION,
         HiSysEvent::EventType::STATISTIC, "TYPE", stateOff);
 
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
 
@@ -707,7 +743,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_018, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::CAMERA, StatsHiSysEvent::CAMERA_DISCONNECT, HiSysEvent::EventType::STATISTIC,
         "ID", deviceId);
-    actualPercent = g_statsServiceProxy->GetAppStatsPercent(uid);
+    g_statsServiceProxy->GetAppStatsPercentIpc(uid, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_018 end");
@@ -724,7 +760,7 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServiceWifiTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION, HiSysEvent::EventType::STATISTIC);
@@ -733,7 +769,9 @@ HWTEST_F (StatsServiceWifiTest, StatsServiceWifiTest_019, TestSize.Level0)
         HiSysEvent::Domain::COMMUNICATION, StatsHiSysEvent::WIFI_CONNECTION, HiSysEvent::EventType::STATISTIC);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_WIFI, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

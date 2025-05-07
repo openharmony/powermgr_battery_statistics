@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,25 +13,28 @@
  * limitations under the License.
  */
 
-#ifndef BATTERY_STATS_IPC_INTERFACE_DODE_H
-#define BATTERY_STATS_IPC_INTERFACE_DODE_H
+#ifndef STATS_XCOLLIE_H
+#define STATS_XCOLLIE_H
 
-/* SAID: 3304 */
+#include <functional>
+#include <string>
+
 namespace OHOS {
 namespace PowerMgr {
-enum class BatteryStatsInterfaceCode {
-    BATTERY_STATS_GET = 0,
-    BATTERY_STATS_GETAPPMAH,
-    BATTERY_STATS_GETAPPPER,
-    BATTERY_STATS_GETPARTMAH,
-    BATTERY_STATS_GETPARTPER,
-    BATTERY_STATS_GETTIME,
-    BATTERY_STATS_GETDATA,
-    BATTERY_STATS_RESET,
-    BATTERY_STATS_SETONBATT,
-    BATTERY_STATS_DUMP,
+class StatsXCollie {
+public:
+    StatsXCollie(const std::string &logTag, bool isRecovery = false);
+    ~StatsXCollie();
+
+private:
+    void CancelStatsXCollie();
+
+    int32_t id_;
+    std::string logTag_;
+    bool isCanceled_;
 };
-} // space PowerMgr
+
+} // namespace PowerMgr
 } // namespace OHOS
 
-#endif // BATTERY_STATS_IPC_INTERFACE_DODE_H
+#endif // STATS_XCOLLIE_H

@@ -30,6 +30,7 @@ namespace OHOS {
 namespace PowerMgr {
 BatteryStatsClient::BatteryStatsClient() {}
 BatteryStatsClient::~BatteryStatsClient() {}
+constexpr int32_t INIT_VALUE = -1;
 
 ErrCode BatteryStatsClient::Connect()
 {
@@ -80,8 +81,12 @@ BatteryStatsInfoList BatteryStatsClient::GetBatteryStats()
         lastError_ = StatsError::ERR_CONNECTION_FAIL;
         return entityList;
     }
-    entityList = proxy_->GetBatteryStats();
-    return entityList;
+
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError = INIT_VALUE;
+    proxy_->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    tempError_ = static_cast<StatsError>(tempError);
+    return parcelableEntityList.statsList_;
 }
 
 double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
@@ -92,7 +97,9 @@ double BatteryStatsClient::GetAppStatsMah(const int32_t& uid)
         lastError_ = StatsError::ERR_CONNECTION_FAIL;
         return appStatsMah;
     }
-    appStatsMah = proxy_->GetAppStatsMah(uid);
+    int32_t tempError = INIT_VALUE;
+    proxy_->GetAppStatsMahIpc(uid, appStatsMah, tempError);
+    tempError_ = static_cast<StatsError>(tempError);
     return appStatsMah;
 }
 
@@ -100,7 +107,7 @@ void BatteryStatsClient::SetOnBattery(bool isOnBattery)
 {
     STATS_HILOGD(COMP_FWK, "Call SetOnBattery");
     STATS_RETURN_IF(Connect() != ERR_OK);
-    proxy_->SetOnBattery(isOnBattery);
+    proxy_->SetOnBatteryIpc(isOnBattery);
 }
 
 double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
@@ -111,7 +118,9 @@ double BatteryStatsClient::GetAppStatsPercent(const int32_t& uid)
         lastError_ = StatsError::ERR_CONNECTION_FAIL;
         return appStatsPercent;
     }
-    appStatsPercent = proxy_->GetAppStatsPercent(uid);
+    int32_t tempError = INIT_VALUE;
+    proxy_->GetAppStatsPercentIpc(uid, appStatsPercent, tempError);
+    tempError_ = static_cast<StatsError>(tempError);
     return appStatsPercent;
 }
 
@@ -123,7 +132,9 @@ double BatteryStatsClient::GetPartStatsMah(const BatteryStatsInfo::ConsumptionTy
         lastError_ = StatsError::ERR_CONNECTION_FAIL;
         return partStatsMah;
     }
-    partStatsMah = proxy_->GetPartStatsMah(type);
+    int32_t tempError = INIT_VALUE;
+    proxy_->GetPartStatsMahIpc(static_cast<int32_t>(type), partStatsMah, tempError);
+    tempError_ = static_cast<StatsError>(tempError);
     return partStatsMah;
 }
 
@@ -135,7 +146,9 @@ double BatteryStatsClient::GetPartStatsPercent(const BatteryStatsInfo::Consumpti
         lastError_ = StatsError::ERR_CONNECTION_FAIL;
         return partStatsPercent;
     }
-    partStatsPercent = proxy_->GetPartStatsPercent(type);
+    int32_t tempError = INIT_VALUE;
+    proxy_->GetPartStatsPercentIpc(static_cast<int32_t>(type), partStatsPercent, tempError);
+    tempError_ = static_cast<StatsError>(tempError);
     return partStatsPercent;
 }
 
@@ -143,7 +156,7 @@ void BatteryStatsClient::Reset()
 {
     STATS_HILOGD(COMP_FWK, "Call Reset");
     STATS_RETURN_IF(Connect() != ERR_OK);
-    proxy_->Reset();
+    proxy_->ResetIpc();
 }
 
 uint64_t BatteryStatsClient::GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid)
@@ -151,7 +164,7 @@ uint64_t BatteryStatsClient::GetTotalTimeSecond(const StatsUtils::StatsType& sta
     STATS_HILOGD(COMP_FWK, "Call GetTotalTimeSecond");
     uint64_t time = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, time);
-    time = proxy_->GetTotalTimeSecond(statsType, uid);
+    proxy_->GetTotalTimeSecondIpc(static_cast<int32_t>(statsType), uid, time);
     return time;
 }
 
@@ -160,7 +173,7 @@ uint64_t BatteryStatsClient::GetTotalDataBytes(const StatsUtils::StatsType& stat
     STATS_HILOGD(COMP_FWK, "Call GetTotalDataBytes");
     uint64_t count = StatsUtils::DEFAULT_VALUE;
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, count);
-    count = proxy_->GetTotalDataBytes(statsType, uid);
+    proxy_->GetTotalDataBytesIpc(static_cast<int32_t>(statsType), uid, count);
     return count;
 }
 
@@ -169,7 +182,9 @@ std::string BatteryStatsClient::Dump(const std::vector<std::string>& args)
     STATS_HILOGD(COMP_FWK, "Call Dump");
     std::string error = "can't connect service";
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, error);
-    return proxy_->ShellDump(args, args.size());
+    std::string dumpshell;
+    proxy_->ShellDumpIpc(args, args.size(), dumpshell);
+    return dumpshell;
 }
 
 StatsError BatteryStatsClient::GetLastError()
@@ -180,7 +195,7 @@ StatsError BatteryStatsClient::GetLastError()
         return tmpError;
     }
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, StatsError::ERR_CONNECTION_FAIL);
-    return proxy_->GetLastError();
+    return tempError_;
 }
 }  // namespace PowerMgr
 }  // namespace OHOS

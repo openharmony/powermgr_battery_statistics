@@ -23,6 +23,7 @@
 
 #include "battery_stats_core.h"
 #include "battery_stats_detector.h"
+#include "battery_stats_errors.h"
 #include "battery_stats_info.h"
 #include "battery_stats_parser.h"
 #include "battery_stats_stub.h"
@@ -42,22 +43,32 @@ public:
 
     bool IsServiceReady() const;
     int32_t Dump(int32_t fd, const std::vector<std::u16string>& args) override;
-    BatteryStatsInfoList GetBatteryStats() override;
-    double GetAppStatsMah(const int32_t& uid) override;
-    double GetAppStatsPercent(const int32_t& uid) override;
-    double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type) override;
-    double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type) override;
-    uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE)
-        override;
-    uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE)
-        override;
-    void Reset() override;
-    void SetOnBattery(bool isOnBattery) override;
-    std::string ShellDump(const std::vector<std::string>& args, uint32_t argc) override;
+
+    int32_t GetBatteryStatsIpc(ParcelableBatteryStatsList& batteryStats, int32_t& tempError) override;
+    int32_t SetOnBatteryIpc(bool isOnBattery) override;
+    int32_t GetAppStatsMahIpc(int32_t uid, double& appStatsMah, int32_t& tempError) override;
+    int32_t GetAppStatsPercentIpc(int32_t uid, double& appStatsPercent, int32_t& tempError) override;
+    int32_t GetPartStatsMahIpc(int32_t type, double& partStatsMah, int32_t& tempError) override;
+    int32_t GetPartStatsPercentIpc(int32_t type, double& partStatsPercent, int32_t& tempError) override;
+    int32_t GetTotalTimeSecondIpc(int32_t statsType, int32_t uid, uint64_t& totalTimeSecond) override;
+    int32_t GetTotalDataBytesIpc(int32_t statsType, int32_t uid, uint64_t& totalDataBytes) override;
+    int32_t ResetIpc() override;
+    int32_t ShellDumpIpc(const std::vector<std::string>& args, uint32_t argc, std::string& dumpShell) override;
+
+    BatteryStatsInfoList GetBatteryStats();
+    double GetAppStatsMah(const int32_t& uid);
+    double GetAppStatsPercent(const int32_t& uid);
+    double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);
+    double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type);
+    uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
+    uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
+    void Reset();
+    void SetOnBattery(bool isOnBattery);
+    std::string ShellDump(const std::vector<std::string>& args, uint32_t argc);
     std::shared_ptr<BatteryStatsCore> GetBatteryStatsCore() const;
     std::shared_ptr<BatteryStatsParser> GetBatteryStatsParser() const;
     std::shared_ptr<BatteryStatsDetector> GetBatteryStatsDetector() const;
-    StatsError GetLastError() override;
+
     static sptr<BatteryStatsService> GetInstance();
     static void DestroyInstance();
 

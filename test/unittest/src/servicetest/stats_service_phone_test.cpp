@@ -83,7 +83,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_001, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_001 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -95,10 +95,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_001, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -116,7 +118,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_002, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_002 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -132,7 +134,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_002, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -152,7 +156,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_003, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_003 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -166,8 +170,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_003, TestSize.Level0)
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
-
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_003 end");
@@ -184,7 +189,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_004, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_004 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -201,7 +206,10 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_004, TestSize.Level0)
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_PHONE) {
             actualPower = (*it).GetPower();
@@ -225,7 +233,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_005, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_005 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -249,7 +257,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_005, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -268,7 +278,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_006, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_006 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -294,7 +304,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_006, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -313,7 +325,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_007, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_007 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 10;
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -327,7 +339,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_007, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -345,7 +359,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_008, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_008 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -371,7 +385,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_008, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -390,7 +406,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_009, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_009 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -403,9 +419,12 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_009, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
-    double powerMahBefore = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
-    g_statsServiceProxy->Reset();
-    double powerMahAfter = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double powerMahBefore;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, powerMahBefore, tempError);
+    g_statsServiceProxy->ResetIpc();
+    double powerMahAfter;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, powerMahAfter, tempError);
     GTEST_LOG_(INFO) << __func__ << ": before consumption = " << powerMahBefore << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": after consumption = " << powerMahAfter << " mAh";
     EXPECT_TRUE(powerMahBefore >= StatsUtils::DEFAULT_VALUE && powerMahAfter == StatsUtils::DEFAULT_VALUE);
@@ -423,7 +442,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_010, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_010 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -439,7 +458,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_010, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -458,7 +479,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_011, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_011 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -473,7 +494,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_011, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
-    double actualPercent = g_statsServiceProxy->GetPartStatsPercent(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPercent;
+    g_statsServiceProxy->GetPartStatsPercentIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPercent, tempError);
     GTEST_LOG_(INFO) << __func__ << ": actual percent = " << actualPercent;
     EXPECT_TRUE(actualPercent >= zeroPercent && actualPercent <= fullPercent);
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_011 end");
@@ -490,7 +513,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_012, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_012 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -507,7 +530,10 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_012, TestSize.Level0)
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_PHONE) {
             actualPower = (*it).GetPower();
@@ -531,7 +557,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_013, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_013 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -555,7 +581,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_013, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -574,7 +602,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_014, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_014 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 5;
     int32_t stateOff = 0;
@@ -588,7 +616,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_014, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
@@ -606,7 +636,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_015, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_015 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -634,7 +664,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_015, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -653,7 +685,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_016, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_016 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -690,7 +722,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_016, TestSize.Level0)
     double phoneOnPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double phoneDataPower = 4 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double expectedPower = phoneOnPower + phoneDataPower;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -708,7 +742,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_017, TestSize.Level0)
 {
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -718,35 +752,32 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_017, TestSize.Level0)
     double phoneOnAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_ON, level);
     double phoneDataAverageMa = g_statsParser->GetAveragePowerMa(StatsUtils::CURRENT_RADIO_DATA, level);
 
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOn);
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", callStateOff);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOn);
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    StatsWriteHiSysEvent(statsService,
-        HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR,
-        "STATE", dataStateOff);
+    StatsWriteHiSysEvent(statsService, HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
+        HiSysEvent::EventType::BEHAVIOR, "STATE", dataStateOff);
 
     double phoneOnPower = 3 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
     double phoneDataPower = 4 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
     double expectedPower = phoneOnPower + phoneDataPower;
     double actualPower = StatsUtils::DEFAULT_VALUE;
-    auto list = g_statsServiceProxy->GetBatteryStats();
+    ParcelableBatteryStatsList parcelableEntityList;
+    int32_t tempError;
+    g_statsServiceProxy->GetBatteryStatsIpc(parcelableEntityList, tempError);
+    auto list = parcelableEntityList.statsList_;
     for (auto it : list) {
         if ((*it).GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_PHONE) {
             actualPower = (*it).GetPower();
@@ -769,8 +800,8 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_018, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_018 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->ResetIpc();
+    g_statsServiceProxy->SetOnBatteryIpc(false);
 
     int32_t callStateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t callStateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -794,11 +825,13 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_018, TestSize.Level0)
         "STATE", dataStateOff);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_018 end");
 }
 
@@ -813,7 +846,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_019, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_019 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -824,16 +857,18 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_019, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOn);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(false);
+    g_statsServiceProxy->SetOnBatteryIpc(false);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
-    g_statsServiceProxy->SetOnBattery(true);
+    g_statsServiceProxy->SetOnBatteryIpc(true);
     usleep(SERVICE_POWER_CONSUMPTION_DURATION_US);
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = 2 * SERVICE_POWER_CONSUMPTION_DURATION_US * phoneOnAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -852,7 +887,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_020 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -868,7 +903,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
     double expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * phoneDataAverageMa / US_PER_HOUR;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     double devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -889,7 +926,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_020, TestSize.Level0)
         "UID", uid, "STATE", stateStopped);
 
     expectedPower = SERVICE_POWER_CONSUMPTION_DURATION_US * audioOnAverageMa / US_PER_HOUR;
-    actualPower = g_statsServiceProxy->GetAppStatsMah(uid);
+    g_statsServiceProxy->GetPartStatsMahIpc(uid, actualPower, tempError);
     devPrecent = abs(expectedPower - actualPower) / expectedPower;
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
@@ -908,7 +945,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_021, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_021 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = static_cast<int32_t>(TelCallState::CALL_STATUS_ACTIVE);
     int32_t stateOff = static_cast<int32_t>(TelCallState::CALL_STATUS_DISCONNECTED);
@@ -921,8 +958,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_021, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_ACTIVE);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_PHONE_ACTIVE, -1, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -940,7 +978,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_022, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_022 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     int32_t stateOn = 1;
     int32_t stateOff = 0;
@@ -953,8 +991,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_022, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE,
         HiSysEvent::EventType::BEHAVIOR, "STATE", stateOff);
 
-    long expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
-    long actualTime = g_statsServiceProxy->GetTotalTimeSecond(StatsUtils::STATS_TYPE_PHONE_DATA);
+    uint64_t expectedTime = round(SERVICE_POWER_CONSUMPTION_DURATION_US / US_PER_SECOND);
+    uint64_t actualTime;
+    g_statsServiceProxy->GetTotalTimeSecondIpc(StatsUtils::STATS_TYPE_PHONE_DATA, -1, actualTime);
     GTEST_LOG_(INFO) << __func__ << ": expected time = " << expectedTime << " seconds";
     GTEST_LOG_(INFO) << __func__ << ": actual time = " <<  actualTime << " seconds";
     EXPECT_EQ(expectedTime, actualTime);
@@ -972,7 +1011,7 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_023, TestSize.Level0)
     STATS_HILOGI(LABEL_TEST, "StatsServicePhoneTest_023 start");
     ASSERT_NE(g_statsServiceProxy, nullptr);
     auto statsService = BatteryStatsService::GetInstance();
-    g_statsServiceProxy->Reset();
+    g_statsServiceProxy->ResetIpc();
 
     StatsWriteHiSysEvent(statsService,
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::CALL_STATE, HiSysEvent::EventType::BEHAVIOR);
@@ -987,7 +1026,9 @@ HWTEST_F (StatsServicePhoneTest, StatsServicePhoneTest_023, TestSize.Level0)
         HiSysEvent::Domain::TELEPHONY, StatsHiSysEvent::DATA_CONNECTION_STATE, HiSysEvent::EventType::BEHAVIOR);
 
     double expectedPower = StatsUtils::DEFAULT_VALUE;
-    double actualPower = g_statsServiceProxy->GetPartStatsMah(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE);
+    int32_t tempError;
+    double actualPower;
+    g_statsServiceProxy->GetPartStatsMahIpc(BatteryStatsInfo::CONSUMPTION_TYPE_PHONE, actualPower, tempError);
     GTEST_LOG_(INFO) << __func__ << ": expected consumption = " << expectedPower << " mAh";
     GTEST_LOG_(INFO) << __func__ << ": actual consumption = " << actualPower << " mAh";
     EXPECT_EQ(expectedPower, actualPower);

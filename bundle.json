@@ -67,8 +67,7 @@
                       "header_files": [
                         "battery_stats_client.h",
                         "battery_stats_errors.h",
-                        "battery_stats_info.h",
-                        "ibattery_stats.h"
+                        "battery_stats_info.h"
                       ],
                       "header_base": "//base/powermgr/battery_statistics/interfaces/inner_api/include"
                     }

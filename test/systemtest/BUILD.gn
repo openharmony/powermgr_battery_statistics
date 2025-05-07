@@ -28,12 +28,19 @@ config("module_private_config") {
 ohos_systemtest("batterystats_sys_test") {
   module_out_path = module_output_path
 
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
+
   sources = [
     "${batterystats_service_path}/native/src/battery_stats_parser.cpp",
     "src/batterystats_sys_test.cpp",
   ]
 
   configs = [
+    "${batterystats_service_path}:batterystats_public_config",
     "${batterystats_utils_path}:batterystats_utils_config",
     ":module_private_config",
     "${batterystats_utils_path}:coverage_flags",

@@ -17,7 +17,7 @@
 
 #define FUZZ_PROJECT_NAME "getpartstatspercent_fuzzer"
 
-#include "battery_stats_ipc_interface_code.h"
+#include "ibattery_stats.h"
 #include "batterystats_fuzzer.h"
 
 using namespace OHOS::PowerMgr;
@@ -31,6 +31,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
     /* Run your code on data */
     g_serviceTest.TestStatsServiceStub(
-        static_cast<uint32_t>(BatteryStatsInterfaceCode::BATTERY_STATS_GETPARTPER), data, size);
+        static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_GET_PART_STATS_PERCENT_IPC), data, size);
     return 0;
 }

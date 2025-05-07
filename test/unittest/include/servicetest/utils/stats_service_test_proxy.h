@@ -22,6 +22,7 @@
 #include "battery_stats_info.h"
 #include "battery_stats_service.h"
 #include "battery_stats_stub.h"
+#include "hilog/log.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -30,19 +31,21 @@ public:
     StatsServiceTestProxy(const sptr<BatteryStatsService>& service);
     ~StatsServiceTestProxy() = default;
 
-    BatteryStatsInfoList GetBatteryStats();
-    bool SetOnBattery(bool isOnBattery);
-    double GetAppStatsMah(const int32_t& uid);
-    double GetAppStatsPercent(const int32_t& uid);
-    double GetPartStatsMah(const BatteryStatsInfo::ConsumptionType& type);
-    double GetPartStatsPercent(const BatteryStatsInfo::ConsumptionType& type);
-    uint64_t GetTotalTimeSecond(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
-    uint64_t GetTotalDataBytes(const StatsUtils::StatsType& statsType, const int32_t& uid = StatsUtils::INVALID_VALUE);
-    bool Reset();
-    std::string ShellDump(const std::vector<std::string>& args, uint32_t argc);
+    int32_t GetBatteryStatsIpc(ParcelableBatteryStatsList& batteryStats, int32_t& tempError);
+    int32_t SetOnBatteryIpc(bool isOnBattery);
+    int32_t GetAppStatsMahIpc(int32_t uid, double& appStatsMah, int32_t& tempError);
+    int32_t GetAppStatsPercentIpc(int32_t uid, double& appStatsPercent, int32_t& tempError);
+    int32_t GetPartStatsMahIpc(int32_t type, double& partStatsMah, int32_t& tempError);
+    int32_t GetPartStatsPercentIpc(int32_t type, double& partStatsPercent, int32_t& tempError);
+    int32_t GetTotalTimeSecondIpc(int32_t statsType, int32_t uid, uint64_t& totalTimeSecond);
+    int32_t GetTotalDataBytesIpc(int32_t statsType, int32_t uid, uint64_t& totalDataBytes);
+    int32_t ResetIpc();
+    int32_t ShellDumpIpc(const std::vector<std::string>& args, uint32_t argc, std::string& dumpShell);
 
 private:
+    static constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, 0xD000F00, "StatsTest"};
     sptr<BatteryStatsStub> stub_ {nullptr};
+    const int VECTOR_MAX_SIZE = 102400;
 };
 } // namespace PowerMgr
 } // namespace OHOS

@@ -20,7 +20,7 @@
 
 #include "stats_errors.h"
 #include "stats_log.h"
-#include "battery_stats_ipc_interface_code.h"
+#include "ibattery_stats.h"
 #include "battery_stats_proxy.h"
 #include "battery_stats_service.h"
 #include "battery_stats_stub.h"
@@ -48,9 +48,9 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_001, TestSize.Level0)
     MessageOption option;
 
     int ret = statsStub->OnRemoteRequest(
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET),
+        static_cast<uint32_t>(PowerMgr::IBatteryStatsIpcCode::COMMAND_GET_BATTERY_STATS_IPC),
         data, reply, option);
-    EXPECT_EQ(ret, E_STATS_GET_SERVICE_FAILED);
+    EXPECT_EQ(ret, ERR_TRANSACTION_FAILED);
     STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_001 end");
 }
 
@@ -70,9 +70,9 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_002, TestSize.Level0)
     MessageParcel reply;
     MessageOption option;
     data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
-    
+
     uint32_t invalidCode =
-        static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_GET) + 100;
+        static_cast<uint32_t>(PowerMgr::IBatteryStatsIpcCode::COMMAND_GET_BATTERY_STATS_IPC) + 100;
     int ret = statsStub->OnRemoteRequest(invalidCode, data, reply, option);
     EXPECT_NE(ret, ERR_OK);
     STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_002 end");
@@ -94,17 +94,12 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
     sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
 
     data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
-    const int32_t PARAM_MAX_NUM = 100;
+    const int32_t PARAM_MAX_NUM = 1024000;
     data.WriteUint32(PARAM_MAX_NUM);
-    uint32_t code = static_cast<uint32_t>(PowerMgr::BatteryStatsInterfaceCode::BATTERY_STATS_DUMP);
+    uint32_t code = static_cast<uint32_t>(PowerMgr::IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC);
     int32_t ret = statsStub->OnRemoteRequest(code, data, reply, option);
-    EXPECT_EQ(ret, E_STATS_EXCEED_PARAM_LIMIT) << " ret:" << ret;
+    EXPECT_EQ(ret, ERR_INVALID_DATA) << " ret:" << ret;
 
-    data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
-    data.WriteUint32(1);
-    data.WriteString("");
-    ret = statsStub->OnRemoteRequest(code, data, reply, option);
-    EXPECT_EQ(ret, E_STATS_READ_PARCEL_ERROR) << " ret:" << ret;
     STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_003 end.");
 }
 }
