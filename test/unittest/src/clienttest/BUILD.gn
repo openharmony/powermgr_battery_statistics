@@ -38,6 +38,7 @@ config("module_mock_private_config") {
 deps_ex = [
   "ability_base:base",
   "ability_base:want",
+  "cJSON:cjson",
   "common_event_service:cesfwk_innerkits",
   "config_policy:configpolicy_util",
   "c_utils:utils",
@@ -46,7 +47,6 @@ deps_ex = [
   "hisysevent:libhisyseventmanager",
   "hilog:libhilog",
   "ipc:ipc_core",
-  "jsoncpp:jsoncpp",
   "power_manager:powermgr_client",
   "safwk:system_ability_fwk",
   "samgr:samgr_proxy",
@@ -112,10 +112,7 @@ ohos_unittest("stats_service_death_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################wifi_test#############################
@@ -148,7 +145,6 @@ ohos_unittest("stats_wifi_test") {
   external_deps = deps_ex
   external_deps += [
     "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
     "wifi:wifi_sdk",
   ]
 }
@@ -181,10 +177,7 @@ ohos_unittest("stats_camera_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################audio_test#############################
@@ -214,10 +207,7 @@ ohos_unittest("stats_audio_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################powermgr_test#############################
@@ -248,10 +238,7 @@ ohos_unittest("stats_powermgr_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################location_test#############################
@@ -282,10 +269,7 @@ ohos_unittest("stats_location_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################dump_test#############################
@@ -343,10 +327,7 @@ ohos_unittest("stats_display_test") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################phone_test#############################
@@ -377,10 +358,7 @@ ohos_unittest("stats_phone_test") {
 
   external_deps = deps_ex
 
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################bluetooth_test#############################
@@ -413,7 +391,6 @@ ohos_unittest("stats_bluetooth_test") {
   external_deps += [
     "bluetooth:btframework",
     "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
   ]
 }
 
@@ -445,10 +422,7 @@ ohos_unittest("stats_alarm_test") {
 
   external_deps = deps_ex
 
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################util_test#############################
@@ -510,10 +484,7 @@ ohos_unittest("stats_client_test_mock_parcel") {
 
   external_deps = deps_ex
 
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################client_test_mock_object#############################
@@ -545,10 +516,7 @@ ohos_unittest("stats_client_test_mock_object") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 
 ############################mock_peer_test#############################
@@ -580,10 +548,7 @@ ohos_unittest("stats_client_test_mock_peer") {
   ]
 
   external_deps = deps_ex
-  external_deps += [
-    "googletest:gtest_main",
-    "jsoncpp:jsoncpp",
-  ]
+  external_deps += [ "googletest:gtest_main" ]
 }
 group("unittest") {
   testonly = true

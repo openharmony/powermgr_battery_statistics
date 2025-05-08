@@ -146,6 +146,7 @@ ohos_shared_library("batterystats_service") {
   external_deps += [
     "ability_base:want",
     "battery_manager:batterysrv_client",
+    "cJSON:cjson",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
@@ -153,7 +154,6 @@ ohos_shared_library("batterystats_service") {
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
     "ipc:ipc_core",
-    "jsoncpp:jsoncpp",
     "os_account:libaccountkits",
     "power_manager:power_sysparam",
     "safwk:system_ability_fwk",

@@ -17,8 +17,11 @@
 
 #include <algorithm>
 #include <fstream>
+#include <sstream>
+
+#include <cJSON.h>
+
 #include "ios"
-#include "json/reader.h"
 #include "string_ex.h"
 
 #include "stats_utils.h"
@@ -70,63 +73,66 @@ uint16_t BatteryStatsParser::GetSpeedNum(uint16_t cluster)
 
 bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
 {
-    Json::CharReaderBuilder reader;
-    Json::Value root;
-    std::string errors;
     std::ifstream ifs(path, std::ios::binary);
     if (!ifs.is_open()) {
         STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
         return false;
     }
-    if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
-        ifs.close();
-        return false;
-    }
+
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::string jsonStr = buffer.str();
     ifs.close();
 
-    if (root.isNull() || !root.isObject()) {
-        STATS_HILOGE(COMP_SVC, "root invalid[%{public}s]", path.c_str());
+    cJSON* root = cJSON_Parse(jsonStr.c_str());
+    if (!root) {
+        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
         return false;
     }
-
-    Json::Value::Members members = root.getMemberNames();
-    for (auto iter = members.begin(); iter != members.end(); iter++) {
-        std::string type = *iter;
-        Json::Value value = root[type];
-
-        if (value.isNull()) {
-            STATS_HILOGE(COMP_SVC, "value invalid[%{public}s]", type.c_str());
+    if (!cJSON_IsObject(root)) {
+        STATS_HILOGE(COMP_SVC, "root invalid[%{public}s]", path.c_str());
+        cJSON_Delete(root);
+        return false;
+    }
+    cJSON* currentElement = nullptr;
+    cJSON_ArrayForEach(currentElement, root) {
+        const char* type = currentElement->string;
+        if (type == nullptr) {
+            STATS_HILOGE(COMP_SVC, "Invalid key.");
             continue;
         }
-
-        if (type == StatsUtils::CURRENT_CPU_CLUSTER) {
-            clusterNum_ = value.size();
+        std::string keyStr(type);
+        if (keyStr == StatsUtils::CURRENT_CPU_CLUSTER) {
+            clusterNum_ = static_cast<uint16_t>(cJSON_GetArraySize(currentElement));
             STATS_HILOGD(COMP_SVC, "Read cluster num: %{public}d", clusterNum_);
         }
-
-        if (type.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
-            STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d", static_cast<int32_t>(value.size()));
-            speedNum_.push_back(value.size());
+        if (keyStr.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
+            STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d",
+                static_cast<int32_t>(cJSON_GetArraySize(currentElement)));
+            speedNum_.push_back(static_cast<uint16_t>(cJSON_GetArraySize(currentElement)));
         }
-
-        if (value.isArray()) {
-            ParsingArray(type, value);
-        } else if (value.isDouble()) {
-            averageMap_.insert(std::pair<std::string, double>(type, value.asDouble()));
+        if (cJSON_IsArray(currentElement)) {
+            ParsingArray(keyStr, currentElement);
+        } else if (cJSON_IsNumber(currentElement)) {
+            averageMap_.insert(std::pair<std::string, double>(keyStr, currentElement->valuedouble));
         }
     }
+    cJSON_Delete(root);
     return true;
 }
 
-void BatteryStatsParser::ParsingArray(const std::string& type, const Json::Value& array)
+void BatteryStatsParser::ParsingArray(const std::string& type, const cJSON* array)
 {
     std::vector<double> listValues;
-    std::for_each(array.begin(), array.end(), [&](const Json::Value& value) {
-        if (value.isDouble()) {
-            listValues.push_back(value.asDouble());
+
+    int size = cJSON_GetArraySize(array);
+    for (int i = 0; i < size; i++) {
+        cJSON* item = cJSON_GetArrayItem(array, i);
+        if (item && cJSON_IsNumber(item)) {
+            listValues.push_back(item->valuedouble);
         }
-    });
+    }
+
     averageVecMap_.insert(std::pair<std::string, std::vector<double>>(type, listValues));
 }
 

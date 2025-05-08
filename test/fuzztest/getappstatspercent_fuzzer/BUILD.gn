@@ -49,12 +49,12 @@ ohos_fuzztest("GetAppStatsPercentFuzzTest") {
 
   external_deps = [
     "ability_base:want",
+    "cJSON:cjson",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
     "ipc:ipc_core",
-    "jsoncpp:jsoncpp",
     "safwk:system_ability_fwk",
   ]
 }

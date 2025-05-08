@@ -17,10 +17,12 @@
 #define BATTERY_STATS_CORE_H
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <cstdint>
 #include <iosfwd>
-#include "json/value.h"
+
+#include <cJSON.h>
 
 #include "battery_stats_info.h"
 #include "entities/battery_stats_entity.h"
@@ -99,12 +101,12 @@ private:
     void UpdateCommonStats(StatsUtils::StatsType statsType, StatsUtils::StatsState state, int32_t uid);
     void CreatePartEntity();
     void CreateAppEntity();
-    void UpdateStatsEntity(Json::Value &root);
-    void SaveForHardware(Json::Value& root);
-    void SaveForSoftware(Json::Value& root);
-    void SaveForSoftwareCommon(Json::Value& root, int32_t uid);
-    void SaveForSoftwareConnectivity(Json::Value& root, int32_t uid);
-    void SaveForPower(Json::Value& root);
+    void UpdateStatsEntity(cJSON* root);
+    void SaveForHardware(cJSON* root);
+    void SaveForSoftware(cJSON* root);
+    void SaveForSoftwareCommon(cJSON* root, int32_t uid);
+    void SaveForSoftwareConnectivity(cJSON* root, int32_t uid);
+    void SaveForPower(cJSON* root);
 };
 } // namespace PowerMgr
 } // namespace OHOS
