@@ -50,6 +50,7 @@ ohos_fuzztest("GetTotalTimeSecondFuzzTest") {
   external_deps = [
     "ability_base:want",
     "c_utils:utils",
+    "common_event_service:cesfwk_innerkits",
     "hilog:libhilog",
     "hisysevent:libhisyseventmanager",
     "ipc:ipc_core",
