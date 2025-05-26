@@ -85,11 +85,13 @@ ohos_unittest("stats_service_alarm_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_audio_test#############################
@@ -121,11 +123,13 @@ ohos_unittest("stats_service_audio_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_bluetooth_test#############################
@@ -157,12 +161,14 @@ ohos_unittest("stats_service_bluetooth_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
-  external_deps += [ "bluetooth:btframework" ]
+  external_deps += [
+    "bluetooth:btframework",
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_camera_test#############################
@@ -194,11 +200,13 @@ ohos_unittest("stats_service_camera_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_display_test#############################
@@ -230,11 +238,13 @@ ohos_unittest("stats_service_display_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_dump_test#############################
@@ -266,11 +276,13 @@ ohos_unittest("stats_service_dump_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_location_test#############################
@@ -302,11 +314,13 @@ ohos_unittest("stats_service_location_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_phone_test#############################
@@ -338,11 +352,13 @@ ohos_unittest("stats_service_phone_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_powermgr_test#############################
@@ -374,11 +390,13 @@ ohos_unittest("stats_service_powermgr_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_wifi_test#############################
@@ -410,12 +428,14 @@ ohos_unittest("stats_service_wifi_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
-  external_deps += [ "wifi:wifi_sdk" ]
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+    "wifi:wifi_sdk",
+  ]
 }
 
 ############################service_subscriber_test#############################
@@ -447,11 +467,13 @@ ohos_unittest("stats_service_subscriber_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_stub_test#############################
@@ -475,11 +497,13 @@ ohos_unittest("stats_service_stub_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_core_test#############################
@@ -503,11 +527,13 @@ ohos_unittest("stats_service_core_test") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 ############################service_test_mock_parcel#############################
@@ -539,11 +565,13 @@ ohos_unittest("stats_service_test_mock_parcel") {
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_service_path}:batterystats_service",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = deps_ex
+  external_deps += [
+    "googletest:gtest_main",
+    "jsoncpp:jsoncpp",
+  ]
 }
 
 group("unittest") {
