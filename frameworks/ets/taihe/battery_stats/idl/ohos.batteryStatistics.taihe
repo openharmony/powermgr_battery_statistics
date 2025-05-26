@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2025 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@!namespace("@ohos.batteryStatistics", "batteryStats")
+
+@!sts_inject("""
+static { loadLibrary("batterystats_taihe_native.z") }""")
+
+enum ConsumptionType: i32 {
+  CONSUMPTION_TYPE_INVALID = -17,
+  CONSUMPTION_TYPE_APP,
+  CONSUMPTION_TYPE_BLUETOOTH,
+  CONSUMPTION_TYPE_IDLE,
+  CONSUMPTION_TYPE_PHONE,
+  CONSUMPTION_TYPE_RADIO,
+  CONSUMPTION_TYPE_SCREEN,
+  CONSUMPTION_TYPE_USER,
+  CONSUMPTION_TYPE_WIFI
+}
+
+@gen_async("getBatteryStats")
+@gen_promise("getBatteryStats")
+function GetBatteryStatsSync(): Array<BatteryStatsInfo>;
+
+function GetAppPowerValue(uid: i32): f64;
+
+function GetAppPowerPercent(uid: i32): f64;
+
+function GetHardwareUnitPowerValue(type: ConsumptionType): f64;
+
+function GetHardwareUnitPowerPercent(type: ConsumptionType): f64;
+
+struct BatteryStatsInfo {
+  uid: i32;
+  type: ConsumptionType;
+  power: f64;
+}
