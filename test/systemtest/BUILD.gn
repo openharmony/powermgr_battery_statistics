@@ -47,26 +47,26 @@ ohos_systemtest("batterystats_sys_test") {
   ]
 
   deps = [
-    "${ability_runtime_path}/frameworks/native/appkit:appkit_native",
     "${batterystats_inner_api}:batterystats_client",
     "${batterystats_utils_path}:batterystats_utils",
-    "//third_party/googletest:gtest_main",
-    "//third_party/jsoncpp:jsoncpp",
   ]
 
   external_deps = [
     "ability_base:base",
     "ability_base:want",
+    "ability_runtime:appkit_native",
     "battery_manager:batterysrv_client",
     "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "config_policy:configpolicy_util",
     "display_manager:displaymgr",
+    "googletest:gtest_main",
     "hicollie:libhicollie",
     "hilog:libhilog",
     "hisysevent:libhisysevent",
     "hisysevent:libhisyseventmanager",
     "ipc:ipc_core",
+    "jsoncpp:jsoncpp",
     "os_account:libaccountkits",
     "power_manager:powermgr_client",
     "safwk:system_ability_fwk",
