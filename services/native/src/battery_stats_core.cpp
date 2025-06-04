@@ -15,6 +15,7 @@
 #include "battery_stats_core.h"
 
 #include <cinttypes>
+#include <cstdio>
 #include <fstream>
 #include <map>
 #include <functional>
@@ -22,9 +23,9 @@
 #include <utility>
 #include <vector>
 
+#include <cJSON.h>
+
 #include "ios"
-#include "json/reader.h"
-#include "json/writer.h"
 #include "ohos_account_kits.h"
 
 #include "battery_info.h"
@@ -779,45 +780,57 @@ double BatteryStatsCore::GetPartStatsPercent(const BatteryStatsInfo::Consumption
     return partStatsPercent;
 }
 
-void BatteryStatsCore::SaveForHardware(Json::Value& root)
+void BatteryStatsCore::SaveForHardware(cJSON* root)
 {
     STATS_HILOGD(COMP_SVC, "Save hardware battery stats");
+    cJSON* hardwareObj = cJSON_CreateObject();
+    if (!hardwareObj) {
+        STATS_HILOGE(COMP_SVC, "Failed to create 'Hardware' object");
+        return;
+    }
+    cJSON_AddItemToObject(root, "Hardware", hardwareObj);
     // Save for Bluetooth
-    root["Hardware"]["bluetooth_br_on"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON));
-    root["Hardware"]["bluetooth_ble_on"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON));
+    cJSON_AddNumberToObject(hardwareObj, "bluetooth_br_on", GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON));
+    cJSON_AddNumberToObject(hardwareObj, "bluetooth_ble_on", GetTotalTimeMs(StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON));
 
     // Save for Screen
-    root["Hardware"]["screen_on"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON));
-    for (uint16_t brightNess = 0; brightNess <= StatsUtils::SCREEN_BRIGHTNESS_BIN; brightNess++) {
-        root["Hardware"]["screen_brightness"][brightNess] =
-            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, brightNess));
+    cJSON_AddNumberToObject(hardwareObj, "screen_on", GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_ON));
+    cJSON* screenBrightnessArray = cJSON_CreateArray();
+    if (screenBrightnessArray) {
+        for (uint16_t brightness = 0; brightness <= StatsUtils::SCREEN_BRIGHTNESS_BIN; brightness++) {
+            cJSON_AddItemToArray(screenBrightnessArray,
+                cJSON_CreateNumber(GetTotalTimeMs(StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS, brightness)));
+        }
+        cJSON_AddItemToObject(hardwareObj, "screen_brightness", screenBrightnessArray);
     }
 
     // Save for Wifi
-    root["Hardware"]["wifi_on"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_WIFI_ON));
-    root["Hardware"]["wifi_scan"] =
-        Json::Value(GetTotalConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN));
+    cJSON_AddNumberToObject(hardwareObj, "wifi_on", GetTotalTimeMs(StatsUtils::STATS_TYPE_WIFI_ON));
+    cJSON_AddNumberToObject(hardwareObj, "wifi_scan", GetTotalConsumptionCount(StatsUtils::STATS_TYPE_WIFI_SCAN));
 
     // Save for CPU idle
-    root["Hardware"]["cpu_idle"] =
-        Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE));
+    cJSON_AddNumberToObject(hardwareObj, "cpu_idle", GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_IDLE));
 
     // Save for Phone
-    for (uint16_t signalOn = 0; signalOn < StatsUtils::RADIO_SIGNAL_BIN; signalOn++) {
-        root["Hardware"]["radio_on"][signalOn] =
-            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, signalOn));
+    cJSON* radioOnArray = cJSON_CreateArray();
+    if (radioOnArray) {
+        for (uint16_t signalOn = 0; signalOn < StatsUtils::RADIO_SIGNAL_BIN; signalOn++) {
+            cJSON_AddItemToArray(radioOnArray,
+                                 cJSON_CreateNumber(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_ACTIVE, signalOn)));
+        }
+        cJSON_AddItemToObject(hardwareObj, "radio_on", radioOnArray);
     }
-    for (uint16_t signalData = 0; signalData < StatsUtils::RADIO_SIGNAL_BIN; signalData++) {
-        root["Hardware"]["radio_data"][signalData] =
-            Json::Value(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, signalData));
+    cJSON* radioDataArray = cJSON_CreateArray();
+    if (radioDataArray) {
+        for (uint16_t signalData = 0; signalData < StatsUtils::RADIO_SIGNAL_BIN; signalData++) {
+            cJSON_AddItemToArray(radioDataArray,
+                                 cJSON_CreateNumber(GetTotalTimeMs(StatsUtils::STATS_TYPE_PHONE_DATA, signalData)));
+        }
+        cJSON_AddItemToObject(hardwareObj, "radio_data", radioDataArray);
     }
 }
 
-void BatteryStatsCore::SaveForSoftware(Json::Value& root)
+void BatteryStatsCore::SaveForSoftware(cJSON* root)
 {
     for (auto it : uidEntity_->GetUids()) {
         SaveForSoftwareCommon(root, it);
@@ -825,68 +838,112 @@ void BatteryStatsCore::SaveForSoftware(Json::Value& root)
     }
 }
 
-void BatteryStatsCore::SaveForSoftwareCommon(Json::Value& root, int32_t uid)
+void BatteryStatsCore::SaveForSoftwareCommon(cJSON* root, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC, "Save software common battery stats, uid: %{public}d", uid);
     std::string strUid = std::to_string(uid);
+
+    cJSON* softwareObj = cJSON_GetObjectItemCaseSensitive(root, "Software");
+    if (!softwareObj) {
+        softwareObj = cJSON_CreateObject();
+        if (!softwareObj) {
+            STATS_HILOGE(COMP_SVC, "Failed to create 'software' object");
+            return;
+        }
+        cJSON_AddItemToObject(root, "Software", softwareObj);
+    }
+
+    cJSON* uidObj = cJSON_GetObjectItemCaseSensitive(softwareObj, strUid.c_str());
+    if (!uidObj) {
+        uidObj = cJSON_CreateObject();
+        if (!uidObj) {
+            STATS_HILOGE(COMP_SVC, "Failed to create 'uid' object");
+            return;
+        }
+        cJSON_AddItemToObject(softwareObj, strUid.c_str(), uidObj);
+    }
     // Save for camera related
-    root["Software"][strUid]["camera_on"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON));
+    cJSON_AddNumberToObject(uidObj, "camera_on", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_CAMERA_ON));
 
     // Save for flashlight related
-    root["Software"][strUid]["flashlight_on"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
+    cJSON_AddNumberToObject(uidObj, "flashlight_on", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_FLASHLIGHT_ON));
 
     // Save for gnss related
-    root["Software"][strUid]["gnss_on"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GNSS_ON));
+    cJSON_AddNumberToObject(uidObj, "gnss_on", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_GNSS_ON));
 
     // Save for audio related
-    root["Software"][strUid]["audio_on"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON));
+    cJSON_AddNumberToObject(uidObj, "audio_on", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_AUDIO_ON));
 
     // Save for wakelock related
-    root["Software"][strUid]["cpu_awake"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD));
+    cJSON_AddNumberToObject(uidObj, "cpu_awake", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_WAKELOCK_HOLD));
 
     // Save for sensor related
-    root["Software"][strUid]["sensor_gravity"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
-    root["Software"][strUid]["sensor_proximity"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
+    cJSON_AddNumberToObject(uidObj, "sensor_gravity", GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_GRAVITY_ON));
+    cJSON_AddNumberToObject(uidObj, "sensor_proximity",
+                            GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON));
 
     // Save for alarm related
-    root["Software"][strUid]["alarm"] =
-        Json::Value(GetTotalConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid));
-
+    cJSON_AddNumberToObject(uidObj, "alarm", GetTotalConsumptionCount(StatsUtils::STATS_TYPE_ALARM, uid));
     // Save for cpu related
-    root["Software"][strUid]["cpu_time"] = Json::Value(cpuEntity_->GetCpuTimeMs(uid));
+    cJSON_AddNumberToObject(uidObj, "cpu_time", cpuEntity_->GetCpuTimeMs(uid));
 }
 
-void BatteryStatsCore::SaveForSoftwareConnectivity(Json::Value& root, int32_t uid)
+void BatteryStatsCore::SaveForSoftwareConnectivity(cJSON* root, int32_t uid)
 {
     STATS_HILOGD(COMP_SVC, "Save software connectivity battery stats, uid: %{public}d", uid);
     std::string strUid = std::to_string(uid);
+
+    cJSON* softwareObj = cJSON_GetObjectItemCaseSensitive(root, "Software");
+    if (!softwareObj) {
+        softwareObj = cJSON_CreateObject();
+        if (!softwareObj) {
+            STATS_HILOGE(COMP_SVC, "Failed to create 'software' object");
+            return;
+        }
+        cJSON_AddItemToObject(root, "Software", softwareObj);
+    }
+
+    cJSON* uidObj = cJSON_GetObjectItemCaseSensitive(softwareObj, strUid.c_str());
+    if (!uidObj) {
+        uidObj = cJSON_CreateObject();
+        if (!uidObj) {
+            STATS_HILOGE(COMP_SVC, "Failed to create 'uid' object");
+            return;
+        }
+        cJSON_AddItemToObject(softwareObj, strUid.c_str(), uidObj);
+    }
+
     // Save for Bluetooth related
-    root["Software"][strUid]["bluetooth_br_scan"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN));
-    root["Software"][strUid]["bluetooth_ble_scan"] =
-        Json::Value(GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN));
+    cJSON_AddNumberToObject(uidObj, "bluetooth_br_scan",
+                            GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN));
+
+    cJSON_AddNumberToObject(uidObj, "bluetooth_ble_scan",
+                            GetTotalTimeMs(uid, StatsUtils::STATS_TYPE_BLUETOOTH_BLE_SCAN));
 }
 
-void BatteryStatsCore::SaveForPower(Json::Value& root)
+void BatteryStatsCore::SaveForPower(cJSON* root)
 {
     STATS_HILOGD(COMP_SVC, "Save power battery stats");
+    cJSON* powerObj = cJSON_GetObjectItemCaseSensitive(root, "Power");
+    if (!powerObj) {
+        powerObj = cJSON_CreateObject();
+        if (!powerObj) {
+            STATS_HILOGE(COMP_SVC, "Failed to create 'Power' object");
+            return;
+        }
+        cJSON_AddItemToObject(root, "Power", powerObj);
+    }
+
     auto statsInfoList = BatteryStatsEntity::GetStatsInfoList();
     for (auto iter = statsInfoList.begin(); iter != statsInfoList.end(); iter++) {
         if ((*iter)->GetConsumptionType() == BatteryStatsInfo::CONSUMPTION_TYPE_APP) {
             std::string name = std::to_string((*iter)->GetUid());
-            root["Power"][name] = Json::Value((*iter)->GetPower());
+            cJSON_AddNumberToObject(powerObj, name.c_str(), (*iter)->GetPower());
             STATS_HILOGD(COMP_SVC, "Saved power: %{public}lf for uid: %{public}s", (*iter)->GetPower(),
                 name.c_str());
         } else if ((*iter)->GetConsumptionType() != BatteryStatsInfo::CONSUMPTION_TYPE_USER) {
             std::string name = std::to_string((*iter)->GetConsumptionType());
-            root["Power"][name] = Json::Value((*iter)->GetPower());
+            cJSON_AddNumberToObject(powerObj, name.c_str(), (*iter)->GetPower());
             STATS_HILOGD(COMP_SVC, "Saved power: %{public}lf for type: %{public}s", (*iter)->GetPower(),
                 name.c_str());
         }
@@ -896,7 +953,11 @@ void BatteryStatsCore::SaveForPower(Json::Value& root)
 bool BatteryStatsCore::SaveBatteryStatsData()
 {
     ComputePower();
-    Json::Value root;
+    cJSON* root = cJSON_CreateObject();
+    if (!root) {
+        STATS_HILOGE(COMP_SVC, "Failed to create cJSON root object");
+        return false;
+    }
 
     // Save for power
     SaveForPower(root);
@@ -907,29 +968,53 @@ bool BatteryStatsCore::SaveBatteryStatsData()
     // Save for software
     SaveForSoftware(root);
 
-    Json::StreamWriterBuilder swb;
-    std::ofstream ofs;
-    ofs.open(BATTERY_STATS_JSON);
-    if (!ofs.is_open()) {
-        STATS_HILOGE(COMP_SVC, "Opening json file failed");
+    char* jsonStr = cJSON_Print(root);
+    if (!jsonStr) {
+        STATS_HILOGE(COMP_SVC, "Failed to print cJSON to string");
+        cJSON_Delete(root);
         return false;
     }
-    swb.newStreamWriter()->write(root, &ofs);
-    ofs.close();
+
+    FILE* fp = std::fopen(BATTERY_STATS_JSON.c_str(), "w");
+    if (!fp) {
+        STATS_HILOGE(COMP_SVC, "Opening json file failed");
+        cJSON_free(jsonStr);
+        cJSON_Delete(root);
+        return false;
+    }
+
+    auto len = fwrite(jsonStr, sizeof(char), strlen(jsonStr), fp);
+    std::fclose(fp);
+    if (len != strlen(jsonStr)) {
+        STATS_HILOGE(COMP_SVC, "Failed to write file");
+        cJSON_free(jsonStr);
+        cJSON_Delete(root);
+        return false;
+    }
+
+    cJSON_free(jsonStr);
+    cJSON_Delete(root);
     return true;
 }
 
-void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
+void BatteryStatsCore::UpdateStatsEntity(cJSON* root)
 {
     BatteryStatsEntity::ResetStatsEntity();
-    Json::Value::Members member = root["Power"].getMemberNames();
+    cJSON* powerObj = cJSON_GetObjectItemCaseSensitive(root, "Power");
+    if (!powerObj || !cJSON_IsObject(powerObj)) {
+        STATS_HILOGE(COMP_SVC, "Failed to get 'Power' object from json");
+        return;
+    }
     std::map<int32_t, double> tmpUserPowerMap;
-    for (auto iter = member.begin(); iter != member.end(); iter++) {
-        if (!root["Power"][*iter].isDouble()) {
+    cJSON* currentElement = nullptr;
+    cJSON_ArrayForEach(currentElement, powerObj) {
+        const char* key = currentElement->string;
+        if (!key || !cJSON_IsNumber(currentElement)) {
             continue;
         }
+        std::string keyStr(key);
         int64_t result = 0;
-        if (!StatsUtils::ParseStrtollResult(*iter, result)) {
+        if (!StatsUtils::ParseStrtollResult(keyStr, result)) {
             continue;
         }
         auto id = static_cast<int32_t>(result);
@@ -938,7 +1023,7 @@ void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
         if (id > StatsUtils::INVALID_VALUE) {
             info->SetUid(id);
             info->SetConsumptioType(BatteryStatsInfo::CONSUMPTION_TYPE_APP);
-            info->SetPower(root["Power"][*iter].asDouble());
+            info->SetPower(currentElement->valuedouble);
             usr = AccountSA::OhosAccountKits::GetInstance().GetDeviceAccountIdByUID(id);
             const auto& userPower = tmpUserPowerMap.find(usr);
             if (userPower != tmpUserPowerMap.end()) {
@@ -949,7 +1034,7 @@ void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
         } else if (id < StatsUtils::INVALID_VALUE && id > BatteryStatsInfo::CONSUMPTION_TYPE_INVALID) {
             info->SetUid(StatsUtils::INVALID_VALUE);
             info->SetConsumptioType(static_cast<BatteryStatsInfo::ConsumptionType>(id));
-            info->SetPower(root["Power"][*iter].asDouble());
+            info->SetPower(currentElement->valuedouble);
         }
         STATS_HILOGD(COMP_SVC, "Load power:%{public}lfmAh,id:%{public}d,user:%{public}d", info->GetPower(), id, usr);
         BatteryStatsEntity::UpdateStatsInfoList(info);
@@ -965,25 +1050,43 @@ void BatteryStatsCore::UpdateStatsEntity(Json::Value &root)
 
 bool BatteryStatsCore::LoadBatteryStatsData()
 {
-    Json::CharReaderBuilder reader;
-    Json::Value root;
-    std::string errors;
     std::ifstream ifs(BATTERY_STATS_JSON, std::ios::binary);
     if (!ifs.is_open()) {
         STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
         return false;
     }
-    if (!parseFromStream(reader, ifs, &root, &errors)) {
-        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
-        ifs.close();
+
+    ifs.seekg(0, std::ios::end);
+    size_t fileSize = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+
+    if (fileSize == 0) {
+        STATS_HILOGE(COMP_SVC, "File is empty or invalid size");
         return false;
     }
+
+    std::string jsonBuffer(fileSize, '\0');
+    ifs.read(&jsonBuffer[0], fileSize);
+
+    if (ifs.fail()) {
+        STATS_HILOGE(COMP_SVC, "Failed to read the JSON file");
+        return false;
+    }
+    jsonBuffer.push_back('\0');
     ifs.close();
-    if (root.isNull() || !root.isObject()) {
-        STATS_HILOGE(COMP_SVC, "root invalid");
+    cJSON* root = cJSON_Parse(jsonBuffer.c_str());
+    if (!root) {
+        STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
         return false;
     }
+    if (!cJSON_IsObject(root)) {
+        STATS_HILOGE(COMP_SVC, "Root is not a valid JSON object");
+        cJSON_Delete(root);
+        return false;
+    }
+
     UpdateStatsEntity(root);
+    cJSON_Delete(root);
     return true;
 }
 

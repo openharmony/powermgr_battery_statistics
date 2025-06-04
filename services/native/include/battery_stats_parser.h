@@ -23,8 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "json/value.h"
-
+#include <cJSON.h>
 #include "stats_log.h"
 
 namespace OHOS {
@@ -44,7 +43,7 @@ public:
     void DumpInfo(std::string& result);
 private:
     bool LoadAveragePowerFromFile(const std::string& path);
-    void ParsingArray(const std::string& type, const Json::Value& array);
+    void ParsingArray(const std::string& type, const cJSON* array);
     std::map<std::string, double> averageMap_;
     std::map<std::string, std::vector<double>> averageVecMap_;
     uint16_t clusterNum_ = 0;

@@ -56,18 +56,22 @@ void BatteryStatsListener::OnEvent(std::shared_ptr<HiviewDFX::HiSysEventRecord> 
     if (!StatsHiSysEvent::CheckHiSysEvent(eventName)) {
         return;
     }
-    Json::Value root;
-    Json::CharReaderBuilder reader;
-    std::string errors;
-    std::istrstream is(eventDetail.c_str());
-    if (parseFromStream(reader, is, &root, &errors)) {
+
+    cJSON* root = cJSON_Parse(eventDetail.c_str());
+    if (root != nullptr) {
+        if (!cJSON_IsObject(root)) {
+            STATS_HILOGD(COMP_SVC, "json root is not an object");
+            cJSON_Delete(root);
+            return;
+        }
         ProcessHiSysEvent(eventName, root);
+        cJSON_Delete(root);
     } else {
         STATS_HILOGW(COMP_SVC, "Parse hisysevent data failed");
     }
 }
 
-void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const Json::Value& root)
+void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const cJSON* root)
 {
     auto statsService = BatteryStatsService::GetInstance();
     auto detector = statsService->GetBatteryStatsDetector();
@@ -90,7 +94,16 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
         ProcessWorkschedulerEvent(data, root);
     } else if (eventName == StatsHiSysEvent::CALL_STATE || eventName == StatsHiSysEvent::DATA_CONNECTION_STATE) {
         ProcessPhoneEvent(data, root, eventName);
-    } else if (eventName == StatsHiSysEvent::TORCH_STATE) {
+    } else {
+        ProcessHiSysEventInternal(data, eventName, root);
+    }
+    detector->HandleStatsChangedEvent(data);
+}
+
+void BatteryStatsListener::ProcessHiSysEventInternal(StatsUtils::StatsData& data,
+    const std::string& eventName, const cJSON* root)
+{
+    if (eventName == StatsHiSysEvent::TORCH_STATE) {
         ProcessFlashlightEvent(data, root);
     } else if (eventName == StatsHiSysEvent::CAMERA_CONNECT || eventName == StatsHiSysEvent::CAMERA_DISCONNECT ||
         eventName == StatsHiSysEvent::FLASHLIGHT_ON || eventName == StatsHiSysEvent::FLASHLIGHT_OFF) {
@@ -113,23 +126,29 @@ void BatteryStatsListener::ProcessHiSysEvent(const std::string& eventName, const
     } else if (eventName == StatsHiSysEvent::MISC_TIME_STATISTIC_REPORT) {
         ProcessAlarmEvent(data, root);
     }
-    detector->HandleStatsChangedEvent(data);
 }
 
-void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     if (eventName == StatsHiSysEvent::CAMERA_CONNECT || eventName == StatsHiSysEvent::CAMERA_DISCONNECT) {
         data.type = StatsUtils::STATS_TYPE_CAMERA_ON;
-        if (root["UID"].isInt()) {
-            data.uid = root["UID"].asInt();
+        cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+        if (uidItem && cJSON_IsNumber(uidItem)) {
+            data.uid = static_cast<int32_t>(uidItem->valueint);
         }
-        if (root["PID"].isInt()) {
-            data.pid = root["PID"].asInt();
+
+        cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+        if (pidItem && cJSON_IsNumber(pidItem)) {
+            data.pid = static_cast<int32_t>(pidItem->valueint);
         }
-        if (root["ID"].isString() && !root["ID"].asString().empty()) {
-            data.deviceId = root["ID"].asString();
+
+        cJSON* idItem = cJSON_GetObjectItemCaseSensitive(root, "ID");
+        if (idItem && cJSON_IsString(idItem) && idItem->valuestring != nullptr &&
+            strlen(idItem->valuestring) > 0) {
+            data.deviceId = idItem->valuestring;
         }
+
         if (eventName == StatsHiSysEvent::CAMERA_CONNECT) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
         } else {
@@ -145,18 +164,23 @@ void BatteryStatsListener::ProcessCameraEvent(StatsUtils::StatsData& data, const
     }
 }
 
-void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_AUDIO_ON;
-    if (root["UID"].isInt()) {
-        data.uid = root["UID"].asInt();
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["PID"].isInt()) {
-        data.pid = root["PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
-    if (root["STATE"].isInt()) {
-        AudioState audioState = AudioState(root["STATE"].asInt());
-        switch (audioState) {
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        AudioState state = static_cast<AudioState>(stateItem->valueint);
+        switch (state) {
             case AudioState::AUDIO_STATE_RUNNING:
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
                 break;
@@ -166,12 +190,13 @@ void BatteryStatsListener::ProcessAudioEvent(StatsUtils::StatsData& data, const 
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
                 break;
             default:
+                data.state = StatsUtils::STATS_STATE_INVALID;
                 break;
         }
     }
 }
 
-void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     if (eventName == StatsHiSysEvent::POWER_SENSOR_GRAVITY) {
@@ -180,83 +205,100 @@ void BatteryStatsListener::ProcessSensorEvent(StatsUtils::StatsData& data, const
         data.type = StatsUtils::STATS_TYPE_SENSOR_PROXIMITY_ON;
     }
 
-    if (root["UID"].isInt()) {
-        data.uid = root["UID"].asInt();
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["PID"].isInt()) {
-        data.pid = root["PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
-    if (root["STATE"].isInt()) {
-        if (root["STATE"].asInt() == 1) {
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        if (stateItem->valueint == 1) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asInt() == 0) {
+        } else if (stateItem->valueint == 0) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
 }
 
-void BatteryStatsListener::ProcessGnssEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessGnssEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_GNSS_ON;
-    if (root["UID"].isInt()) {
-        data.uid = root["UID"].asInt();
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["PID"].isInt()) {
-        data.pid = root["PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
-    if (root["STATE"].isString() && !root["STATE"].asString().empty()) {
-        if (root["STATE"].asString() == "start") {
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsString(stateItem) && stateItem->valuestring != nullptr &&
+        strlen(stateItem->valuestring) > 0) {
+        const char* stateStr = stateItem->valuestring;
+        if (strcmp(stateStr, "start") == 0) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asString() == "stop") {
+        } else if (strcmp(stateStr, "stop") == 0) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
 }
 
-void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
     if (eventName == StatsHiSysEvent::BR_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_ON;
-        if (root["STATE"].isInt()) {
+        if (stateItem && cJSON_IsNumber(stateItem)) {
 #ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
-            if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
+            if (stateItem->valueint == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (stateItem->valueint == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
 #endif
         }
     } else if (eventName == StatsHiSysEvent::DISCOVERY_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BR_SCAN;
-        if (root["STATE"].isInt()) {
+        if (stateItem && cJSON_IsNumber(stateItem)) {
 #ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
-            if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STARTED) {
+            if (stateItem->valueint == Bluetooth::DISCOVERY_STARTED) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (root["STATE"].asInt() == Bluetooth::DISCOVERY_STOPED) {
+            } else if (stateItem->valueint == Bluetooth::DISCOVERY_STOPED) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
 #endif
         }
-        if (root["UID"].isInt()) {
-            data.uid = root["UID"].asInt();
+        cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+        if (uidItem && cJSON_IsNumber(uidItem)) {
+            data.uid = static_cast<int32_t>(uidItem->valueint);
         }
-        if (root["PID"].isInt()) {
-            data.pid = root["PID"].asInt();
+
+        cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+        if (pidItem && cJSON_IsNumber(pidItem)) {
+            data.pid = static_cast<int32_t>(pidItem->valueint);
         }
     }
 }
 
-void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     if (eventName == StatsHiSysEvent::BLE_SWITCH_STATE) {
         data.type = StatsUtils::STATS_TYPE_BLUETOOTH_BLE_ON;
-        if (root["STATE"].isInt()) {
+        cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+        if (stateItem && cJSON_IsNumber(stateItem)) {
 #ifdef HAS_BATTERYSTATS_BLUETOOTH_PART
-            if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_ON) {
+            if (stateItem->valueint == Bluetooth::BTStateID::STATE_TURN_ON) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (root["STATE"].asInt() == Bluetooth::BTStateID::STATE_TURN_OFF) {
+            } else if (stateItem->valueint == Bluetooth::BTStateID::STATE_TURN_OFF) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
 #endif
@@ -268,16 +310,19 @@ void BatteryStatsListener::ProcessBluetoothBleEvent(StatsUtils::StatsData& data,
         } else if (eventName == StatsHiSysEvent::BLE_SCAN_STOP) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
-        if (root["UID"].isInt()) {
-            data.uid = root["UID"].asInt();
+        cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+        if (uidItem && cJSON_IsNumber(uidItem)) {
+            data.uid = static_cast<int32_t>(uidItem->valueint);
         }
-        if (root["PID"].isInt()) {
-            data.pid = root["PID"].asInt();
+
+        cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+        if (pidItem && cJSON_IsNumber(pidItem)) {
+            data.pid = static_cast<int32_t>(pidItem->valueint);
         }
     }
 }
 
-void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     if (eventName == StatsHiSysEvent::BR_SWITCH_STATE || eventName == StatsHiSysEvent::DISCOVERY_STATE) {
@@ -288,15 +333,16 @@ void BatteryStatsListener::ProcessBluetoothEvent(StatsUtils::StatsData& data, co
     }
 }
 
-void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     if (eventName == StatsHiSysEvent::WIFI_CONNECTION) {
         data.type = StatsUtils::STATS_TYPE_WIFI_ON;
-        if (root["TYPE"].isInt()) {
+        cJSON* typeItem = cJSON_GetObjectItemCaseSensitive(root, "TYPE");
+        if (typeItem && cJSON_IsNumber(typeItem)) {
 #ifdef HAS_BATTERYSTATS_WIFI_PART
-            Wifi::ConnState connectionType = Wifi::ConnState(root["TYPE"].asInt());
-            switch (connectionType) {
+            int connectionTypeInt = typeItem->valueint;
+            switch (static_cast<Wifi::ConnState>(connectionTypeInt)) {
                 case Wifi::ConnState::CONNECTED:
                     data.state = StatsUtils::STATS_STATE_ACTIVATED;
                     break;
@@ -314,31 +360,41 @@ void BatteryStatsListener::ProcessWifiEvent(StatsUtils::StatsData& data, const J
     }
 }
 
-void BatteryStatsListener::ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const cJSON* root)
 {
-    if (root["name_"].isString() && !root["name_"].asString().empty()) {
-        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+    cJSON* item = nullptr;
+
+    item = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (item && cJSON_IsString(item) && item->valuestring != nullptr && strlen(item->valuestring) > 0) {
+        data.eventDebugInfo.append("Event name = ").append(item->valuestring);
     }
-    if (root["STATE"].isInt()) {
-        data.eventDebugInfo.append(" State = ").append(std::to_string(root["STATE"].asInt()));
+
+    item = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (item && cJSON_IsNumber(item)) {
+        data.eventDebugInfo.append(" State = ").append(std::to_string(item->valueint));
     }
-    if (root["SLOT_ID"].isInt()) {
-        data.eventDebugInfo.append(" Slot ID = ").append(std::to_string(root["SLOT_ID"].asInt()));
+
+    item = cJSON_GetObjectItemCaseSensitive(root, "SLOT_ID");
+    if (item && cJSON_IsNumber(item)) {
+        data.eventDebugInfo.append(" Slot ID = ").append(std::to_string(item->valueint));
     }
-    if (root["INDEX_ID"].isInt()) {
-        data.eventDebugInfo.append(" Index ID = ").append(std::to_string(root["INDEX_ID"].asInt()));
+
+    item = cJSON_GetObjectItemCaseSensitive(root, "INDEX_ID");
+    if (item && cJSON_IsNumber(item)) {
+        data.eventDebugInfo.append(" Index ID = ").append(std::to_string(item->valueint));
     }
 }
 
-void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
     if (eventName == StatsHiSysEvent::CALL_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_ACTIVE;
-        if (root["STATE"].isInt()) {
+        if (stateItem && cJSON_IsNumber(stateItem)) {
 #ifdef HAS_BATTERYSTATS_CALL_MANAGER_PART
-            Telephony::TelCallState callState = Telephony::TelCallState(root["STATE"].asInt());
-            switch (callState) {
+            int callStateInt = stateItem->valueint;
+            switch (static_cast<Telephony::TelCallState>(callStateInt)) {
                 case Telephony::TelCallState::CALL_STATUS_ACTIVE:
                     data.state = StatsUtils::STATS_STATE_ACTIVATED;
                     break;
@@ -352,10 +408,10 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
         }
     } else if (eventName == StatsHiSysEvent::DATA_CONNECTION_STATE) {
         data.type = StatsUtils::STATS_TYPE_PHONE_DATA;
-        if (root["STATE"].isInt()) {
-            if (root["STATE"].asInt() == 1) {
+        if (stateItem && cJSON_IsNumber(stateItem)) {
+            if (stateItem->valueint == 1) {
                 data.state = StatsUtils::STATS_STATE_ACTIVATED;
-            } else if (root["STATE"].asInt() == 0) {
+            } else if (stateItem->valueint == 0) {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
             }
         }
@@ -369,37 +425,46 @@ void BatteryStatsListener::ProcessPhoneEvent(StatsUtils::StatsData& data, const 
     ProcessPhoneDebugInfo(data, root);
 }
 
-void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessFlashlightEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_FLASHLIGHT_ON;
-    if (root["UID"].isInt()) {
-        data.uid = root["UID"].asInt();
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["PID"].isInt()) {
-        data.pid = root["PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
-    if (root["STATE"].isInt()) {
-        if (root["STATE"].asInt() == 1) {
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        if (stateItem->valueint == 1) {
             data.state = StatsUtils::STATS_STATE_ACTIVATED;
-        } else if (root["STATE"].asInt() == 0) {
+        } else if (stateItem->valueint == 0) {
             data.state = StatsUtils::STATS_STATE_DEACTIVATED;
         }
     }
 }
 
-void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_WAKELOCK_HOLD;
-    if (root["UID"].isInt()) {
-        data.uid = root["UID"].asInt();
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["PID"].isInt()) {
-        data.pid = root["PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
-    if (root["STATE"].isInt()) {
-        RunningLockState lockState = RunningLockState(root["STATE"].asInt());
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        int lockStateInt = stateItem->valueint;
         std::string stateLabel = "";
-        switch (lockState) {
+        switch (static_cast<RunningLockState>(lockStateInt)) {
             case RunningLockState::RUNNINGLOCK_STATE_DISABLE: {
                 data.state = StatsUtils::STATS_STATE_DEACTIVATED;
                 stateLabel = "Disable";
@@ -421,61 +486,101 @@ void BatteryStatsListener::ProcessWakelockEvent(StatsUtils::StatsData& data, con
         }
         data.eventDebugInfo.append(" STATE = ").append(stateLabel);
     }
-    if (root["TYPE"].isInt()) {
-        data.eventDataType = root["TYPE"].asInt();
-    }
-    if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
-        data.eventDataName = root["NAME"].asString();
-    }
-    if (root["LOG_LEVEL"].isInt()) {
-        data.eventDebugInfo.append(" LOG_LEVEL = ").append(std::to_string(root["LOG_LEVEL"].asInt()));
-    }
-    if (root["TAG"].isString() && !root["TAG"].asString().empty()) {
-        data.eventDebugInfo.append(" TAG = ").append(root["TAG"].asString());
-    }
-    if (root["MESSAGE"].isString() && !root["MESSAGE"].asString().empty()) {
-        data.eventDebugInfo.append(" MESSAGE = ").append(root["MESSAGE"].asString());
-    }
+
+    ProcessWakelockEventInternal(data, root);
 }
 
-void BatteryStatsListener::ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessWakelockEventInternal(StatsUtils::StatsData& data, const cJSON* root)
 {
-    if (root["name_"].isString() && !root["name_"].asString().empty()) {
-        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+    cJSON* typeItem = cJSON_GetObjectItemCaseSensitive(root, "TYPE");
+    if (typeItem && cJSON_IsNumber(typeItem)) {
+        data.eventDataType = static_cast<int32_t>(typeItem->valueint);
     }
-    if (root["STATE"].isInt()) {
-        data.eventDebugInfo.append(" Screen state = ").append(std::to_string(root["STATE"].asInt()));
+
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "NAME");
+    if (nameItem && cJSON_IsString(nameItem) && nameItem->valuestring != nullptr &&
+        strlen(nameItem->valuestring) > 0) {
+        data.eventDataName = nameItem->valuestring;
     }
-    if (root["BRIGHTNESS"].isInt()) {
-        data.eventDebugInfo.append(" Screen brightness = ").append(std::to_string(root["BRIGHTNESS"].asInt()));
+
+    cJSON* logLevelItem = cJSON_GetObjectItemCaseSensitive(root, "LOG_LEVEL");
+    if (logLevelItem && cJSON_IsNumber(logLevelItem)) {
+        data.eventDebugInfo.append(" LOG_LEVEL = ").append(std::to_string(logLevelItem->valueint));
     }
-    if (root["REASON"].isString() && !root["REASON"].asString().empty()) {
-        data.eventDebugInfo.append(" Brightness reason = ").append(root["REASON"].asString());
+
+    cJSON* tagItem = cJSON_GetObjectItemCaseSensitive(root, "TAG");
+    if (tagItem && cJSON_IsString(tagItem) && tagItem->valuestring != nullptr &&
+        strlen(tagItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" TAG = ").append(tagItem->valuestring);
     }
-    if (root["NIT"].isInt()) {
-        data.eventDebugInfo.append(" Brightness nit = ").append(std::to_string(root["NIT"].asInt()));
-    }
-    if (root["RATIO"].isInt()) {
-        data.eventDebugInfo.append(" Ratio = ").append(std::to_string(root["RATIO"].asInt()));
-    }
-    if (root["TYPE"].isInt()) {
-        data.eventDebugInfo.append(" Ambient type = ").append(std::to_string(root["TYPE"].asInt()));
-    }
-    if (root["LEVEL"].isInt()) {
-        data.eventDebugInfo.append(" Ambient brightness = ").append(std::to_string(root["LEVEL"].asInt()));
+
+    cJSON* messageItem = cJSON_GetObjectItemCaseSensitive(root, "MESSAGE");
+    if (messageItem && cJSON_IsString(messageItem) && messageItem->valuestring != nullptr &&
+        strlen(messageItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" MESSAGE = ").append(messageItem->valuestring);
     }
 }
 
-void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root,
+void BatteryStatsListener::ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const cJSON* root)
+{
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (nameItem && cJSON_IsString(nameItem) && nameItem->valuestring != nullptr &&
+        strlen(nameItem->valuestring) > 0) {
+        data.eventDebugInfo.append("Event name = ").append(nameItem->valuestring);
+    }
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        data.eventDebugInfo.append(" Screen state = ").append(std::to_string(stateItem->valueint));
+    }
+
+    cJSON* brightnessItem = cJSON_GetObjectItemCaseSensitive(root, "BRIGHTNESS");
+    if (brightnessItem && cJSON_IsNumber(brightnessItem)) {
+        data.eventDebugInfo.append(" Screen brightness = ").append(std::to_string(brightnessItem->valueint));
+    }
+
+    cJSON* reasonItem = cJSON_GetObjectItemCaseSensitive(root, "REASON");
+    if (reasonItem && cJSON_IsString(reasonItem) && reasonItem->valuestring != nullptr &&
+        strlen(reasonItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Brightness reason = ").append(reasonItem->valuestring);
+    }
+    ProcessDispalyDebugInfoInternal(data, root);
+}
+
+void BatteryStatsListener::ProcessDispalyDebugInfoInternal(StatsUtils::StatsData& data, const cJSON* root)
+{
+    cJSON* nitItem = cJSON_GetObjectItemCaseSensitive(root, "NIT");
+    if (nitItem && cJSON_IsNumber(nitItem)) {
+        data.eventDebugInfo.append(" Brightness nit = ").append(std::to_string(nitItem->valueint));
+    }
+
+    cJSON* ratioItem = cJSON_GetObjectItemCaseSensitive(root, "RATIO");
+    if (ratioItem && cJSON_IsNumber(ratioItem)) {
+        data.eventDebugInfo.append(" Ratio = ").append(std::to_string(ratioItem->valueint));
+    }
+
+    cJSON* typeItem = cJSON_GetObjectItemCaseSensitive(root, "TYPE");
+    if (typeItem && cJSON_IsNumber(typeItem)) {
+        data.eventDebugInfo.append(" Ambient type = ").append(std::to_string(typeItem->valueint));
+    }
+
+    cJSON* levelItem = cJSON_GetObjectItemCaseSensitive(root, "LEVEL");
+    if (levelItem && cJSON_IsNumber(levelItem)) {
+        data.eventDebugInfo.append(" Ambient brightness = ").append(std::to_string(levelItem->valueint));
+    }
+}
+
+void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, const cJSON* root,
     const std::string& eventName)
 {
     data.type = StatsUtils::STATS_TYPE_DISPLAY;
     if (eventName == StatsHiSysEvent::SCREEN_STATE) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_ON;
 #ifdef HAS_BATTERYSTATS_DISPLAY_MANAGER_PART
-        if (root["STATE"].isInt()) {
-            DisplayPowerMgr::DisplayState displayState = DisplayPowerMgr::DisplayState(root["STATE"].asInt());
-            switch (displayState) {
+        cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+        if (stateItem && cJSON_IsNumber(stateItem)) {
+            int displayStateInt = stateItem->valueint;
+            switch (static_cast<DisplayPowerMgr::DisplayState>(displayStateInt)) {
                 case DisplayPowerMgr::DisplayState::DISPLAY_OFF:
                     data.state = StatsUtils::STATS_STATE_DEACTIVATED;
                     break;
@@ -489,159 +594,257 @@ void BatteryStatsListener::ProcessDispalyEvent(StatsUtils::StatsData& data, cons
 #endif
     } else if (eventName == StatsHiSysEvent::BRIGHTNESS_NIT) {
         data.type = StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS;
-        if (root["BRIGHTNESS"].isInt()) {
-            data.level = root["BRIGHTNESS"].asInt();
+        cJSON* brightnessItem = cJSON_GetObjectItemCaseSensitive(root, "BRIGHTNESS");
+        if (brightnessItem && cJSON_IsNumber(brightnessItem)) {
+            data.level = static_cast<int16_t>(brightnessItem->valueint);
         }
     }
     ProcessDispalyDebugInfo(data, root);
 }
 
-void BatteryStatsListener::ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessBatteryEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_BATTERY;
-    if (root["LEVEL"].isInt()) {
-        data.level = root["LEVEL"].asInt();
+
+    cJSON* levelItem = cJSON_GetObjectItemCaseSensitive(root, "LEVEL");
+    if (levelItem && cJSON_IsNumber(levelItem)) {
+        data.level = static_cast<int16_t>(levelItem->valueint);
     }
-    if (root["CHARGER"].isInt()) {
-        data.eventDataExtra = root["CHARGER"].asInt();
+
+    cJSON* chargerItem = cJSON_GetObjectItemCaseSensitive(root, "CHARGER");
+    if (chargerItem && cJSON_IsNumber(chargerItem)) {
+        data.eventDataExtra = static_cast<int32_t>(chargerItem->valueint);
     }
-    if (root["VOLTAGE"].isInt()) {
-        data.eventDebugInfo.append(" Voltage = ").append(std::to_string(root["VOLTAGE"].asInt()));
+
+    cJSON* voltageItem = cJSON_GetObjectItemCaseSensitive(root, "VOLTAGE");
+    if (voltageItem && cJSON_IsNumber(voltageItem)) {
+        data.eventDebugInfo.append(" Voltage = ").append(std::to_string(voltageItem->valueint));
     }
-    if (root["HEALTH"].isInt()) {
-        data.eventDebugInfo.append(" Health = ").append(std::to_string(root["HEALTH"].asInt()));
+
+    cJSON* healthItem = cJSON_GetObjectItemCaseSensitive(root, "HEALTH");
+    if (healthItem && cJSON_IsNumber(healthItem)) {
+        data.eventDebugInfo.append(" Health = ").append(std::to_string(healthItem->valueint));
     }
-    if (root["TEMPERATURE"].isInt()) {
-        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(root["TEMPERATURE"].asInt()));
+
+    cJSON* temperatureItem = cJSON_GetObjectItemCaseSensitive(root, "TEMPERATURE");
+    if (temperatureItem && cJSON_IsNumber(temperatureItem)) {
+        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(temperatureItem->valueint));
     }
 }
 
-void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessThermalEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_THERMAL;
-    if (root["name_"].isString() && !root["name_"].asString().empty()) {
-        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (nameItem && cJSON_IsString(nameItem) && nameItem->valuestring != nullptr &&
+        strlen(nameItem->valuestring) > 0) {
+        data.eventDebugInfo.append("Event name = ").append(nameItem->valuestring);
     }
-    if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
-        data.eventDebugInfo.append(" Name = ").append(root["NAME"].asString());
+
+    cJSON* bundleNameItem = cJSON_GetObjectItemCaseSensitive(root, "NAME");
+    if (bundleNameItem && cJSON_IsString(bundleNameItem) && bundleNameItem->valuestring != nullptr &&
+        strlen(bundleNameItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Name = ").append(bundleNameItem->valuestring);
     }
-    if (root["TEMPERATURE"].isInt()) {
-        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(root["TEMPERATURE"].asInt()));
+
+    cJSON* temperatureItem = cJSON_GetObjectItemCaseSensitive(root, "TEMPERATURE");
+    if (temperatureItem && cJSON_IsNumber(temperatureItem)) {
+        data.eventDebugInfo.append(" Temperature = ").append(std::to_string(temperatureItem->valueint));
     }
-    if (root["LEVEL"].isInt()) {
-        data.eventDebugInfo.append(" Temperature level = ").append(std::to_string(root["LEVEL"].asInt()));
+
+    cJSON* levelItem = cJSON_GetObjectItemCaseSensitive(root, "LEVEL");
+    if (levelItem && cJSON_IsNumber(levelItem)) {
+        data.eventDebugInfo.append(" Temperature level = ").append(std::to_string(levelItem->valueint));
     }
-    if (root["ACTION"].isString() && !root["ACTION"].asString().empty()) {
-        data.eventDebugInfo.append(" Action name = ").append(root["ACTION"].asString());
+
+    ProcessThermalEventInternal(data, root);
+}
+
+void BatteryStatsListener::ProcessThermalEventInternal(StatsUtils::StatsData& data, const cJSON* root)
+{
+    cJSON* actionItem = cJSON_GetObjectItemCaseSensitive(root, "ACTION");
+    if (actionItem && cJSON_IsString(actionItem) && actionItem->valuestring != nullptr &&
+        strlen(actionItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Action name = ").append(actionItem->valuestring);
     }
-    if (root["VALUE"].isInt()) {
-        data.eventDebugInfo.append(" Value = ").append(std::to_string(root["VALUE"].asInt()));
+
+    cJSON* valueItem = cJSON_GetObjectItemCaseSensitive(root, "VALUE");
+    if (valueItem && cJSON_IsNumber(valueItem)) {
+        data.eventDebugInfo.append(" Value = ").append(std::to_string(valueItem->valueint));
     }
-    if (root["RATIO"].isNumeric()) {
-        std::string ratio = std::to_string(root["RATIO"].asFloat()).substr(THERMAL_RATIO_BEGIN, THERMAL_RATIO_LENGTH);
+
+    cJSON* ratioItem = cJSON_GetObjectItemCaseSensitive(root, "RATIO");
+    if (ratioItem && cJSON_IsNumber(ratioItem)) {
+        std::string ratio = std::to_string(static_cast<float>(ratioItem->valuedouble)).substr(THERMAL_RATIO_BEGIN,
+            THERMAL_RATIO_LENGTH);
         data.eventDebugInfo.append(" Ratio = ").append(ratio);
     }
 }
 
-void BatteryStatsListener::ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
-        data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
-        if (root["UID"].isInt()) {
-            data.uid = root["UID"].asInt();
-        }
-        if (root["PID"].isInt()) {
-            data.pid = root["PID"].asInt();
-        }
-        if (root["STATE"].isInt()) {
-            data.state = StatsUtils::StatsState(root["STATE"].asInt());
-        }
-        if (root["TYPE"].isInt()) {
-            data.eventDataType = root["TYPE"].asInt();
-        }
-        if (root["INTERVAL"].isInt()) {
-            data.eventDataExtra = root["INTERVAL"].asInt();
-        }
+    data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
+    }
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
+    }
+
+    cJSON* stateItem = cJSON_GetObjectItemCaseSensitive(root, "STATE");
+    if (stateItem && cJSON_IsNumber(stateItem)) {
+        data.state = static_cast<StatsUtils::StatsState>(stateItem->valueint);
+    }
+
+    cJSON* typeItem = cJSON_GetObjectItemCaseSensitive(root, "TYPE");
+    if (typeItem && cJSON_IsNumber(typeItem)) {
+        data.eventDataType = static_cast<int32_t>(typeItem->valueint);
+    }
+
+    cJSON* intervalItem = cJSON_GetObjectItemCaseSensitive(root, "INTERVAL");
+    if (intervalItem && cJSON_IsNumber(intervalItem)) {
+        data.eventDataExtra = static_cast<int32_t>(intervalItem->valueint);
+    }
 }
 
-void BatteryStatsListener::ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
-        data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
-        if (root["name_"].isString() && !root["name_"].asString().empty()) {
-            data.eventDebugInfo.append(root["name_"].asString()).append(":");
-        }
-        if (root["UID"].isInt()) {
-            data.uid = root["UID"].asInt();
-        }
-        if (root["PID"].isInt()) {
-            data.pid = root["PID"].asInt();
-        }
-        if (root["NAME"].isString() && !root["NAME"].asString().empty()) {
-            data.eventDebugInfo.append(" Bundle name = ").append(root["NAME"].asString());
-        }
-        if (root["WORKID"].isString() && !root["WORKID"].asString().empty()) {
-            data.eventDebugInfo.append(" Work ID = ").append(root["WORKID"].asString());
-        }
-        if (root["TRIGGER"].isString() && !root["TRIGGER"].asString().empty()) {
-            data.eventDebugInfo.append(" Trigger conditions = ").append(root["TRIGGER"].asString());
-        }
-        if (root["TYPE"].isString() && !root["TYPE"].asString().empty()) {
-            data.eventDebugInfo.append(" Work type = ").append(root["TYPE"].asString());
-        }
-        if (root["INTERVAL"].isInt()) {
-            data.eventDebugInfo.append(" Interval = ").append(std::to_string(root["INTERVAL"].asInt()));
-        }
+    data.type = StatsUtils::STATS_TYPE_WORKSCHEDULER;
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (nameItem && cJSON_IsString(nameItem) && nameItem->valuestring != nullptr &&
+        strlen(nameItem->valuestring) > 0) {
+        data.eventDebugInfo.append(nameItem->valuestring).append(":");
+    }
+
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
+    }
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
+    }
+
+    cJSON* bundleNameItem = cJSON_GetObjectItemCaseSensitive(root, "NAME");
+    if (bundleNameItem && cJSON_IsString(bundleNameItem) && bundleNameItem->valuestring != nullptr &&
+        strlen(bundleNameItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Bundle name = ").append(bundleNameItem->valuestring);
+    }
+    ProcessOthersWorkschedulerEventInternal(data, root);
 }
 
-void BatteryStatsListener::ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessOthersWorkschedulerEventInternal(StatsUtils::StatsData& data, const cJSON* root)
 {
-    if (!root["name_"].isString() || root["name_"].asString().empty()) {
+    cJSON* workIdItem = cJSON_GetObjectItemCaseSensitive(root, "WORKID");
+    if (workIdItem && cJSON_IsString(workIdItem) && workIdItem->valuestring != nullptr &&
+        strlen(workIdItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Work ID = ").append(workIdItem->valuestring);
+    }
+
+    cJSON* triggerItem = cJSON_GetObjectItemCaseSensitive(root, "TRIGGER");
+    if (triggerItem && cJSON_IsString(triggerItem) && triggerItem->valuestring != nullptr &&
+        strlen(triggerItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Trigger conditions = ").append(triggerItem->valuestring);
+    }
+
+    cJSON* typeItem = cJSON_GetObjectItemCaseSensitive(root, "TYPE");
+    if (typeItem && cJSON_IsString(typeItem) && typeItem->valuestring != nullptr &&
+        strlen(typeItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Work type = ").append(typeItem->valuestring);
+    }
+
+    cJSON* intervalItem = cJSON_GetObjectItemCaseSensitive(root, "INTERVAL");
+    if (intervalItem && cJSON_IsNumber(intervalItem)) {
+        data.eventDebugInfo.append(" Interval = ").append(std::to_string(intervalItem->valueint));
+    }
+}
+
+void BatteryStatsListener::ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root)
+{
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (!nameItem || !cJSON_IsString(nameItem) || nameItem->valuestring == nullptr ||
+        strlen(nameItem->valuestring) == 0) {
         return;
     }
-    if (root["name_"].asString() == StatsHiSysEvent::POWER_WORKSCHEDULER) {
+    std::string eventName(nameItem->valuestring);
+    if (eventName == StatsHiSysEvent::POWER_WORKSCHEDULER) {
         ProcessPowerWorkschedulerEvent(data, root);
     } else {
         ProcessOthersWorkschedulerEvent(data, root);
     }
 }
 
-void BatteryStatsListener::ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_DISTRIBUTEDSCHEDULER;
-    if (root["name_"].isString() && !root["name_"].asString().empty()) {
-        data.eventDebugInfo.append("Event name = ").append(root["name_"].asString());
+    cJSON* nameItem = cJSON_GetObjectItemCaseSensitive(root, "name_");
+    if (nameItem && cJSON_IsString(nameItem) && nameItem->valuestring != nullptr &&
+        strlen(nameItem->valuestring) > 0) {
+        data.eventDebugInfo.append("Event name = ").append(nameItem->valuestring);
     }
-    if (root["CALLING_TYPE"].isString() && !root["CALLING_TYPE"].asString().empty()) {
-        data.eventDebugInfo.append(" Calling Type = ").append(root["CALLING_TYPE"].asString());
+
+    cJSON* callingTypeItem = cJSON_GetObjectItemCaseSensitive(root, "CALLING_TYPE");
+    if (callingTypeItem && cJSON_IsString(callingTypeItem) && callingTypeItem->valuestring != nullptr &&
+        strlen(callingTypeItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Calling Type = ").append(callingTypeItem->valuestring);
     }
-    if (root["CALLING_UID"].isInt()) {
-        data.eventDebugInfo.append(" Calling Uid = ").append(std::to_string(root["CALLING_UID"].asInt()));
+
+    cJSON* callingUidItem = cJSON_GetObjectItemCaseSensitive(root, "CALLING_UID");
+    if (callingUidItem && cJSON_IsNumber(callingUidItem)) {
+        data.eventDebugInfo.append(" Calling Uid = ").append(std::to_string(callingUidItem->valueint));
     }
-    if (root["CALLING_PID"].isInt()) {
-        data.eventDebugInfo.append(" Calling Pid = ").append(std::to_string(root["CALLING_PID"].asInt()));
+
+    cJSON* callingPidItem = cJSON_GetObjectItemCaseSensitive(root, "CALLING_PID");
+    if (callingPidItem && cJSON_IsNumber(callingPidItem)) {
+        data.eventDebugInfo.append(" Calling Pid = ").append(std::to_string(callingPidItem->valueint));
     }
-    if (root["TARGET_BUNDLE"].isString() && !root["TARGET_BUNDLE"].asString().empty()) {
-        data.eventDebugInfo.append(" Target Bundle Name = ").append(root["TARGET_BUNDLE"].asString());
+
+    ProcessDistributedSchedulerEventInternal(data, root);
+}
+
+void BatteryStatsListener::ProcessDistributedSchedulerEventInternal(StatsUtils::StatsData& data, const cJSON* root)
+{
+    cJSON* targetBundleItem = cJSON_GetObjectItemCaseSensitive(root, "TARGET_BUNDLE");
+    if (targetBundleItem && cJSON_IsString(targetBundleItem) && targetBundleItem->valuestring != nullptr &&
+        strlen(targetBundleItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Target Bundle Name = ").append(targetBundleItem->valuestring);
     }
-    if (root["TARGET_ABILITY"].isString() && !root["TARGET_ABILITY"].asString().empty()) {
-        data.eventDebugInfo.append(" Target Ability Name = ").append(root["TARGET_ABILITY"].asString());
+
+    cJSON* targetAbilityItem = cJSON_GetObjectItemCaseSensitive(root, "TARGET_ABILITY");
+    if (targetAbilityItem && cJSON_IsString(targetAbilityItem) && targetAbilityItem->valuestring != nullptr &&
+        strlen(targetAbilityItem->valuestring) > 0) {
+        data.eventDebugInfo.append(" Target Ability Name = ").append(targetAbilityItem->valuestring);
     }
-    if (root["CALLING_APP_UID"].isInt()) {
-        data.eventDebugInfo.append(" Calling App Uid = ").append(std::to_string(root["CALLING_APP_UID"].asInt()));
+
+    cJSON* callingAppUidItem = cJSON_GetObjectItemCaseSensitive(root, "CALLING_APP_UID");
+    if (callingAppUidItem && cJSON_IsNumber(callingAppUidItem)) {
+        data.eventDebugInfo.append(" Calling App Uid = ").append(std::to_string(callingAppUidItem->valueint));
     }
-    if (root["RESULT"].isInt()) {
-        data.eventDebugInfo.append(" RESULT = ").append(std::to_string(root["RESULT"].asInt()));
+
+    cJSON* resultItem = cJSON_GetObjectItemCaseSensitive(root, "RESULT");
+    if (resultItem && cJSON_IsNumber(resultItem)) {
+        data.eventDebugInfo.append(" RESULT = ").append(std::to_string(resultItem->valueint));
     }
 }
 
-void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root)
+void BatteryStatsListener::ProcessAlarmEvent(StatsUtils::StatsData& data, const cJSON* root)
 {
     data.type = StatsUtils::STATS_TYPE_ALARM;
     data.traffic = 1;
-    if (root["CALLER_UID"].isInt()) {
-        data.uid = root["CALLER_UID"].asInt();
+
+    cJSON* uidItem = cJSON_GetObjectItemCaseSensitive(root, "CALLER_UID");
+    if (uidItem && cJSON_IsNumber(uidItem)) {
+        data.uid = static_cast<int32_t>(uidItem->valueint);
     }
-    if (root["CALLER_PID"].isInt()) {
-        data.pid = root["CALLER_PID"].asInt();
+
+    cJSON* pidItem = cJSON_GetObjectItemCaseSensitive(root, "CALLER_PID");
+    if (pidItem && cJSON_IsNumber(pidItem)) {
+        data.pid = static_cast<int32_t>(pidItem->valueint);
     }
 }
 

@@ -18,8 +18,8 @@
 
 #include <memory>
 
+#include <cJSON.h>
 #include "hisysevent_listener.h"
-#include "json/json.h"
 #include "stats_utils.h"
 
 namespace OHOS {
@@ -31,28 +31,34 @@ public:
     void OnEvent(std::shared_ptr<HiviewDFX::HiSysEventRecord> sysEvent) override;
     void OnServiceDied() override;
 private:
-    void ProcessHiSysEvent(const std::string& eventName, const Json::Value& root);
-    void ProcessPhoneEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessWakelockEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessDispalyEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessBatteryEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessThermalEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessFlashlightEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessCameraEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessAudioEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessSensorEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessGnssEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessBluetoothEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessWifiEvent(StatsUtils::StatsData& data, const Json::Value& root, const std::string& eventName);
-    void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessAlarmEvent(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
-    void ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const Json::Value& root);
+    void ProcessHiSysEventInternal(StatsUtils::StatsData& data, const std::string& eventName, const cJSON* root);
+    void ProcessHiSysEvent(const std::string& eventName, const cJSON* root);
+    void ProcessPhoneEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessWakelockEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessWakelockEventInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDispalyEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessBatteryEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessThermalEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessThermalEventInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessPowerWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessOthersWorkschedulerEventInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessOthersWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessWorkschedulerEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessFlashlightEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessCameraEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessAudioEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessSensorEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessGnssEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessBluetoothBrEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessBluetoothBleEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessBluetoothEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessWifiEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessDistributedSchedulerEventInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessAlarmEvent(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDispalyDebugInfoInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const cJSON* root);
 };
 } // namespace PowerMgr
 } // namespace OHOS
