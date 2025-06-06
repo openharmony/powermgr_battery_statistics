@@ -24,6 +24,7 @@
 #include "ios"
 #include "string_ex.h"
 
+#include "stats_cjson_utils.h"
 #include "stats_utils.h"
 #ifdef HAS_BATTERYSTATS_CONFIG_POLICY_PART
 #include "config_policy_utils.h"
@@ -78,7 +79,6 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
         STATS_HILOGE(COMP_SVC, "Json file doesn't exist");
         return false;
     }
-
     std::stringstream buffer;
     buffer << ifs.rdbuf();
     std::string jsonStr = buffer.str();
@@ -89,7 +89,7 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
         STATS_HILOGE(COMP_SVC, "Failed to parse the JSON file");
         return false;
     }
-    if (!cJSON_IsObject(root)) {
+    if (!StatsJsonUtils::IsValidJsonObjectOrJsonArray(root)) {
         STATS_HILOGE(COMP_SVC, "root invalid[%{public}s]", path.c_str());
         cJSON_Delete(root);
         return false;
@@ -102,11 +102,12 @@ bool BatteryStatsParser::LoadAveragePowerFromFile(const std::string& path)
             continue;
         }
         std::string keyStr(type);
-        if (keyStr == StatsUtils::CURRENT_CPU_CLUSTER) {
+        if (keyStr == StatsUtils::CURRENT_CPU_CLUSTER && StatsJsonUtils::IsValidJsonArray(currentElement)) {
             clusterNum_ = static_cast<uint16_t>(cJSON_GetArraySize(currentElement));
             STATS_HILOGD(COMP_SVC, "Read cluster num: %{public}d", clusterNum_);
         }
-        if (keyStr.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos) {
+        if (keyStr.find(StatsUtils::CURRENT_CPU_SPEED) != std::string::npos &&
+            StatsJsonUtils::IsValidJsonArray(currentElement)) {
             STATS_HILOGD(COMP_SVC, "Read speed num: %{public}d",
                 static_cast<int32_t>(cJSON_GetArraySize(currentElement)));
             speedNum_.push_back(static_cast<uint16_t>(cJSON_GetArraySize(currentElement)));
@@ -128,7 +129,7 @@ void BatteryStatsParser::ParsingArray(const std::string& type, const cJSON* arra
     int size = cJSON_GetArraySize(array);
     for (int i = 0; i < size; i++) {
         cJSON* item = cJSON_GetArrayItem(array, i);
-        if (item && cJSON_IsNumber(item)) {
+        if (StatsJsonUtils::IsValidJsonNumber(item)) {
             listValues.push_back(item->valuedouble);
         }
     }
