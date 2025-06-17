@@ -44,6 +44,7 @@
                 "napi",
                 "os_account",
                 "power_manager",
+                "runtime_core",
                 "safwk",
                 "samgr",
                 "wifi"
@@ -53,6 +54,7 @@
             "group_type": {
                 "fwk_group": [
                     "//base/powermgr/battery_statistics/frameworks/napi:batterystatistics",
+                    "//base/powermgr/battery_statistics/frameworks/ets/taihe:batterystats_taihe",
                     "//base/powermgr/battery_statistics/interfaces/inner_api:batterystats_client"
                 ],
                 "service_group": [
@@ -80,6 +82,9 @@
                       "header_files": [],
                       "header_base": "//base/powermgr/battery_statistics/utils/native/include"
                     }
+                },
+                {
+                    "name": "//base/powermgr/power_manager/frameworks/ets/taihe/battery_stats:copy_batterystats"
                 }
             ],
             "test": [
