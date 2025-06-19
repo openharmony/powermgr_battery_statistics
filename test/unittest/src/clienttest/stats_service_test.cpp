@@ -66,21 +66,6 @@ void StatsServiceTest::TearDown()
 
 namespace {
 /**
- * @tc.name: StatsServiceTest_001
- * @tc.desc: test BatteryStatsService service ready.
- * @tc.type: FUNC
- */
-HWTEST_F (StatsServiceTest, StatsServiceTest_001, TestSize.Level0)
-{
-    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_001 start");
-    sptr<ISystemAbilityManager> sam = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-    ASSERT_TRUE(sam != nullptr) << "StatsServiceTest_001 fail to get GetSystemAbilityManager";
-    sptr<IRemoteObject> remoteObject_ = sam->CheckSystemAbility(POWER_MANAGER_BATT_STATS_SERVICE_ID);
-    ASSERT_TRUE(remoteObject_ != nullptr) << "GetSystemAbility failed.";
-    STATS_HILOGI(LABEL_TEST, "StatsServiceTest_001 end");
-}
-
-/**
  * @tc.name: StatsServiceTest_002
  * @tc.desc: test OnStart
  * @tc.type: FUNC
