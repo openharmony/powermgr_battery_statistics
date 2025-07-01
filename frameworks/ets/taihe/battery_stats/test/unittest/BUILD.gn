@@ -1,0 +1,54 @@
+# Copyright (c) 2025 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/test.gni")
+import("//build/ohos/taihe_idl/taihe.gni")
+import("../../../../../../batterystats.gni")
+
+module_output_path = "battery_statistics/battery_statistics"
+
+config("module_private_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "${taihe_generated_file_path}/include",
+    "${taihe_toolchain_path}/include"
+  ]
+}
+
+ohos_unittest("stats_taihe_native_test") {
+  module_out_path = module_output_path
+
+  sources = [
+    "stats_ani_constructor_test.cpp",
+    "stats_taihe_native_test.cpp",
+    "../../src/ohos.batteryStatistics.impl.cpp"
+  ]
+
+  configs = [
+    ":module_private_config",
+    "${batterystats_utils_path}:coverage_flags",
+  ]
+
+  deps = [
+    "${batterystats_frameworks_path}/ets/taihe/battery_stats:batterystats_taihe_native",
+    "${batterystats_frameworks_path}/ets/taihe/battery_stats:run_taihe",
+    "${batterystats_inner_api}:batterystats_client",
+    "${batterystats_utils_path}:batterystats_utils",
+  ]
+
+  external_deps = [
+    "googletest:gtest_main",
+    "runtime_core:ani",
+  ]
+}

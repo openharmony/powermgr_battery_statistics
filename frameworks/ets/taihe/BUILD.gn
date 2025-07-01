@@ -17,3 +17,8 @@ group("batterystats_taihe") {
     "battery_stats:batterystats_taihe_native",
   ]
 }
+
+group("batterystats_taihe_test") {
+  testonly = true
+  deps = [ "battery_stats/test/unittest:stats_taihe_native_test" ]
+}
