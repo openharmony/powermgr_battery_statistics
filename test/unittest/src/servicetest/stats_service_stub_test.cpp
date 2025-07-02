@@ -24,6 +24,7 @@
 #include "battery_stats_proxy.h"
 #include "battery_stats_service.h"
 #include "battery_stats_stub.h"
+#include "battery_stats_info.h"
 
 using namespace OHOS;
 using namespace OHOS::PowerMgr;
@@ -101,5 +102,53 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_003, TestSize.Level0)
     EXPECT_EQ(ret, ERR_INVALID_DATA) << " ret:" << ret;
 
     STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_003 end.");
+}
+
+/**
+ * @tc.name: StatsServiceStubTest_004
+ * @tc.desc: test GetBatteryStats
+ * @tc.type: FUNC
+ * @tc.require: issueI6ARNA
+ */
+HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_004, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_004 start.");
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
+    sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
+
+    data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
+    ParcelableBatteryStatsList batteryStats;
+    batteryStats.statsList_.push_back(nullptr);
+    bool ret = reply.WriteParcelable(&batteryStats);
+    EXPECT_TRUE(ret);
+
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_004 end.");
+}
+
+/**
+ * @tc.name: StatsServiceStubTest_005
+ * @tc.desc: test GetBatteryStats
+ * @tc.type: FUNC
+ * @tc.require: issueI6ARNA
+ */
+HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_005, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_005 start.");
+    MessageParcel data;
+    Parcel reply;
+    MessageOption option;
+    sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
+    sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
+
+    data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
+    const int32_t PARAM_MAX_NUM = 1024000;
+    reply.WriteInt32(PARAM_MAX_NUM);
+    ParcelableBatteryStatsList* result = ParcelableBatteryStatsList::Unmarshalling(reply);
+    EXPECT_EQ(result, nullptr);
+
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_005 end.");
 }
 }

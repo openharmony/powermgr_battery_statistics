@@ -18,6 +18,11 @@ config("batterystatsnapi_private_config") {
 }
 
 ohos_shared_library("batterystatistics") {
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
   sources = [
     "src/async_callback_info.cpp",
     "src/battery_stats.cpp",

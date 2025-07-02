@@ -17,6 +17,7 @@
 #define STATS_SERVICE_TEST_H
 
 #include <gtest/gtest.h>
+#include "stats_xcollie.h"
 
 namespace OHOS {
 namespace PowerMgr {
@@ -26,6 +27,17 @@ public:
     static void TearDownTestCase();
     void SetUp();
     void TearDown();
+};
+
+class StatsXCollieTestable : public StatsXCollie {
+public:
+    StatsXCollieTestable(const std::string &logTag, bool isRecovery)
+        : StatsXCollie(logTag, isRecovery) {}
+
+    void CallCancel()
+    {
+        CancelStatsXCollie();
+    }
 };
 } // namespace PowerMgr
 } // namespace OHOS

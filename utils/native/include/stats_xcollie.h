@@ -26,7 +26,7 @@ public:
     StatsXCollie(const std::string &logTag, bool isRecovery = false);
     ~StatsXCollie();
 
-private:
+protected:
     void CancelStatsXCollie();
 
     int32_t id_;

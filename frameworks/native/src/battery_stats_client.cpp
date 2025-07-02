@@ -31,6 +31,7 @@ namespace PowerMgr {
 BatteryStatsClient::BatteryStatsClient() {}
 BatteryStatsClient::~BatteryStatsClient() {}
 constexpr int32_t INIT_VALUE = -1;
+constexpr int32_t PARAM_MAX_NUM = 10;
 
 ErrCode BatteryStatsClient::Connect()
 {
@@ -182,8 +183,13 @@ std::string BatteryStatsClient::Dump(const std::vector<std::string>& args)
     STATS_HILOGD(COMP_FWK, "Call Dump");
     std::string error = "can't connect service";
     STATS_RETURN_IF_WITH_RET(Connect() != ERR_OK, error);
-    std::string dumpshell;
-    proxy_->ShellDumpIpc(args, args.size(), dumpshell);
+    std::string dumpshell = "remote error";
+    int32_t argc = args.size();
+    if (argc >= PARAM_MAX_NUM) {
+        STATS_HILOGE(COMP_FWK, "params exceed limit, argc=%{public}d", argc);
+        return dumpshell;
+    }
+    proxy_->ShellDumpIpc(args, argc, dumpshell);
     return dumpshell;
 }
 
