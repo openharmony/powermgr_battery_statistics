@@ -117,8 +117,11 @@ HWTEST_F (StatsServiceTest, StatsServiceTest_004, TestSize.Level0)
     int32_t fd = 1;
     std::vector<std::u16string> vec;
     statsService->isBootCompleted_ = true;
+    StatsXCollieTestable statsXCollie("test_log", true);
     int32_t ret = statsService->Dump(fd, vec);
     EXPECT_EQ(ret, OHOS::ERR_OK);
+    statsXCollie.CallCancel();
+    statsXCollie.CallCancel();
     STATS_HILOGI(LABEL_TEST, "StatsServiceTest_004 end");
 }
 

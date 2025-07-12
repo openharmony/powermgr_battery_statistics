@@ -340,4 +340,48 @@ HWTEST_F (StatsDumpTest, StatsDumpTest_008, TestSize.Level0)
     EXPECT_TRUE(index != string::npos);
     STATS_HILOGI(LABEL_TEST, "StatsDumpTest_008 end");
 }
+
+/**
+ * @tc.name: StatsDumpTest_009
+ * @tc.desc: Test Dump exceed limit.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StatsDumpTest, StatsDumpTest_009, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_009 function start!");
+    size_t size = 1000;
+    std::vector<std::string> cmdsList;
+    for (size_t i = 0; i < size; i++) {
+        std::string cmd = "test_cmd" + std::to_string(i);
+        cmdsList.push_back(cmd);
+    }
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    std::string result = statsClient.Dump(cmdsList);
+
+    STATS_HILOGI(LABEL_TEST, "result : %{public}s", result.c_str());
+    EXPECT_EQ(true, result == "remote error");
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_009 function end!");
+}
+
+/**
+ * @tc.name: StatsDumpTest_010
+ * @tc.desc: Test Dump limit.
+ * @tc.type: FUNC
+ */
+HWTEST_F(StatsDumpTest, StatsDumpTest_010, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_010 function start!");
+    size_t size = 5;
+    std::vector<std::string> cmdsList;
+    for (size_t i = 0; i < size; i++) {
+        std::string cmd = "test_cmd" + std::to_string(i);
+        cmdsList.push_back(cmd);
+    }
+    auto& statsClient = BatteryStatsClient::GetInstance();
+    std::string result = statsClient.Dump(cmdsList);
+
+    STATS_HILOGI(LABEL_TEST, "result : %{public}s", result.c_str());
+    EXPECT_EQ(true, result.empty());
+    STATS_HILOGI(LABEL_TEST, "StatsDumpTest_010 function end!");
+}
 }

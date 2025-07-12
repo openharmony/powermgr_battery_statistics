@@ -213,10 +213,7 @@ std::string BatteryStatsInfo::ConvertConsumptionType(ConsumptionType type)
 bool ParcelableBatteryStatsList::Marshalling(Parcel& parcel) const
 {
     int32_t size = static_cast<int32_t>(statsList_.size());
-    if (!parcel.WriteInt32(size)) {
-        STATS_HILOGE(COMP_SVC, "Write size failed");
-        return false;
-    }
+    STATS_RETURN_IF_WRITE_PARCEL_FAILED_WITH_RET(COMP_FWK, parcel, Int32, size, false);
     bool res = true;
     for (const auto& templateVal : statsList_) {
         if (templateVal == nullptr) {
@@ -232,7 +229,7 @@ ParcelableBatteryStatsList* ParcelableBatteryStatsList::Unmarshalling(Parcel& pa
     auto listPtr = std::make_unique<ParcelableBatteryStatsList>();
 
     int32_t size = parcel.ReadInt32();
-    if (size < 0 || size > PARAM_MAX_NUM) {
+    if (size > PARAM_MAX_NUM) {
         STATS_HILOGE(COMP_FWK, "size exceed limit, size=%{public}d", size);
         return nullptr;
     }

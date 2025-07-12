@@ -16,7 +16,7 @@
 sequenceable BatteryStatsInfo..OHOS.PowerMgr.ParcelableBatteryStatsList;
 
 interface OHOS.PowerMgr.IBatteryStats {
-    void GetBatteryStatsIpc([out] ParcelableBatteryStatsList batteryStats, [out] int tempError);
+    [ipccode 0] void GetBatteryStatsIpc([out] ParcelableBatteryStatsList batteryStats, [out] int tempError);
     void GetAppStatsMahIpc([in] int uid, [out] double appStatsMah, [out] int tempError);
     void GetAppStatsPercentIpc([in] int uid, [out] double appStatsPercent, [out] int tempError);
     void GetPartStatsMahIpc([in] int type, [out] double partStatsMah, [out] int tempError);
