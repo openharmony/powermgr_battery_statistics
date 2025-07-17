@@ -40,7 +40,7 @@ private:
     void HandleDebugInfo(StatsUtils::StatsData data);
     void HandleThermalInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
     void HandleBatteryInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
-    void HandleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
+    void HandleDisplayInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
     void HandleWakelockInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
     void HandleWorkschedulerInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);
     void HandlePhoneInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo);

@@ -36,7 +36,7 @@ private:
     void ProcessPhoneEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
     void ProcessWakelockEvent(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessWakelockEventInternal(StatsUtils::StatsData& data, const cJSON* root);
-    void ProcessDispalyEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
+    void ProcessDisplayEvent(StatsUtils::StatsData& data, const cJSON* root, const std::string& eventName);
     void ProcessBatteryEvent(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessThermalEvent(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessThermalEventInternal(StatsUtils::StatsData& data, const cJSON* root);
@@ -56,8 +56,8 @@ private:
     void ProcessDistributedSchedulerEventInternal(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessDistributedSchedulerEvent(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessAlarmEvent(StatsUtils::StatsData& data, const cJSON* root);
-    void ProcessDispalyDebugInfo(StatsUtils::StatsData& data, const cJSON* root);
-    void ProcessDispalyDebugInfoInternal(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDisplayDebugInfo(StatsUtils::StatsData& data, const cJSON* root);
+    void ProcessDisplayDebugInfoInternal(StatsUtils::StatsData& data, const cJSON* root);
     void ProcessPhoneDebugInfo(StatsUtils::StatsData& data, const cJSON* root);
 };
 } // namespace PowerMgr

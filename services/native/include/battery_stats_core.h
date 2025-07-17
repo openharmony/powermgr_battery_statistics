@@ -103,8 +103,10 @@ private:
     void CreateAppEntity();
     void UpdateStatsEntity(cJSON* root);
     void SaveForHardware(cJSON* root);
+    void SaveForHardwareInternal(cJSON* hardwareObj);
     void SaveForSoftware(cJSON* root);
     void SaveForSoftwareCommon(cJSON* root, int32_t uid);
+    void SaveForSoftwareCommonInternal(cJSON* uidObj, int32_t uid);
     void SaveForSoftwareConnectivity(cJSON* root, int32_t uid);
     void SaveForPower(cJSON* root);
 };

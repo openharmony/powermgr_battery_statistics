@@ -130,7 +130,7 @@ void BatteryStatsDetector::HandleBatteryInfo(StatsUtils::StatsData data, int64_t
     }
 }
 
-void BatteryStatsDetector::HandleDispalyInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
+void BatteryStatsDetector::HandleDisplayInfo(StatsUtils::StatsData data, int64_t bootTimeMs, std::string& debugInfo)
 {
     debugInfo.append("Dislpay event: Boot time after boot = ")
         .append(ToString(bootTimeMs))
@@ -250,7 +250,7 @@ void BatteryStatsDetector::HandleDebugInfo(StatsUtils::StatsData data)
         case StatsUtils::STATS_TYPE_DISPLAY:
         case StatsUtils::STATS_TYPE_SCREEN_ON:
         case StatsUtils::STATS_TYPE_SCREEN_BRIGHTNESS:
-            HandleDispalyInfo(data, bootTimeMs, debugInfo);
+            HandleDisplayInfo(data, bootTimeMs, debugInfo);
             break;
         case StatsUtils::STATS_TYPE_PHONE_ACTIVE:
         case StatsUtils::STATS_TYPE_PHONE_DATA:
