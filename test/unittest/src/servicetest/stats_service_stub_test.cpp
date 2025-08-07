@@ -151,4 +151,48 @@ HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_005, TestSize.Level0)
 
     STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_005 end.");
 }
+
+/**
+ * @tc.name: StatsServiceStubTest_006
+ * @tc.desc: test GetBatteryStats
+ * @tc.type: FUNC
+ * @tc.require: issueI6ARNA
+ */
+HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_006, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_006 start.");
+    MessageParcel data;
+    Parcel reply;
+    MessageOption option;
+    sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
+    sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
+    data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
+    const int32_t PARAM_ZERO = 0;
+    reply.WriteInt32(PARAM_ZERO);
+    ParcelableBatteryStatsList* result = ParcelableBatteryStatsList::Unmarshalling(reply);
+    EXPECT_NE(result, nullptr);
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_006 end.");
+}
+
+/**
+ * @tc.name: StatsServiceStubTest_007
+ * @tc.desc: test GetBatteryStats
+ * @tc.type: FUNC
+ * @tc.require: issueI6ARNA
+ */
+HWTEST_F (StatsServiceStubTest, StatsServiceStubTest_007, TestSize.Level0)
+{
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_007 start.");
+    MessageParcel data;
+    Parcel reply;
+    MessageOption option;
+    sptr<BatteryStatsService> statsService = BatteryStatsService::GetInstance();
+    sptr<BatteryStatsStub> statsStub = static_cast<sptr<BatteryStatsStub>>(statsService);
+    data.WriteInterfaceToken(BatteryStatsProxy::GetDescriptor());
+    const int32_t PARAM_MINUS_ONE = -1;
+    reply.WriteInt32(PARAM_MINUS_ONE);
+    ParcelableBatteryStatsList* result = ParcelableBatteryStatsList::Unmarshalling(reply);
+    EXPECT_EQ(result, nullptr);
+    STATS_HILOGI(LABEL_TEST, "StatsServiceStubTest_007 end.");
+}
 }

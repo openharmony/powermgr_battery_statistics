@@ -226,15 +226,16 @@ bool ParcelableBatteryStatsList::Marshalling(Parcel& parcel) const
 
 ParcelableBatteryStatsList* ParcelableBatteryStatsList::Unmarshalling(Parcel& parcel)
 {
+    constexpr int32_t PARAM_ZERO = 0;
     auto listPtr = std::make_unique<ParcelableBatteryStatsList>();
 
     int32_t size = parcel.ReadInt32();
-    if (size > PARAM_MAX_NUM) {
-        STATS_HILOGE(COMP_FWK, "size exceed limit, size=%{public}d", size);
+    if (size < PARAM_ZERO || size > PARAM_MAX_NUM) {
+        STATS_HILOGE(COMP_FWK, "size is invalid, size=%{public}d", size);
         return nullptr;
     }
 
-    for (int32_t i = 0; i < size; ++i) {
+    for (int32_t i = PARAM_ZERO; i < size; ++i) {
         auto info = std::make_shared<BatteryStatsInfo>();
         info->ReadFromParcel(parcel);
         listPtr->statsList_.emplace_back(info);
