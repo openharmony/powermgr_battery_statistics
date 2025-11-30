@@ -250,7 +250,7 @@ void TestIsValidJsonNumberBoundary(const uint8_t* data, size_t size)
             break;
         case BOUNDARY_CASE_TINY_POSITIVE:
             testValue = TEST_VALUE_TINY_POSITIVE;
-            break; 
+            break;
         case BOUNDARY_CASE_TINY_NEGATIVE:
             testValue = TEST_VALUE_TINY_NEGATIVE;
             break;
