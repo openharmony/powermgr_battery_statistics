@@ -130,7 +130,8 @@ void TestDumpWithValidCommands(const uint8_t* data, size_t size)
  */
 void TestDumpWithMixedCommands(const uint8_t* data, size_t size)
 {
-    if (size < 2) {
+    const size_t MIN_SIZE = 2;
+    if (size < MIN_SIZE) {
         return;
     }
     
@@ -142,9 +143,11 @@ void TestDumpWithMixedCommands(const uint8_t* data, size_t size)
     args.emplace_back(VALID_COMMANDS[validIdx]);
     
     // Add an invalid command from fuzzer data
+    const size_t MIN_ARGS_SIZE = 2;
+    const size_t INVALID_CMD_OFFSET = 2;
     size_t invalidLen = std::min(static_cast<size_t>(data[1]), MAX_STRING_LEN);
-    if (invalidLen > 0 && size >= 2 + invalidLen) {
-        std::string invalidCmd(reinterpret_cast<const char*>(data + 2), invalidLen);
+    if (invalidLen > 0 && size >= MIN_ARGS_SIZE + invalidLen) {
+        std::string invalidCmd(reinterpret_cast<const char*>(data + INVALID_CMD_OFFSET), invalidLen);
         args.emplace_back(invalidCmd);
     }
     

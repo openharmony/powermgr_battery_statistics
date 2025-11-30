@@ -236,7 +236,8 @@ void TestIsValidJsonStringWithUnicode()
  */
 void TestIsValidJsonStringWithNestedJson(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < 10 || size > MEDIUM_STRING_LEN) {
+    const size_t MIN_STRING_LEN = 10;
+    if (data == nullptr || size < MIN_STRING_LEN || size > MEDIUM_STRING_LEN) {
         return;
     }
     

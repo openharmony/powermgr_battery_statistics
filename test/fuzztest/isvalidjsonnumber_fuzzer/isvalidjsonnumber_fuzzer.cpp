@@ -208,37 +208,37 @@ void TestIsValidJsonNumberBoundary(const uint8_t* data, size_t size)
     double testValue = 0.0;
     switch (selector) {
         case 0:
-            testValue = 1.0;
+            testValue = 1.0; // Positive one
             break;
         case 1:
-            testValue = -1.0;
+            testValue = -1.0; // Negative one
             break;
         case 2:
-            testValue = 0.1;
+            testValue = 0.1; // Small positive value
             break;
         case 3:
-            testValue = -0.1;
+            testValue = -0.1; // Small negative value
             break;
         case 4:
-            testValue = 1e10;
+            testValue = 1e10; // Large positive value
             break;
         case 5:
-            testValue = -1e10;
+            testValue = -1e10; // Negative large value
             break;
         case 6:
-            testValue = 1e-10;
-            break;
+            testValue = 1e-10; // Small positive value
+            break; 
         case 7:
-            testValue = -1e-10;
+            testValue = -1e-10; // Small negative value
             break;
         case 8:
-            testValue = 3.14159265358979323846;
+            testValue = 3.14159265358979323846; // Pi
             break;
         case 9:
-            testValue = 2.71828182845904523536;
+            testValue = 2.71828182845904523536; // Euler's number
             break;
         default:
-            testValue = 0.0;
+            testValue = 0.0; // Should not reach here
             break;
     }
     
@@ -254,7 +254,8 @@ void TestIsValidJsonNumberBoundary(const uint8_t* data, size_t size)
  */
 void TestIsValidJsonNumberWithParsedJson(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size == 0 || size > 512) {
+    const size_t max_size = 512;
+    if (data == nullptr || size == 0 || size > max_size) {
         return;
     }
     
