@@ -245,7 +245,9 @@ void TestIsValidJsonStringWithNestedJson(const uint8_t* data, size_t size)
     }
     
     // Try to parse as nested JSON
-    std::string jsonStr = "{\"test\":\"" + std::string(reinterpret_cast<const char*>(data), std::min(size, size_t(100))) + "\"}";
+    std::string jsonStr = "{\"test\":\"" +
+        std::string(reinterpret_cast<const char*>(data), std::min(size, size_t(100))) +
+        "\"}";
     
     cJSON* root = cJSON_Parse(jsonStr.c_str());
     if (root != nullptr) {

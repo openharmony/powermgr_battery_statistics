@@ -211,8 +211,8 @@ void TestOnRemoteDiedConcurrent(const uint8_t* data, size_t size)
  */
 void TestOnRemoteDiedRapidLifecycle()
 {
-    const int RAPID_LIFECYCLE_COUNT = 10;
-    for (int i = 0; i < RAPID_LIFECYCLE_COUNT; i++) {
+    const int rapidLifecycleCount = 10;
+    for (int i = 0; i < rapidLifecycleCount; i++) {
         sptr<IRemoteObject> remoteObject = new (std::nothrow) MockRemoteObject();
         if (remoteObject != nullptr) {
             wptr<IRemoteObject> weakRemote(remoteObject);
