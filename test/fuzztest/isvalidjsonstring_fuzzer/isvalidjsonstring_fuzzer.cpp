@@ -32,6 +32,10 @@ constexpr size_t MIN_INPUT_SIZE = 1;
 constexpr size_t MAX_STRING_LEN = 4096;
 constexpr size_t MEDIUM_STRING_LEN = 1024;
 constexpr size_t SMALL_STRING_LEN = 256;
+constexpr int MIN_PRINTABLE_ASCII = 32;
+constexpr int MAX_PRINTABLE_ASCII = 127;
+constexpr size_t MAX_ESCAPED_LENGTH = 50;
+constexpr size_t MIN_NESTED_JSON_LEN = 10;
 
 /**
  * Test IsValidJsonString with nullptr
@@ -191,8 +195,8 @@ void TestIsValidJsonStringWithEncodings(const uint8_t* data, size_t size)
     
     // Method 2: Escaped construction
     testStr.clear();
-    for (size_t i = 0; i < size && i < 50; i++) {
-        if (data[i] >= 32 && data[i] < 127) {
+    for (size_t i = 0; i < size && i < MAX_ESCAPED_LENGTH; i++) {
+        if (data[i] >= MIN_PRINTABLE_ASCII && data[i] < MAX_PRINTABLE_ASCII) {
             testStr += static_cast<char>(data[i]);
         }
     }
@@ -236,15 +240,12 @@ void TestIsValidJsonStringWithUnicode()
  */
 void TestIsValidJsonStringWithNestedJson(const uint8_t* data, size_t size)
 {
-    const size_t MIN_STRING_LEN = 10;
-    if (data == nullptr || size < MIN_STRING_LEN || size > MEDIUM_STRING_LEN) {
+    if (data == nullptr || size < MIN_NESTED_JSON_LEN || size > MEDIUM_STRING_LEN) {
         return;
     }
     
     // Try to parse as nested JSON
-    std::string jsonStr = "{\"test\":\"" + 
-                          std::string(reinterpret_cast<const char*>(data), std::min(size, size_t(100))) + 
-                          "\"}";
+    std::string jsonStr = "{\"test\":\"" + std::string(reinterpret_cast<const char*>(data), std::min(size, size_t(100))) + "\"}";
     
     cJSON* root = cJSON_Parse(jsonStr.c_str());
     if (root != nullptr) {
@@ -332,7 +333,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     TestIsValidJsonStringWithUnicode();
     
     // Test with nested JSON
-    if (size >= 10 && size <= MEDIUM_STRING_LEN) {
+    if (size >= MIN_NESTED_JSON_LEN && size <= MEDIUM_STRING_LEN) {
         TestIsValidJsonStringWithNestedJson(data, size);
     }
     
