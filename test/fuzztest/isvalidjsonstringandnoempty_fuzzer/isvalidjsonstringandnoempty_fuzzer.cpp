@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -30,6 +31,7 @@ namespace {
 constexpr size_t MAX_INPUT_SIZE = 10240;
 constexpr size_t MIN_INPUT_SIZE = 1;
 constexpr size_t MAX_STRING_LEN = 4096;
+constexpr size_t MIN_VAR_LENGTH_SIZE = 2;
 
 /**
  * Test IsValidJsonStringAndNoEmpty with nullptr
@@ -127,7 +129,7 @@ void TestIsValidJsonStringAndNoEmptyWithValidString(const uint8_t* data, size_t 
  */
 void TestIsValidJsonStringAndNoEmptyWithVariousLengths(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < 2) {
+    if (data == nullptr || size < MIN_VAR_LENGTH_SIZE) {
         return;
     }
     

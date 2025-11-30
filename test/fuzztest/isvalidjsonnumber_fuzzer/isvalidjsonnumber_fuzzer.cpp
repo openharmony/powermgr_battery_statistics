@@ -15,6 +15,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <string>
@@ -30,6 +31,28 @@ using namespace OHOS::PowerMgr::StatsJsonUtils;
 namespace {
 constexpr size_t MAX_INPUT_SIZE = 1024;
 constexpr size_t MIN_INPUT_SIZE = 1;
+constexpr uint8_t BOUNDARY_CASE_POSITIVE_ONE = 0;
+constexpr uint8_t BOUNDARY_CASE_NEGATIVE_ONE = 1;
+constexpr uint8_t BOUNDARY_CASE_SMALL_POSITIVE = 2;
+constexpr uint8_t BOUNDARY_CASE_SMALL_NEGATIVE = 3;
+constexpr uint8_t BOUNDARY_CASE_LARGE_POSITIVE = 4;
+constexpr uint8_t BOUNDARY_CASE_LARGE_NEGATIVE = 5;
+constexpr uint8_t BOUNDARY_CASE_TINY_POSITIVE = 6;
+constexpr uint8_t BOUNDARY_CASE_TINY_NEGATIVE = 7;
+constexpr uint8_t BOUNDARY_CASE_PI = 8;
+constexpr uint8_t BOUNDARY_CASE_EULER = 9;
+constexpr uint8_t BOUNDARY_CASE_COUNT = 10;
+constexpr double TEST_VALUE_POSITIVE_ONE = 1.0;
+constexpr double TEST_VALUE_NEGATIVE_ONE = -1.0;
+constexpr double TEST_VALUE_SMALL_POSITIVE = 0.1;
+constexpr double TEST_VALUE_SMALL_NEGATIVE = -0.1;
+constexpr double TEST_VALUE_LARGE_POSITIVE = 1e10;
+constexpr double TEST_VALUE_LARGE_NEGATIVE = -1e10;
+constexpr double TEST_VALUE_TINY_POSITIVE = 1e-10;
+constexpr double TEST_VALUE_TINY_NEGATIVE = -1e-10;
+constexpr double TEST_VALUE_PI = 3.14159265358979323846; // Pi
+constexpr double TEST_VALUE_EULER = 2.71828182845904523536; // Euler's number
+constexpr size_t MAX_PARSED_JSON_SIZE = 512;
 
 /**
  * Test IsValidJsonNumber with nullptr
@@ -203,39 +226,39 @@ void TestIsValidJsonNumberBoundary(const uint8_t* data, size_t size)
     }
     
     // Generate boundary values based on fuzzer input
-    uint8_t selector = data[0] % 10;
+    uint8_t selector = data[0] % BOUNDARY_CASE_COUNT;
     
     double testValue = 0.0;
     switch (selector) {
-        case 0:
-            testValue = 1.0; // Positive one
+        case BOUNDARY_CASE_POSITIVE_ONE:
+            testValue = TEST_VALUE_POSITIVE_ONE;
             break;
-        case 1:
-            testValue = -1.0; // Negative one
+        case BOUNDARY_CASE_NEGATIVE_ONE:
+            testValue = TEST_VALUE_NEGATIVE_ONE;
             break;
-        case 2:
-            testValue = 0.1; // Small positive value
+        case BOUNDARY_CASE_SMALL_POSITIVE:
+            testValue = TEST_VALUE_SMALL_POSITIVE;
             break;
-        case 3:
-            testValue = -0.1; // Small negative value
+        case BOUNDARY_CASE_SMALL_NEGATIVE:
+            testValue = TEST_VALUE_SMALL_NEGATIVE;
             break;
-        case 4:
-            testValue = 1e10; // Large positive value
+        case BOUNDARY_CASE_LARGE_POSITIVE:
+            testValue = TEST_VALUE_LARGE_POSITIVE;
             break;
-        case 5:
-            testValue = -1e10; // Negative large value
+        case BOUNDARY_CASE_LARGE_NEGATIVE:
+            testValue = TEST_VALUE_LARGE_NEGATIVE;
             break;
-        case 6:
-            testValue = 1e-10; // Small positive value
+        case BOUNDARY_CASE_TINY_POSITIVE:
+            testValue = TEST_VALUE_TINY_POSITIVE;
             break; 
-        case 7:
-            testValue = -1e-10; // Small negative value
+        case BOUNDARY_CASE_TINY_NEGATIVE:
+            testValue = TEST_VALUE_TINY_NEGATIVE;
             break;
-        case 8:
-            testValue = 3.14159265358979323846; // Pi
+        case BOUNDARY_CASE_PI:
+            testValue = TEST_VALUE_PI;
             break;
-        case 9:
-            testValue = 2.71828182845904523536; // Euler's number
+        case BOUNDARY_CASE_EULER:
+            testValue = TEST_VALUE_EULER;
             break;
         default:
             testValue = 0.0; // Should not reach here
@@ -254,8 +277,7 @@ void TestIsValidJsonNumberBoundary(const uint8_t* data, size_t size)
  */
 void TestIsValidJsonNumberWithParsedJson(const uint8_t* data, size_t size)
 {
-    const size_t max_size = 512;
-    if (data == nullptr || size == 0 || size > max_size) {
+    if (data == nullptr || size == 0 || size > MAX_PARSED_JSON_SIZE) {
         return;
     }
     
