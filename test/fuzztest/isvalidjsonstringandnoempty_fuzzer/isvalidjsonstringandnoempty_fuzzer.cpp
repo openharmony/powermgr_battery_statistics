@@ -241,7 +241,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     TestIsValidJsonStringAndNoEmptyWithValidString(data, size);
     
     // Test with various lengths
-    if (size >= 2) {
+    const size_t kMinimumValidLength = 2; // At least 1 byte for length + 1 byte for content
+    if (size >= kMinimumValidLength) {
         TestIsValidJsonStringAndNoEmptyWithVariousLengths(data, size);
     }
     
