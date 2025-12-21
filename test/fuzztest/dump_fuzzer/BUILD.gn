@@ -60,7 +60,7 @@ group("fuzztest") {
   deps = []
   deps += [
     # deps file
-    ":DumpFuzzer",
+    ":DumpFuzzerTest",
   ]
 }
 ###############################################################################
