@@ -17,7 +17,7 @@ import("//build/config/features.gni")
 import("//build/test.gni")
 
 ##############################fuzztest##########################################
-ohos_fuzztest("DumpFuzzer") {
+ohos_fuzztest("DumpFuzzTest") {
   module_out_path = "battery_statistics/battery_statistics"
   
   fuzz_config_file = "${batterystats_root_path}/test/fuzztest/dump_fuzzer"
@@ -60,7 +60,7 @@ group("fuzztest") {
   deps = []
   deps += [
     # deps file
-    ":DumpFuzzerTest",
+    ":DumpFuzzTest",
   ]
 }
 ###############################################################################
