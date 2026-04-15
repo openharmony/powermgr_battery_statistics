@@ -64,7 +64,7 @@ T ExtractValue(const uint8_t* data, size_t size, size_t& offset)
         return T{};
     }
     T value;
-    memcpy(&value, data + offset, sizeof(T));
+    memcpy_s(&value, sizeof(T), data + offset, sizeof(T));
     offset += sizeof(T);
     return value;
 }
