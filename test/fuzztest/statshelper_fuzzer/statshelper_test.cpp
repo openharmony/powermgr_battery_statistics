@@ -26,6 +26,36 @@ using namespace OHOS::PowerMgr;
 namespace {
 BatteryStatsFuzzerTest g_serviceTest;
 
+constexpr size_t MIN_INPUT_SIZE = 4;
+constexpr size_t MIN_COMBINED_TEST_SIZE = 15;
+constexpr size_t COMBINED_SECTION_COUNT = 5;
+
+enum class ActiveTimerOp : uint8_t {
+    START = 0,
+    STOP,
+    GET_TIME,
+    ADD_TIME,
+    RESET,
+    OP_COUNT
+};
+
+enum class CounterOp : uint8_t {
+    ADD_COUNT = 0,
+    GET_COUNT,
+    RESET,
+    OP_COUNT
+};
+
+enum class TestCase : uint8_t {
+    RESET_IPC = 0,
+    SHELL_DUMP_IPC,
+    STATIC_METHODS,
+    ACTIVE_TIMER,
+    COUNTER,
+    COMBINED,
+    CASE_COUNT
+};
+
 // 辅助函数：从数据中提取值
 template<typename T>
 T ExtractValue(const uint8_t* data, size_t size, size_t& offset)
@@ -49,12 +79,12 @@ void TestStatsHelperStaticMethods(const uint8_t* data, size_t size)
     size_t offset = 0;
     bool onBattery = ExtractValue<bool>(data, size, offset);
     StatsHelper::SetOnBattery(onBattery);
-    
+
     if (offset < size) {
         bool screenOff = ExtractValue<bool>(data, size, offset);
         StatsHelper::SetScreenOff(screenOff);
     }
-    
+
     // 调用所有getter方法
     StatsHelper::GetOnBatteryBootTimeMs();
     StatsHelper::GetOnBatteryUpTimeMs();
@@ -76,25 +106,27 @@ void TestActiveTimer(const uint8_t* data, size_t size)
 
     while (offset < size) {
         uint8_t operation = ExtractValue<uint8_t>(data, size, offset);
-        
-        switch (operation % 5) {
-            case 0:
+
+        switch (static_cast<ActiveTimerOp>(operation % static_cast<uint8_t>(ActiveTimerOp::OP_COUNT))) {
+            case ActiveTimerOp::START:
                 timer.StartRunning();
                 break;
-            case 1:
+            case ActiveTimerOp::STOP:
                 timer.StopRunning();
                 break;
-            case 2:
+            case ActiveTimerOp::GET_TIME:
                 timer.GetRunningTimeMs();
                 break;
-            case 3:
+            case ActiveTimerOp::ADD_TIME:
                 if (offset + sizeof(int64_t) <= size) {
                     int64_t activeTime = ExtractValue<int64_t>(data, size, offset);
                     timer.AddRunningTimeMs(activeTime);
                 }
                 break;
-            case 4:
+            case ActiveTimerOp::RESET:
                 timer.Reset();
+                break;
+            default:
                 break;
         }
     }
@@ -118,19 +150,21 @@ void TestCounter(const uint8_t* data, size_t size)
 
     while (offset < size) {
         uint8_t operation = ExtractValue<uint8_t>(data, size, offset);
-        
-        switch (operation % 3) {
-            case 0:
+
+        switch (static_cast<CounterOp>(operation % static_cast<uint8_t>(CounterOp::OP_COUNT))) {
+            case CounterOp::ADD_COUNT:
                 if (offset + sizeof(int64_t) <= size) {
                     int64_t count = ExtractValue<int64_t>(data, size, offset);
                     counter.AddCount(count);
                 }
                 break;
-            case 1:
+            case CounterOp::GET_COUNT:
                 counter.GetCount();
                 break;
-            case 2:
+            case CounterOp::RESET:
                 counter.Reset();
+                break;
+            default:
                 break;
         }
     }
@@ -140,7 +174,7 @@ void TestCounter(const uint8_t* data, size_t size)
 /* Fuzzer entry point */
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
-    if (data == nullptr || size < 4) {
+    if (data == nullptr || size < MIN_INPUT_SIZE) {
         return 0;
     }
 
@@ -149,47 +183,53 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     const uint8_t* testData = data + 1;
     size_t testSize = size - 1;
 
-    switch (testSelector % 6) {
-        case 0:
+    switch (static_cast<TestCase>(testSelector % static_cast<uint8_t>(TestCase::CASE_COUNT))) {
+        case TestCase::RESET_IPC:
             // 测试RESET IPC
             g_serviceTest.TestStatsServiceStub(
-                static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC), 
+                static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC),
                 testData, testSize);
             break;
-        case 1:
+        case TestCase::SHELL_DUMP_IPC:
             // 测试SHELL_DUMP IPC
             g_serviceTest.TestStatsServiceStub(
-                static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC), 
+                static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC),
                 testData, testSize);
             break;
-        case 2:
+        case TestCase::STATIC_METHODS:
             // 测试StatsHelper静态方法
             TestStatsHelperStaticMethods(testData, testSize);
             break;
-        case 3:
+        case TestCase::ACTIVE_TIMER:
             // 测试ActiveTimer
             TestActiveTimer(testData, testSize);
             break;
-        case 4:
+        case TestCase::COUNTER:
             // 测试Counter
             TestCounter(testData, testSize);
             break;
-        case 5:
+        case TestCase::COMBINED:
             // 综合测试：所有功能
-            if (testSize >= 15) {
-                size_t part = testSize / 5;
+            if (testSize >= MIN_COMBINED_TEST_SIZE) {
+                size_t part = testSize / COMBINED_SECTION_COUNT;
                 g_serviceTest.TestStatsServiceStub(
-                    static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC), 
+                    static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_RESET_IPC),
                     testData, part);
                 g_serviceTest.TestStatsServiceStub(
-                    static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC), 
+                    static_cast<uint32_t>(IBatteryStatsIpcCode::COMMAND_SHELL_DUMP_IPC),
                     testData + part, part);
-                TestStatsHelperStaticMethods(testData + 2*part, part);
-                TestActiveTimer(testData + 3*part, part);
-                TestCounter(testData + 4*part, testSize - 4*part);
+                TestStatsHelperStaticMethods(
+                    testData + static_cast<size_t>(TestCase::STATIC_METHODS) * part, part);
+                TestActiveTimer(
+                    testData + static_cast<size_t>(TestCase::ACTIVE_TIMER) * part, part);
+                TestCounter(
+                    testData + static_cast<size_t>(TestCase::COUNTER) * part,
+                    testSize - static_cast<size_t>(TestCase::COUNTER) * part);
             }
             break;
+        default:
+            break;
     }
-    
+
     return 0;
 }
