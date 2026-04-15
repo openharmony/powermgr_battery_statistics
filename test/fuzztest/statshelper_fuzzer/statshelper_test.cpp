@@ -63,8 +63,10 @@ T ExtractValue(const uint8_t* data, size_t size, size_t& offset)
     if (offset + sizeof(T) > size) {
         return T{};
     }
-    T value;
-    memcpy_s(&value, sizeof(T), data + offset, sizeof(T));
+    T value{};
+    if (memcpy_s(&value, sizeof(T), data + offset, sizeof(T)) != 0) {
+        return T{};
+    }
     offset += sizeof(T);
     return value;
 }

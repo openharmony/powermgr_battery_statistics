@@ -77,7 +77,9 @@ static cJSON* CreateJsonNumber(const uint8_t* data, size_t size)
 {
     double num = 0.0;
     if (size >= sizeof(double)) {
-        memcpy_s(&num, sizeof(double), data, sizeof(double));
+        if (memcpy_s(&num, sizeof(double), data, sizeof(double)) != 0) {
+            num = 0.0;
+        }
     }
     return cJSON_CreateNumber(num);
 }
@@ -117,8 +119,9 @@ cJSON* CreateJsonFromData(const uint8_t* data, size_t size, uint8_t jsonType)
             cJSON* array = cJSON_CreateArray();
             if (size >= sizeof(int32_t)) {
                 int32_t value = 0;
-                memcpy_s(&value, sizeof(int32_t), data, sizeof(int32_t));
-                cJSON_AddItemToArray(array, cJSON_CreateNumber(value));
+                if (memcpy_s(&value, sizeof(int32_t), data, sizeof(int32_t)) == 0) {
+                    cJSON_AddItemToArray(array, cJSON_CreateNumber(value));
+                }
             }
             return array;
         }
@@ -325,8 +328,9 @@ void TestMixedJsonTypes(const uint8_t* data, size_t size)
     // 添加数字
     if (size >= sizeof(double) + size / QUARTER_DIVISOR) {
         double num = 0.0;
-        memcpy_s(&num, sizeof(double), data + size / QUARTER_DIVISOR, sizeof(double));
-        cJSON_AddNumberToObject(root, "numberField", num);
+        if (memcpy_s(&num, sizeof(double), data + size / QUARTER_DIVISOR, sizeof(double)) == 0) {
+            cJSON_AddNumberToObject(root, "numberField", num);
+        }
     }
 
     // 添加布尔值
