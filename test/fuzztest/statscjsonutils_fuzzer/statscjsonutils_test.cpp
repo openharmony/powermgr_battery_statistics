@@ -72,6 +72,16 @@ std::string ExtractString(const uint8_t* data, size_t size, size_t maxLen = 1024
     return str;
 }
 
+// 创建数字类型的cJSON对象
+static cJSON* CreateJsonNumber(const uint8_t* data, size_t size)
+{
+    double num = 0.0;
+    if (size >= sizeof(double)) {
+        memcpy_s(&num, sizeof(double), data, sizeof(double));
+    }
+    return cJSON_CreateNumber(num);
+}
+
 // 根据fuzzer数据创建各种类型的cJSON对象
 cJSON* CreateJsonFromData(const uint8_t* data, size_t size, uint8_t jsonType)
 {
@@ -89,14 +99,9 @@ cJSON* CreateJsonFromData(const uint8_t* data, size_t size, uint8_t jsonType)
             // 创建空字符串
             return cJSON_CreateString("");
         }
-        case JsonType::NUMBER: {
+        case JsonType::NUMBER:
             // 创建数字
-            double num = 0.0;
-            if (size >= sizeof(double)) {
-                memcpy(&num, data, sizeof(double));
-            }
-            return cJSON_CreateNumber(num);
-        }
+            return CreateJsonNumber(data, size);
         case JsonType::OBJECT: {
             // 创建对象
             cJSON* obj = cJSON_CreateObject();
@@ -112,7 +117,7 @@ cJSON* CreateJsonFromData(const uint8_t* data, size_t size, uint8_t jsonType)
             cJSON* array = cJSON_CreateArray();
             if (size >= sizeof(int32_t)) {
                 int32_t value = 0;
-                memcpy(&value, data, sizeof(int32_t));
+                memcpy_s(&value, sizeof(int32_t), data, sizeof(int32_t));
                 cJSON_AddItemToArray(array, cJSON_CreateNumber(value));
             }
             return array;
@@ -320,7 +325,7 @@ void TestMixedJsonTypes(const uint8_t* data, size_t size)
     // 添加数字
     if (size >= sizeof(double) + size / QUARTER_DIVISOR) {
         double num = 0.0;
-        memcpy(&num, data + size / QUARTER_DIVISOR, sizeof(double));
+        memcpy_s(&num, sizeof(double), data + size / QUARTER_DIVISOR, sizeof(double));
         cJSON_AddNumberToObject(root, "numberField", num);
     }
 
@@ -357,6 +362,28 @@ void TestMixedJsonTypes(const uint8_t* data, size_t size)
 
     // 清理
     cJSON_Delete(root);
+}
+
+// 综合测试：依次调用所有验证函数
+static void RunCombinedTest(const uint8_t* testData, size_t testSize)
+{
+    if (testSize < MIN_COMBINED_TEST_SIZE) {
+        return;
+    }
+    size_t part = testSize / COMBINED_PART_COUNT;
+    TestIsValidJsonString(testData, part);
+    TestIsValidJsonStringAndNoEmpty(testData + part, part);
+    TestIsValidJsonNumber(
+        testData + static_cast<size_t>(TestFunc::VALID_NUMBER) * part, part);
+    TestIsValidJsonObject(
+        testData + static_cast<size_t>(TestFunc::VALID_OBJECT) * part, part);
+    TestIsValidJsonArray(
+        testData + static_cast<size_t>(TestFunc::VALID_ARRAY) * part, part);
+    TestIsValidJsonBool(
+        testData + static_cast<size_t>(TestFunc::VALID_BOOL) * part, part);
+    TestIsValidJsonObjectOrJsonArray(
+        testData + static_cast<size_t>(TestFunc::VALID_OBJ_OR_ARRAY) * part,
+        testSize - static_cast<size_t>(TestFunc::VALID_OBJ_OR_ARRAY) * part);
 }
 
 } // namespace
@@ -400,22 +427,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
             break;
         case TestFunc::COMBINED:
             // 综合测试：调用所有函数
-            if (testSize >= MIN_COMBINED_TEST_SIZE) {
-                size_t part = testSize / COMBINED_PART_COUNT;
-                TestIsValidJsonString(testData, part);
-                TestIsValidJsonStringAndNoEmpty(testData + part, part);
-                TestIsValidJsonNumber(
-                    testData + static_cast<size_t>(TestFunc::VALID_NUMBER) * part, part);
-                TestIsValidJsonObject(
-                    testData + static_cast<size_t>(TestFunc::VALID_OBJECT) * part, part);
-                TestIsValidJsonArray(
-                    testData + static_cast<size_t>(TestFunc::VALID_ARRAY) * part, part);
-                TestIsValidJsonBool(
-                    testData + static_cast<size_t>(TestFunc::VALID_BOOL) * part, part);
-                TestIsValidJsonObjectOrJsonArray(
-                    testData + static_cast<size_t>(TestFunc::VALID_OBJ_OR_ARRAY) * part,
-                    testSize - static_cast<size_t>(TestFunc::VALID_OBJ_OR_ARRAY) * part);
-            }
+            RunCombinedTest(testData, testSize);
             break;
         default:
             break;
