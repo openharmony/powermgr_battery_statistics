@@ -17,6 +17,7 @@
 
 #define FUZZ_PROJECT_NAME "statscjsonutils_fuzzer"
 
+#include "securec.h"
 #include "stats_cjson_utils.h"
 #include <cJSON.h>
 #include <cstring>

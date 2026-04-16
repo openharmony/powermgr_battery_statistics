@@ -17,7 +17,8 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <cstring>     // For memcpy_s
+#include <cstring>
+#include "securec.h"
 
 #include "battery_stats_client.h"
 #include "stats_utils.h"
