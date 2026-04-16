@@ -17,6 +17,7 @@
 
 #define FUZZ_PROJECT_NAME "utils_fuzzer"
 
+#include "securec.h"
 #include "ibattery_stats.h"
 #include "batterystats_fuzzer.h"
 #include "stats_helper.h"
