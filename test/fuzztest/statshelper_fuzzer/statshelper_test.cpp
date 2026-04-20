@@ -15,7 +15,7 @@
 
 /* This files contains faultlog fuzzer test modules. */
 
-#define FUZZ_PROJECT_NAME "utils_fuzzer"
+#define FUZZ_PROJECT_NAME "statshelper_fuzzer"
 
 #include "securec.h"
 #include "ibattery_stats.h"
