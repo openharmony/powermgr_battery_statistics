@@ -49,7 +49,8 @@
         "runtime_core",
         "safwk",
         "samgr",
-        "wifi"
+        "wifi",
+        "taihe_ffi_gen"
       ]
     },
     "build": {
