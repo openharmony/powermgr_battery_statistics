@@ -44,6 +44,7 @@
         "hilog",
         "ipc",
         "napi",
+        "node",
         "os_account",
         "power_manager",
         "runtime_core",
