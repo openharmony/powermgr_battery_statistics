@@ -44,6 +44,7 @@
         "hilog",
         "ipc",
         "napi",
+        "node",
         "os_account",
         "power_manager",
         "runtime_core",
@@ -94,7 +95,6 @@
         "//base/powermgr/battery_statistics/test:unittest",
         "//base/powermgr/battery_statistics/test:fuzztest",
         "//base/powermgr/battery_statistics/test:systemtest",
-        "//base/powermgr/battery_statistics/frameworks/ets/taihe:batterystats_taihe_test",
 
         "//base/powermgr/battery_statistics/test/fuzztest/dump_fuzzer:fuzztest",
         "//base/powermgr/battery_statistics/test/fuzztest/onremotedied_fuzzer:fuzztest",
