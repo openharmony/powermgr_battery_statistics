@@ -15,6 +15,9 @@
 
 #include "stats_utils.h"
 
+#include <charconv>
+#include <system_error>
+
 #include "stats_log.h"
 
 namespace OHOS {
@@ -195,21 +198,19 @@ std::string StatsUtils::ConvertStatsType(StatsType statsType)
 
 bool StatsUtils::ParseStrtollResult(const std::string& str, int64_t& result)
 {
-    constexpr int PARAMETER_TEN = 10;
-    errno = 0;
-    char* endptr = nullptr;
-    result = strtoll(str.c_str(), &endptr, PARAMETER_TEN);
-    if (endptr == str.c_str()) {
+    if (str.empty()) {
         STATS_HILOGE(COMP_UTILS, "String have no numbers, string:%{public}s", str.c_str());
         return false;
     }
-    if (errno == ERANGE && (result == LLONG_MAX || result == LLONG_MIN)) {
-        STATS_HILOGE(COMP_UTILS, "Transit result out of range, string:%{public}s", str.c_str());
+    int64_t value = 0;
+    const char *first = str.data();
+    const char *last = first + str.size();
+    auto [ptr, ec] = std::from_chars(first, last, value);
+    if (ec != std::errc() || ptr != last) {
+        STATS_HILOGE(COMP_UTILS, "ParseStrtollResult fail: %{public}s", str.c_str());
         return false;
     }
-    if (*endptr != '\0') {
-        STATS_HILOGE(COMP_UTILS, "String contain non-numeric characters, string:%{public}s", str.c_str());
-    }
+    result = value;
     return true;
 }
 } // namespace PowerMgr
